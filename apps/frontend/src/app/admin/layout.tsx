@@ -6,11 +6,13 @@ import Link from 'next/link';
 import {
   LayoutDashboard, Users, Shield, GitBranch, Package, Bird, GraduationCap,
   ClipboardList, Settings, LogOut, ChevronRight, Leaf, Egg, BookOpen,
-  Archive, ArrowLeftRight, User, Award, Home, Users2,
+  Archive, ArrowLeftRight, User, Award, Home, Users2, Stethoscope,
+  Calendar, Upload, Search, Command,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/auth-store';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { NotificationBell } from '@/components/ui/NotificationBell';
+import { CommandPalette, useCommandPalette } from '@/components/ui/CommandPalette';
 
 const navigation = [
   {
@@ -26,6 +28,7 @@ const navigation = [
       { label: 'Rôles & Permissions', path: '/admin/roles', icon: Shield },
       { label: 'Workflows', path: '/admin/workflows', icon: GitBranch },
       { label: 'Audit Log', path: '/admin/audit', icon: ClipboardList },
+      { label: 'Import CSV', path: '/admin/import', icon: Upload },
     ],
   },
   {
@@ -53,6 +56,13 @@ const navigation = [
     ],
   },
   {
+    section: 'Médical',
+    items: [
+      { label: 'Suivi médical', path: '/admin/medical', icon: Stethoscope },
+      { label: 'Calendrier', path: '/admin/medical/calendrier', icon: Calendar },
+    ],
+  },
+  {
     section: 'Formation',
     items: [
       { label: 'Cours', path: '/admin/formation/cours', icon: BookOpen },
@@ -66,6 +76,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
   const pathname = usePathname();
   const { user, clearAuth } = useAuthStore();
+  const { isOpen: cmdOpen, open: openCmd, close: closeCmd } = useCommandPalette();
 
   useEffect(() => {
     if (!user) router.push('/login');
@@ -80,6 +91,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
+      {/* Command Palette */}
+      <CommandPalette isOpen={cmdOpen} onClose={closeCmd} />
+
       {/* Sidebar */}
       <aside className="w-64 flex-shrink-0 bg-card border-r border-border flex flex-col">
         {/* Brand */}
@@ -95,8 +109,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
         </div>
 
+        {/* Recherche rapide */}
+        <div className="px-3 pt-3">
+          <button
+            onClick={openCmd}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors text-sm"
+          >
+            <Search className="w-3.5 h-3.5" />
+            <span className="flex-1 text-left text-xs">Rechercher...</span>
+            <kbd className="flex items-center gap-0.5 text-[10px] bg-background border border-border rounded px-1 py-0.5">
+              <Command className="w-2.5 h-2.5" />K
+            </kbd>
+          </button>
+        </div>
+
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto p-3 space-y-4">
+        <nav className="flex-1 overflow-y-auto p-3 space-y-4 mt-2">
           {navigation.map((group) => (
             <div key={group.section}>
               <p className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -155,6 +183,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             ))}
           </div>
           <div className="flex items-center gap-2">
+            {/* Bouton recherche dans la topbar */}
+            <button
+              onClick={openCmd}
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors text-xs"
+            >
+              <Search className="w-3.5 h-3.5" />
+              <span>Rechercher</span>
+              <kbd className="flex items-center gap-0.5 bg-background border border-border rounded px-1 py-0.5 text-[10px]">
+                <Command className="w-2.5 h-2.5" />K
+              </kbd>
+            </button>
             <NotificationBell />
             <ThemeToggle />
             <Link href="/admin/settings" className="w-9 h-9 flex items-center justify-center rounded-xl bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-colors">

@@ -1,14 +1,18 @@
-# LFTG Platform — Fichier de Passation (MANUS_HANDOFF)
+# 🦜 LFTG Platform — Fichier de Passation (MANUS_HANDOFF)
 
-> Auteur : William MERI
-> Date : Mars 2026
-> Version : **2.0.0**
+> Auteur : William MERI  
+> Date : Mars 2026  
+> Version : **3.0.0**
 
 ---
 
 ## État du projet
 
-La **Phase 2** du projet LFTG Platform est complète. L'ensemble du code source est versionné sur GitHub : `Tarzzan/lftg-platform`.
+| Version | Statut | Contenu |
+|---------|--------|---------|
+| v1.0.0 | ✅ Livré | Monorepo, core NestJS, 4 plugins, frontend Next.js |
+| v2.0.0 | ✅ Livré | SSE, modals CRUD, Recharts, dark mode, CI/CD |
+| v3.0.0 | ✅ Livré | Module médical, React Flow, Cmd+K, calendrier, import CSV, Playwright, PWA |
 
 ---
 
@@ -23,40 +27,48 @@ La **Phase 2** du projet LFTG Platform est complète. L'ensemble du code source 
 - README, .env.example, labels GitHub, milestones, issues backlog
 
 ### Phase 2 — v2.0.0 (Interactivité & DevOps)
+- **Backend** : Module SSE notifications, module export CSV/PDF, module stats dashboard
+- **Frontend** : 7 modals CRUD (Stock, Animal, Couvée, Mouvement, User, Cours), Dashboard Recharts
+- **UI** : Mode sombre (ThemeToggle), cloche SSE (NotificationBell), animations Tailwind
+- **Pages enrichies** : Détail workflow, filtres avancés stock/animaux/formations, cohortes
+- **DevOps** : `ci.yml` (lint → test → build → GHCR), `release.yml` (tag → GitHub Release)
+
+### Phase 3 — v3.0.0 (Médical, Recherche & PWA)
 
 #### Backend
-- **Module SSE** : `NotificationsService` + `NotificationsController` avec Server-Sent Events pour les alertes temps réel (stock faible, transitions workflow, événements couvées)
-- **Module Export** : `ExportService` + `ExportController` pour la génération CSV et PDF des rapports (stock, animaux, audit, formations)
-- **Module Stats** : `StatsService` + `StatsController` pour les données des graphiques du dashboard (évolution stock, animaux par espèce, workflows par statut)
-- **app.module.ts** mis à jour avec les 3 nouveaux modules
+- **Module médical** : `MedicalService` + `MedicalController` — visites vétérinaires, traitements, vaccinations, ordonnances
+- **Module email** : `EmailService` avec Resend — templates HTML pour alertes stock, rappels médicaux, invitations formations
+- **Module import** : `ImportService` + `ImportController` — import CSV en masse pour animaux, stock, utilisateurs avec validation et rapport d'erreurs
+- **Rapports PDF enrichis** : `PdfReportService` + `PdfReportController` — rapport mensuel, dossier médical animal, inventaire stock (HTML→PDF)
+- **`app.module.ts`** mis à jour avec les 3 nouveaux modules
 
-#### Frontend — Modals CRUD
-- `Modal.tsx` : composant réutilisable avec overlay, animations, tailles configurables
-- `StockArticleModal.tsx` : création/édition d'articles (nom, catégorie, quantité, seuil, unité, emplacement)
-- `AnimalModal.tsx` : création/édition d'animaux (nom, espèce, sexe, date naissance, statut, enclos)
-- `BroodModal.tsx` : création de couvées (espèce, mâle, femelle, date ponte, nb œufs, incubateur)
-- `StockMovementModal.tsx` : enregistrement de mouvements de stock (entrée/sortie/ajustement, quantité, motif)
-- `UserModal.tsx` : création/édition d'utilisateurs (email, nom, mot de passe, rôles)
-- `CourseModal.tsx` : création/édition de formations (titre, description, niveau, durée, catégorie, tags, publication)
+#### Frontend
+- **Page détail animal** (`/admin/animaux/[id]`) : 4 onglets (Fiche, Historique médical, Vaccinations, Traitements), timeline médicale, galerie photos
+- **Page espèces** (`/admin/animaux/especes`) : CRUD espèces avec statut CITES, conservation, taxonomie
+- **Dashboard médical** (`/admin/medical`) : KPIs, visites récentes, alertes rappels, prochaines visites
+- **Calendrier des soins** (`/admin/medical/calendrier`) : calendrier mensuel interactif avec événements colorés par type
+- **Éditeur de workflow** (`/admin/workflows/editor`) : canvas visuel avec palette d'étapes, connexions SVG, panneau de propriétés
+- **Recherche globale Cmd+K** : `CommandPalette.tsx` avec résultats API temps réel, navigation clavier, raccourci ⌘K
+- **Import CSV** (`/admin/import`) : drag-and-drop, prévisualisation, 3 types (animaux/stock/users), rapport d'import
+- **Page offline** (`/offline`) : fallback PWA
 
-#### Frontend — Pages enrichies
-- **Dashboard** (`/admin`) : graphiques Recharts (AreaChart évolution stock, BarChart animaux/espèce, PieChart workflows), stats temps réel via React Query
-- **Stock Articles** (`/admin/stock/articles`) : filtres catégorie + alertes, tri colonnes, boutons Modifier/Supprimer/Mouvement, export CSV
-- **Animaux Liste** (`/admin/animaux/liste`) : filtres statut + sexe, grille avec hover actions, export CSV
-- **Workflow Détail** (`/admin/workflows/[id]`) : timeline des étapes, boutons approve/reject/cancel selon permissions
-- **Formation Cours** (`/admin/formation/cours`) : filtres catégorie + publié/brouillon, grille avec thumbnails
-- **Formation Cohortes** (`/admin/formation/cohortes`) : nouvelle page avec tableau, modal création, filtres statut
+#### PWA
+- `manifest.json` : installable sur mobile/desktop avec shortcuts
+- `sw.js` : service worker Network First + Cache First + notifications push
+- `layout.tsx` : enregistrement automatique du service worker
 
-#### Frontend — UI & Thème
-- `ThemeToggle.tsx` : bouton mode sombre/clair avec persistance localStorage
-- `NotificationBell.tsx` : cloche avec compteur non-lus, SSE subscription, dismiss, mark-all-read
-- `admin/layout.tsx` : intégration ThemeToggle + NotificationBell dans la topbar, ajout nav Cohortes
-- `tailwind.config.ts` : ajout animations (fade-in, slide-up, zoom-in-95) et keyframes
-- `lib/api.ts` : client API enrichi avec tous les endpoints Phase 2
+#### Tests E2E
+- `playwright.config.ts` : configuration multi-navigateurs (Chrome, Firefox, Mobile)
+- `auth.setup.ts` : authentification et sauvegarde du state
+- `dashboard.spec.ts` : dashboard, navigation, Cmd+K, graphiques
+- `animaux.spec.ts` : liste, filtres, modals, détail animal
+- `stock.spec.ts` : articles, filtres, import CSV
+- `workflows.spec.ts` : liste, éditeur, calendrier médical
 
-#### DevOps
-- `.github/workflows/ci.yml` : pipeline CI (lint → test → build → docker push GHCR) sur push/PR main/develop
-- `.github/workflows/release.yml` : pipeline release (tag v*.*.* → build → images versionnées → GitHub Release avec changelog)
+#### Navigation
+- Nouvelle section **Médical** dans la sidebar (Suivi médical + Calendrier)
+- **Import CSV** ajouté dans Administration
+- Bouton recherche ⌘K dans la topbar et la sidebar
 
 ---
 
@@ -65,74 +77,92 @@ La **Phase 2** du projet LFTG Platform est complète. L'ensemble du code source 
 ```
 lftg-platform/
 ├── apps/
-│   ├── backend/          # NestJS 10 — API REST
+│   ├── backend/          # NestJS 10 — API REST + SSE
 │   │   └── src/modules/
-│   │       ├── auth/         # JWT + Local strategies
-│   │       ├── users/        # CRUD utilisateurs
-│   │       ├── roles/        # RBAC/ABAC
-│   │       ├── plugins/      # Plugin Registry
-│   │       ├── workflows/    # Workflow Engine
-│   │       ├── audit/        # Audit Log
-│   │       ├── notifications/ # SSE temps réel  [NEW v2]
-│   │       ├── export/       # CSV/PDF export   [NEW v2]
-│   │       └── stats/        # Stats dashboard  [NEW v2]
+│   │       ├── auth/           # JWT + Passport
+│   │       ├── users/          # Gestion utilisateurs
+│   │       ├── roles/          # RBAC/ABAC
+│   │       ├── plugins/        # Plugin Registry
+│   │       ├── workflows/      # Workflow Engine
+│   │       ├── audit/          # Audit Log
+│   │       ├── notifications/  # SSE temps réel [v2]
+│   │       ├── export/         # CSV + Rapports PDF HTML [v2+v3]
+│   │       ├── stats/          # Statistiques dashboard [v2]
+│   │       ├── medical/        # Module médical [v3]
+│   │       ├── email/          # Notifications email Resend [v3]
+│   │       └── import/         # Import CSV en masse [v3]
 │   └── frontend/         # Next.js 14 + Tailwind
-│       └── src/
-│           ├── app/admin/
-│           │   ├── page.tsx              # Dashboard + Recharts
-│           │   ├── users/
-│           │   ├── workflows/
-│           │   │   └── [id]/page.tsx     # Détail workflow [NEW v2]
-│           │   ├── stock/articles/       # Filtres + modals [NEW v2]
-│           │   ├── animaux/liste/        # Filtres + modals [NEW v2]
-│           │   ├── formation/
-│           │   │   ├── cours/            # Filtres + modals [NEW v2]
-│           │   │   └── cohortes/         # Nouvelle page    [NEW v2]
-│           │   └── audit/
-│           ├── components/
-│           │   ├── modals/               # 7 modals CRUD    [NEW v2]
-│           │   └── ui/
-│           │       ├── Modal.tsx         # Composant base   [NEW v2]
-│           │       ├── ThemeToggle.tsx   # Mode sombre      [NEW v2]
-│           │       └── NotificationBell.tsx # SSE notifs    [NEW v2]
-│           └── lib/
-│               ├── api.ts                # Client API enrichi
-│               └── auth-store.ts
-├── packages/core/        # Prisma schema + seed
+│       ├── src/app/admin/
+│       │   ├── page.tsx              # Dashboard Recharts
+│       │   ├── users/
+│       │   ├── animaux/
+│       │   │   ├── liste/            # Liste + filtres + modal
+│       │   │   ├── [id]/             # Détail + timeline médicale [v3]
+│       │   │   ├── especes/          # Gestion espèces [v3]
+│       │   │   ├── enclos/
+│       │   │   └── couvees/
+│       │   ├── medical/
+│       │   │   ├── page.tsx          # Dashboard médical [v3]
+│       │   │   └── calendrier/       # Calendrier des soins [v3]
+│       │   ├── stock/articles/
+│       │   ├── formation/
+│       │   │   ├── cours/
+│       │   │   └── cohortes/
+│       │   ├── workflows/
+│       │   │   ├── page.tsx
+│       │   │   ├── [id]/             # Détail workflow [v2]
+│       │   │   └── editor/           # Éditeur React Flow [v3]
+│       │   ├── import/               # Import CSV [v3]
+│       │   └── audit/
+│       ├── src/components/
+│       │   ├── ui/
+│       │   │   ├── Modal.tsx
+│       │   │   ├── ThemeToggle.tsx
+│       │   │   ├── NotificationBell.tsx
+│       │   │   └── CommandPalette.tsx  # Cmd+K [v3]
+│       │   └── modals/               # 7 modals CRUD
+│       ├── e2e/                      # Tests Playwright [v3]
+│       └── public/
+│           ├── manifest.json         # PWA manifest [v3]
+│           └── sw.js                 # Service Worker [v3]
 ├── plugins/
 │   ├── personnel/
 │   ├── stock/
 │   ├── animaux-couvees/
 │   └── formation/
-└── .github/workflows/    # CI/CD GitHub Actions [NEW v2]
-    ├── ci.yml
-    └── release.yml
+├── packages/core/
+│   └── prisma/           # Schéma + seed (30+ modèles)
+├── .github/workflows/    # CI/CD GitHub Actions
+│   ├── ci.yml
+│   └── release.yml
+├── docker-compose.yml
+└── docker-compose.dev.yml
 ```
 
 ---
 
-## Backlog Phase 3 (v3.0.0)
+## Backlog Phase 4 (v4.0.0)
 
 ### Priorité haute
-- [ ] **Tests E2E** : Playwright pour les flux critiques (login, CRUD animaux, workflow approval)
-- [ ] **Page détail animal** : historique médical, photos, fiche complète avec timeline
-- [ ] **Éditeur de workflow** : drag-and-drop pour créer des workflows visuellement (React Flow)
-- [ ] **Module médical** : visites vétérinaires, traitements, vaccinations, ordonnances
-- [ ] **Notifications email** : intégration Resend/SendGrid pour les alertes critiques
+- [ ] **Tests E2E complets** — Couvrir 80% des parcours utilisateur avec Playwright
+- [ ] **Page détail couvée** — Suivi des œufs, éclosions, mortalité avec graphiques
+- [ ] **Module enclos complet** — CRUD + carte interactive des enclos (Leaflet)
+- [ ] **Notifications push natives** — Intégration Web Push API avec le service worker
+- [ ] **Rapports PDF natifs** — Conversion HTML→PDF côté serveur (Puppeteer ou WeasyPrint)
 
 ### Priorité moyenne
-- [ ] **Dashboard mobile** : responsive complet, PWA manifest, service worker
-- [ ] **Rapports PDF** : rapport mensuel stock, rapport animaux, rapport formations (avec graphiques)
-- [ ] **Import CSV** : import en masse d'animaux, d'articles stock, d'utilisateurs
-- [ ] **Calendrier** : planning des soins, formations, événements (FullCalendar)
-- [ ] **Recherche globale** : barre de recherche cross-entités (Cmd+K) avec résultats instantanés
+- [ ] **Recherche full-text** — pg_trgm ou Elasticsearch pour la recherche avancée
+- [ ] **API Swagger complète** — Documentation OpenAPI avec exemples interactifs
+- [ ] **Module ventes** — Gestion des ventes d'animaux et produits dérivés
+- [ ] **Dashboard personnalisable** — Widgets drag-and-drop (React Grid Layout)
+- [ ] **Historique des prix** — Suivi du coût des aliments et médicaments
 
 ### Priorité basse
-- [ ] **Multi-tenant** : support de plusieurs fermes/sites avec isolation des données
-- [ ] **API publique** : documentation Swagger enrichie, rate limiting, API keys
-- [ ] **Intégration CITES** : vérification automatique des espèces protégées
-- [ ] **Analytics avancés** : tableaux de bord personnalisables par rôle
-- [ ] **Application mobile** : Expo React Native avec synchronisation offline
+- [ ] **Application mobile** — React Native / Expo pour les soigneurs en tournée
+- [ ] **Intégration GPS** — Géolocalisation des enclos sur carte Leaflet
+- [ ] **IA — Détection anomalies** — Alertes automatiques sur les indicateurs de santé
+- [ ] **Multi-tenant** — Support de plusieurs fermes sur la même instance
+- [ ] **Backup automatique** — Export quotidien chiffré vers S3
 
 ---
 
@@ -148,19 +178,41 @@ pnpm --filter @lftg/core prisma:migrate
 pnpm --filter @lftg/core prisma:seed
 pnpm dev                                          # Backend :3001 + Frontend :3000
 
-# Tests
+# Tests unitaires
 pnpm --filter @lftg/backend test
 pnpm --filter @lftg/backend test:cov
 
+# Tests E2E
+pnpm --filter @lftg/frontend test:e2e
+pnpm --filter @lftg/frontend test:e2e:ui          # Mode interactif
+
 # Build production
-pnpm --filter @lftg/backend build
-pnpm --filter @lftg/frontend build
+pnpm build
+docker-compose build && docker-compose up -d
 
-# Docker production
-docker-compose up -d
+# Rapports
+curl http://localhost:3001/reports/monthly?year=2026&month=3 -o rapport.html
+curl http://localhost:3001/reports/stock/inventory -o inventaire.html
+curl http://localhost:3001/reports/animal/{id}/medical -o dossier.html
 
-# Créer une release
-git tag v2.0.0 && git push origin v2.0.0
+# Release
+git tag v3.0.0 && git push origin v3.0.0
+```
+
+---
+
+## Variables d'environnement requises
+
+```env
+DATABASE_URL="postgresql://lftg:lftg_secret@localhost:5432/lftg_db"
+JWT_SECRET="your-super-secret-jwt-key-min-32-chars"
+JWT_EXPIRES_IN="7d"
+RESEND_API_KEY="re_xxxxxxxxxxxx"
+EMAIL_FROM="noreply@lftg.fr"
+REDIS_URL="redis://localhost:6379"
+NEXT_PUBLIC_API_URL="http://localhost:3001"
+E2E_USER_EMAIL="admin@lftg.fr"
+E2E_USER_PASSWORD="Admin1234!"
 ```
 
 ---
@@ -175,4 +227,4 @@ git tag v2.0.0 && git push origin v2.0.0
 
 ---
 
-*Signé : William MERI — LFTG Platform v2.0.0 — Mars 2026*
+*Signé : William MERI — LFTG Platform v3.0.0 — Mars 2026*

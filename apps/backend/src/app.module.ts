@@ -11,6 +11,10 @@ import { PluginsModule } from './modules/plugins/plugins.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { ExportModule } from './modules/export/export.module';
 import { StatsModule } from './modules/stats/stats.module';
+// Phase 3
+import { MedicalModule } from './modules/medical/medical.module';
+import { EmailModule } from './modules/email/email.module';
+import { ImportModule } from './modules/import/import.module';
 
 @Module({
   imports: [
@@ -26,6 +30,10 @@ import { StatsModule } from './modules/stats/stats.module';
     NotificationsModule,
     ExportModule,
     StatsModule,
+    // Phase 3
+    MedicalModule,
+    EmailModule,
+    ImportModule,
   ],
 })
 export class AppModule {}

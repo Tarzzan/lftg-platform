@@ -1,6 +1,6 @@
 {
   "name": "@lftg/core",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "private": true,
   "scripts": {
     "prisma:generate": "prisma generate --schema=prisma/schema.prisma",
