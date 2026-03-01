@@ -18,6 +18,13 @@ import { ImportModule } from './modules/import/import.module';
 // Phase 4
 import { EnclosModule } from './modules/enclos/enclos.module';
 import { VentesModule } from './modules/ventes/ventes.module';
+// Phase 5
+import { SearchModule } from './modules/search/search.module';
+import { PushModule } from './modules/push/push.module';
+import { AgendaModule } from './modules/agenda/agenda.module';
+import { CitesModule } from './modules/cites/cites.module';
+import { DocumentsModule } from './modules/documents/documents.module';
+import { HistoryModule } from './modules/history/history.module';
 
 @Module({
   imports: [
@@ -40,6 +47,13 @@ import { VentesModule } from './modules/ventes/ventes.module';
     // Phase 4
     EnclosModule,
     VentesModule,
+    // Phase 5
+    SearchModule,
+    PushModule,
+    AgendaModule,
+    CitesModule,
+    DocumentsModule,
+    HistoryModule,
   ],
 })
 export class AppModule {}

@@ -74,6 +74,21 @@ const navigation = [
     section: 'Ventes',
     items: [
       { label: 'Toutes les ventes', path: '/admin/ventes', icon: ShoppingCart },
+      { label: 'Statistiques', path: '/admin/ventes/stats', icon: LayoutDashboard },
+    ],
+  },
+  {
+    section: 'Conformité & Docs',
+    items: [
+      { label: 'CITES', path: '/admin/cites', icon: FileText },
+      { label: 'Documents', path: '/admin/documents', icon: Archive },
+    ],
+  },
+  {
+    section: 'Outils',
+    items: [
+      { label: 'Agenda', path: '/admin/agenda', icon: Calendar },
+      { label: 'Historique', path: '/admin/history', icon: ClipboardList },
     ],
   },
   {

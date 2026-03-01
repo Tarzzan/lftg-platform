@@ -2,7 +2,7 @@
 
 > Auteur : William MERI  
 > Date : Mars 2026  
-> Version : **4.0.0**
+> Version : **5.0.0**
 
 ---
 
@@ -14,6 +14,7 @@
 | v2.0.0 | ✅ Livré | SSE, modals CRUD, Recharts, dark mode, CI/CD |
 | v3.0.0 | ✅ Livré | Module médical, React Flow, Cmd+K, calendrier, import CSV, Playwright, PWA |
 | v4.0.0 | ✅ Livré | Module enclos (Leaflet), module ventes (facturation), Swagger/OpenAPI, détail couvée, dashboard personnalisable, rapports PDF natifs, DataTable/Badge/LoadingSpinner, tests E2E enrichis |
+| v5.0.0 | ✅ Livré | Recherche full-text, push VAPID, agenda iCal, CITES, documents, historique modifications, stats ventes avancées, rapports PDF Puppeteer |
 
 ---
 
@@ -167,24 +168,46 @@ lftg-platform/
 
 ---
 
-## Backlog Phase 5 (v5.0.0)
+## ✅ Phase 5 — v5.0.0 (Complétée)
+
+### Backend (6 nouveaux modules)
+- **Module search** : `SearchService` — recherche full-text globale sur animaux, stock, ventes, utilisateurs
+- **Module push** : `PushService` — Web Push API VAPID, gestion des abonnements, envoi de notifications
+- **Module agenda** : `AgendaService` — planning des soins, récurrence, export iCal (RFC 5545)
+- **Module CITES** : `CitesService` — permis, conformité réglementaire, alertes d'expiration
+- **Module documents** : `DocumentsService` — upload Multer, catégorisation, tags, liaison aux entités
+- **Module history** : `HistoryService` — traçabilité complète, diff JSON des modifications
+- **Service PDF Puppeteer** : `PdfPuppeteerService` — rapports haute qualité via Chromium headless
+
+### Frontend (6 nouvelles pages)
+- **Page détail enclos** (`/admin/animaux/enclos/[id]`) : carte Leaflet zoomée, liste résidents, historique incidents
+- **Agenda** (`/admin/agenda`) : calendrier mensuel interactif, filtres par type, panneau détail, export iCal
+- **CITES** (`/admin/cites`) : liste des permis avec statuts, onglets Permis/Vérification/Conformité
+- **Documents** (`/admin/documents`) : vue grille + liste, drag-and-drop upload, filtres par catégorie
+- **Historique** (`/admin/history`) : timeline des modifications, filtres entité/action, stats sidebar
+- **Stats Ventes** (`/admin/ventes/stats`) : KPIs, barres mensuelles, donut répartition clients, top espèces
+
+### Navigation
+- Sections **Conformité & Docs** (CITES + Documents) et **Outils** (Agenda + Historique) ajoutées
+- Lien **Statistiques** dans la section Ventes
+
+---
+
+## Backlog Phase 6 (v6.0.0)
 
 ### Priorité haute
-- [ ] **Recherche full-text** — pg_trgm + endpoint `/search?q=` global avec résultats multi-entités
-- [ ] **Notifications push natives** — Web Push API + VAPID keys + gestion des abonnements
-- [ ] **Page détail enclos** — carte Leaflet zoomée + liste des animaux résidents + historique
-- [ ] **Rapports PDF Puppeteer** — génération côté serveur avec Chromium headless (meilleure qualité)
-- [ ] **Module agenda** — planning des soins, rappels, export iCal
+- [ ] **Application mobile Expo** — React Native avec fonctionnalités essentielles (scan QR, alertes push)
+- [ ] **Notifications push côté client** — abonnement VAPID, permission browser, réception des notifications
+- [ ] **Module personnel enrichi** — fiche employé complète, planning des gardes, congés, compétences
+- [ ] **Rapports PDF Puppeteer** — rapport mensuel complet, bilan CITES, dossier médical animal
 
 ### Priorité normale
-- [ ] **Historique des modifications** — diff visuel pour chaque entité (animal, stock, etc.)
-- [ ] **Gestion des documents** — upload de fichiers (CITES, certificats, factures) par entité
-- [ ] **Tableau de bord mobile** — layout responsive optimisé pour tablette/mobile
-- [ ] **Ventes enrichies** — historique paiements, relances automatiques, statistiques par acheteur
-- [ ] **Module CITES** — vérification automatique des espèces protégées, génération des permis
+- [ ] **Recherche full-text pg_trgm** — index PostgreSQL, highlighting des résultats, score de pertinence
+- [ ] **Module agenda enrichi** — vue semaine, vue liste, récurrence RRULE avancée, invitations email
+- [ ] **Gestion des documents enrichie** — versioning, partage, signature électronique
+- [ ] **Module CITES enrichi** — alertes email d'expiration, génération PDF des permis, API CITES externe
 
 ### Priorité basse
-- [ ] **Application mobile** — Expo React Native avec fonctionnalités essentielles
 - [ ] **Internationalisation** — i18n (fr/en/es) avec next-intl
 - [ ] **Multi-tenant** — support de plusieurs fermes dans une même instance
 - [ ] **Backup automatique** — export quotidien chiffré vers S3
