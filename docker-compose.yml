@@ -1,0 +1,68 @@
+version: '3.9'
+
+services:
+  # ─────────────────────────────────────────
+  #  PostgreSQL Database
+  # ─────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: lftg-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: lftg
+      POSTGRES_PASSWORD: lftg_secret
+      POSTGRES_DB: lftg_platform
+    ports:
+      - "5432:5432"
+    volumes:
+      - lftg_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lftg -d lftg_platform"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─────────────────────────────────────────
+  #  Backend (NestJS)
+  # ─────────────────────────────────────────
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    container_name: lftg-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://lftg:lftg_secret@db:5432/lftg_platform
+      JWT_SECRET: ${JWT_SECRET:-lftg-super-secret-key-change-in-production}
+      JWT_EXPIRES_IN: 7d
+      PORT: 3001
+      FRONTEND_URL: http://localhost:3000
+      NODE_ENV: production
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./packages/core/prisma:/app/packages/core/prisma
+
+  # ─────────────────────────────────────────
+  #  Frontend (Next.js)
+  # ─────────────────────────────────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: apps/frontend/Dockerfile
+    container_name: lftg-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3001/api/v1
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+
+volumes:
+  lftg_db_data:
+    driver: local

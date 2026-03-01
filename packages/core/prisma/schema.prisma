@@ -5,10 +5,11 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../../../node_modules/.prisma/client"
 }
 
 // =======================================
-//          CORE MODELS
+//          CORE: AUTH & RBAC/ABAC
 // =======================================
 
 model User {
@@ -19,8 +20,12 @@ model User {
   name      String?
   password  String
   isActive  Boolean  @default(true)
-  roles     Role[]   @relation("UserRoles")
-  teams     Team[]   @relation("TeamUsers")
+
+  roles              Role[]             @relation("UserRoles")
+  teams              Team[]             @relation("TeamUsers")
+  auditLogs          AuditLog[]
+  workflowInstances  WorkflowInstance[] @relation("InstanceAssignee")
+  workflowHistories  WorkflowHistory[]
 }
 
 model Role {
@@ -32,9 +37,10 @@ model Role {
 }
 
 model Permission {
-  id          String @id @default(cuid())
-  action      String // e.g., 'create', 'read', 'update', 'delete'
-  subject     String // e.g., 'Article', 'User'
+  id          String  @id @default(cuid())
+  action      String
+  subject     String
+  conditions  Json?
   description String?
   roles       Role[]
 }
@@ -46,11 +52,289 @@ model Team {
   users       User[] @relation("TeamUsers")
 }
 
+// =======================================
+//          CORE: AUDIT LOG
+// =======================================
+
 model AuditLog {
   id        String   @id @default(cuid())
   timestamp DateTime @default(now())
   userId    String
+  user      User     @relation(fields: [userId], references: [id])
   action    String
   subject   String
   details   Json?
+
+  @@index([userId])
+  @@index([timestamp])
+  @@index([subject])
+}
+
+// =======================================
+//          CORE: WORKFLOW ENGINE
+// =======================================
+
+model WorkflowDefinition {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  entityType  String
+  description String?
+  states      Json
+  transitions Json
+  formSchema  Json?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  instances WorkflowInstance[]
+}
+
+model WorkflowInstance {
+  id           String             @id @default(cuid())
+  definitionId String
+  definition   WorkflowDefinition @relation(fields: [definitionId], references: [id])
+  entityId     String
+  currentState String
+  context      Json               @default("{}")
+  assigneeId   String?
+  assignee     User?              @relation("InstanceAssignee", fields: [assigneeId], references: [id])
+  slaDeadline  DateTime?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  history WorkflowHistory[]
+
+  @@index([definitionId])
+  @@index([currentState])
+  @@index([assigneeId])
+}
+
+model WorkflowHistory {
+  id         String           @id @default(cuid())
+  instanceId String
+  instance   WorkflowInstance @relation(fields: [instanceId], references: [id])
+  timestamp  DateTime         @default(now())
+  fromState  String
+  toState    String
+  transition String
+  userId     String
+  user       User             @relation(fields: [userId], references: [id])
+  notes      String?
+  formData   Json?
+
+  @@index([instanceId])
+}
+
+// =======================================
+//          PLUGIN: PERSONNEL
+// =======================================
+
+model Employee {
+  id         String     @id @default(cuid())
+  userId     String     @unique
+  jobTitle   String?
+  department String?
+  hireDate   DateTime?
+  documents  HrDocument[]
+  skills     Skill[]    @relation("EmployeeSkills")
+}
+
+model Skill {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  employees Employee[] @relation("EmployeeSkills")
+}
+
+model HrDocument {
+  id         String   @id @default(cuid())
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  name       String
+  url        String
+  type       String
+  uploadedAt DateTime @default(now())
+}
+
+// =======================================
+//          PLUGIN: STOCK
+// =======================================
+
+model StockItem {
+  id                String          @id @default(cuid())
+  name              String          @unique
+  description       String?
+  quantity          Float           @default(0)
+  unit              String
+  lowStockThreshold Float           @default(0)
+  movements         StockMovement[]
+  requests          StockRequest[]
+}
+
+model StockMovement {
+  id        String    @id @default(cuid())
+  itemId    String
+  item      StockItem @relation(fields: [itemId], references: [id])
+  quantity  Float
+  type      String
+  userId    String
+  timestamp DateTime  @default(now())
+  notes     String?
+  requestId String?
+
+  @@index([itemId])
+}
+
+model StockRequest {
+  id         String    @id @default(cuid())
+  itemId     String
+  item       StockItem @relation(fields: [itemId], references: [id])
+  quantity   Float
+  reason     String?
+  requesterId String
+  status     String    @default("draft")
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+// =======================================
+//          PLUGIN: ANIMAUX & COUVEES
+// =======================================
+
+model Species {
+  id             String   @id @default(cuid())
+  name           String   @unique
+  scientificName String?
+  description    String?
+  animals        Animal[]
+  broods         Brood[]
+}
+
+model Enclosure {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  capacity    Int?
+  animals     Animal[]
+}
+
+model Animal {
+  id          String       @id @default(cuid())
+  identifier  String       @unique
+  speciesId   String
+  species     Species      @relation(fields: [speciesId], references: [id])
+  enclosureId String?
+  enclosure   Enclosure?   @relation(fields: [enclosureId], references: [id])
+  birthDate   DateTime?
+  sex         String?
+  isAlive     Boolean      @default(true)
+  notes       String?
+  events      AnimalEvent[]
+  createdAt   DateTime     @default(now())
+
+  @@index([speciesId])
+  @@index([enclosureId])
+}
+
+model AnimalEvent {
+  id        String   @id @default(cuid())
+  animalId  String
+  animal    Animal   @relation(fields: [animalId], references: [id])
+  timestamp DateTime @default(now())
+  type      String
+  notes     String?
+  userId    String
+
+  @@index([animalId])
+  @@index([type])
+}
+
+model Brood {
+  id                  String    @id @default(cuid())
+  speciesId           String
+  species             Species   @relation(fields: [speciesId], references: [id])
+  incubationStartDate DateTime
+  expectedHatchDate   DateTime?
+  hatchDate           DateTime?
+  eggCount            Int
+  hatchedCount        Int?
+  notes               String?
+  status              String    @default("incubating")
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+}
+
+// =======================================
+//          PLUGIN: FORMATION (LMS)
+// =======================================
+
+model Course {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  isPublished Boolean   @default(false)
+  chapters    Chapter[]
+  cohorts     Cohort[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Chapter {
+  id       String   @id @default(cuid())
+  courseId String
+  course   Course   @relation(fields: [courseId], references: [id])
+  title    String
+  order    Int
+  lessons  Lesson[]
+}
+
+model Lesson {
+  id        String  @id @default(cuid())
+  chapterId String
+  chapter   Chapter @relation(fields: [chapterId], references: [id])
+  title     String
+  content   String?
+  order     Int
+  quizzes   Quiz[]
+}
+
+model Quiz {
+  id        String       @id @default(cuid())
+  lessonId  String
+  lesson    Lesson       @relation(fields: [lessonId], references: [id])
+  question  String
+  options   Json
+  answer    String
+  answers   QuizAnswer[]
+}
+
+model Cohort {
+  id        String   @id @default(cuid())
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id])
+  name      String
+  startDate DateTime?
+  endDate   DateTime?
+  enrollments Enrollment[]
+}
+
+model Enrollment {
+  id          String    @id @default(cuid())
+  cohortId    String
+  cohort      Cohort    @relation(fields: [cohortId], references: [id])
+  userId      String
+  enrolledAt  DateTime  @default(now())
+  completedAt DateTime?
+  progress    Float     @default(0)
+  quizAnswers QuizAnswer[]
+}
+
+model QuizAnswer {
+  id           String     @id @default(cuid())
+  quizId       String
+  quiz         Quiz       @relation(fields: [quizId], references: [id])
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id])
+  answer       String
+  isCorrect    Boolean
+  answeredAt   DateTime   @default(now())
 }
