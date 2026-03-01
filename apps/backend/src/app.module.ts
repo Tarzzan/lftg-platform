@@ -42,6 +42,12 @@ import { KiosqueModule } from './modules/kiosque/kiosque.module';
 import { QuizModule } from './modules/quiz/quiz.module';
 import { PrevisionsModule } from './modules/previsions/previsions.module';
 import { CitesApiModule } from './modules/cites-api/cites-api.module';
+// Phase 9
+import { StripeModule } from './modules/stripe/stripe.module';
+import { MeteoModule } from './modules/meteo/meteo.module';
+import { PartnersModule } from './modules/partners/partners.module';
+import { GbifModule } from './modules/gbif/gbif.module';
+import { SyncModule } from './modules/sync/sync.module';
 
 @Module({
   imports: [
@@ -88,6 +94,12 @@ import { CitesApiModule } from './modules/cites-api/cites-api.module';
     QuizModule,
     PrevisionsModule,
     CitesApiModule,
+    // Phase 9
+    StripeModule,
+    MeteoModule,
+    PartnersModule,
+    GbifModule,
+    SyncModule,
   ],
 })
 export class AppModule {}

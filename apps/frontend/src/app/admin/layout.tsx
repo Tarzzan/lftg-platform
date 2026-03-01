@@ -9,7 +9,7 @@ import {
   Archive, ArrowLeftRight, User, Award, Home, Users2, Stethoscope,
   Calendar, Upload, Search, Command, ShoppingCart, FileText, Code2,
   MessageSquare, BarChart3, Ticket, Dna, Calculator, MapPin, Monitor,
-  HelpCircle, TrendingUp, Globe,
+  HelpCircle, TrendingUp, Globe, CreditCard, Cloud,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/auth-store';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
@@ -123,6 +123,20 @@ const navigation = [
       { label: 'Tableau de bord BI', path: '/admin/bi', icon: BarChart3 },
       { label: 'Prévisions', path: '/admin/bi/previsions', icon: TrendingUp },
       { label: 'Comptabilité FEC', path: '/admin/accounting', icon: Calculator },
+    ],
+  },
+  {
+    section: 'Paiements & Commerce',
+    items: [
+      { label: 'Stripe Paiements', path: '/admin/stripe', icon: CreditCard },
+      { label: 'Météo Guyane', path: '/admin/meteo', icon: Cloud },
+    ],
+  },
+  {
+    section: 'Intégrations',
+    items: [
+      { label: 'API Partenaires', path: '/admin/partners', icon: Globe },
+      { label: 'GBIF Biodiversité', path: '/admin/gbif', icon: Leaf },
     ],
   },
   {
