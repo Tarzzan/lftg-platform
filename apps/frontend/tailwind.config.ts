@@ -130,6 +130,17 @@ const config: Config = {
         'lftg': '0 4px 24px 0 rgba(22, 163, 74, 0.12)',
         'lftg-lg': '0 8px 40px 0 rgba(22, 163, 74, 0.18)',
       },
+      animation: {
+        'fade-in': 'fadeIn 0.2s ease-out',
+        'slide-up': 'slideUp 0.3s ease-out',
+        'zoom-in-95': 'zoomIn95 0.2s ease-out',
+        'spin': 'spin 1s linear infinite',
+      },
+      keyframes: {
+        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+        slideUp: { '0%': { transform: 'translateY(8px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+        zoomIn95: { '0%': { transform: 'scale(0.95)', opacity: '0' }, '100%': { transform: 'scale(1)', opacity: '1' } },
+      },
       backgroundImage: {
         'jungle-gradient': 'linear-gradient(135deg, #052e16 0%, #14532d 50%, #166534 100%)',
         'sunset-gradient': 'linear-gradient(135deg, #7c2d12 0%, #c2410c 50%, #f97316 100%)',

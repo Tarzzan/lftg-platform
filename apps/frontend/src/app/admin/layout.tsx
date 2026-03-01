@@ -5,10 +5,12 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
   LayoutDashboard, Users, Shield, GitBranch, Package, Bird, GraduationCap,
-  ClipboardList, Settings, LogOut, Bell, ChevronRight, Leaf, Egg, BookOpen,
-  Archive, ArrowLeftRight, User, Award, Home,
+  ClipboardList, Settings, LogOut, ChevronRight, Leaf, Egg, BookOpen,
+  Archive, ArrowLeftRight, User, Award, Home, Users2,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/auth-store';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
+import { NotificationBell } from '@/components/ui/NotificationBell';
 
 const navigation = [
   {
@@ -54,6 +56,7 @@ const navigation = [
     section: 'Formation',
     items: [
       { label: 'Cours', path: '/admin/formation/cours', icon: BookOpen },
+      { label: 'Cohortes', path: '/admin/formation/cohortes', icon: Users2 },
       { label: 'Mes formations', path: '/admin/formation/mes-formations', icon: GraduationCap },
     ],
   },
@@ -78,7 +81,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="flex h-screen bg-background overflow-hidden">
       {/* Sidebar */}
-      <aside className="w-64 flex-shrink-0 bg-white border-r border-border flex flex-col">
+      <aside className="w-64 flex-shrink-0 bg-card border-r border-border flex flex-col">
         {/* Brand */}
         <div className="p-4 border-b border-border">
           <div className="flex items-center gap-3">
@@ -87,7 +90,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
             <div className="min-w-0">
               <p className="text-sm font-display font-bold text-foreground truncate">LFTG Platform</p>
-              <p className="text-xs text-muted-foreground truncate">Guyane</p>
+              <p className="text-xs text-muted-foreground truncate">La Ferme Tropicale</p>
             </div>
           </div>
         </div>
@@ -96,7 +99,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <nav className="flex-1 overflow-y-auto p-3 space-y-4">
           {navigation.map((group) => (
             <div key={group.section}>
-              <p className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-wider text-wood-400">
+              <p className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 {group.section}
               </p>
               <div className="space-y-0.5">
@@ -128,9 +131,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
             <div className="min-w-0 flex-1">
               <p className="text-xs font-medium text-foreground truncate">{user.name || user.email}</p>
-              <p className="text-[10px] text-muted-foreground truncate">{user.roles[0] || 'Utilisateur'}</p>
+              <p className="text-[10px] text-muted-foreground truncate">{user.roles?.[0] || 'Utilisateur'}</p>
             </div>
-            <button onClick={handleLogout} className="text-wood-400 hover:text-red-500 transition-colors">
+            <button onClick={handleLogout} className="text-muted-foreground hover:text-red-500 transition-colors">
               <LogOut className="w-4 h-4" />
             </button>
           </div>
@@ -140,22 +143,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top bar */}
-        <header className="h-14 bg-white border-b border-border flex items-center justify-between px-6 flex-shrink-0">
+        <header className="h-14 bg-card border-b border-border flex items-center justify-between px-6 flex-shrink-0">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             {pathname.split('/').filter(Boolean).map((segment, i, arr) => (
               <span key={i} className="flex items-center gap-2">
                 {i > 0 && <ChevronRight className="w-3 h-3" />}
-                <span className={i === arr.length - 1 ? 'text-foreground font-medium' : ''}>
-                  {segment.charAt(0).toUpperCase() + segment.slice(1)}
+                <span className={i === arr.length - 1 ? 'text-foreground font-medium capitalize' : 'capitalize'}>
+                  {segment}
                 </span>
               </span>
             ))}
           </div>
           <div className="flex items-center gap-2">
-            <button className="p-2 rounded-lg hover:bg-muted transition-colors text-wood-500 hover:text-foreground">
-              <Bell className="w-4 h-4" />
-            </button>
-            <Link href="/admin/settings" className="p-2 rounded-lg hover:bg-muted transition-colors text-wood-500 hover:text-foreground">
+            <NotificationBell />
+            <ThemeToggle />
+            <Link href="/admin/settings" className="w-9 h-9 flex items-center justify-center rounded-xl bg-muted hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-colors">
               <Settings className="w-4 h-4" />
             </Link>
           </div>

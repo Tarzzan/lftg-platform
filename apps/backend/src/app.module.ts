@@ -8,6 +8,9 @@ import { RolesModule } from './modules/roles/roles.module';
 import { AuditModule } from './modules/audit/audit.module';
 import { WorkflowsModule } from './modules/workflows/workflows.module';
 import { PluginsModule } from './modules/plugins/plugins.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
+import { ExportModule } from './modules/export/export.module';
+import { StatsModule } from './modules/stats/stats.module';
 
 @Module({
   imports: [
@@ -20,6 +23,9 @@ import { PluginsModule } from './modules/plugins/plugins.module';
     AuditModule,
     WorkflowsModule,
     PluginsModule,
+    NotificationsModule,
+    ExportModule,
+    StatsModule,
   ],
 })
 export class AppModule {}
