@@ -48,6 +48,12 @@ import { MeteoModule } from './modules/meteo/meteo.module';
 import { PartnersModule } from './modules/partners/partners.module';
 import { GbifModule } from './modules/gbif/gbif.module';
 import { SyncModule } from './modules/sync/sync.module';
+// Phase 10
+import { AlertesModule } from './modules/alertes/alertes.module';
+import { NutritionModule } from './modules/nutrition/nutrition.module';
+import { GpsModule } from './modules/gps/gps.module';
+import { ParrainageModule } from './modules/parrainage/parrainage.module';
+import { RealtimeModule } from './modules/realtime/realtime.module';
 
 @Module({
   imports: [
@@ -100,6 +106,12 @@ import { SyncModule } from './modules/sync/sync.module';
     PartnersModule,
     GbifModule,
     SyncModule,
+    // Phase 10
+    AlertesModule,
+    NutritionModule,
+    GpsModule,
+    ParrainageModule,
+    RealtimeModule,
   ],
 })
 export class AppModule {}

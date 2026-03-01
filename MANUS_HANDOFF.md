@@ -2,7 +2,7 @@
 
 > **Auteur :** William MERI  
 > **Date :** Mars 2026  
-> **Version :** **9.0.0**
+> **Version :** **10.0.0**
 
 ---
 
@@ -19,10 +19,35 @@
 | v7.0.0 | ✅ Livré | Messagerie interne, tickets/incidents, élevage/généalogie, BI analytique, SMS Twilio, comptabilité FEC |
 | v8.0.0 | ✅ Livré | WebSocket Gateway, tourisme, kiosque soigneurs, quiz/certificats, prévisions BI, CITES API externe |
 | v9.0.0 | ✅ Livré | Stripe paiements, météo Guyane, API partenaires OAuth2, GBIF biodiversité, sync hors-ligne, page vitrine publique |
+| v10.0.0 | ✅ Livré | Alertes intelligentes, nutrition, GPS géolocalisation, parrainage, realtime WebSocket, checkout Stripe frontend |
 
 ---
 
 ## Ce qui a été réalisé
+
+### Phase 10 — v10.0.0 (Alertes, Nutrition, GPS & Parrainage)
+
+**Backend — 5 nouveaux modules :**
+- `alertes` — Alertes intelligentes (règles ML, seuils configurables, acquittement, résolution)
+- `nutrition` — Plans alimentaires par espèce, calendrier repas, stock alimentaire, alertes
+- `gps` — Balises GPS animaux, positions temps réel, géofencing, alertes hors-zone
+- `parrainage` — Parrainages d'animaux, paiements récurrents Stripe, certificats, mises à jour
+- `realtime` — Métriques live WebSocket, capteurs environnementaux, flux d'événements
+
+**Frontend — 6 nouvelles pages :**
+- `/admin/alertes` — Centre d'alertes avec filtres par sévérité, acquittement, règles
+- `/admin/nutrition` — Plans alimentaires, calendrier du jour, stock alimentaire
+- `/admin/gps` — Carte GPS temps réel, liste balises, gestion enclos
+- `/admin/parrainage` — Liste parrains, animaux parrainés, statistiques revenus
+- `/admin/realtime` — Dashboard temps réel WebSocket, KPIs live, capteurs, flux événements
+- `/public/checkout` — Tunnel de paiement Stripe (visites, parrainages, dons)
+
+**Captures d'écran Phase 10 :**
+- `v10-alertes-intelligentes.webp`, `v10-nutrition.webp`, `v10-nutrition-calendrier.webp`
+- `v10-gps-geolocalisation.webp`, `v10-gps-liste.webp`, `v10-parrainage.webp`
+- `v10-realtime-dashboard.webp`, `v10-checkout-stripe.webp`
+
+---
 
 ### Phase 9 — v9.0.0 (Commerce, Intégrations & Biodiversité)
 
@@ -61,7 +86,8 @@ lftg-platform/
 │   │       ├── personnel, reports                        [v6]
 │   │       ├── messaging, tickets, elevage, bi, sms, accounting [v7]
 │   │       ├── websocket, tourisme, kiosque, quiz, previsions, cites-api [v8]
-│   │       └── stripe, meteo, partners, gbif, sync       [v9]
+│   │       ├── stripe, meteo, partners, gbif, sync       [v9]
+│       └── alertes, nutrition, gps, parrainage, realtime [v10]
 │   └── frontend/         # Next.js 14 + Tailwind — 55+ pages
 │       └── src/app/
 │           ├── public/                                   [v9]
@@ -76,6 +102,8 @@ lftg-platform/
 │               ├── tourisme/, kiosque/
 │               ├── accounting/, docs/ (Swagger UI)
 │               ├── stripe/, meteo/, partners/, gbif/     [v9]
+│               ├── alertes/, nutrition/, gps/             [v10]
+│               ├── parrainage/, realtime/                 [v10]
 │               └── formation/quiz/
 ├── plugins/ (personnel, stock, animaux-couvees, formation)
 ├── packages/core/prisma/ (32 modèles, seed)
@@ -85,25 +113,24 @@ lftg-platform/
 
 ---
 
-## Backlog Phase 10 (v10.0.0)
+## Backlog Phase 11 (v11.0.0)
 
 ### Priorité haute
-- [ ] **Application mobile Expo** — React Native avec scan QR, alertes push, soins rapides
-- [ ] **Checkout Stripe frontend** — Page de paiement en ligne pour les ventes et visites
-- [ ] **Module alertes intelligentes** — Seuils stock, santé animaux, alertes météo
-- [ ] **Tableau de bord temps réel WebSocket** — Métriques live (animaux, stock, ventes)
+- [ ] **Application mobile Expo** — React Native avec scan QR, alertes push natives, mode offline, partage de code
+- [ ] **ML avancé** — Prédictions de reproduction, détection d'anomalies comportementales, recommandations nutritionnelles
+- [ ] **IoT capteurs** — Intégration MQTT, capteurs température/humidité/CO2 temps réel, alertes automatiques
+- [ ] **Généalogie avancée** — Arbre généalogique D3.js interactif, calcul consanguinité, recommandations accouplements
 
 ### Priorité normale
-- [ ] **Module nutrition** — Rations, régimes alimentaires par espèce, suivi consommation
-- [ ] **Géolocalisation GPS** — Suivi animaux en liberté surveillée (carte temps réel)
-- [ ] **Intégration iNaturalist** — Observations terrain, photos communautaires
-- [ ] **Module parrainage** — Adoptez un animal (page publique + paiement récurrent)
-- [ ] **Internationalisation i18n** — fr/en/es/pt
+- [ ] **Multi-ferme** — Gestion plusieurs sites, transferts inter-sites, tableau de bord consolidé
+- [ ] **API publique v2** — Swagger enrichi, webhooks, SDK client TypeScript
+- [ ] **Rapports avancés** — Rapports CITES automatisés, bilan annuel, rapport vétérinaire
+- [ ] **Marketplace** — Plateforme d'échange éleveurs, annonces, messagerie intégrée
 
 ### Priorité basse
-- [ ] **Application TV/kiosque public** — Affichage en salle d'attente (espèces, météo)
+- [ ] **Internationalisation complète** — EN/ES/PT, traductions automatiques, formats régionaux
+- [ ] **Intégration ERP** — Connexion Sage/QuickBooks, exports comptables automatisés
 - [ ] **Intégration IUCN Red List API** — Statuts conservation en temps réel
-- [ ] **Module génétique avancé** — Analyse ADN, marqueurs microsatellites
 - [ ] **Rapports réglementaires automatiques** — DRAAF, DREAL Guyane
 - [ ] **Intégration caméras IP** — Flux vidéo RTSP, alertes mouvement
 
@@ -145,15 +172,15 @@ git tag v10.0.0 && git push origin v10.0.0
 
 | Métrique | Valeur |
 |----------|--------|
-| Modules NestJS | **41** |
-| Pages Next.js | **55+** |
-| Modèles Prisma | **32** |
-| Fichiers TypeScript | **265+** |
+| Modules NestJS | **50+** |
+| Pages Next.js | **60+** |
+| Modèles Prisma | **35+** |
+| Fichiers TypeScript | **280+** |
 | Suites E2E Playwright | **6** |
-| Screenshots | **25+** |
-| Releases GitHub | **9** |
-| Lignes de code estimées | **~38 000** |
+| Screenshots | **33+** |
+| Releases GitHub | **10** |
+| Lignes de code estimées | **~45 000** |
 
 ---
 
-*Signé : William MERI — LFTG Platform v9.0.0 — Mars 2026*
+*Signé : William MERI — LFTG Platform v10.0.0 — Mars 2026*
