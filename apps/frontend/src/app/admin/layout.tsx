@@ -8,7 +8,8 @@ import {
   ClipboardList, Settings, LogOut, ChevronRight, Leaf, Egg, BookOpen,
   Archive, ArrowLeftRight, User, Award, Home, Users2, Stethoscope,
   Calendar, Upload, Search, Command, ShoppingCart, FileText, Code2,
-  MessageSquare, BarChart3, Ticket, Dna, Calculator,
+  MessageSquare, BarChart3, Ticket, Dna, Calculator, MapPin, Monitor,
+  HelpCircle, TrendingUp, Globe,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/auth-store';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
@@ -70,6 +71,14 @@ const navigation = [
       { label: 'Cours', path: '/admin/formation/cours', icon: BookOpen },
       { label: 'Cohortes', path: '/admin/formation/cohortes', icon: Users2 },
       { label: 'Mes formations', path: '/admin/formation/mes-formations', icon: GraduationCap },
+      { label: 'Quiz & Évaluations', path: '/admin/formation/quiz', icon: HelpCircle },
+    ],
+  },
+  {
+    section: 'Tourisme & Kiosque',
+    items: [
+      { label: 'Visites guidées', path: '/admin/tourisme', icon: Globe },
+      { label: 'Mode Kiosque', path: '/admin/kiosque', icon: Monitor },
     ],
   },
   {
@@ -112,6 +121,7 @@ const navigation = [
     section: 'Analytique',
     items: [
       { label: 'Tableau de bord BI', path: '/admin/bi', icon: BarChart3 },
+      { label: 'Prévisions', path: '/admin/bi/previsions', icon: TrendingUp },
       { label: 'Comptabilité FEC', path: '/admin/accounting', icon: Calculator },
     ],
   },

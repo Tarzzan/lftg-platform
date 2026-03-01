@@ -35,6 +35,13 @@ import { ElevageModule } from './modules/elevage/elevage.module';
 import { BiModule } from './modules/bi/bi.module';
 import { SmsModule } from './modules/sms/sms.module';
 import { AccountingModule } from './modules/accounting/accounting.module';
+// Phase 8
+import { WebsocketModule } from './modules/websocket/websocket.module';
+import { TourismeModule } from './modules/tourisme/tourisme.module';
+import { KiosqueModule } from './modules/kiosque/kiosque.module';
+import { QuizModule } from './modules/quiz/quiz.module';
+import { PrevisionsModule } from './modules/previsions/previsions.module';
+import { CitesApiModule } from './modules/cites-api/cites-api.module';
 
 @Module({
   imports: [
@@ -74,6 +81,13 @@ import { AccountingModule } from './modules/accounting/accounting.module';
     BiModule,
     SmsModule,
     AccountingModule,
+    // Phase 8
+    WebsocketModule,
+    TourismeModule,
+    KiosqueModule,
+    QuizModule,
+    PrevisionsModule,
+    CitesApiModule,
   ],
 })
 export class AppModule {}
