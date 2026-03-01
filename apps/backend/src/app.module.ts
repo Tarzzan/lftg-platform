@@ -25,6 +25,9 @@ import { AgendaModule } from './modules/agenda/agenda.module';
 import { CitesModule } from './modules/cites/cites.module';
 import { DocumentsModule } from './modules/documents/documents.module';
 import { HistoryModule } from './modules/history/history.module';
+// Phase 6
+import { PersonnelModule } from './modules/personnel/personnel.module';
+import { ReportsModule } from './modules/reports/reports.module';
 
 @Module({
   imports: [
@@ -54,6 +57,9 @@ import { HistoryModule } from './modules/history/history.module';
     CitesModule,
     DocumentsModule,
     HistoryModule,
+    // Phase 6
+    PersonnelModule,
+    ReportsModule,
   ],
 })
 export class AppModule {}

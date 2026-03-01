@@ -1,8 +1,8 @@
 # 🦜 LFTG Platform — Fichier de Passation (MANUS_HANDOFF)
 
-> Auteur : William MERI  
-> Date : Mars 2026  
-> Version : **5.0.0**
+> **Auteur :** William MERI  
+> **Date :** Mars 2026  
+> **Version :** **6.0.0**
 
 ---
 
@@ -15,6 +15,7 @@
 | v3.0.0 | ✅ Livré | Module médical, React Flow, Cmd+K, calendrier, import CSV, Playwright, PWA |
 | v4.0.0 | ✅ Livré | Module enclos (Leaflet), module ventes (facturation), Swagger/OpenAPI, détail couvée, dashboard personnalisable, rapports PDF natifs, DataTable/Badge/LoadingSpinner, tests E2E enrichis |
 | v5.0.0 | ✅ Livré | Recherche full-text, push VAPID, agenda iCal, CITES, documents, historique modifications, stats ventes avancées, rapports PDF Puppeteer |
+| v6.0.0 | ✅ Livré | Personnel RH complet, planning des gardes, gestion congés, rapports PDF galerie, agenda vue semaine, notifications push client |
 
 ---
 
@@ -36,41 +37,31 @@
 - **DevOps** : `ci.yml` (lint → test → build → GHCR), `release.yml` (tag → GitHub Release)
 
 ### Phase 3 — v3.0.0 (Médical, Recherche & PWA)
+- **Backend** : Module médical, module email Resend, module import CSV, rapports PDF HTML
+- **Frontend** : Détail animal (4 onglets), espèces, dashboard médical, calendrier soins, éditeur workflow React Flow, Cmd+K, import CSV, page offline
+- **PWA** : manifest.json, service worker, raccourcis
+- **Tests E2E** : 5 suites Playwright (auth, dashboard, animaux, stock, workflows)
 
-#### Backend
-- **Module médical** : `MedicalService` + `MedicalController` — visites vétérinaires, traitements, vaccinations, ordonnances
-- **Module email** : `EmailService` avec Resend — templates HTML pour alertes stock, rappels médicaux, invitations formations
-- **Module import** : `ImportService` + `ImportController` — import CSV en masse pour animaux, stock, utilisateurs avec validation et rapport d'erreurs
-- **Rapports PDF enrichis** : `PdfReportService` + `PdfReportController` — rapport mensuel, dossier médical animal, inventaire stock (HTML→PDF)
-- **`app.module.ts`** mis à jour avec les 3 nouveaux modules
+### Phase 4 — v4.0.0 (Enclos, Ventes & Swagger)
+- **Backend** : Module enclos (GeoJSON), module ventes (facturation), Swagger/OpenAPI, rapports PDF natifs, schéma Prisma v4 (32 modèles)
+- **Frontend** : Détail couvée (Recharts), enclos (Leaflet), ventes (KPIs + facturation), dashboard personnalisable (8 widgets), Swagger UI, composants DataTable/Badge/LoadingSpinner
+- **Tests E2E** : `ventes.spec.ts` (8 tests), `medical-enclos.spec.ts` (12 tests)
 
-#### Frontend
-- **Page détail animal** (`/admin/animaux/[id]`) : 4 onglets (Fiche, Historique médical, Vaccinations, Traitements), timeline médicale, galerie photos
-- **Page espèces** (`/admin/animaux/especes`) : CRUD espèces avec statut CITES, conservation, taxonomie
-- **Dashboard médical** (`/admin/medical`) : KPIs, visites récentes, alertes rappels, prochaines visites
-- **Calendrier des soins** (`/admin/medical/calendrier`) : calendrier mensuel interactif avec événements colorés par type
-- **Éditeur de workflow** (`/admin/workflows/editor`) : canvas visuel avec palette d'étapes, connexions SVG, panneau de propriétés
-- **Recherche globale Cmd+K** : `CommandPalette.tsx` avec résultats API temps réel, navigation clavier, raccourci ⌘K
-- **Import CSV** (`/admin/import`) : drag-and-drop, prévisualisation, 3 types (animaux/stock/users), rapport d'import
-- **Page offline** (`/offline`) : fallback PWA
+### Phase 5 — v5.0.0 (Conformité, Documents & Historique)
+- **Backend** : Recherche full-text, push VAPID, agenda iCal, CITES, documents Multer, historique JSON diff, PDF Puppeteer
+- **Frontend** : Détail enclos, agenda mensuel, CITES (3 onglets), documents (drag-and-drop), historique (timeline + stats), stats ventes avancées
 
-#### PWA
-- `manifest.json` : installable sur mobile/desktop avec shortcuts
-- `sw.js` : service worker Network First + Cache First + notifications push
-- `layout.tsx` : enregistrement automatique du service worker
-
-#### Tests E2E
-- `playwright.config.ts` : configuration multi-navigateurs (Chrome, Firefox, Mobile)
-- `auth.setup.ts` : authentification et sauvegarde du state
-- `dashboard.spec.ts` : dashboard, navigation, Cmd+K, graphiques
-- `animaux.spec.ts` : liste, filtres, modals, détail animal
-- `stock.spec.ts` : articles, filtres, import CSV
-- `workflows.spec.ts` : liste, éditeur, calendrier médical
-
-#### Navigation
-- Nouvelle section **Médical** dans la sidebar (Suivi médical + Calendrier)
-- **Import CSV** ajouté dans Administration
-- Bouton recherche ⌘K dans la topbar et la sidebar
+### Phase 6 — v6.0.0 (Personnel RH, Rapports & Agenda enrichi)
+- **Backend** : Module personnel enrichi (fiches, planning, congés, compétences), module reports (6 types de rapports PDF)
+- **Frontend** :
+  - Liste employés avec KPIs RH (effectif, taux présence, heures sup, congés en attente)
+  - Fiche détail employé (5 onglets : Profil, Planning, Congés, Compétences, Documents)
+  - Planning des gardes (vue semaine avec grille horaire par employé, légende Matin/AM/Nuit/Weekend)
+  - Gestion des congés (tableau de bord, demandes, approbations, soldes par type)
+  - Rapports PDF (galerie de 6 types : mensuel, médical, CITES, RH, stock, ventes)
+  - Agenda vue semaine (grille horaire 7h-20h, filtres par type, événements colorés)
+  - Composant `PushNotifications.tsx` (abonnement VAPID, permission browser, centre de notifications)
+- **Navigation** : Planning gardes + Congés dans Personnel RH, Agenda semaine + Rapports PDF dans Outils
 
 ---
 
@@ -79,7 +70,7 @@
 ```
 lftg-platform/
 ├── apps/
-│   ├── backend/          # NestJS 10 — API REST + SSE
+│   ├── backend/          # NestJS 10 — 23 modules
 │   │   └── src/modules/
 │   │       ├── auth/           # JWT + Passport
 │   │       ├── users/          # Gestion utilisateurs
@@ -88,130 +79,98 @@ lftg-platform/
 │   │       ├── workflows/      # Workflow Engine
 │   │       ├── audit/          # Audit Log
 │   │       ├── notifications/  # SSE temps réel [v2]
-│   │       ├── export/         # CSV + Rapports PDF HTML [v2+v3]
+│   │       ├── export/         # CSV + PDF HTML + PDF Puppeteer [v2-v5]
 │   │       ├── stats/          # Statistiques dashboard [v2]
 │   │       ├── medical/        # Module médical [v3]
 │   │       ├── email/          # Notifications email Resend [v3]
-│   │       └── import/         # Import CSV en masse [v3]
-│   └── frontend/         # Next.js 14 + Tailwind
-│       ├── src/app/admin/
-│       │   ├── page.tsx              # Dashboard Recharts
-│       │   ├── users/
-│       │   ├── animaux/
-│       │   │   ├── liste/            # Liste + filtres + modal
-│       │   │   ├── [id]/             # Détail + timeline médicale [v3]
-│       │   │   ├── especes/          # Gestion espèces [v3]
-│       │   │   ├── enclos/
-│       │   │   └── couvees/
-│       │   ├── medical/
-│       │   │   ├── page.tsx          # Dashboard médical [v3]
-│       │   │   └── calendrier/       # Calendrier des soins [v3]
-│       │   ├── stock/articles/
-│       │   ├── formation/
-│       │   │   ├── cours/
-│       │   │   └── cohortes/
-│       │   ├── workflows/
-│       │   │   ├── page.tsx
-│       │   │   ├── [id]/             # Détail workflow [v2]
-│       │   │   └── editor/           # Éditeur React Flow [v3]
-│       │   ├── import/               # Import CSV [v3]
-│       │   └── audit/
-│       ├── src/components/
-│       │   ├── ui/
-│       │   │   ├── Modal.tsx
-│       │   │   ├── ThemeToggle.tsx
-│       │   │   ├── NotificationBell.tsx
-│       │   │   └── CommandPalette.tsx  # Cmd+K [v3]
-│       │   └── modals/               # 7 modals CRUD
-│       ├── e2e/                      # Tests Playwright [v3]
-│       └── public/
-│           ├── manifest.json         # PWA manifest [v3]
-│           └── sw.js                 # Service Worker [v3]
+│   │       ├── import/         # Import CSV en masse [v3]
+│   │       ├── enclos/         # Enclos + GeoJSON [v4]
+│   │       ├── ventes/         # Ventes + facturation [v4]
+│   │       ├── search/         # Recherche full-text [v5]
+│   │       ├── push/           # Notifications push VAPID [v5]
+│   │       ├── agenda/         # Calendrier + iCal [v5]
+│   │       ├── cites/          # Conformité CITES [v5]
+│   │       ├── documents/      # Gestion documents [v5]
+│   │       ├── history/        # Historique modifications [v5]
+│   │       ├── personnel/      # RH — fiches, planning, congés [v6]
+│   │       └── reports/        # Rapports PDF complets [v6]
+│   └── frontend/         # Next.js 14 + Tailwind — 38+ pages
 ├── plugins/
 │   ├── personnel/
 │   ├── stock/
 │   ├── animaux-couvees/
 │   └── formation/
 ├── packages/core/
-│   └── prisma/           # Schéma + seed (30+ modèles)
+│   └── prisma/           # Schéma + seed (32 modèles)
 ├── .github/workflows/    # CI/CD GitHub Actions
-│   ├── ci.yml
-│   └── release.yml
-├── docker-compose.yml
-└── docker-compose.dev.yml
+├── screenshots/          # 12 captures d'écran
+└── docs/                 # Architecture + Phase reports
 ```
 
 ---
 
-## ✅ Phase 4 — v4.0.0 (Complétée)
+## Pages frontend (38+ pages)
 
-### Backend
-- **Module enclos** : `EnclosService` + `EnclosController` — CRUD enclos avec GeoJSON, capacité, taux d'occupation, historique des résidents
-- **Module ventes** : `VentesService` + `VentesController` — CRUD ventes avec lignes d'articles, TVA, facturation HTML, statuts (PENDING → CONFIRMED → COMPLETED), export PDF
-- **Swagger/OpenAPI** : `@nestjs/swagger` intégré dans `main.ts` — documentation interactive sur `/api`, spec JSON sur `/api-json`
-- **Rapports PDF natifs** : `PdfNativeService` — génération via WeasyPrint/wkhtmltopdf avec templates HTML riches
-- **Schéma Prisma v4** : 32 modèles — ajout de `Sale`, `SaleItem`, `Enclosure` enrichi avec GeoJSON
+### Administration
+- `/admin` — Dashboard personnalisable (8 widgets)
+- `/admin/users`, `/admin/roles`, `/admin/workflows`, `/admin/workflows/[id]`
+- `/admin/workflows/editor` — Éditeur visuel React Flow
+- `/admin/audit`, `/admin/import`, `/admin/docs` — Swagger UI
+- `/admin/reports` — Rapports PDF (6 types) **[v6]**
 
-### Frontend
-- **Page détail couvée** (`/admin/animaux/couvees/[id]`) : 3 onglets, graphiques Recharts (taux d'éclosion, mortalité), timeline événements, barre de progression
-- **Module enclos** (`/admin/animaux/enclos`) : carte Leaflet interactive, marqueurs colorés par taux d'occupation, vue grille + vue carte, modal de création avec coordonnées GPS
-- **Module ventes** (`/admin/ventes`) : liste avec KPIs, graphique revenus 7 jours, filtres, modal de création avec lignes d'articles et calcul TVA
-- **Détail vente** (`/admin/ventes/[id]`) : facture complète avec acheteur, lignes, totaux HT/TVA/TTC, actions de changement de statut
-- **Dashboard personnalisable** : 8 widgets configurables (KPIs, revenus, animaux, stock, workflows, couvées, médical, ventes), persistance localStorage, mode édition
-- **Documentation API** (`/admin/docs`) : iframe Swagger UI + résumé des 8 modules avec comptage d'endpoints
-- **Composants UI réutilisables** : `DataTable` (tri + pagination), `Badge`/`StatusBadge`, `LoadingSpinner`, `EmptyState`, page 404 animée
-- **Navigation** : sections Ventes et Développeur ajoutées dans la sidebar
+### Personnel (RH)
+- `/admin/personnel/employes` — Liste + KPIs **[v6]**
+- `/admin/personnel/employes/[id]` — Fiche détail (5 onglets) **[v6]**
+- `/admin/personnel/planning` — Planning gardes vue semaine **[v6]**
+- `/admin/personnel/conges` — Gestion congés + approbations **[v6]**
 
-### Tests E2E
-- `ventes.spec.ts` : 8 tests (KPIs, graphique, modal, validation, filtres, lignes)
-- `medical-enclos.spec.ts` : 12 tests (médical, calendrier, enclos, dashboard, docs API)
+### Stock
+- `/admin/stock/articles`, `/admin/stock/mouvements`, `/admin/stock/demandes`
 
----
+### Animaux & Couvées
+- `/admin/animaux/liste`, `/admin/animaux/especes`, `/admin/animaux/[id]`
+- `/admin/animaux/enclos`, `/admin/animaux/enclos/[id]`
+- `/admin/animaux/couvees`, `/admin/animaux/couvees/[id]`
 
-## ✅ Phase 5 — v5.0.0 (Complétée)
+### Médical
+- `/admin/medical`, `/admin/medical/calendrier`
 
-### Backend (6 nouveaux modules)
-- **Module search** : `SearchService` — recherche full-text globale sur animaux, stock, ventes, utilisateurs
-- **Module push** : `PushService` — Web Push API VAPID, gestion des abonnements, envoi de notifications
-- **Module agenda** : `AgendaService` — planning des soins, récurrence, export iCal (RFC 5545)
-- **Module CITES** : `CitesService` — permis, conformité réglementaire, alertes d'expiration
-- **Module documents** : `DocumentsService` — upload Multer, catégorisation, tags, liaison aux entités
-- **Module history** : `HistoryService` — traçabilité complète, diff JSON des modifications
-- **Service PDF Puppeteer** : `PdfPuppeteerService` — rapports haute qualité via Chromium headless
+### Formation
+- `/admin/formation/cours`, `/admin/formation/cohortes`, `/admin/formation/mes-formations`
 
-### Frontend (6 nouvelles pages)
-- **Page détail enclos** (`/admin/animaux/enclos/[id]`) : carte Leaflet zoomée, liste résidents, historique incidents
-- **Agenda** (`/admin/agenda`) : calendrier mensuel interactif, filtres par type, panneau détail, export iCal
-- **CITES** (`/admin/cites`) : liste des permis avec statuts, onglets Permis/Vérification/Conformité
-- **Documents** (`/admin/documents`) : vue grille + liste, drag-and-drop upload, filtres par catégorie
-- **Historique** (`/admin/history`) : timeline des modifications, filtres entité/action, stats sidebar
-- **Stats Ventes** (`/admin/ventes/stats`) : KPIs, barres mensuelles, donut répartition clients, top espèces
+### Ventes
+- `/admin/ventes`, `/admin/ventes/[id]`, `/admin/ventes/stats`
 
-### Navigation
-- Sections **Conformité & Docs** (CITES + Documents) et **Outils** (Agenda + Historique) ajoutées
-- Lien **Statistiques** dans la section Ventes
+### Conformité & Docs
+- `/admin/cites`, `/admin/documents`
+
+### Outils
+- `/admin/agenda` — Agenda mensuel
+- `/admin/agenda/semaine` — Agenda vue semaine **[v6]**
+- `/admin/history` — Historique des modifications
 
 ---
 
-## Backlog Phase 6 (v6.0.0)
+## Backlog Phase 7 (v7.0.0)
 
 ### Priorité haute
-- [ ] **Application mobile Expo** — React Native avec fonctionnalités essentielles (scan QR, alertes push)
-- [ ] **Notifications push côté client** — abonnement VAPID, permission browser, réception des notifications
-- [ ] **Module personnel enrichi** — fiche employé complète, planning des gardes, congés, compétences
-- [ ] **Rapports PDF Puppeteer** — rapport mensuel complet, bilan CITES, dossier médical animal
+- [ ] **Application mobile Expo** — React Native avec scan QR, alertes push, soins rapides
+- [ ] **Module messagerie interne** — chat entre employés, groupes par zone, notifications
+- [ ] **Tableau de bord BI** — analytique avancée, KPIs personnalisés, export Excel
+- [ ] **Intégration API CITES externe** — vérification automatique des espèces protégées
 
 ### Priorité normale
-- [ ] **Recherche full-text pg_trgm** — index PostgreSQL, highlighting des résultats, score de pertinence
-- [ ] **Module agenda enrichi** — vue semaine, vue liste, récurrence RRULE avancée, invitations email
-- [ ] **Gestion des documents enrichie** — versioning, partage, signature électronique
-- [ ] **Module CITES enrichi** — alertes email d'expiration, génération PDF des permis, API CITES externe
+- [ ] **Module vétérinaire externe** — portail partenaires, accès limité aux dossiers médicaux
+- [ ] **Système de tickets/incidents** — signalement, suivi, résolution, historique
+- [ ] **Notifications SMS** — Twilio pour alertes critiques (santé animale, stock critique)
+- [ ] **Export comptabilité** — format FEC pour intégration logiciel comptable
+- [ ] **Module élevage** — généalogie des animaux, arbre généalogique, coefficient de consanguinité
 
 ### Priorité basse
-- [ ] **Internationalisation** — i18n (fr/en/es) avec next-intl
-- [ ] **Multi-tenant** — support de plusieurs fermes dans une même instance
-- [ ] **Backup automatique** — export quotidien chiffré vers S3
-- [ ] **IA — Détection anomalies** — alertes automatiques sur les indicateurs de santé
+- [ ] **Application kiosque** — tablette soigneurs pour saisie rapide des soins
+- [ ] **Module tourisme** — gestion des visites guidées, réservations, groupes scolaires
+- [ ] **Intégration caméras IP** — flux vidéo des enclos, alertes mouvement
+- [ ] **API publique** — partenaires éleveurs, accès limité aux données de reproduction
 
 ---
 
@@ -231,7 +190,7 @@ pnpm dev                                          # Backend :3001 + Frontend :30
 pnpm --filter @lftg/backend test
 pnpm --filter @lftg/backend test:cov
 
-# Tests E2E
+# Tests E2E Playwright
 pnpm --filter @lftg/frontend test:e2e
 pnpm --filter @lftg/frontend test:e2e:ui          # Mode interactif
 
@@ -239,13 +198,13 @@ pnpm --filter @lftg/frontend test:e2e:ui          # Mode interactif
 pnpm build
 docker-compose build && docker-compose up -d
 
-# Rapports
+# Rapports PDF
 curl http://localhost:3001/reports/monthly?year=2026&month=3 -o rapport.html
 curl http://localhost:3001/reports/stock/inventory -o inventaire.html
 curl http://localhost:3001/reports/animal/{id}/medical -o dossier.html
 
 # Release
-git tag v3.0.0 && git push origin v3.0.0
+git tag v7.0.0 && git push origin v7.0.0
 ```
 
 ---
@@ -260,6 +219,9 @@ RESEND_API_KEY="re_xxxxxxxxxxxx"
 EMAIL_FROM="noreply@lftg.fr"
 REDIS_URL="redis://localhost:6379"
 NEXT_PUBLIC_API_URL="http://localhost:3001"
+VAPID_PUBLIC_KEY="your_vapid_public_key"
+VAPID_PRIVATE_KEY="your_vapid_private_key"
+VAPID_EMAIL="admin@lftg.fr"
 E2E_USER_EMAIL="admin@lftg.fr"
 E2E_USER_PASSWORD="Admin1234!"
 ```
@@ -276,4 +238,4 @@ E2E_USER_PASSWORD="Admin1234!"
 
 ---
 
-*Signé : William MERI — LFTG Platform v3.0.0 — Mars 2026*
+*Signé : William MERI — LFTG Platform v6.0.0 — Mars 2026*

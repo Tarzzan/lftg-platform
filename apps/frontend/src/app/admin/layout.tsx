@@ -35,7 +35,8 @@ const navigation = [
     section: 'Personnel (RH)',
     items: [
       { label: 'Employés', path: '/admin/personnel/employes', icon: User },
-      { label: 'Compétences', path: '/admin/personnel/competences', icon: Award },
+      { label: 'Planning gardes', path: '/admin/personnel/planning', icon: Calendar },
+      { label: 'Congés', path: '/admin/personnel/conges', icon: Award },
     ],
   },
   {
@@ -87,7 +88,9 @@ const navigation = [
   {
     section: 'Outils',
     items: [
-      { label: 'Agenda', path: '/admin/agenda', icon: Calendar },
+      { label: 'Agenda (mois)', path: '/admin/agenda', icon: Calendar },
+      { label: 'Agenda (semaine)', path: '/admin/agenda/semaine', icon: Calendar },
+      { label: 'Rapports PDF', path: '/admin/reports', icon: FileText },
       { label: 'Historique', path: '/admin/history', icon: ClipboardList },
     ],
   },
