@@ -54,6 +54,13 @@ import { NutritionModule } from './modules/nutrition/nutrition.module';
 import { GpsModule } from './modules/gps/gps.module';
 import { ParrainageModule } from './modules/parrainage/parrainage.module';
 import { RealtimeModule } from './modules/realtime/realtime.module';
+// Phase 11
+import { IotModule } from './modules/iot/iot.module';
+import { MlModule } from './modules/ml/ml.module';
+import { GenealogyModule } from './modules/genealogy/genealogy.module';
+import { SitesModule } from './modules/sites/sites.module';
+import { PublicApiV2Module } from './modules/public-api-v2/public-api-v2.module';
+import { AdvancedReportsModule } from './modules/advanced-reports/advanced-reports.module';
 
 @Module({
   imports: [
@@ -112,6 +119,13 @@ import { RealtimeModule } from './modules/realtime/realtime.module';
     GpsModule,
     ParrainageModule,
     RealtimeModule,
+    // Phase 11
+    IotModule,
+    MlModule,
+    GenealogyModule,
+    SitesModule,
+    PublicApiV2Module,
+    AdvancedReportsModule,
   ],
 })
 export class AppModule {}

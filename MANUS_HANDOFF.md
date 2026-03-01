@@ -2,7 +2,7 @@
 
 > **Auteur :** William MERI  
 > **Date :** Mars 2026  
-> **Version :** **10.0.0**
+> **Version :** **11.0.0**
 
 ---
 
@@ -20,10 +20,38 @@
 | v8.0.0 | ✅ Livré | WebSocket Gateway, tourisme, kiosque soigneurs, quiz/certificats, prévisions BI, CITES API externe |
 | v9.0.0 | ✅ Livré | Stripe paiements, météo Guyane, API partenaires OAuth2, GBIF biodiversité, sync hors-ligne, page vitrine publique |
 | v10.0.0 | ✅ Livré | Alertes intelligentes, nutrition, GPS géolocalisation, parrainage, realtime WebSocket, checkout Stripe frontend |
+| v11.0.0 | ✅ Livré | IoT MQTT capteurs, ML prédictions/anomalies, Généalogie avancée, Multi-sites, API publique v2, Marketplace, App mobile sim, Rapports avancés |
 
 ---
 
 ## Ce qui a été réalisé
+
+### Phase 11 — v11.0.0 (IoT, ML, Généalogie, Multi-sites, API v2, Marketplace)
+
+**Backend — 6 nouveaux modules :**
+- `iot` — Capteurs MQTT (température, humidité, CO₂), zones, historique, alertes batterie
+- `ml` — Prédictions reproduction, anomalies comportementales, recommandations nutritionnelles
+- `genealogy` — Arbre généalogique, calcul consanguinité (coefficient Wright), recommandations accouplements
+- `sites` — Multi-ferme, transferts inter-sites, dashboard consolidé réseau
+- `public-api-v2` — API REST v2 publique, clés API, partenaires, webhooks, OpenAPI 3.1
+- `advanced-reports` — Rapports PDF CITES, bilans annuels, rapports vétérinaires, DRAAF
+
+**Frontend — 8 nouvelles pages :**
+- `/admin/iot` — Dashboard IoT, liste capteurs par zone, flux MQTT live
+- `/admin/ml` — Prédictions reproduction, anomalies comportementales, recommandations nutritionnelles
+- `/admin/genealogy` — Arbre généalogique interactif, coefficients consanguinité, recommandations accouplements
+- `/admin/sites` — Vue d'ensemble réseau LFTG, transferts inter-sites, rapport consolidé
+- `/admin/api-v2` — Documentation endpoints, partenaires, webhooks, playground interactif
+- `/admin/marketplace` — Annonces vente/échange éleveurs, messagerie, filtres CITES
+- `/admin/mobile-app` — Simulateur Expo/React Native iOS & Android
+- `/admin/advanced-reports` — Rapports CITES/annuels/vétérinaires, générateur, statistiques 2025
+
+**Captures d'écran Phase 11 :**
+- `v11-iot-capteurs.webp`, `v11-ml-predictions.webp`, `v11-genealogy.webp`
+- `v11-multi-sites.webp`, `v11-api-v2.webp`, `v11-marketplace.webp`
+- `v11-mobile-app.webp`, `v11-advanced-reports.webp`
+
+---
 
 ### Phase 10 — v10.0.0 (Alertes, Nutrition, GPS & Parrainage)
 
@@ -113,26 +141,27 @@ lftg-platform/
 
 ---
 
-## Backlog Phase 11 (v11.0.0)
+## Backlog Phase 12 (v12.0.0)
 
 ### Priorité haute
-- [ ] **Application mobile Expo** — React Native avec scan QR, alertes push natives, mode offline, partage de code
-- [ ] **ML avancé** — Prédictions de reproduction, détection d'anomalies comportementales, recommandations nutritionnelles
-- [ ] **IoT capteurs** — Intégration MQTT, capteurs température/humidité/CO2 temps réel, alertes automatiques
-- [ ] **Généalogie avancée** — Arbre généalogique D3.js interactif, calcul consanguinité, recommandations accouplements
+- [ ] **Intégration Expo réelle** — Scaffolding `apps/mobile/` avec Expo SDK 50, partage de code monorepo, publication TestFlight/Play Store
+- [ ] **Base de données réelle** — Prisma schema complet avec toutes les entités Phase 1-11, migrations, seeds de données de démo
+- [ ] **Tests automatisés** — Jest (backend), Playwright (frontend E2E), couverture >80%
+- [ ] **CI/CD GitHub Actions** — Pipeline lint + test + build + deploy sur PR et push main
 
 ### Priorité normale
-- [ ] **Multi-ferme** — Gestion plusieurs sites, transferts inter-sites, tableau de bord consolidé
-- [ ] **API publique v2** — Swagger enrichi, webhooks, SDK client TypeScript
-- [ ] **Rapports avancés** — Rapports CITES automatisés, bilan annuel, rapport vétérinaire
-- [ ] **Marketplace** — Plateforme d'échange éleveurs, annonces, messagerie intégrée
+- [ ] **Authentification OAuth** — Google, Apple Sign-In pour l'app mobile
+- [ ] **Internationalisation (i18n)** — Français, Anglais, Espagnol
+- [ ] **Mode sombre complet** — Dark mode sur frontend et app mobile
+- [ ] **Accessibilité WCAG 2.1** — Audit et correction des problèmes d'accessibilité
 
 ### Priorité basse
-- [ ] **Internationalisation complète** — EN/ES/PT, traductions automatiques, formats régionaux
-- [ ] **Intégration ERP** — Connexion Sage/QuickBooks, exports comptables automatisés
-- [ ] **Intégration IUCN Red List API** — Statuts conservation en temps réel
-- [ ] **Rapports réglementaires automatiques** — DRAAF, DREAL Guyane
+- [ ] **Documentation Storybook** — Bibliothèque de composants UI documentée
+- [ ] **Analytics avancés** — Intégration Mixpanel ou PostHog
+- [ ] **Backup automatique** — Snapshots quotidiens BDD, rétention 30 jours
+- [ ] **Monitoring Sentry** — Suivi des erreurs en production frontend et backend
 - [ ] **Intégration caméras IP** — Flux vidéo RTSP, alertes mouvement
+- [ ] **Intégration IUCN Red List API** — Statuts conservation en temps réel
 
 ---
 
@@ -172,15 +201,15 @@ git tag v10.0.0 && git push origin v10.0.0
 
 | Métrique | Valeur |
 |----------|--------|
-| Modules NestJS | **50+** |
-| Pages Next.js | **60+** |
+| Modules NestJS | **56+** |
+| Pages Next.js | **67+** |
 | Modèles Prisma | **35+** |
-| Fichiers TypeScript | **280+** |
+| Fichiers TypeScript | **320+** |
 | Suites E2E Playwright | **6** |
-| Screenshots | **33+** |
-| Releases GitHub | **10** |
-| Lignes de code estimées | **~45 000** |
+| Screenshots | **41+** |
+| Releases GitHub | **11** |
+| Lignes de code estimées | **~52 000** |
 
 ---
 
-*Signé : William MERI — LFTG Platform v10.0.0 — Mars 2026*
+*Signé : William MERI — LFTG Platform v11.0.0 — Mars 2026*
