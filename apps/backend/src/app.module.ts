@@ -28,6 +28,13 @@ import { HistoryModule } from './modules/history/history.module';
 // Phase 6
 import { PersonnelModule } from './modules/personnel/personnel.module';
 import { ReportsModule } from './modules/reports/reports.module';
+// Phase 7
+import { MessagingModule } from './modules/messaging/messaging.module';
+import { TicketsModule } from './modules/tickets/tickets.module';
+import { ElevageModule } from './modules/elevage/elevage.module';
+import { BiModule } from './modules/bi/bi.module';
+import { SmsModule } from './modules/sms/sms.module';
+import { AccountingModule } from './modules/accounting/accounting.module';
 
 @Module({
   imports: [
@@ -60,6 +67,13 @@ import { ReportsModule } from './modules/reports/reports.module';
     // Phase 6
     PersonnelModule,
     ReportsModule,
+    // Phase 7
+    MessagingModule,
+    TicketsModule,
+    ElevageModule,
+    BiModule,
+    SmsModule,
+    AccountingModule,
   ],
 })
 export class AppModule {}

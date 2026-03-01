@@ -8,6 +8,7 @@ import {
   ClipboardList, Settings, LogOut, ChevronRight, Leaf, Egg, BookOpen,
   Archive, ArrowLeftRight, User, Award, Home, Users2, Stethoscope,
   Calendar, Upload, Search, Command, ShoppingCart, FileText, Code2,
+  MessageSquare, BarChart3, Ticket, Dna, Calculator,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/auth-store';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
@@ -92,6 +93,26 @@ const navigation = [
       { label: 'Agenda (semaine)', path: '/admin/agenda/semaine', icon: Calendar },
       { label: 'Rapports PDF', path: '/admin/reports', icon: FileText },
       { label: 'Historique', path: '/admin/history', icon: ClipboardList },
+    ],
+  },
+  {
+    section: 'Élevage & Génétique',
+    items: [
+      { label: 'Couples & Élevage', path: '/admin/elevage', icon: Dna },
+    ],
+  },
+  {
+    section: 'Communication',
+    items: [
+      { label: 'Messagerie', path: '/admin/messaging', icon: MessageSquare },
+      { label: 'Tickets & Incidents', path: '/admin/tickets', icon: Ticket },
+    ],
+  },
+  {
+    section: 'Analytique',
+    items: [
+      { label: 'Tableau de bord BI', path: '/admin/bi', icon: BarChart3 },
+      { label: 'Comptabilité FEC', path: '/admin/accounting', icon: Calculator },
     ],
   },
   {
