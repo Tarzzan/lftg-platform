@@ -9,3 +9,6 @@ dist/
 .turbo/
 coverage/
 prisma/migrations/
+
+*storybook.log
+storybook-static

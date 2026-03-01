@@ -1,3 +1,5 @@
+
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -223,6 +225,7 @@ model Species {
   imageUrl       String?
   animals        Animal[]
   broods         Brood[]
+  nutritionPlans NutritionPlan[]
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 }
@@ -241,6 +244,9 @@ model Enclosure {
   longitude   Float?
   imageUrl    String?
   animals     Animal[]
+  siteId      String?
+  site        Site?      @relation(fields: [siteId], references: [id])
+  iotDevices  IotDevice[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -265,6 +271,10 @@ model Animal {
   imageUrl     String?
   events       AnimalEvent[]
   saleItems    SaleItem[]
+  sponsorships Sponsorship[]
+  gpsDevice    GpsDevice?
+  predictions  MlPrediction[]
+  genealogy    Genealogy?
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
@@ -462,4 +472,198 @@ model SaleItem {
   stockItem   StockItem? @relation(fields: [stockItemId], references: [id])
 
   @@index([saleId])
+}
+
+// =======================================
+//          PHASE 10: ALERTS, NUTRITION, GPS, SPONSORSHIP, REALTIME
+// =======================================
+
+model Alert {
+  id          String     @id @default(cuid())
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  ruleId      String
+  rule        AlertRule  @relation(fields: [ruleId], references: [id])
+  entityType  String     // e.g., "Animal", "Enclosure", "IotDevice"
+  entityId    String
+  severity    String     // CRITICAL, WARNING, INFO
+  status      String     @default("ACTIVE") // ACTIVE, ACKNOWLEDGED, RESOLVED
+  acknowledgedAt DateTime?
+  resolvedAt  DateTime?
+  details     Json?
+
+  @@index([entityType, entityId])
+  @@index([status])
+  @@index([severity])
+}
+
+model AlertRule {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  entityType  String
+  conditions  Json     // e.g., { "field": "temperature", "operator": ">", "value": 35 }
+  severity    String
+  isEnabled   Boolean  @default(true)
+  alerts      Alert[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model NutritionPlan {
+  id          String   @id @default(cuid())
+  speciesId   String   @unique
+  species     Species  @relation(fields: [speciesId], references: [id])
+  name        String
+  description String?
+  meals       Meal[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Meal {
+  id              String        @id @default(cuid())
+  nutritionPlanId String
+  nutritionPlan   NutritionPlan @relation(fields: [nutritionPlanId], references: [id])
+  name            String        // e.g., "Petit-déjeuner", "Déjeuner", "Dîner"
+  time            String        // e.g., "08:00"
+  items           Json          // e.g., [{ "stockItemId": "...", "quantity": 100, "unit": "g" }]
+}
+
+model GpsDevice {
+  id         String     @id @default(cuid())
+  animalId   String     @unique
+  animal     Animal     @relation(fields: [animalId], references: [id])
+  deviceId   String     @unique
+  model      String?
+  battery    Float?     // Percentage
+  lastSeen   DateTime?
+  tracks     GpsTrack[]
+  isActive   Boolean    @default(true)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model GpsTrack {
+  id        String    @id @default(cuid())
+  deviceId  String
+  device    GpsDevice @relation(fields: [deviceId], references: [id])
+  timestamp DateTime  @default(now())
+  latitude  Float
+  longitude Float
+  altitude  Float?
+  speed     Float?
+
+  @@index([deviceId, timestamp])
+}
+
+model Sponsor {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  phone        String?
+  address      String?
+  sponsorships Sponsorship[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Sponsorship {
+  id         String   @id @default(cuid())
+  sponsorId  String
+  sponsor    Sponsor  @relation(fields: [sponsorId], references: [id])
+  animalId   String
+  animal     Animal   @relation(fields: [animalId], references: [id])
+  type       String   // MONTHLY, ANNUAL, ONE_TIME
+  amount     Float
+  startDate  DateTime
+  endDate    DateTime?
+  status     String   @default("ACTIVE") // ACTIVE, EXPIRED, CANCELLED
+  stripeSubscriptionId String? @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([sponsorId])
+  @@index([animalId])
+}
+
+// =======================================
+//          PHASE 11: IOT, ML, GENEALOGY, SITES, API V2, REPORTS
+// =======================================
+
+model Site {
+  id          String @id @default(cuid())
+  name        String @unique
+  location    String
+  description String?
+  enclosures  Enclosure[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model IotDevice {
+  id          String       @id @default(cuid())
+  enclosureId String
+  enclosure   Enclosure    @relation(fields: [enclosureId], references: [id])
+  type        String       // TEMPERATURE, HUMIDITY, CO2
+  model       String?
+  mqttTopic   String       @unique
+  status      String       @default("ACTIVE")
+  readings    IotReading[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model IotReading {
+  id        String    @id @default(cuid())
+  deviceId  String
+  device    IotDevice @relation(fields: [deviceId], references: [id])
+  timestamp DateTime  @default(now())
+  value     Float
+
+  @@index([deviceId, timestamp])
+}
+
+model MlPrediction {
+  id          String   @id @default(cuid())
+  animalId    String
+  animal      Animal   @relation(fields: [animalId], references: [id])
+  type        String   // REPRODUCTION, BEHAVIOR
+  prediction  Json
+  confidence  Float
+  createdAt   DateTime @default(now())
+
+  @@index([animalId, type])
+}
+
+model Genealogy {
+  animalId         String  @id
+  animal           Animal  @relation(fields: [animalId], references: [id])
+  fatherId         String?
+  motherId         String?
+  inbreedingCoefficient Float?
+}
+
+model ApiV2Key {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  partnerName String
+  permissions Json
+  requests    Int      @default(0)
+  lastUsed    DateTime?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AdvancedReport {
+  id          String   @id @default(cuid())
+  name        String
+  type        String   // CITES, ANNUAL, VETERINARY, DRAAF
+  status      String   @default("PENDING") // PENDING, GENERATING, COMPLETED, FAILED
+  fileUrl     String?
+  generatedAt DateTime?
+  params      Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
