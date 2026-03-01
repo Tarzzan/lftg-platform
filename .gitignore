@@ -12,3 +12,5 @@ prisma/migrations/
 
 *storybook.log
 storybook-static
+
+/package-lock.json
