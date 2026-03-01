@@ -65,6 +65,12 @@ import { GenealogyModule } from './modules/genealogy/genealogy.module';
 import { SitesModule } from './modules/sites/sites.module';
 import { PublicApiV2Module } from './modules/public-api-v2/public-api-v2.module';
 import { AdvancedReportsModule } from './modules/advanced-reports/advanced-reports.module';
+import { FcmModule } from './modules/fcm/fcm.module';
+import { WebhooksModule } from './modules/webhooks/webhooks.module';
+import { RbacAccessModule } from './modules/rbac/rbac.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
+import { GalleryModule } from './modules/gallery/gallery.module';
+import { AutoReportsModule } from './modules/auto-reports/auto-reports.module';
 
 @Module({
   imports: [
@@ -146,6 +152,12 @@ import { AdvancedReportsModule } from './modules/advanced-reports/advanced-repor
     SitesModule,
     PublicApiV2Module,
     AdvancedReportsModule,
+    FcmModule,
+    WebhooksModule,
+    RbacAccessModule,
+    AnalyticsModule,
+    GalleryModule,
+    AutoReportsModule,
   ],
 })
 export class AppModule {}

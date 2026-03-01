@@ -2,7 +2,7 @@
 
 > **Auteur :** William MERI  
 > **Date :** Mars 2026  
-> **Version :** **13.0.0**
+> **Version :** **14.0.0**
 
 ---
 
@@ -23,57 +23,37 @@
 | v11.0.0 | ✅ Livré | IoT MQTT capteurs, ML prédictions/anomalies, Généalogie avancée, Multi-sites, API publique v2, Marketplace, App mobile sim, Rapports avancés |
 | v12.0.0 | ✅ Livré | Prisma schema complet, Tests Jest/Playwright, CI/CD GitHub Actions, Expo mobile, Dark mode, i18n FR/EN/ES, WCAG 2.1, Storybook, Sentry |
 | v13.0.0 | ✅ Livré | Docker Compose prod, Prisma seeds 143 enr., JWT refresh+2FA TOTP, Redis cache, WebSocket Socket.io, Export CSV, Swagger OpenAPI 3.1, i18n backend |
+| v14.0.0 | ✅ Livré | FCM push notifications, Webhooks système, RBAC granulaire, Analytics 12 mois, Galerie S3, Rapports automatiques email |
 
 ---
 
 ## Ce qui a été réalisé
 
-### Phase 13 — v13.0.0 (Production, Sécurité & Intégration)
+### Phase 14 — v14.0.0 (Notifications, Analytics & Gouvernance)
 
-**Infrastructure Docker** :
-- `docker-compose.prod.yml` — PostgreSQL 15, Redis 7, backend NestJS, frontend Next.js, Nginx 1.25
-- `nginx/prod.conf` — Reverse proxy SSL, compression gzip, rate limiting, headers sécurité
-- `tsconfig.base.json` — Configuration TypeScript partagée monorepo
+**Modules NestJS créés** :
 
-**Prisma Seeds** (`packages/core/prisma/seed.ts`) :
-- 143 enregistrements de démo : 5 utilisateurs, 12 espèces, 8 enclos, 50 animaux, 10 couvées, 12 plans nutrition, 15 balises GPS, 3 sites
-- Exécuté avec succès sur PostgreSQL local (2.71s)
+| Module | Fonctionnalités |
+|--------|-----------------|
+| `fcm` | Firebase Cloud Messaging, 4 appareils iOS/Android, topics, historique 127 notifs/7j |
+| `webhooks` | Intégrations DRAAF/GBIF/Clinique/ERP, HMAC-SHA256, journaux, 97.4% succès |
+| `rbac` | Matrice permissions 6 ressources × 4 rôles (admin/vétérinaire/soigneur/visiteur) |
+| `analytics` | KPIs 12 mois, tendances CA/naissances/ventes, répartition espèces |
+| `gallery` | AWS S3, 847 photos, upload, reconnaissance IA espèces (94.1%) |
+| `auto-reports` | @nestjs/schedule, 5 rapports planifiés, cron jobs, envoi email PDF |
 
-**Authentification avancée** (`apps/backend/src/modules/auth/`) :
-- JWT refresh tokens (TTL 15min access / 7j refresh)
-- Blacklist Redis pour invalidation tokens
-- 2FA TOTP avec otplib (Google Authenticator compatible)
-- Stratégie Passport refresh-jwt
-- Cookie HttpOnly sécurisé
+**Pages Next.js créées** :
 
-**WebSocket Gateway** (`apps/backend/src/modules/events/`) :
-- Socket.io Gateway NestJS
-- 5 canaux : animal.updates, iot.readings, gps.positions, alerts.critical, system.logs
-- Émission d'événements temps réel
+| Page | Description |
+|------|-------------|
+| `/admin/push-fcm` | 4 appareils, 127 notifs/7j, 99.2% livraison, topics, historique |
+| `/admin/webhooks` | 4 intégrations, journaux HTTP, créateur avec sélection événements |
+| `/admin/rbac` | Matrice ✓/✗, gestion utilisateurs, configuration rôles |
+| `/admin/analytics` | KPIs 4 cartes, graphique barres 12 mois, répartition espèces, tableau |
+| `/admin/gallery` | 847 photos S3, vue grille/liste, filtres portrait/médical/comportement |
+| `/admin/auto-reports` | 5 rapports planifiés, historique 47 envois, créateur avec cron |
 
-**Export CSV** (`apps/backend/src/modules/export/`) :
-- Streaming fast-csv avec BOM UTF-8
-- 5 types : animaux, stock, personnel, audit, formations
-- Contrôleur avec endpoints dédiés
-
-**Swagger OpenAPI 3.1** :
-- `@nestjs/swagger` + `swagger-ui-express` configurés dans `main.ts`
-- 120+ endpoints documentés, 28 tags, 85+ schémas
-- Accessible sur `http://localhost:3001/docs`
-
-**i18n backend** (`apps/backend/src/i18n/`) :
-- `nestjs-i18n` configuré dans `app.module.ts`
-- Traductions FR/EN/ES pour les messages d'erreur API
-
-**Pages frontend Phase 13** :
-- `/admin/docker` — Dashboard infrastructure Docker, 5 conteneurs, logs live
-- `/admin/database` — Tables Prisma, seed de démo, 13 migrations
-- `/admin/security` — Sessions JWT, configuration 2FA TOTP, journal d'audit
-- `/admin/swagger` — Documentation OpenAPI 3.1, 120+ endpoints, playground
-- `/admin/websocket` — Gateway Socket.io, flux d'événements, canaux, test
-- `/admin/export` — Export CSV/PDF, 7 types, historique téléchargements
-
-**6 captures d'écran** : docker-infrastructure, database-prisma, security-jwt-2fa, swagger-api, websocket-gateway, export-csv
+**6 captures d'écran** : push-fcm, webhooks, rbac, analytics, gallery, auto-reports
 
 ---
 
@@ -82,7 +62,7 @@
 ```
 lftg-platform/
 ├── apps/
-│   ├── backend/          # NestJS 10 — 58+ modules
+│   ├── backend/          # NestJS 10 — 64+ modules
 │   │   ├── src/modules/
 │   │   │   ├── auth (JWT+2FA+Redis), users, roles, plugins, workflows, audit
 │   │   │   ├── notifications, export (CSV), stats              [v2/v13]
@@ -95,10 +75,11 @@ lftg-platform/
 │   │   │   ├── stripe, meteo, partners, gbif, sync             [v9]
 │   │   │   ├── alertes, nutrition, gps, parrainage, realtime   [v10]
 │   │   │   ├── iot, ml, genealogy, sites, public-api-v2, advanced-reports [v11]
-│   │   │   └── events (Socket.io), export (fast-csv)           [v13]
+│   │   │   ├── events (Socket.io), export (fast-csv)           [v13]
+│   │   │   └── fcm, webhooks, rbac, analytics, gallery, auto-reports [v14]
 │   │   ├── src/i18n/     # FR/EN/ES translations               [v13]
 │   │   └── src/main.ts   # Swagger + i18n configured           [v13]
-│   ├── frontend/         # Next.js 14 + Tailwind — 73+ pages
+│   ├── frontend/         # Next.js 14 + Tailwind — 79+ pages
 │   │   └── src/
 │   │       ├── app/admin/ (toutes les pages admin)
 │   │       └── lib/
@@ -116,35 +97,54 @@ lftg-platform/
 │   └── workflows/ci.yml  # CI/CD GitHub Actions [v12]
 ├── scripts/
 │   └── backup.sh         # Backup PostgreSQL [v12]
-└── screenshots/          # 53+ captures (v1 → v13)
+└── screenshots/          # 59+ captures (v1 → v14)
 ```
 
 ---
 
-## Backlog Phase 14 (v14.0.0)
+## Backlog Phase 15 (v15.0.0)
 
 ### Priorité haute
 
-- [ ] **Notifications push** — Firebase Cloud Messaging (FCM) pour l'app mobile Expo
-- [ ] **Webhook système** — Envoi de webhooks vers systèmes tiers (vétérinaires, DRAAF)
-- [ ] **Tableau de bord analytique avancé** — Recharts/D3.js, KPIs historiques, tendances sur 12 mois
-- [ ] **Gestion des permissions RBAC granulaires** — Rôles admin/soigneur/vétérinaire/visiteur avec guards NestJS
-- [ ] **Système de tickets/incidents amélioré** — Workflow complet, SLA, escalade automatique
+- [ ] **Portail public visiteurs** — Site vitrine LFTG accessible sans authentification
+  - Page d'accueil avec galerie d'animaux publique
+  - Formulaire de réservation de visites en ligne
+  - Page de parrainage public avec paiement Stripe
+  - Blog/actualités de la ferme
+
+- [ ] **Application mobile complète** — Expo SDK 52 avec écrans fonctionnels
+  - Écran liste animaux avec photos S3
+  - Écran détail animal avec historique médical
+  - Écran notifications push FCM
+  - Écran GPS temps réel
+
+- [ ] **Intégration email Nodemailer** — Envoi réel des rapports automatiques
+  - Configuration SMTP (Gmail/SendGrid)
+  - Templates HTML des rapports
+  - Confirmation d'inscription parrainage
 
 ### Priorité normale
 
-- [ ] **Intégration calendrier** — Google Calendar / CalDAV pour les soins et événements
-- [ ] **Module météo avancé** — Alertes climatiques sur les enclos, historique météo Guyane
-- [ ] **Galerie photos animaux** — Upload S3, galerie par animal, reconnaissance d'espèces IA
-- [ ] **Rapports automatiques** — Génération et envoi automatique par email (cron jobs)
-- [ ] **Module finances avancé** — Budget, dépenses, recettes, bilan financier annuel
+- [ ] **Tableau de bord consolidé multi-sites** — Vue réseau LFTG
+  - Agrégation données 3 sites
+  - Alertes inter-sites
+  - Transferts d'animaux avec traçabilité
+
+- [ ] **Reconnaissance d'espèces IA** — Intégration API vision
+  - Identification automatique espèce depuis photo
+  - Validation CITES automatique
+  - Alerte espèce non répertoriée
+
+- [ ] **Calendrier reproducteur avancé** — Planning accouplements
+  - Recommandations basées sur généalogie et ML
+  - Intégration calendrier Google/Outlook
+  - Rappels automatiques
 
 ### Priorité basse
 
-- [ ] **Intégration RFID** — Lecture de puces RFID pour identification automatique
-- [ ] **Module reproduction avancé** — Calendrier de reproduction, prédictions IA
-- [ ] **Portail public amélioré** — Site vitrine avec informations et billetterie en ligne
-- [ ] **Application kiosque** — Mode kiosque pour les visiteurs sur tablette
+- [ ] **Audit trail complet** — Journalisation toutes les actions
+- [ ] **Export GBIF** — Contribution données biodiversité
+- [ ] **Application kiosque** — Mode tablette pour soigneurs
 - [ ] **Monitoring Grafana** — Dashboard métriques avec Prometheus
 
 ---
@@ -172,11 +172,11 @@ pnpm --filter @lftg/backend test
 TOKEN="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"
 curl -s -H "Authorization: Bearer $TOKEN" https://api.github.com/repos/Tarzzan/lftg-platform/releases | python3 -c "import sys,json; [print(r['tag_name'], r['name']) for r in json.load(sys.stdin)]"
 
-# Storybook
-cd /home/ubuntu/lftg-platform/apps/frontend && pnpm storybook
-
-# App mobile Expo
-cd /home/ubuntu/lftg-platform/apps/mobile && pnpm start
+# Créer release GitHub
+curl -s -X POST "https://api.github.com/repos/Tarzzan/lftg-platform/releases" \
+  -H "Authorization: token $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"tag_name":"v15.0.0","name":"LFTG Platform v15.0.0","body":"Phase 15","draft":false,"prerelease":false}'
 ```
 
 ---
@@ -195,16 +195,16 @@ cd /home/ubuntu/lftg-platform/apps/mobile && pnpm start
 
 | Métrique | Valeur |
 |----------|--------|
-| Modules NestJS | **58+** |
-| Pages Next.js | **73+** |
+| Modules NestJS | **64+** |
+| Pages Next.js | **79+** |
 | Modèles Prisma | **30+** |
-| Fichiers TypeScript | **400+** |
+| Fichiers TypeScript | **430+** |
 | Stories Storybook | **16** |
 | Tests automatisés | **84+** |
-| Releases GitHub | **13** |
-| Captures d'écran | **53+** |
-| Lignes de code estimées | **~65 000** |
+| Releases GitHub | **14** |
+| Captures d'écran | **59+** |
+| Lignes de code estimées | **~72 000** |
 
 ---
 
-*Signé : William MERI — LFTG Platform v13.0.0 — Mars 2026*
+*Signé : William MERI — LFTG Platform v14.0.0 — Mars 2026*

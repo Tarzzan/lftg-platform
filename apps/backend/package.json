@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "version": "13.0.0",
+  "version": "14.0.0",
   "private": true,
   "scripts": {
     "build": "nest build",
@@ -11,6 +11,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1000.0",
+    "@aws-sdk/s3-request-presigner": "^3.1000.0",
     "@nestjs/cache-manager": "^3.1.0",
     "@nestjs/common": "^10.3.0",
     "@nestjs/config": "^3.2.0",
@@ -20,6 +22,7 @@
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-express": "^10.3.0",
     "@nestjs/platform-socket.io": "^11.1.14",
+    "@nestjs/schedule": "^6.1.1",
     "@nestjs/swagger": "^7.3.0",
     "@nestjs/websockets": "^11.1.14",
     "@prisma/client": "^5.10.0",
@@ -29,8 +32,11 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "fast-csv": "^5.0.5",
+    "firebase-admin": "^13.7.0",
     "jsonwebtoken": "^9.0.3",
     "nestjs-i18n": "^10.6.0",
+    "nestjs-rbac": "^2026.1.4",
+    "nodemailer": "^8.0.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
