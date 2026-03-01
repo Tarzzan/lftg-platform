@@ -2,7 +2,7 @@
 
 > Auteur : William MERI  
 > Date : Mars 2026  
-> Version : **3.0.0**
+> Version : **4.0.0**
 
 ---
 
@@ -13,6 +13,7 @@
 | v1.0.0 | ✅ Livré | Monorepo, core NestJS, 4 plugins, frontend Next.js |
 | v2.0.0 | ✅ Livré | SSE, modals CRUD, Recharts, dark mode, CI/CD |
 | v3.0.0 | ✅ Livré | Module médical, React Flow, Cmd+K, calendrier, import CSV, Playwright, PWA |
+| v4.0.0 | ✅ Livré | Module enclos (Leaflet), module ventes (facturation), Swagger/OpenAPI, détail couvée, dashboard personnalisable, rapports PDF natifs, DataTable/Badge/LoadingSpinner, tests E2E enrichis |
 
 ---
 
@@ -141,28 +142,53 @@ lftg-platform/
 
 ---
 
-## Backlog Phase 4 (v4.0.0)
+## ✅ Phase 4 — v4.0.0 (Complétée)
+
+### Backend
+- **Module enclos** : `EnclosService` + `EnclosController` — CRUD enclos avec GeoJSON, capacité, taux d'occupation, historique des résidents
+- **Module ventes** : `VentesService` + `VentesController` — CRUD ventes avec lignes d'articles, TVA, facturation HTML, statuts (PENDING → CONFIRMED → COMPLETED), export PDF
+- **Swagger/OpenAPI** : `@nestjs/swagger` intégré dans `main.ts` — documentation interactive sur `/api`, spec JSON sur `/api-json`
+- **Rapports PDF natifs** : `PdfNativeService` — génération via WeasyPrint/wkhtmltopdf avec templates HTML riches
+- **Schéma Prisma v4** : 32 modèles — ajout de `Sale`, `SaleItem`, `Enclosure` enrichi avec GeoJSON
+
+### Frontend
+- **Page détail couvée** (`/admin/animaux/couvees/[id]`) : 3 onglets, graphiques Recharts (taux d'éclosion, mortalité), timeline événements, barre de progression
+- **Module enclos** (`/admin/animaux/enclos`) : carte Leaflet interactive, marqueurs colorés par taux d'occupation, vue grille + vue carte, modal de création avec coordonnées GPS
+- **Module ventes** (`/admin/ventes`) : liste avec KPIs, graphique revenus 7 jours, filtres, modal de création avec lignes d'articles et calcul TVA
+- **Détail vente** (`/admin/ventes/[id]`) : facture complète avec acheteur, lignes, totaux HT/TVA/TTC, actions de changement de statut
+- **Dashboard personnalisable** : 8 widgets configurables (KPIs, revenus, animaux, stock, workflows, couvées, médical, ventes), persistance localStorage, mode édition
+- **Documentation API** (`/admin/docs`) : iframe Swagger UI + résumé des 8 modules avec comptage d'endpoints
+- **Composants UI réutilisables** : `DataTable` (tri + pagination), `Badge`/`StatusBadge`, `LoadingSpinner`, `EmptyState`, page 404 animée
+- **Navigation** : sections Ventes et Développeur ajoutées dans la sidebar
+
+### Tests E2E
+- `ventes.spec.ts` : 8 tests (KPIs, graphique, modal, validation, filtres, lignes)
+- `medical-enclos.spec.ts` : 12 tests (médical, calendrier, enclos, dashboard, docs API)
+
+---
+
+## Backlog Phase 5 (v5.0.0)
 
 ### Priorité haute
-- [ ] **Tests E2E complets** — Couvrir 80% des parcours utilisateur avec Playwright
-- [ ] **Page détail couvée** — Suivi des œufs, éclosions, mortalité avec graphiques
-- [ ] **Module enclos complet** — CRUD + carte interactive des enclos (Leaflet)
-- [ ] **Notifications push natives** — Intégration Web Push API avec le service worker
-- [ ] **Rapports PDF natifs** — Conversion HTML→PDF côté serveur (Puppeteer ou WeasyPrint)
+- [ ] **Recherche full-text** — pg_trgm + endpoint `/search?q=` global avec résultats multi-entités
+- [ ] **Notifications push natives** — Web Push API + VAPID keys + gestion des abonnements
+- [ ] **Page détail enclos** — carte Leaflet zoomée + liste des animaux résidents + historique
+- [ ] **Rapports PDF Puppeteer** — génération côté serveur avec Chromium headless (meilleure qualité)
+- [ ] **Module agenda** — planning des soins, rappels, export iCal
 
-### Priorité moyenne
-- [ ] **Recherche full-text** — pg_trgm ou Elasticsearch pour la recherche avancée
-- [ ] **API Swagger complète** — Documentation OpenAPI avec exemples interactifs
-- [ ] **Module ventes** — Gestion des ventes d'animaux et produits dérivés
-- [ ] **Dashboard personnalisable** — Widgets drag-and-drop (React Grid Layout)
-- [ ] **Historique des prix** — Suivi du coût des aliments et médicaments
+### Priorité normale
+- [ ] **Historique des modifications** — diff visuel pour chaque entité (animal, stock, etc.)
+- [ ] **Gestion des documents** — upload de fichiers (CITES, certificats, factures) par entité
+- [ ] **Tableau de bord mobile** — layout responsive optimisé pour tablette/mobile
+- [ ] **Ventes enrichies** — historique paiements, relances automatiques, statistiques par acheteur
+- [ ] **Module CITES** — vérification automatique des espèces protégées, génération des permis
 
 ### Priorité basse
-- [ ] **Application mobile** — React Native / Expo pour les soigneurs en tournée
-- [ ] **Intégration GPS** — Géolocalisation des enclos sur carte Leaflet
-- [ ] **IA — Détection anomalies** — Alertes automatiques sur les indicateurs de santé
-- [ ] **Multi-tenant** — Support de plusieurs fermes sur la même instance
-- [ ] **Backup automatique** — Export quotidien chiffré vers S3
+- [ ] **Application mobile** — Expo React Native avec fonctionnalités essentielles
+- [ ] **Internationalisation** — i18n (fr/en/es) avec next-intl
+- [ ] **Multi-tenant** — support de plusieurs fermes dans une même instance
+- [ ] **Backup automatique** — export quotidien chiffré vers S3
+- [ ] **IA — Détection anomalies** — alertes automatiques sur les indicateurs de santé
 
 ---
 

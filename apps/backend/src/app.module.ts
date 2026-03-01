@@ -15,6 +15,9 @@ import { StatsModule } from './modules/stats/stats.module';
 import { MedicalModule } from './modules/medical/medical.module';
 import { EmailModule } from './modules/email/email.module';
 import { ImportModule } from './modules/import/import.module';
+// Phase 4
+import { EnclosModule } from './modules/enclos/enclos.module';
+import { VentesModule } from './modules/ventes/ventes.module';
 
 @Module({
   imports: [
@@ -34,6 +37,9 @@ import { ImportModule } from './modules/import/import.module';
     MedicalModule,
     EmailModule,
     ImportModule,
+    // Phase 4
+    EnclosModule,
+    VentesModule,
   ],
 })
 export class AppModule {}

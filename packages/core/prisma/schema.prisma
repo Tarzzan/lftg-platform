@@ -26,6 +26,7 @@ model User {
   auditLogs          AuditLog[]
   workflowInstances  WorkflowInstance[] @relation("InstanceAssignee")
   workflowHistories  WorkflowHistory[]
+  salesCreated       Sale[]             @relation("SaleCreatedBy")
 }
 
 model Role {
@@ -163,11 +164,16 @@ model StockItem {
   id                String          @id @default(cuid())
   name              String          @unique
   description       String?
+  category          String?
   quantity          Float           @default(0)
   unit              String
   lowStockThreshold Float           @default(0)
+  location          String?
   movements         StockMovement[]
   requests          StockRequest[]
+  saleItems         SaleItem[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 }
 
 model StockMovement {
@@ -185,15 +191,15 @@ model StockMovement {
 }
 
 model StockRequest {
-  id         String    @id @default(cuid())
-  itemId     String
-  item       StockItem @relation(fields: [itemId], references: [id])
-  quantity   Float
-  reason     String?
+  id          String    @id @default(cuid())
+  itemId      String
+  item        StockItem @relation(fields: [itemId], references: [id])
+  quantity    Float
+  reason      String?
   requesterId String
-  status     String    @default("draft")
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  status      String    @default("draft")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 // =======================================
@@ -204,35 +210,67 @@ model Species {
   id             String   @id @default(cuid())
   name           String   @unique
   scientificName String?
+  commonName     String?
   description    String?
+  citesStatus    String?  // I, II, III, Non listé
+  conservationStatus String? // CR, EN, VU, NT, LC
+  origin         String?
+  habitat        String?
+  diet           String?
+  lifespan       Int?     // années
+  gestationDays  Int?
+  incubationDays Int?
+  imageUrl       String?
   animals        Animal[]
   broods         Brood[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 model Enclosure {
   id          String   @id @default(cuid())
   name        String   @unique
+  type        String   @default("terrarium") // terrarium, volière, bassin, paddock, cage
   description String?
-  capacity    Int?
+  capacity    Int      @default(1)
+  surface     Float?   // m²
+  location    String?
+  status      String   @default("ACTIVE") // ACTIVE, MAINTENANCE, INACTIVE
+  features    String[] @default([])
+  latitude    Float?
+  longitude   Float?
+  imageUrl    String?
   animals     Animal[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Animal {
-  id          String       @id @default(cuid())
-  identifier  String       @unique
-  speciesId   String
-  species     Species      @relation(fields: [speciesId], references: [id])
-  enclosureId String?
-  enclosure   Enclosure?   @relation(fields: [enclosureId], references: [id])
-  birthDate   DateTime?
-  sex         String?
-  isAlive     Boolean      @default(true)
-  notes       String?
-  events      AnimalEvent[]
-  createdAt   DateTime     @default(now())
+  id           String       @id @default(cuid())
+  identifier   String       @unique
+  name         String?
+  speciesId    String
+  species      Species      @relation(fields: [speciesId], references: [id])
+  enclosureId  String?
+  enclosure    Enclosure?   @relation(fields: [enclosureId], references: [id])
+  birthDate    DateTime?
+  sex          String?      // M, F, UNKNOWN
+  status       String       @default("ACTIF") // ACTIF, VENDU, DÉCÉDÉ, TRANSFÉRÉ
+  origin       String?      // NAISSANCE, ACQUISITION, DON
+  acquisitionDate DateTime?
+  microchipId  String?
+  ringId       String?
+  weight       Float?       // grammes
+  notes        String?
+  imageUrl     String?
+  events       AnimalEvent[]
+  saleItems    SaleItem[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 
   @@index([speciesId])
   @@index([enclosureId])
+  @@index([status])
 }
 
 model AnimalEvent {
@@ -240,9 +278,10 @@ model AnimalEvent {
   animalId  String
   animal    Animal   @relation(fields: [animalId], references: [id])
   timestamp DateTime @default(now())
-  type      String
+  type      String   // MEDICAL, FEEDING, WEIGHT, TRANSFER, NOTE
   notes     String?
   userId    String
+  data      Json?
 
   @@index([animalId])
   @@index([type])
@@ -250,17 +289,42 @@ model AnimalEvent {
 
 model Brood {
   id                  String    @id @default(cuid())
+  reference           String?   @unique
   speciesId           String
   species             Species   @relation(fields: [speciesId], references: [id])
+  maleId              String?
+  femaleId            String?
+  incubatorId         String?
   incubationStartDate DateTime
   expectedHatchDate   DateTime?
   hatchDate           DateTime?
   eggCount            Int
+  fertilizedCount     Int?
   hatchedCount        Int?
+  deadCount           Int?
+  temperature         Float?    // °C
+  humidity            Float?    // %
   notes               String?
-  status              String    @default("incubating")
+  status              String    @default("INCUBATION") // INCUBATION, ECLOSION, TERMINEE, ECHEC
+  events              BroodEvent[]
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
+
+  @@index([speciesId])
+  @@index([status])
+}
+
+model BroodEvent {
+  id        String   @id @default(cuid())
+  broodId   String
+  brood     Brood    @relation(fields: [broodId], references: [id])
+  timestamp DateTime @default(now())
+  type      String   // CANDLING, TURNING, TEMPERATURE_CHECK, HATCHING, NOTE
+  notes     String?
+  data      Json?
+  userId    String
+
+  @@index([broodId])
 }
 
 // =======================================
@@ -271,6 +335,11 @@ model Course {
   id          String    @id @default(cuid())
   title       String
   description String?
+  category    String?
+  level       String?   // DEBUTANT, INTERMEDIAIRE, AVANCE
+  duration    Int?      // minutes
+  tags        String[]  @default([])
+  imageUrl    String?
   isPublished Boolean   @default(false)
   chapters    Chapter[]
   cohorts     Cohort[]
@@ -293,6 +362,8 @@ model Lesson {
   chapter   Chapter @relation(fields: [chapterId], references: [id])
   title     String
   content   String?
+  videoUrl  String?
+  duration  Int?    // minutes
   order     Int
   quizzes   Quiz[]
 }
@@ -308,13 +379,17 @@ model Quiz {
 }
 
 model Cohort {
-  id        String   @id @default(cuid())
-  courseId  String
-  course    Course   @relation(fields: [courseId], references: [id])
-  name      String
-  startDate DateTime?
-  endDate   DateTime?
+  id          String   @id @default(cuid())
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id])
+  name        String
+  status      String   @default("DRAFT") // DRAFT, ACTIVE, COMPLETED, CANCELLED
+  maxStudents Int?
+  startDate   DateTime?
+  endDate     DateTime?
   enrollments Enrollment[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Enrollment {
@@ -337,4 +412,54 @@ model QuizAnswer {
   answer       String
   isCorrect    Boolean
   answeredAt   DateTime   @default(now())
+}
+
+// =======================================
+//          PLUGIN: VENTES (Phase 4)
+// =======================================
+
+model Sale {
+  id            String     @id @default(cuid())
+  reference     String     @unique
+  type          String     // ANIMAL, PRODUCT, SERVICE, FORMATION
+  status        String     @default("PENDING") // PENDING, CONFIRMED, COMPLETED, CANCELLED, REFUNDED
+  buyerName     String
+  buyerEmail    String?
+  buyerPhone    String?
+  buyerAddress  String?
+  subtotal      Float      @default(0)
+  taxAmount     Float      @default(0)
+  total         Float      @default(0)
+  notes         String?
+  paymentMethod String?
+  paymentDate   DateTime?
+  dueDate       DateTime?
+  completedAt   DateTime?
+  cancelledAt   DateTime?
+  createdById   String
+  createdBy     User       @relation("SaleCreatedBy", fields: [createdById], references: [id])
+  items         SaleItem[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model SaleItem {
+  id          String     @id @default(cuid())
+  saleId      String
+  sale        Sale       @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  description String
+  quantity    Int        @default(1)
+  unitPrice   Float
+  taxRate     Float      @default(0)
+  total       Float
+  animalId    String?
+  animal      Animal?    @relation(fields: [animalId], references: [id])
+  stockItemId String?
+  stockItem   StockItem? @relation(fields: [stockItemId], references: [id])
+
+  @@index([saleId])
 }

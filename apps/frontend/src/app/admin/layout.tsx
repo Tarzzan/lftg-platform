@@ -7,7 +7,7 @@ import {
   LayoutDashboard, Users, Shield, GitBranch, Package, Bird, GraduationCap,
   ClipboardList, Settings, LogOut, ChevronRight, Leaf, Egg, BookOpen,
   Archive, ArrowLeftRight, User, Award, Home, Users2, Stethoscope,
-  Calendar, Upload, Search, Command,
+  Calendar, Upload, Search, Command, ShoppingCart, FileText, Code2,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/auth-store';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
@@ -68,6 +68,18 @@ const navigation = [
       { label: 'Cours', path: '/admin/formation/cours', icon: BookOpen },
       { label: 'Cohortes', path: '/admin/formation/cohortes', icon: Users2 },
       { label: 'Mes formations', path: '/admin/formation/mes-formations', icon: GraduationCap },
+    ],
+  },
+  {
+    section: 'Ventes',
+    items: [
+      { label: 'Toutes les ventes', path: '/admin/ventes', icon: ShoppingCart },
+    ],
+  },
+  {
+    section: 'Développeur',
+    items: [
+      { label: 'Documentation API', path: '/admin/docs', icon: Code2 },
     ],
   },
 ];

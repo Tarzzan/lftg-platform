@@ -1,261 +1,372 @@
 'use client';
 
+import { useState, useCallback } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
-  Bird, Package, Users, GitBranch, TrendingUp, AlertTriangle, Clock, CheckCircle,
-  Download, BookOpen
-} from 'lucide-react';
-import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, LineChart, Line, Legend,
+  PieChart, Pie, Cell, LineChart, Line, Legend, AreaChart, Area,
 } from 'recharts';
-import { statsApi, exportApi } from '@/lib/api';
+import { statsApi, exportApi, api } from '@/lib/api';
 
-// ─── Palette ─────────────────────────────────────────────────────────────────
-const COLORS = ['#16a34a', '#ea580c', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6'];
+// ─── Types ────────────────────────────────────────────────────────────────────
 
-// ─── StatCard ─────────────────────────────────────────────────────────────────
-function StatCard({ title, value, subtitle, icon: Icon, color, trend }: {
-  title: string; value: string | number; subtitle?: string;
-  icon: any; color: string; trend?: { value: number; label: string };
-}) {
-  return (
-    <div className="stat-card">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm text-muted-foreground font-medium">{title}</p>
-          <p className="text-3xl font-display font-bold text-foreground mt-1">{value}</p>
-          {subtitle && <p className="text-xs text-muted-foreground mt-1">{subtitle}</p>}
-        </div>
-        <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${color}`}>
-          <Icon className="w-5 h-5" />
-        </div>
-      </div>
-      {trend && (
-        <div className="flex items-center gap-1 mt-2">
-          <TrendingUp className="w-3 h-3 text-forest-600" />
-          <span className="text-xs text-forest-600 font-medium">+{trend.value}%</span>
-          <span className="text-xs text-muted-foreground">{trend.label}</span>
-        </div>
-      )}
-    </div>
-  );
+type WidgetId = 'kpis' | 'revenue' | 'animals' | 'stock' | 'workflows' | 'broods' | 'medical' | 'sales' | 'stockEvolution';
+
+interface Widget {
+  id: WidgetId;
+  title: string;
+  icon: string;
+  cols: number; // 1, 2 ou 3
 }
 
+const ALL_WIDGETS: Widget[] = [
+  { id: 'kpis', title: 'Indicateurs clés', icon: '📊', cols: 3 },
+  { id: 'revenue', title: 'Revenus (7 jours)', icon: '💰', cols: 2 },
+  { id: 'animals', title: 'Animaux par espèce', icon: '🦜', cols: 1 },
+  { id: 'stockEvolution', title: 'Mouvements stock', icon: '📦', cols: 2 },
+  { id: 'workflows', title: 'Workflows par état', icon: '⚙️', cols: 1 },
+  { id: 'broods', title: 'Couvées actives', icon: '🥚', cols: 1 },
+  { id: 'medical', title: 'Actes médicaux récents', icon: '🏥', cols: 1 },
+  { id: 'sales', title: 'Dernières ventes', icon: '🛒', cols: 1 },
+];
+
+const COLORS = ['#166534', '#d97706', '#1d4ed8', '#7c3aed', '#dc2626', '#0891b2', '#059669', '#b45309'];
+
 // ─── Custom Tooltip ───────────────────────────────────────────────────────────
+
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-background border border-border rounded-xl shadow-lg px-3 py-2">
-      <p className="text-xs font-medium text-foreground mb-1">{label}</p>
+    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg px-3 py-2">
+      <p className="text-xs font-medium text-gray-900 dark:text-white mb-1">{label}</p>
       {payload.map((p: any) => (
         <p key={p.name} className="text-xs" style={{ color: p.color }}>
-          {p.name}: <strong>{p.value}</strong>
+          {p.name}: <strong>{typeof p.value === 'number' ? p.value.toFixed(0) : p.value}</strong>
         </p>
       ))}
     </div>
   );
 };
 
+// ─── Widgets ──────────────────────────────────────────────────────────────────
+
+function KpisWidget({ stats, lowStockCount, pendingWorkflows }: any) {
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      {[
+        { label: 'Animaux vivants', value: stats?.animals?.alive ?? '—', sub: `${stats?.animals?.species ?? 0} espèces`, icon: '🦜', color: 'forest' },
+        { label: 'Couvées actives', value: stats?.animals?.activeBroods ?? '—', sub: 'En incubation', icon: '🥚', color: 'gold' },
+        { label: 'Alertes stock', value: lowStockCount, sub: 'Articles en rupture', icon: '📦', color: lowStockCount > 0 ? 'red' : 'forest', urgent: lowStockCount > 0 },
+        { label: 'Workflows actifs', value: stats?.workflows?.total ?? '—', sub: `${pendingWorkflows} en attente`, icon: '⚙️', color: 'blue' },
+      ].map(kpi => (
+        <div key={kpi.label} className={`p-4 rounded-xl border ${kpi.urgent ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-700' : 'bg-forest-50 dark:bg-forest-900/20 border-forest-200 dark:border-forest-700'}`}>
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xl">{kpi.icon}</span>
+          </div>
+          <div className={`text-2xl font-bold ${kpi.urgent ? 'text-red-700 dark:text-red-400' : 'text-forest-700 dark:text-forest-400'}`}>{kpi.value}</div>
+          <div className="text-xs font-medium text-gray-700 dark:text-gray-300 mt-0.5">{kpi.label}</div>
+          <div className="text-xs text-gray-400">{kpi.sub}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function RevenueWidget({ stats }: any) {
+  const data = stats?.dailyRevenue || Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(); d.setDate(d.getDate() - (6 - i));
+    return { day: d.toLocaleDateString('fr-FR', { weekday: 'short' }), revenue: 0 };
+  });
+  return (
+    <ResponsiveContainer width="100%" height={160}>
+      <AreaChart data={data}>
+        <defs>
+          <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#166534" stopOpacity={0.3} />
+            <stop offset="95%" stopColor="#166534" stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+        <XAxis dataKey="day" tick={{ fontSize: 10 }} />
+        <YAxis tick={{ fontSize: 10 }} />
+        <Tooltip content={<CustomTooltip />} formatter={(v: any) => [`${Number(v).toFixed(0)} €`]} />
+        <Area type="monotone" dataKey="revenue" name="Revenus (€)" stroke="#166534" fill="url(#revGrad)" strokeWidth={2} />
+      </AreaChart>
+    </ResponsiveContainer>
+  );
+}
+
+function AnimalsWidget({ animalsBySpecies }: any) {
+  if (!animalsBySpecies?.length) return <div className="flex items-center justify-center h-32 text-gray-400 text-sm">Aucune donnée</div>;
+  return (
+    <div className="flex items-center gap-3">
+      <ResponsiveContainer width="50%" height={140}>
+        <PieChart>
+          <Pie data={animalsBySpecies} dataKey="count" nameKey="name" cx="50%" cy="50%" innerRadius={35} outerRadius={60} paddingAngle={3}>
+            {animalsBySpecies.map((_: any, i: number) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+          </Pie>
+          <Tooltip content={<CustomTooltip />} />
+        </PieChart>
+      </ResponsiveContainer>
+      <div className="flex-1 space-y-1">
+        {animalsBySpecies.slice(0, 5).map((item: any, i: number) => (
+          <div key={item.speciesId || i} className="flex items-center gap-2">
+            <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
+            <span className="text-xs text-gray-700 dark:text-gray-300 flex-1 truncate">{item.name}</span>
+            <span className="text-xs font-bold text-gray-900 dark:text-white">{item.count}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function StockEvolutionWidget({ stockEvolution }: any) {
+  if (!stockEvolution?.length) return <div className="flex items-center justify-center h-32 text-gray-400 text-sm">Aucun mouvement</div>;
+  return (
+    <ResponsiveContainer width="100%" height={160}>
+      <LineChart data={stockEvolution}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
+        <XAxis dataKey="date" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+        <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+        <Tooltip content={<CustomTooltip />} />
+        <Legend wrapperStyle={{ fontSize: 11 }} />
+        <Line type="monotone" dataKey="entrees" name="Entrées" stroke="#166534" strokeWidth={2} dot={false} />
+        <Line type="monotone" dataKey="sorties" name="Sorties" stroke="#ea580c" strokeWidth={2} dot={false} />
+      </LineChart>
+    </ResponsiveContainer>
+  );
+}
+
+function WorkflowsWidget({ workflowsByState }: any) {
+  if (!workflowsByState?.length) return <div className="flex items-center justify-center h-32 text-gray-400 text-sm">Aucun workflow</div>;
+  return (
+    <ResponsiveContainer width="100%" height={140}>
+      <BarChart data={workflowsByState} barSize={24}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
+        <XAxis dataKey="label" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+        <YAxis tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+        <Tooltip content={<CustomTooltip />} />
+        <Bar dataKey="count" name="Instances" radius={[4, 4, 0, 0]}>
+          {workflowsByState.map((_: any, i: number) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
+        </Bar>
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
+
+function BroodsWidget({ stats }: any) {
+  const broods = stats?.activeBroodsList || [];
+  if (!broods.length) return <div className="flex items-center justify-center h-24 text-gray-400 text-sm">Aucune couvée active</div>;
+  return (
+    <div className="space-y-2">
+      {broods.slice(0, 4).map((brood: any) => {
+        const days = Math.floor((Date.now() - new Date(brood.incubationStartDate).getTime()) / (1000 * 60 * 60 * 24));
+        return (
+          <div key={brood.id} className="flex items-center justify-between p-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+            <div>
+              <p className="text-sm font-medium text-gray-900 dark:text-white">{brood.species?.name}</p>
+              <p className="text-xs text-gray-400">{brood.eggCount} œufs — Jour {days}</p>
+            </div>
+            <span className="text-xs px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full">{brood.status}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function MedicalWidget({ stats }: any) {
+  const events = stats?.recentMedicalEvents || [];
+  if (!events.length) return <div className="flex items-center justify-center h-24 text-gray-400 text-sm">Aucun acte récent</div>;
+  return (
+    <div className="space-y-2">
+      {events.slice(0, 4).map((event: any) => (
+        <div key={event.id} className="flex items-center gap-3 p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+          <span className="text-lg">🏥</span>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{event.animal?.name || event.animal?.identifier || '—'}</p>
+            <p className="text-xs text-gray-400">{event.notes || event.type}</p>
+          </div>
+          <span className="text-xs text-gray-400 whitespace-nowrap">
+            {new Date(event.timestamp).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' })}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function SalesWidget({ stats }: any) {
+  const sales = stats?.recentSales || [];
+  if (!sales.length) return <div className="flex items-center justify-center h-24 text-gray-400 text-sm">Aucune vente récente</div>;
+  return (
+    <div className="space-y-2">
+      {sales.slice(0, 4).map((sale: any) => (
+        <div key={sale.id} className="flex items-center justify-between p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
+          <div>
+            <p className="text-sm font-medium text-gray-900 dark:text-white font-mono">{sale.reference}</p>
+            <p className="text-xs text-gray-400">{sale.buyerName}</p>
+          </div>
+          <span className="text-sm font-bold text-green-700 dark:text-green-400">{sale.total?.toFixed(0)} €</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── Page principale ──────────────────────────────────────────────────────────
+
 export default function DashboardPage() {
-  const { data: stats } = useQuery({ queryKey: ['dashboard-stats'], queryFn: statsApi.dashboard });
+  const [editMode, setEditMode] = useState(false);
+  const [visibleWidgets, setVisibleWidgets] = useState<WidgetId[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('lftg_dashboard_widgets');
+      if (saved) {
+        try { return JSON.parse(saved); } catch { /* ignore */ }
+      }
+    }
+    return ['kpis', 'revenue', 'animals', 'stockEvolution', 'workflows', 'broods', 'medical', 'sales'];
+  });
+
+  const { data: stats } = useQuery({ queryKey: ['dashboard-stats'], queryFn: statsApi.dashboard, refetchInterval: 30000 });
   const { data: animalsBySpecies = [] } = useQuery({ queryKey: ['animals-by-species'], queryFn: statsApi.animalsBySpecies });
   const { data: stockEvolution = [] } = useQuery({ queryKey: ['stock-evolution'], queryFn: () => statsApi.stockEvolution(14) });
   const { data: workflowsByState = [] } = useQuery({ queryKey: ['workflows-by-state'], queryFn: statsApi.workflowsByState });
 
-  const lowStockCount = stats?.stock?.lowStock ?? 0;
+  const lowStockCount = (stats as any)?.stock?.lowStock ?? 0;
   const pendingWorkflows = (workflowsByState as any[]).find((w: any) => w.state === 'pending')?.count ?? 0;
 
+  const toggleWidget = useCallback((id: WidgetId) => {
+    setVisibleWidgets(prev => {
+      const next = prev.includes(id) ? prev.filter(w => w !== id) : [...prev, id];
+      if (typeof window !== 'undefined') localStorage.setItem('lftg_dashboard_widgets', JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
   const handleExport = (url: string, filename: string) => {
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.click();
+    const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
   };
+
+  const renderWidgetContent = (id: WidgetId) => {
+    switch (id) {
+      case 'kpis': return <KpisWidget stats={stats} lowStockCount={lowStockCount} pendingWorkflows={pendingWorkflows} />;
+      case 'revenue': return <RevenueWidget stats={stats} />;
+      case 'animals': return <AnimalsWidget animalsBySpecies={animalsBySpecies} />;
+      case 'stockEvolution': return <StockEvolutionWidget stockEvolution={stockEvolution} />;
+      case 'workflows': return <WorkflowsWidget workflowsByState={workflowsByState} />;
+      case 'broods': return <BroodsWidget stats={stats} />;
+      case 'medical': return <MedicalWidget stats={stats} />;
+      case 'sales': return <SalesWidget stats={stats} />;
+      default: return null;
+    }
+  };
+
+  const activeWidgets = ALL_WIDGETS.filter(w => visibleWidgets.includes(w.id));
+  const inactiveWidgets = ALL_WIDGETS.filter(w => !visibleWidgets.includes(w.id));
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="page-header">
+      {/* En-tête */}
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="page-title">Tableau de bord</h1>
-          <p className="text-sm text-muted-foreground mt-1">Vue d'ensemble de La Ferme Tropicale de Guyane</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">🦜 Tableau de bord</h1>
+          <p className="text-sm text-gray-500 mt-1">
+            {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+          </p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted px-3 py-1.5 rounded-lg">
-            <Clock className="w-4 h-4" />
-            <span>{new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
-          </div>
+        <div className="flex items-center gap-3 flex-wrap">
+          {editMode && inactiveWidgets.length > 0 && (
+            <div className="flex gap-2 flex-wrap">
+              {inactiveWidgets.map(w => (
+                <button
+                  key={w.id}
+                  onClick={() => toggleWidget(w.id)}
+                  className="px-3 py-1.5 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-500 hover:border-forest-400 hover:text-forest-600 transition-colors"
+                >
+                  + {w.icon} {w.title}
+                </button>
+              ))}
+            </div>
+          )}
+          <button
+            onClick={() => setEditMode(e => !e)}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              editMode
+                ? 'bg-forest-600 text-white hover:bg-forest-700'
+                : 'border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+            }`}
+          >
+            {editMode ? '✓ Terminer' : '⚙️ Personnaliser'}
+          </button>
         </div>
       </div>
 
-      {/* Alerts */}
+      {/* Alertes */}
       {(lowStockCount > 0 || pendingWorkflows > 0) && (
-        <div className="flex items-start gap-3 p-4 rounded-xl bg-gold-50 border border-gold-200">
-          <AlertTriangle className="w-5 h-5 text-gold-600 flex-shrink-0 mt-0.5" />
+        <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700">
+          <span className="text-amber-600 text-lg flex-shrink-0">⚠️</span>
           <div>
-            <p className="text-sm font-medium text-gold-800">Points d'attention</p>
+            <p className="text-sm font-medium text-amber-800 dark:text-amber-300">Points d'attention</p>
             <ul className="mt-1 space-y-0.5">
-              {lowStockCount > 0 && (
-                <li className="text-xs text-gold-700">{lowStockCount} article{lowStockCount > 1 ? 's' : ''} en stock faible</li>
-              )}
-              {pendingWorkflows > 0 && (
-                <li className="text-xs text-gold-700">{pendingWorkflows} workflow{pendingWorkflows > 1 ? 's' : ''} en attente de validation</li>
-              )}
+              {lowStockCount > 0 && <li className="text-xs text-amber-700 dark:text-amber-400">{lowStockCount} article(s) en stock faible</li>}
+              {pendingWorkflows > 0 && <li className="text-xs text-amber-700 dark:text-amber-400">{pendingWorkflows} workflow(s) en attente de validation</li>}
             </ul>
           </div>
         </div>
       )}
 
-      {/* KPI cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard
-          title="Animaux vivants"
-          value={stats?.animals?.alive ?? '—'}
-          subtitle={`${stats?.animals?.species ?? 0} espèces`}
-          icon={Bird}
-          color="bg-forest-100 text-forest-700"
-          trend={{ value: 12, label: 'ce mois' }}
-        />
-        <StatCard
-          title="Couvées actives"
-          value={stats?.animals?.activeBroods ?? '—'}
-          subtitle="En incubation"
-          icon={Bird}
-          color="bg-gold-100 text-gold-700"
-        />
-        <StatCard
-          title="Alertes stock"
-          value={lowStockCount}
-          subtitle="Articles en rupture"
-          icon={Package}
-          color={lowStockCount > 0 ? 'bg-red-100 text-red-700' : 'bg-forest-100 text-forest-700'}
-        />
-        <StatCard
-          title="Workflows actifs"
-          value={stats?.workflows?.total ?? '—'}
-          subtitle={`${pendingWorkflows} en attente`}
-          icon={GitBranch}
-          color="bg-maroni-100 text-maroni-700"
-        />
-      </div>
-
-      {/* Charts row 1 */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Animals by species — Pie */}
-        <div className="lftg-card p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-display font-semibold text-foreground">Animaux par espèce</h2>
-            <a href="/admin/animaux/liste" className="text-xs text-forest-600 hover:text-forest-700 font-medium">Voir tout →</a>
-          </div>
-          {(animalsBySpecies as any[]).length === 0 ? (
-            <div className="flex items-center justify-center h-48 text-muted-foreground text-sm">Aucune donnée</div>
-          ) : (
-            <div className="flex items-center gap-4">
-              <ResponsiveContainer width="50%" height={180}>
-                <PieChart>
-                  <Pie
-                    data={animalsBySpecies as any[]}
-                    dataKey="count"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={45}
-                    outerRadius={75}
-                    paddingAngle={3}
-                  >
-                    {(animalsBySpecies as any[]).map((_: any, i: number) => (
-                      <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<CustomTooltip />} />
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="flex-1 space-y-1.5">
-                {(animalsBySpecies as any[]).slice(0, 6).map((item: any, i: number) => (
-                  <div key={item.speciesId} className="flex items-center gap-2">
-                    <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
-                    <span className="text-xs text-foreground flex-1 truncate">{item.name}</span>
-                    <span className="text-xs font-bold text-foreground">{item.count}</span>
-                  </div>
-                ))}
-              </div>
+      {/* Grille de widgets */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {activeWidgets.map(widget => (
+          <div
+            key={widget.id}
+            className={`bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 relative group ${
+              widget.cols === 3 ? 'lg:col-span-3 md:col-span-2' :
+              widget.cols === 2 ? 'md:col-span-2' : ''
+            }`}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-gray-900 dark:text-white text-sm flex items-center gap-2">
+                <span>{widget.icon}</span>
+                {widget.title}
+              </h3>
+              {editMode && (
+                <button
+                  onClick={() => toggleWidget(widget.id)}
+                  className="opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-600 transition-all text-xl leading-none"
+                  title="Masquer ce widget"
+                >
+                  ×
+                </button>
+              )}
             </div>
-          )}
-        </div>
-
-        {/* Workflows by state — Bar */}
-        <div className="lftg-card p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="font-display font-semibold text-foreground">Workflows par état</h2>
-            <a href="/admin/workflows" className="text-xs text-forest-600 hover:text-forest-700 font-medium">Voir tout →</a>
+            {renderWidgetContent(widget.id)}
           </div>
-          {(workflowsByState as any[]).length === 0 ? (
-            <div className="flex items-center justify-center h-48 text-muted-foreground text-sm">Aucune donnée</div>
-          ) : (
-            <ResponsiveContainer width="100%" height={180}>
-              <BarChart data={workflowsByState as any[]} barSize={28}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
-                <XAxis dataKey="label" tick={{ fontSize: 11, fill: '#6b7280' }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 11, fill: '#6b7280' }} axisLine={false} tickLine={false} />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="count" name="Instances" radius={[6, 6, 0, 0]}>
-                  {(workflowsByState as any[]).map((_: any, i: number) => (
-                    <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          )}
-        </div>
-      </div>
-
-      {/* Charts row 2 */}
-      <div className="lftg-card p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="font-display font-semibold text-foreground">Mouvements de stock (14 derniers jours)</h2>
-          <button
-            onClick={() => handleExport(exportApi.stockCsv(), 'stock.csv')}
-            className="flex items-center gap-1.5 text-xs text-forest-600 hover:text-forest-700 font-medium"
-          >
-            <Download className="w-3.5 h-3.5" />
-            Exporter CSV
-          </button>
-        </div>
-        {(stockEvolution as any[]).length === 0 ? (
-          <div className="flex items-center justify-center h-48 text-muted-foreground text-sm">Aucun mouvement enregistré</div>
-        ) : (
-          <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={stockEvolution as any[]}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
-              <XAxis dataKey="date" tick={{ fontSize: 11, fill: '#6b7280' }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fontSize: 11, fill: '#6b7280' }} axisLine={false} tickLine={false} />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend wrapperStyle={{ fontSize: 12 }} />
-              <Line type="monotone" dataKey="entrees" name="Entrées" stroke="#16a34a" strokeWidth={2} dot={false} />
-              <Line type="monotone" dataKey="sorties" name="Sorties" stroke="#ea580c" strokeWidth={2} dot={false} />
-            </LineChart>
-          </ResponsiveContainer>
-        )}
-      </div>
-
-      {/* Quick actions */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        {[
-          { label: 'Export stock CSV', icon: Package, onClick: () => handleExport(exportApi.stockCsv(), 'stock.csv') },
-          { label: 'Export animaux CSV', icon: Bird, onClick: () => handleExport(exportApi.animauxCsv(), 'animaux.csv') },
-          { label: 'Export audit CSV', icon: GitBranch, onClick: () => handleExport(exportApi.auditCsv(), 'audit.csv') },
-          { label: 'Export formations CSV', icon: BookOpen, onClick: () => handleExport(exportApi.formationCsv(), 'formations.csv') },
-        ].map((action) => (
-          <button
-            key={action.label}
-            onClick={action.onClick}
-            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-muted hover:bg-muted/80 text-sm font-medium text-foreground transition-colors"
-          >
-            <Download className="w-4 h-4 text-forest-600" />
-            {action.label}
-          </button>
         ))}
+      </div>
+
+      {/* Actions rapides */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
+        <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-3">⚡ Actions rapides</h3>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[
+            { label: 'Export stock CSV', onClick: () => handleExport(exportApi.stockCsv(), 'stock.csv') },
+            { label: 'Export animaux CSV', onClick: () => handleExport(exportApi.animauxCsv(), 'animaux.csv') },
+            { label: 'Export audit CSV', onClick: () => handleExport(exportApi.auditCsv(), 'audit.csv') },
+            { label: 'Export formations CSV', onClick: () => handleExport(exportApi.formationCsv(), 'formations.csv') },
+          ].map(action => (
+            <button
+              key={action.label}
+              onClick={action.onClick}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors"
+            >
+              <span>📥</span>
+              {action.label}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
