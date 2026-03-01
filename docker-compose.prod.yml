@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: lftg-postgres-prod
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-lftg-prod}
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - lftg-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: lftg-redis-prod
+    restart: always
+    ports:
+      - "6380:6379"
+    networks:
+      - lftg-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: ./apps/backend/Dockerfile
+    container_name: lftg-backend-prod
+    restart: always
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@postgres:5432/${POSTGRES_DB:-lftg-prod}?schema=public
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key}
+      - JWT_EXPIRATION=${JWT_EXPIRATION:-3600}
+      - NODE_ENV=production
+    ports:
+      - "3001:3000"
+    networks:
+      - lftg-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./apps/frontend/Dockerfile
+    container_name: lftg-frontend-prod
+    restart: always
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:3000
+      - NODE_ENV=production
+    ports:
+      - "3000:3000"
+    networks:
+      - lftg-network
+
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: lftg-nginx-prod
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/prod.conf:/etc/nginx/conf.d/default.conf
+      # - ./certs:/etc/nginx/certs # Pour HTTPS
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - lftg-network
+
+volumes:
+  postgres_data_prod:
+
+networks:
+  lftg-network:
+    driver: bridge

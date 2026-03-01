@@ -1,0 +1,6 @@
+{
+  "HELLO": "Hola {name}",
+  "auth.login.success": "Inicio de sesión exitoso",
+  "auth.login.unauthorized": "Credenciales no válidas",
+  "auth.register.conflict": "Este correo electrónico ya está en uso"
+}

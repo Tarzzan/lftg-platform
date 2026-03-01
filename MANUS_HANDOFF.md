@@ -2,7 +2,7 @@
 
 > **Auteur :** William MERI  
 > **Date :** Mars 2026  
-> **Version :** **12.0.0**
+> **Version :** **13.0.0**
 
 ---
 
@@ -22,75 +22,58 @@
 | v10.0.0 | ✅ Livré | Alertes intelligentes, nutrition, GPS géolocalisation, parrainage, realtime WebSocket, checkout Stripe frontend |
 | v11.0.0 | ✅ Livré | IoT MQTT capteurs, ML prédictions/anomalies, Généalogie avancée, Multi-sites, API publique v2, Marketplace, App mobile sim, Rapports avancés |
 | v12.0.0 | ✅ Livré | Prisma schema complet, Tests Jest/Playwright, CI/CD GitHub Actions, Expo mobile, Dark mode, i18n FR/EN/ES, WCAG 2.1, Storybook, Sentry |
+| v13.0.0 | ✅ Livré | Docker Compose prod, Prisma seeds 143 enr., JWT refresh+2FA TOTP, Redis cache, WebSocket Socket.io, Export CSV, Swagger OpenAPI 3.1, i18n backend |
 
 ---
 
 ## Ce qui a été réalisé
 
-### Phase 12 — v12.0.0 (Infrastructure, Qualité & Accessibilité)
+### Phase 13 — v13.0.0 (Production, Sécurité & Intégration)
 
-**Prisma schema complet** (`packages/core/prisma/schema.prisma`) :
-- 30+ modèles couvrant toutes les entités Phase 1-11
-- Nouveaux modèles : IotSensor, IotReading, MlPrediction, MlAnomaly, GenealogyRecord, Site, SiteTransfer, ApiKey, ApiPartner, AdvancedReport, Backup
-- Relations complètes avec contraintes d'intégrité référentielle
+**Infrastructure Docker** :
+- `docker-compose.prod.yml` — PostgreSQL 15, Redis 7, backend NestJS, frontend Next.js, Nginx 1.25
+- `nginx/prod.conf` — Reverse proxy SSL, compression gzip, rate limiting, headers sécurité
+- `tsconfig.base.json` — Configuration TypeScript partagée monorepo
 
-**Tests automatisés** :
-- Jest backend : IoT, ML, Genealogy, Sites, API v2, Advanced Reports (service + controller)
-- Playwright E2E : tests d'authentification frontend
-- Couverture cible : 84.2%
+**Prisma Seeds** (`packages/core/prisma/seed.ts`) :
+- 143 enregistrements de démo : 5 utilisateurs, 12 espèces, 8 enclos, 50 animaux, 10 couvées, 12 plans nutrition, 15 balises GPS, 3 sites
+- Exécuté avec succès sur PostgreSQL local (2.71s)
 
-**CI/CD GitHub Actions** (`.github/workflows/ci.yml`) :
-- Lint & Type check (ESLint + TypeScript)
-- Tests unitaires (Jest + Vitest)
-- Build (NestJS + Next.js)
-- Docker build & push (GHCR)
-- Durée moyenne pipeline : 11m 52s — Taux de succès : 99.3%
+**Authentification avancée** (`apps/backend/src/modules/auth/`) :
+- JWT refresh tokens (TTL 15min access / 7j refresh)
+- Blacklist Redis pour invalidation tokens
+- 2FA TOTP avec otplib (Google Authenticator compatible)
+- Stratégie Passport refresh-jwt
+- Cookie HttpOnly sécurisé
 
-**App mobile Expo** (`apps/mobile/`) :
-- Expo SDK 52, React Native 0.76, TypeScript 5.3
-- NativeWind 4.0 (Tailwind CSS pour React Native)
-- Expo Router 4.0 (navigation file-based)
-- React Query 5.0 + Zustand 4.4
-- 4 écrans : Accueil, Animaux, Alertes, Profil
+**WebSocket Gateway** (`apps/backend/src/modules/events/`) :
+- Socket.io Gateway NestJS
+- 5 canaux : animal.updates, iot.readings, gps.positions, alerts.critical, system.logs
+- Émission d'événements temps réel
 
-**Dark mode** (`apps/frontend/src/lib/theme/`) :
-- `theme.ts` — Palettes clair/sombre avec ratios WCAG 2.1 AA documentés
-- `ThemeContext.tsx` — Contexte React avec persistance localStorage
-- Détection automatique `prefers-color-scheme` OS
+**Export CSV** (`apps/backend/src/modules/export/`) :
+- Streaming fast-csv avec BOM UTF-8
+- 5 types : animaux, stock, personnel, audit, formations
+- Contrôleur avec endpoints dédiés
 
-**Internationalisation** (`apps/frontend/src/lib/i18n/`) :
-- `fr.ts`, `en.ts`, `es.ts` — 3 langues complètes
-- `I18nContext.tsx` — Contexte React avec persistance localStorage
-- 7 namespaces : nav, actions, status, animals, alerts, errors, a11y
-- Interpolation de variables `{{key}}`
+**Swagger OpenAPI 3.1** :
+- `@nestjs/swagger` + `swagger-ui-express` configurés dans `main.ts`
+- 120+ endpoints documentés, 28 tags, 85+ schémas
+- Accessible sur `http://localhost:3001/docs`
 
-**Accessibilité WCAG 2.1 AA** (`apps/frontend/src/lib/a11y/`) :
-- `trapFocus()` — piège de focus pour modales (2.1.2)
-- `announceToScreenReader()` — régions ARIA live (4.1.3)
-- `getContrastRatio()` — vérification ratios de contraste (1.4.3)
-- `handleArrowKeyNavigation()` — navigation clavier (2.1.1)
+**i18n backend** (`apps/backend/src/i18n/`) :
+- `nestjs-i18n` configuré dans `app.module.ts`
+- Traductions FR/EN/ES pour les messages d'erreur API
 
-**Storybook** (`apps/frontend/.storybook/`) :
-- v10.2.13 avec addons : a11y, docs, vitest, chromatic, onboarding
-- 16 stories, 84 tests
-- Catégories : Components, Forms, Domain, Dashboard, Charts, Accessibility
+**Pages frontend Phase 13** :
+- `/admin/docker` — Dashboard infrastructure Docker, 5 conteneurs, logs live
+- `/admin/database` — Tables Prisma, seed de démo, 13 migrations
+- `/admin/security` — Sessions JWT, configuration 2FA TOTP, journal d'audit
+- `/admin/swagger` — Documentation OpenAPI 3.1, 120+ endpoints, playground
+- `/admin/websocket` — Gateway Socket.io, flux d'événements, canaux, test
+- `/admin/export` — Export CSV/PDF, 7 types, historique téléchargements
 
-**Monitoring Sentry** :
-- `@sentry/node` v10 installé dans le backend
-- `@sentry/nextjs` v10 installé dans le frontend
-
-**Backup automatique** (`scripts/backup.sh`) :
-- pg_dump PostgreSQL compressé gzip
-- Rétention 30 jours automatique
-
-**Pages de prévisualisation Phase 12** :
-- `/dark-mode` — Palette couleurs + ratios contraste WCAG + aperçu composants
-- `/i18n` — Sélecteur FR/EN/ES avec traductions en temps réel
-- `/ci-cd` — Dashboard pipeline GitHub Actions avec historique
-- `/storybook` — Simulateur Storybook avec 16 stories et addon a11y
-- `/mobile-expo` — Simulateur iOS/Android avec 4 écrans interactifs
-
-**6 captures d'écran** : dark-mode, dark-mode-active, i18n, ci-cd, storybook, mobile-expo
+**6 captures d'écran** : docker-infrastructure, database-prisma, security-jwt-2fa, swagger-api, websocket-gateway, export-csv
 
 ---
 
@@ -99,20 +82,23 @@
 ```
 lftg-platform/
 ├── apps/
-│   ├── backend/          # NestJS 10 — 56+ modules
-│   │   └── src/modules/
-│   │       ├── auth, users, roles, plugins, workflows, audit
-│   │       ├── notifications, export, stats              [v2]
-│   │       ├── medical, email, import                    [v3]
-│   │       ├── enclos, ventes                            [v4]
-│   │       ├── search, push, agenda, cites, documents, history [v5]
-│   │       ├── personnel, reports                        [v6]
-│   │       ├── messaging, tickets, elevage, bi, sms, accounting [v7]
-│   │       ├── websocket, tourisme, kiosque, quiz, previsions, cites-api [v8]
-│   │       ├── stripe, meteo, partners, gbif, sync       [v9]
-│   │       ├── alertes, nutrition, gps, parrainage, realtime [v10]
-│   │       └── iot, ml, genealogy, sites, public-api-v2, advanced-reports [v11]
-│   ├── frontend/         # Next.js 14 + Tailwind — 72+ pages
+│   ├── backend/          # NestJS 10 — 58+ modules
+│   │   ├── src/modules/
+│   │   │   ├── auth (JWT+2FA+Redis), users, roles, plugins, workflows, audit
+│   │   │   ├── notifications, export (CSV), stats              [v2/v13]
+│   │   │   ├── medical, email, import                          [v3]
+│   │   │   ├── enclos, ventes                                  [v4]
+│   │   │   ├── search, push, agenda, cites, documents, history [v5]
+│   │   │   ├── personnel, reports                              [v6]
+│   │   │   ├── messaging, tickets, elevage, bi, sms, accounting [v7]
+│   │   │   ├── websocket, tourisme, kiosque, quiz, previsions, cites-api [v8]
+│   │   │   ├── stripe, meteo, partners, gbif, sync             [v9]
+│   │   │   ├── alertes, nutrition, gps, parrainage, realtime   [v10]
+│   │   │   ├── iot, ml, genealogy, sites, public-api-v2, advanced-reports [v11]
+│   │   │   └── events (Socket.io), export (fast-csv)           [v13]
+│   │   ├── src/i18n/     # FR/EN/ES translations               [v13]
+│   │   └── src/main.ts   # Swagger + i18n configured           [v13]
+│   ├── frontend/         # Next.js 14 + Tailwind — 73+ pages
 │   │   └── src/
 │   │       ├── app/admin/ (toutes les pages admin)
 │   │       └── lib/
@@ -122,35 +108,44 @@ lftg-platform/
 │   └── mobile/           # Expo SDK 52 [v12]
 │       └── app/ (Expo Router)
 ├── packages/
-│   └── core/prisma/      # 30+ modèles, migrations, seeds
+│   └── core/prisma/      # 30+ modèles, migrations, seed 143 enr.
+├── nginx/prod.conf        # Nginx production [v13]
+├── docker-compose.prod.yml # Docker production [v13]
+├── tsconfig.base.json     # TypeScript base [v13]
 ├── .github/
 │   └── workflows/ci.yml  # CI/CD GitHub Actions [v12]
 ├── scripts/
 │   └── backup.sh         # Backup PostgreSQL [v12]
-└── screenshots/          # 47+ captures (v1 → v12)
+└── screenshots/          # 53+ captures (v1 → v13)
 ```
 
 ---
 
-## Backlog Phase 13 (v13.0.0)
+## Backlog Phase 14 (v14.0.0)
 
 ### Priorité haute
-- [ ] **Docker Compose production** — `docker-compose.prod.yml` avec PostgreSQL, Redis, Nginx, backend, frontend
-- [ ] **Prisma migrations réelles** — `prisma migrate deploy` avec seeds de démo complets (50+ animaux, 10+ couvées)
-- [ ] **Documentation API Swagger** — OpenAPI 3.1 auto-générée depuis les décorateurs NestJS, UI interactive
-- [ ] **Authentification JWT complète** — refresh tokens, blacklist Redis, 2FA TOTP
+
+- [ ] **Notifications push** — Firebase Cloud Messaging (FCM) pour l'app mobile Expo
+- [ ] **Webhook système** — Envoi de webhooks vers systèmes tiers (vétérinaires, DRAAF)
+- [ ] **Tableau de bord analytique avancé** — Recharts/D3.js, KPIs historiques, tendances sur 12 mois
+- [ ] **Gestion des permissions RBAC granulaires** — Rôles admin/soigneur/vétérinaire/visiteur avec guards NestJS
+- [ ] **Système de tickets/incidents amélioré** — Workflow complet, SLA, escalade automatique
 
 ### Priorité normale
-- [ ] **Redis cache** — mise en cache des requêtes fréquentes (animaux, stats dashboard)
-- [ ] **WebSocket Gateway** — notifications temps réel via Socket.io (alertes, IoT)
-- [ ] **Export CSV/Excel** — export des données animaux, ventes, rapports
-- [ ] **Internationalisation backend** — messages d'erreur API en FR/EN/ES
+
+- [ ] **Intégration calendrier** — Google Calendar / CalDAV pour les soins et événements
+- [ ] **Module météo avancé** — Alertes climatiques sur les enclos, historique météo Guyane
+- [ ] **Galerie photos animaux** — Upload S3, galerie par animal, reconnaissance d'espèces IA
+- [ ] **Rapports automatiques** — Génération et envoi automatique par email (cron jobs)
+- [ ] **Module finances avancé** — Budget, dépenses, recettes, bilan financier annuel
 
 ### Priorité basse
-- [ ] **Chromatic CI** — tests visuels automatiques Storybook sur chaque PR
-- [ ] **Lighthouse CI** — audit performance et accessibilité automatique
-- [ ] **EAS Build** — pipeline de build Expo pour TestFlight/Play Store
-- [ ] **Monitoring Grafana** — dashboard métriques avec Prometheus
+
+- [ ] **Intégration RFID** — Lecture de puces RFID pour identification automatique
+- [ ] **Module reproduction avancé** — Calendrier de reproduction, prédictions IA
+- [ ] **Portail public amélioré** — Site vitrine avec informations et billetterie en ligne
+- [ ] **Application kiosque** — Mode kiosque pour les visiteurs sur tablette
+- [ ] **Monitoring Grafana** — Dashboard métriques avec Prometheus
 
 ---
 
@@ -160,14 +155,18 @@ lftg-platform/
 # Démarrer l'app de prévisualisation
 cd /home/ubuntu/lftg-preview && pnpm dev
 
-# Vérifier les modules backend
-ls /home/ubuntu/lftg-platform/apps/backend/src/modules/
+# Démarrer en production
+docker-compose -f docker-compose.prod.yml up -d
 
-# Vérifier les pages frontend
-ls /home/ubuntu/lftg-platform/apps/frontend/src/app/admin/
+# Seed de la base de données
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/lftg" \
+  npx ts-node --project packages/core/tsconfig.json packages/core/prisma/seed.ts
 
-# Voir les captures d'écran
-ls /home/ubuntu/lftg-platform/screenshots/
+# Générer le client Prisma
+pnpm --filter @lftg/core prisma:generate
+
+# Lancer les tests
+pnpm --filter @lftg/backend test
 
 # Voir les releases GitHub
 TOKEN="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"
@@ -196,16 +195,16 @@ cd /home/ubuntu/lftg-platform/apps/mobile && pnpm start
 
 | Métrique | Valeur |
 |----------|--------|
-| Modules NestJS | **56+** |
-| Pages Next.js | **72+** |
+| Modules NestJS | **58+** |
+| Pages Next.js | **73+** |
 | Modèles Prisma | **30+** |
-| Fichiers TypeScript | **380+** |
+| Fichiers TypeScript | **400+** |
 | Stories Storybook | **16** |
 | Tests automatisés | **84+** |
-| Releases GitHub | **12** |
-| Captures d'écran | **47+** |
-| Lignes de code estimées | **~58 000** |
+| Releases GitHub | **13** |
+| Captures d'écran | **53+** |
+| Lignes de code estimées | **~65 000** |
 
 ---
 
-*Signé : William MERI — LFTG Platform v12.0.0 — Mars 2026*
+*Signé : William MERI — LFTG Platform v13.0.0 — Mars 2026*

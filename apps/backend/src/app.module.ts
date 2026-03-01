@@ -1,5 +1,9 @@
 import { Module } from '@nestjs/common';
+import { CacheModule } from '@nestjs/cache-manager';
 import { ConfigModule } from '@nestjs/config';
+import { redisStore } from 'cache-manager-redis-store';
+import { I18nModule, QueryResolver, HeaderResolver } from 'nestjs-i18n';
+import * as path from 'path';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -65,6 +69,22 @@ import { AdvancedReportsModule } from './modules/advanced-reports/advanced-repor
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    CacheModule.register({
+      isGlobal: true,
+      store: redisStore as any, // Correction pour le type
+      url: process.env.REDIS_URL || 'redis://localhost:6379',
+    }),
+    I18nModule.forRoot({
+      fallbackLanguage: 'fr',
+      loaderOptions: {
+        path: path.join(__dirname, '/i18n/'),
+        watch: true,
+      },
+      resolvers: [
+        { use: QueryResolver, options: ['lang'] },
+        new HeaderResolver(['x-lang']),
+      ],
+    }),
     EventEmitterModule.forRoot(),
     PrismaModule,
     AuthModule,
