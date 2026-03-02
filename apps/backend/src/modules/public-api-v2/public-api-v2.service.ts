@@ -1,4 +1,3 @@
-'''
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 
 @Injectable()
@@ -25,4 +24,3 @@ export class PublicApiV2Service {
     return { status: 'observation received', id: new Date().getTime() };
   }
 }
-'''

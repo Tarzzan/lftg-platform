@@ -15,13 +15,16 @@ generator client {
 // =======================================
 
 model User {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  email     String   @unique
-  name      String?
-  password  String
-  isActive  Boolean  @default(true)
+  id                  String   @id @default(cuid())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  email               String   @unique
+  name                String?
+  password            String
+  isActive            Boolean  @default(true)
+  refreshToken        String?
+  twoFactorSecret     String?
+  isTwoFactorEnabled  Boolean  @default(false)
 
   roles              Role[]             @relation("UserRoles")
   teams              Team[]             @relation("TeamUsers")
@@ -29,6 +32,9 @@ model User {
   workflowInstances  WorkflowInstance[] @relation("InstanceAssignee")
   workflowHistories  WorkflowHistory[]
   salesCreated       Sale[]             @relation("SaleCreatedBy")
+  documents          Document[]
+  historyLogs        HistoryLog[]
+  pushSubscriptions  PushSubscription[]
 }
 
 model Role {
@@ -135,11 +141,16 @@ model WorkflowHistory {
 model Employee {
   id         String     @id @default(cuid())
   userId     String     @unique
+  firstName  String?
+  lastName   String?
+  email      String?
+  phone      String?
   jobTitle   String?
   department String?
   hireDate   DateTime?
-  documents  HrDocument[]
-  skills     Skill[]    @relation("EmployeeSkills")
+  documents    HrDocument[]
+  skills       Skill[]      @relation("EmployeeSkills")
+  agendaEvents AgendaEvent[]
 }
 
 model Skill {
@@ -170,6 +181,11 @@ model StockItem {
   quantity          Float           @default(0)
   unit              String
   lowStockThreshold Float           @default(0)
+  minThreshold      Float           @default(0)
+  maxThreshold      Float?
+  reference         String?         @unique
+  supplier          String?
+  unitPrice         Float?
   location          String?
   movements         StockMovement[]
   requests          StockRequest[]
@@ -215,6 +231,7 @@ model Species {
   commonName     String?
   description    String?
   citesStatus    String?  // I, II, III, Non listé
+  citesAppendix  String?  // I, II, III
   conservationStatus String? // CR, EN, VU, NT, LC
   origin         String?
   habitat        String?
@@ -233,6 +250,7 @@ model Species {
 model Enclosure {
   id          String   @id @default(cuid())
   name        String   @unique
+  code        String?  @unique
   type        String   @default("terrarium") // terrarium, volière, bassin, paddock, cage
   description String?
   capacity    Int      @default(1)
@@ -243,12 +261,13 @@ model Enclosure {
   latitude    Float?
   longitude   Float?
   imageUrl    String?
-  animals     Animal[]
-  siteId      String?
-  site        Site?      @relation(fields: [siteId], references: [id])
-  iotDevices  IotDevice[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  animals      Animal[]
+  siteId       String?
+  site         Site?       @relation(fields: [siteId], references: [id])
+  iotDevices   IotDevice[]
+  agendaEvents AgendaEvent[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Animal {
@@ -269,14 +288,17 @@ model Animal {
   weight       Float?       // grammes
   notes        String?
   imageUrl     String?
-  events       AnimalEvent[]
-  saleItems    SaleItem[]
-  sponsorships Sponsorship[]
-  gpsDevice    GpsDevice?
-  predictions  MlPrediction[]
-  genealogy    Genealogy?
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  events         AnimalEvent[]
+  saleItems      SaleItem[]
+  sponsorships   Sponsorship[]
+  gpsDevice      GpsDevice?
+  predictions    MlPrediction[]
+  genealogy      Genealogy?
+  medicalVisits  MedicalVisit[]
+  agendaEvents   AgendaEvent[]
+  citesPermits   CitesPermit[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 
   @@index([speciesId])
   @@index([enclosureId])
@@ -666,4 +688,139 @@ model AdvancedReport {
   params      Json?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+// ─── Agenda ───────────────────────────────────────────────────────────────
+model AgendaEvent {
+  id               String    @id @default(cuid())
+  title            String
+  description      String?
+  startDate        DateTime
+  endDate          DateTime?
+  allDay           Boolean   @default(false)
+  type             String    @default("OTHER")
+  priority         String    @default("NORMAL")
+  status           String    @default("PENDING")
+  animalId         String?
+  animal           Animal?   @relation(fields: [animalId], references: [id])
+  enclosureId      String?
+  enclosure        Enclosure? @relation(fields: [enclosureId], references: [id])
+  assignedToId     String?
+  assignedTo       Employee? @relation(fields: [assignedToId], references: [id])
+  recurrence       String    @default("NONE")
+  recurrenceEnd    DateTime?
+  reminderMinutes  Int?
+  reminderSent     Boolean   @default(false)
+  completedAt      DateTime?
+  parentEventId    String?
+  createdById      String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  @@index([startDate, type])
+}
+
+// ─── Médical ──────────────────────────────────────────────────────────────
+model MedicalVisit {
+  id           String      @id @default(cuid())
+  animalId     String
+  animal       Animal      @relation(fields: [animalId], references: [id])
+  visitDate    DateTime
+  type         String      @default("CHECKUP")
+  vetName      String?
+  diagnosis    String?
+  notes        String?
+  weight       Float?
+  temperature  Float?
+  treatments   Treatment[]
+  vaccinations Vaccination[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  @@index([animalId, visitDate])
+}
+
+model Treatment {
+  id             String       @id @default(cuid())
+  medicalVisitId String
+  medicalVisit   MedicalVisit @relation(fields: [medicalVisitId], references: [id], onDelete: Cascade)
+  name           String
+  dosage         String?
+  frequency      String?
+  duration       String?
+  startDate      DateTime?
+  endDate        DateTime?
+  notes          String?
+  createdAt      DateTime     @default(now())
+}
+
+model Vaccination {
+  id             String       @id @default(cuid())
+  medicalVisitId String
+  medicalVisit   MedicalVisit @relation(fields: [medicalVisitId], references: [id], onDelete: Cascade)
+  name           String
+  batch          String?
+  expiryDate     DateTime?
+  nextDueDate    DateTime?
+  notes          String?
+  createdAt      DateTime     @default(now())
+}
+
+// ─── Documents ────────────────────────────────────────────────────────────
+model Document {
+  id           String   @id @default(cuid())
+  name         String
+  type         String   @default("OTHER")
+  url          String
+  size         Int?
+  mimeType     String?
+  entityType   String?
+  entityId     String?
+  uploadedById String?
+  uploadedBy   User?    @relation(fields: [uploadedById], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  @@index([entityType, entityId])
+}
+
+// ─── Historique ───────────────────────────────────────────────────────────
+model HistoryLog {
+  id         String   @id @default(cuid())
+  entityType String
+  entityId   String
+  action     String
+  changes    Json?
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+  @@index([entityType, entityId])
+}
+
+// ─── Push Notifications ───────────────────────────────────────────────────
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userAgent String?
+  createdAt DateTime @default(now())
+  @@index([userId])
+}
+
+// ─── CITES Permits ────────────────────────────────────────────────────────
+model CitesPermit {
+  id           String    @id @default(cuid())
+  animalId     String?
+  animal       Animal?   @relation(fields: [animalId], references: [id])
+  permitNumber String    @unique
+  type         String    @default("IMPORT")
+  status       String    @default("PENDING")
+  issuedBy     String?
+  issuedAt     DateTime?
+  expiresAt    DateTime?
+  species      String?
+  quantity     Int       @default(1)
+  notes        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 }

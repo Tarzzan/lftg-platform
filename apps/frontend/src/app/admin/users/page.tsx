@@ -1,18 +1,33 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { Users, Plus, Search, Shield, CheckCircle, XCircle } from 'lucide-react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Users, Plus, Search, Shield, CheckCircle, XCircle, Edit2, Trash2 } from 'lucide-react';
 import { usersApi } from '@/lib/api';
 import { useState } from 'react';
+import { UserModal } from '@/components/modals/UserModal';
 
 export default function UsersPage() {
+  const qc = useQueryClient();
   const [search, setSearch] = useState('');
+  const [userModal, setUserModal] = useState<{ open: boolean; user?: any }>({ open: false });
+
   const { data: users, isLoading } = useQuery({ queryKey: ['users'], queryFn: usersApi.list });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => usersApi.delete(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['users'] }),
+  });
 
   const filtered = (users || []).filter((u: any) =>
     u.email.toLowerCase().includes(search.toLowerCase()) ||
     u.name?.toLowerCase().includes(search.toLowerCase()),
   );
+
+  const handleDelete = (user: any) => {
+    if (confirm(`Supprimer l'utilisateur ${user.name || user.email} ?`)) {
+      deleteMutation.mutate(user.id);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -21,9 +36,12 @@ export default function UsersPage() {
           <h1 className="page-title">Utilisateurs</h1>
           <p className="text-sm text-muted-foreground mt-1">{users?.length ?? 0} utilisateurs enregistrés</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 rounded-lg bg-forest-600 hover:bg-forest-700 text-white text-sm font-medium transition-colors">
+        <button
+          onClick={() => setUserModal({ open: true })}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-forest-600 hover:bg-forest-700 text-white text-sm font-medium transition-colors"
+        >
           <Plus className="w-4 h-4" />
-          Inviter un utilisateur
+          Nouvel utilisateur
         </button>
       </div>
 
@@ -52,6 +70,7 @@ export default function UsersPage() {
                   <th className="text-left py-3 px-2 font-medium text-muted-foreground">Équipes</th>
                   <th className="text-left py-3 px-2 font-medium text-muted-foreground">Statut</th>
                   <th className="text-left py-3 px-2 font-medium text-muted-foreground">Créé le</th>
+                  <th className="text-left py-3 px-2 font-medium text-muted-foreground">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -88,7 +107,7 @@ export default function UsersPage() {
                       </div>
                     </td>
                     <td className="py-3 px-2">
-                      {user.isActive ? (
+                      {user.isActive !== false ? (
                         <span className="flex items-center gap-1 text-forest-600 text-xs font-medium">
                           <CheckCircle className="w-3.5 h-3.5" /> Actif
                         </span>
@@ -101,6 +120,24 @@ export default function UsersPage() {
                     <td className="py-3 px-2 text-muted-foreground text-xs">
                       {new Date(user.createdAt).toLocaleDateString('fr-FR')}
                     </td>
+                    <td className="py-3 px-2">
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => setUserModal({ open: true, user })}
+                          className="p-1.5 rounded hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
+                          title="Modifier"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(user)}
+                          className="p-1.5 rounded hover:bg-red-50 transition-colors text-muted-foreground hover:text-red-600"
+                          title="Supprimer"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -111,6 +148,12 @@ export default function UsersPage() {
           </div>
         )}
       </div>
+
+      <UserModal
+        isOpen={userModal.open}
+        onClose={() => setUserModal({ open: false })}
+        user={userModal.user}
+      />
     </div>
   );
 }

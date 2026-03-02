@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🦜 LFTG Platform
+# 🦜 LFTG Platform v15.0.0
 
 **La Ferme Tropicale de Guyane — Plateforme de gestion intégrée**
 
@@ -24,8 +24,8 @@ La **LFTG Platform** est une application web complète conçue pour centraliser 
 ### Fonctionnalités principales
 
 | Domaine | Description |
-|---------|-------------|
-| **Auth & RBAC/ABAC** | Authentification JWT, rôles granulaires, permissions par action/sujet |
+|---|---|
+| **Auth & RBAC** | Authentification JWT, rôles granulaires, permissions par action/sujet |
 | **Workflow Engine** | Moteur de workflows configurable avec états, transitions, historique et événements |
 | **Plugin Registry** | Système de plugins auto-enregistrables avec manifests, menus et permissions |
 | **Audit Log** | Journal d'audit complet de toutes les actions |
@@ -44,72 +44,80 @@ lftg-platform/
 │   ├── backend/          # API NestJS (port 3001)
 │   └── frontend/         # Interface Next.js (port 3000)
 ├── packages/
-│   ├── core/             # Prisma schema, seed, types partagés
-│   └── shared-types/     # DTOs et interfaces TypeScript
+│   └── core/             # Prisma schema, seed, types partagés
 ├── plugins/
 │   ├── personnel/        # Plugin RH
 │   ├── stock/            # Plugin Stock
 │   ├── animaux-couvees/  # Plugin Animaux & Couvées
 │   └── formation/        # Plugin LMS
-├── docs/                 # Documentation technique
-├── docker-compose.yml    # Production
-└── docker-compose.dev.yml # Développement
+├── docker-compose.yml    # Développement & Production
+└── docker-compose.prod.yml # Production avec Nginx
 ```
 
 ---
 
-## Démarrage rapide
+## Démarrage rapide (Docker Recommandé)
 
 ### Prérequis
 
-- Node.js 20+
-- pnpm 8+
-- Docker & Docker Compose
+- **Docker & Docker Compose** (méthode recommandée)
+- Ou : Node.js 20+, pnpm 9+
 
-### Installation
+### Installation & Lancement (Docker)
+
+Cette méthode est la plus simple et la plus fiable pour lancer le projet.
 
 ```bash
-# Cloner le dépôt
+# 1. Cloner le dépôt
 git clone https://github.com/Tarzzan/lftg-platform.git
 cd lftg-platform
 
-# Installer les dépendances
-pnpm install
-
-# Configurer l'environnement
+# 2. Configurer l'environnement
 cp .env.example .env
-# Éditer .env selon votre configuration
-```
+# (Optionnel) Éditer .env si vous utilisez des ports différents
 
-### Développement local
-
-```bash
-# 1. Démarrer la base de données
-docker-compose -f docker-compose.dev.yml up -d
-
-# 2. Générer le client Prisma
-pnpm --filter @lftg/core prisma:generate
-
-# 3. Appliquer les migrations
-pnpm --filter @lftg/core prisma:migrate
-
-# 4. Seeder la base de données
-pnpm --filter @lftg/core prisma:seed
-
-# 5. Démarrer l'application
-pnpm dev
+# 3. Lancer les conteneurs
+docker-compose up --build -d
 ```
 
 L'application sera disponible sur :
 - **Frontend** : http://localhost:3000
-- **Backend API** : http://localhost:3001/api/v1
-- **Swagger** : http://localhost:3001/api/docs
+- **Backend API** : http://localhost:3001
+- **Swagger** : http://localhost:3001/docs
 
-### Production (Docker)
+La base de données sera automatiquement migrée et seedée au premier démarrage du conteneur `backend`.
+
+### Installation locale (alternative)
 
 ```bash
-docker-compose up --build -d
+# 1. Installer les dépendances
+pnpm install
+
+# 2. Démarrer la base de données et Redis
+docker-compose up -d db redis
+
+# 3. Appliquer les migrations et le seed
+pnpm prisma:migrate
+pnpm prisma:seed
+
+# 4. Démarrer l'application en mode dev
+pnpm dev
 ```
+
+---
+
+## Déploiement en Production
+
+Le fichier `docker-compose.prod.yml` est configuré pour un déploiement en production avec un reverse proxy Nginx.
+
+```bash
+# Assurez-vous que votre .env est configuré pour la production
+# (notamment JWT_SECRET et les URLs publiques)
+
+docker-compose -f docker-compose.prod.yml up --build -d
+```
+
+Le site sera accessible sur `http://localhost` (port 80).
 
 ---
 
@@ -118,56 +126,21 @@ docker-compose up --build -d
 Après le seed, les comptes suivants sont disponibles :
 
 | Email | Mot de passe | Rôle |
-|-------|-------------|------|
-| admin@lftg.fr | Admin1234! | Administrateur |
-| soigneur@lftg.fr | User1234! | Soigneur animalier |
-| gestionnaire@lftg.fr | User1234! | Gestionnaire de stock |
+|---|---|---|
+| `admin@lftg.fr` | `Admin1234!` | Administrateur |
+| `soigneur@lftg.fr` | `User1234!` | Soigneur animalier |
+| `gestionnaire@lftg.fr` | `User1234!` | Gestionnaire de stock |
 
 ---
 
-## Design System
+## Scripts PNPM
 
-La plateforme utilise un design system inspiré de la **biodiversité guyanaise** :
-
-| Palette | Usage | Couleur |
-|---------|-------|---------|
-| `forest` | Primaire, actions, succès | Vert forêt tropicale |
-| `laterite` | Secondaire, alertes | Terre rouge / latérite |
-| `maroni` | Accent, liens | Bleu fleuve Maroni |
-| `gold` | Avertissements, couvées | Or / orpaillage |
-| `wood` | Neutres, textes | Bois / terre |
-
----
-
-## API Documentation
-
-La documentation Swagger complète est disponible à l'adresse `/api/docs` lorsque le backend est en cours d'exécution.
-
-### Endpoints principaux
-
-| Groupe | Base URL |
-|--------|----------|
-| Auth | `/api/v1/auth` |
-| Users | `/api/v1/users` |
-| Roles | `/api/v1/roles` |
-| Workflows | `/api/v1/workflows` |
-| Audit | `/api/v1/audit` |
-| Plugin Stock | `/api/v1/plugins/stock` |
-| Plugin Animaux | `/api/v1/plugins/animaux` |
-| Plugin Personnel | `/api/v1/plugins/personnel` |
-| Plugin Formation | `/api/v1/plugins/formation` |
-
----
-
-## Tests
-
-```bash
-# Tests unitaires
-pnpm --filter backend test
-
-# Tests avec couverture
-pnpm --filter backend test --coverage
-```
+- `pnpm dev`: Lance le frontend et le backend en mode watch.
+- `pnpm build`: Build les applications pour la production.
+- `pnpm prisma:migrate`: Applique les migrations Prisma.
+- `pnpm prisma:seed`: Exécute le script de seed.
+- `pnpm prisma:studio`: Ouvre Prisma Studio pour explorer la base de données.
+- `pnpm test`: Lance les tests unitaires du backend.
 
 ---
 
@@ -179,5 +152,5 @@ Ce projet est géré par **William MERI**. Pour contribuer, créez une branche d
 
 <div align="center">
   <sub>Développé avec ❤️ pour La Ferme Tropicale de Guyane</sub><br>
-  <sub>© 2026 William MERI — LFTG Platform v1.0.0</sub>
+  <sub>© 2026 William MERI — LFTG Platform v15.0.0</sub>
 </div>

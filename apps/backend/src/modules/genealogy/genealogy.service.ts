@@ -1,4 +1,3 @@
-'''
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -19,4 +18,3 @@ export class GenealogyService {
     return { animalId, coefficient: 0.0125 };
   }
 }
-'''

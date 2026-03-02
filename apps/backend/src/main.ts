@@ -59,9 +59,10 @@ dans l'en-tête \`Authorization: Bearer <token>\` pour toutes les requêtes prot
 | v1.0.0 | Stable | Fondations — Auth, RBAC, Plugins, Workflows |
 | v2.0.0 | Stable | SSE, Export CSV/PDF, Stats |
 | v3.0.0 | Stable | Module médical, Email, Import CSV |
-| v4.0.0 | Actuel | Enclos, Ventes, Swagger complet |
+| v4.0.0 | Stable | Enclos, Ventes, Swagger complet |
+| v15.0.0 | Actuel | Consolidation — Dépendances, Docker, RBAC, CRUD |
     `)
-    .setVersion("13.0.0")
+    .setVersion("15.0.0")
     .setContact('LFTG Team', 'https://github.com/Tarzzan/lftg-platform', 'admin@lftg.fr')
     .setLicense('MIT', 'https://opensource.org/licenses/MIT')
     .addBearerAuth(
@@ -119,16 +120,16 @@ dans l'en-tête \`Authorization: Bearer <token>\` pour toutes les requêtes prot
   app.getHttpAdapter().get("/health", (_req: any, res: any) => {
     res.json({
       status: "ok",
-      version: "13.0.0",
+      version: "15.0.0",
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),
     });
   });
 
   const port = process.env.PORT || 3001;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 
-  logger.log(`🦜 LFTG Platform API v13.0.0 démarrée sur http://localhost:${port}`);
+  logger.log(`🦜 LFTG Platform API v15.0.0 démarrée sur http://localhost:${port}`);
   logger.log(`📚 Documentation Swagger : http://localhost:${port}/docs`);
   logger.log(`🏥 Health check : http://localhost:${port}/health`);
 }

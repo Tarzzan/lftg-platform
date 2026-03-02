@@ -23,6 +23,23 @@ services:
       retries: 5
 
   # ─────────────────────────────────────────
+  #  Redis Cache
+  # ─────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: lftg-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - lftg_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─────────────────────────────────────────
   #  Backend (NestJS)
   # ─────────────────────────────────────────
   backend:
@@ -34,17 +51,27 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       DATABASE_URL: postgresql://lftg:lftg_secret@db:5432/lftg_platform
       JWT_SECRET: ${JWT_SECRET:-lftg-super-secret-key-change-in-production}
       JWT_EXPIRES_IN: 7d
       PORT: 3001
-      FRONTEND_URL: http://localhost:3000
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
       NODE_ENV: production
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     ports:
       - "3001:3001"
     volumes:
       - ./packages/core/prisma:/app/packages/core/prisma
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3001/api/v1/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
   # ─────────────────────────────────────────
   #  Frontend (Next.js)
@@ -56,13 +83,19 @@ services:
     container_name: lftg-frontend
     restart: unless-stopped
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:3001/api/v1
+      # URL publique pour les appels client-side (navigateur)
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001/api/v1}
       NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: "0.0.0.0"
     ports:
       - "3000:3000"
 
 volumes:
   lftg_db_data:
+    driver: local
+  lftg_redis_data:
     driver: local

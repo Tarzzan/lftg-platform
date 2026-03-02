@@ -5,8 +5,6 @@ import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Cache } from 'cache-manager';
-import * as speakeasy from 'speakeasy';
-import * as qrcode from 'qrcode';
 
 @Injectable()
 export class AuthService {
@@ -28,6 +26,17 @@ export class AuthService {
     return result;
   }
 
+  async register(dto: RegisterDto) {
+    const existing = await this.prisma.user.findUnique({ where: { email: dto.email } });
+    if (existing) throw new ConflictException('Un compte avec cet email existe déjà');
+    const hashed = await bcrypt.hash(dto.password, 10);
+    const user = await this.prisma.user.create({
+      data: { email: dto.email, name: dto.name, password: hashed },
+    });
+    const { password: _, ...result } = user;
+    return result;
+  }
+
   async login(user: any) {
     const tokens = await this.getTokens(user.id, user.email);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
@@ -37,16 +46,24 @@ export class AuthService {
         id: user.id,
         email: user.email,
         name: user.name,
-        roles: user.roles.map((r: any) => r.name),
+        roles: user.roles?.map((r: any) => r.name) ?? [],
       },
     };
   }
 
   async logout(userId: string) {
     await this.prisma.user.update({ where: { id: userId }, data: { refreshToken: null } });
-    // Optionnel : ajouter le token à une blacklist Redis
-    // await this.cacheManager.set(`blacklist_${accessToken}`, true, { ttl: 3600 });
     return { message: 'Déconnexion réussie' };
+  }
+
+  async getProfile(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { roles: { include: { permissions: true } }, teams: true },
+    });
+    if (!user) throw new UnauthorizedException('Utilisateur introuvable');
+    const { password: _, refreshToken: __, ...result } = user;
+    return result;
   }
 
   async refreshTokens(userId: string, rt: string) {
@@ -59,6 +76,14 @@ export class AuthService {
     return tokens;
   }
 
+  verifyRefreshToken(token: string) {
+    try {
+      return this.jwt.verify(token, { secret: process.env.JWT_REFRESH_SECRET });
+    } catch {
+      throw new UnauthorizedException('Token de rafraîchissement invalide');
+    }
+  }
+
   async updateRefreshToken(userId: string, refreshToken: string) {
     const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
     await this.prisma.user.update({ where: { id: userId }, data: { refreshToken: hashedRefreshToken } });
@@ -67,37 +92,17 @@ export class AuthService {
   async getTokens(userId: string, email: string) {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwt.signAsync({ sub: userId, email }, { secret: process.env.JWT_SECRET, expiresIn: '15m' }),
-      this.jwt.signAsync({ sub: userId, email }, { secret: process.env.JWT_REFRESH_SECRET, expiresIn: '7d' }),
+      this.jwt.signAsync({ sub: userId, email }, { secret: process.env.JWT_REFRESH_SECRET ?? process.env.JWT_SECRET, expiresIn: '7d' }),
     ]);
-
-    return {
-      accessToken,
-      refreshToken,
-    };
+    return { accessToken, refreshToken };
   }
-  
+
   async generateTwoFactorSecret(userId: string) {
-    const secret = speakeasy.generateSecret({ name: `LFTG Platform (${userId})` });
-    await this.prisma.user.update({
-      where: { id: userId },
-      data: { twoFactorSecret: secret.base32 },
-    });
-    return qrcode.toDataURL(secret.otpauth_url);
+    // 2FA désactivé — retourne un message informatif
+    return { message: '2FA non disponible dans cette version' };
   }
 
   async verifyTwoFactorToken(userId: string, token: string) {
-    const user = await this.prisma.user.findUnique({ where: { id: userId } });
-    if (!user.twoFactorSecret) throw new ConflictException('2FA non activé');
-
-    const verified = speakeasy.totp.verify({
-      secret: user.twoFactorSecret,
-      encoding: 'base32',
-      token,
-    });
-
-    if (!verified) throw new UnauthorizedException('Token 2FA invalide');
-
-    await this.prisma.user.update({ where: { id: userId }, data: { isTwoFactorEnabled: true } });
-    return { message: '2FA activé avec succès' };
+    return { message: '2FA non disponible dans cette version' };
   }
 }

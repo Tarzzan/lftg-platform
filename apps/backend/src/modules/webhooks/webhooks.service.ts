@@ -1,4 +1,3 @@
-'''
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 
@@ -14,4 +13,3 @@ export class WebhooksService {
     }
   }
 }
-'''

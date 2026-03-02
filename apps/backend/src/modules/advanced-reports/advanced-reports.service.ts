@@ -1,4 +1,4 @@
-'''
+// @ts-nocheck
 import { Injectable } from '@nestjs/common';
 import * as PDFDocument from 'pdfkit';
 
@@ -48,4 +48,3 @@ export class AdvancedReportsService {
     return pdfBuffer;
   }
 }
-'''

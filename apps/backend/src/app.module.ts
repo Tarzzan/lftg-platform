@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { CacheModule } from '@nestjs/cache-manager';
 import { ConfigModule } from '@nestjs/config';
-import { redisStore } from 'cache-manager-redis-store';
+import { redisStore } from 'cache-manager-ioredis-yet';
 import { I18nModule, QueryResolver, HeaderResolver } from 'nestjs-i18n';
 import * as path from 'path';
 import { EventEmitterModule } from '@nestjs/event-emitter';
@@ -75,10 +75,15 @@ import { AutoReportsModule } from './modules/auto-reports/auto-reports.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    CacheModule.register({
+    CacheModule.registerAsync({
       isGlobal: true,
-      store: redisStore as any, // Correction pour le type
-      url: process.env.REDIS_URL || 'redis://localhost:6379',
+      useFactory: async () => ({
+        store: await redisStore({
+          host: process.env.REDIS_HOST || 'localhost',
+          port: parseInt(process.env.REDIS_PORT || '6379'),
+        } as any),
+        ttl: 300,
+      }),
     }),
     I18nModule.forRoot({
       fallbackLanguage: 'fr',

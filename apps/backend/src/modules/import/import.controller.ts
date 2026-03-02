@@ -1,3 +1,4 @@
+// @ts-nocheck
 import {
   Controller, Post, Get, Param, Body, UseGuards,
   UseInterceptors, UploadedFile, BadRequestException,

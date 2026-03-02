@@ -1,4 +1,3 @@
-'''
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
@@ -28,4 +27,3 @@ export class SitesService {
     return { status: 'transfer initiated', animalId, fromSiteId, toSiteId };
   }
 }
-'''
