@@ -148,18 +148,62 @@ export const personnelApi = {
 
 // ─── Plugin: Formation ────────────────────────────────────────────────────
 export const formationApi = {
+  // Stats
+  stats: () => api.get('/plugins/formation/stats').then((r) => r.data),
+
+  // Courses
   courses: (params?: any) => api.get('/plugins/formation/courses', { params }).then((r) => r.data),
   getCourse: (id: string) => api.get(`/plugins/formation/courses/${id}`).then((r) => r.data),
   createCourse: (data: any) => api.post('/plugins/formation/courses', data).then((r) => r.data),
   updateCourse: (id: string, data: any) => api.patch(`/plugins/formation/courses/${id}`, data).then((r) => r.data),
   deleteCourse: (id: string) => api.delete(`/plugins/formation/courses/${id}`).then((r) => r.data),
-  cohorts: (courseId?: string) =>
-    api.get('/plugins/formation/cohorts', { params: courseId ? { courseId } : {} }).then((r) => r.data),
-  createCohort: (data: any) => api.post('/plugins/formation/cohorts', data).then((r) => r.data),
-  enrollments: (cohortId?: string) =>
-    api.get('/plugins/formation/enrollments', { params: cohortId ? { cohortId } : {} }).then((r) => r.data),
-  enroll: (data: any) => api.post('/plugins/formation/enrollments', data).then((r) => r.data),
+
+  // Chapters
+  addChapter: (courseId: string, data: any) => api.post(`/plugins/formation/courses/${courseId}/chapters`, data).then((r) => r.data),
+  updateChapter: (id: string, data: any) => api.patch(`/plugins/formation/chapters/${id}`, data).then((r) => r.data),
+  deleteChapter: (id: string) => api.delete(`/plugins/formation/chapters/${id}`).then((r) => r.data),
+
+  // Lessons
+  addLesson: (chapterId: string, data: any) => api.post(`/plugins/formation/chapters/${chapterId}/lessons`, data).then((r) => r.data),
+  updateLesson: (id: string, data: any) => api.patch(`/plugins/formation/lessons/${id}`, data).then((r) => r.data),
+  deleteLesson: (id: string) => api.delete(`/plugins/formation/lessons/${id}`).then((r) => r.data),
+  completeLesson: (lessonId: string, timeSpent?: number) => api.post(`/plugins/formation/lessons/${lessonId}/complete`, { timeSpent }).then((r) => r.data),
+
+  // Documents (upload multi-format)
+  uploadDocument: (formData: FormData) => api.post('/plugins/formation/documents/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then((r) => r.data),
+  updateDocument: (id: string, data: any) => api.patch(`/plugins/formation/documents/${id}`, data).then((r) => r.data),
+  deleteDocument: (id: string) => api.delete(`/plugins/formation/documents/${id}`).then((r) => r.data),
+  getDocsByLesson: (lessonId: string) => api.get(`/plugins/formation/lessons/${lessonId}/documents`).then((r) => r.data),
+  getDocsByCourse: (courseId: string) => api.get(`/plugins/formation/courses/${courseId}/documents`).then((r) => r.data),
+
+  // Quiz
+  addQuiz: (lessonId: string, data: any) => api.post(`/plugins/formation/lessons/${lessonId}/quizzes`, data).then((r) => r.data),
+  submitQuizAnswer: (data: any) => api.post('/plugins/formation/quiz-answers', data).then((r) => r.data),
+
+  // Cohorts
+  cohorts: () => api.get('/plugins/formation/cohorts').then((r) => r.data),
+  getCohort: (id: string) => api.get(`/plugins/formation/cohorts/${id}`).then((r) => r.data),
+  createCohort: (courseId: string, data: any) => api.post(`/plugins/formation/courses/${courseId}/cohorts`, data).then((r) => r.data),
+  updateCohort: (id: string, data: any) => api.patch(`/plugins/formation/cohorts/${id}`, data).then((r) => r.data),
+
+  // Enrollments
+  enroll: (cohortId: string) => api.post(`/plugins/formation/cohorts/${cohortId}/enroll`, {}).then((r) => r.data),
+  unenroll: (enrollmentId: string) => api.delete(`/plugins/formation/enrollments/${enrollmentId}`).then((r) => r.data),
   myEnrollments: () => api.get('/plugins/formation/my-enrollments').then((r) => r.data),
-  updateProgress: (enrollmentId: string, data: any) =>
-    api.patch(`/plugins/formation/enrollments/${enrollmentId}/progress`, data).then((r) => r.data),
+  getEnrollmentProgress: (enrollmentId: string) => api.get(`/plugins/formation/enrollments/${enrollmentId}/progress`).then((r) => r.data),
+
+  // Attendance & Signatures
+  createAttendanceSheet: (cohortId: string, data: any) => api.post(`/plugins/formation/cohorts/${cohortId}/attendance`, data).then((r) => r.data),
+  getAttendanceSheets: (cohortId: string) => api.get(`/plugins/formation/cohorts/${cohortId}/attendance`).then((r) => r.data),
+  signAttendance: (data: any) => api.post('/plugins/formation/signatures', data).then((r) => r.data),
+  getSignatures: (enrollmentId: string) => api.get(`/plugins/formation/enrollments/${enrollmentId}/signatures`).then((r) => r.data),
+
+  // Learner Notes
+  addNote: (data: any) => api.post('/plugins/formation/notes', data).then((r) => r.data),
+  getNotes: (enrollmentId: string, includePrivate?: boolean) => api.get(`/plugins/formation/enrollments/${enrollmentId}/notes`, { params: includePrivate ? { private: true } : {} }).then((r) => r.data),
+  updateNote: (id: string, data: any) => api.patch(`/plugins/formation/notes/${id}`, data).then((r) => r.data),
+  deleteNote: (id: string) => api.delete(`/plugins/formation/notes/${id}`).then((r) => r.data),
+
+  // Qualiopi Dashboard
+  getQualiopi: (cohortId: string) => api.get(`/plugins/formation/cohorts/${cohortId}/qualiopi`).then((r) => r.data),
 };

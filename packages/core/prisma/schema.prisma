@@ -35,6 +35,9 @@ model User {
   documents          Document[]
   historyLogs        HistoryLog[]
   pushSubscriptions  PushSubscription[]
+  lessonCompletions  LessonCompletion[]
+  signatures         Signature[]
+  learnerNotes       LearnerNote[]      @relation("LearnerNoteAuthor")
 }
 
 model Role {
@@ -375,6 +378,7 @@ model Course {
   isPublished Boolean   @default(false)
   chapters    Chapter[]
   cohorts     Cohort[]
+  documents   FormationDocument[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
@@ -398,6 +402,8 @@ model Lesson {
   duration  Int?    // minutes
   order     Int
   quizzes   Quiz[]
+  completions LessonCompletion[]
+  documents   FormationDocument[]
 }
 
 model Quiz {
@@ -420,6 +426,7 @@ model Cohort {
   startDate   DateTime?
   endDate     DateTime?
   enrollments Enrollment[]
+  attendanceSheets AttendanceSheet[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -433,6 +440,8 @@ model Enrollment {
   completedAt DateTime?
   progress    Float     @default(0)
   quizAnswers QuizAnswer[]
+  signatures   Signature[]
+  learnerNotes LearnerNote[]
 }
 
 model QuizAnswer {
@@ -823,4 +832,79 @@ model CitesPermit {
   notes        String?
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
+}
+
+// ─── Formation — Suivi Pédagogique Qualiopi ───────────────────────────────
+
+model LessonCompletion {
+  id          String   @id @default(cuid())
+  lessonId    String
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  completedAt DateTime @default(now())
+  timeSpent   Int?
+  @@unique([lessonId, userId])
+  @@index([userId])
+}
+
+model FormationDocument {
+  id          String   @id @default(cuid())
+  courseId    String?
+  course      Course?  @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  lessonId    String?
+  lesson      Lesson?  @relation(fields: [lessonId], references: [id], onDelete: SetNull)
+  title       String
+  type        String   @default("PDF")
+  url         String
+  size        Int?
+  mimeType    String?
+  displayMode String   @default("EMBED")
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  @@index([courseId])
+  @@index([lessonId])
+}
+
+model AttendanceSheet {
+  id           String      @id @default(cuid())
+  cohortId     String
+  cohort       Cohort      @relation(fields: [cohortId], references: [id], onDelete: Cascade)
+  sessionDate  DateTime
+  sessionTitle String?
+  duration     Int?
+  signatures   Signature[]
+  createdAt    DateTime    @default(now())
+  @@index([cohortId])
+}
+
+model Signature {
+  id               String           @id @default(cuid())
+  userId           String
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  enrollmentId     String?
+  enrollment       Enrollment?      @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  attendanceSheetId String?
+  attendanceSheet  AttendanceSheet? @relation(fields: [attendanceSheetId], references: [id], onDelete: Cascade)
+  type             String           @default("PRESENCE")
+  signatureData    String
+  signedAt         DateTime         @default(now())
+  sessionDate      DateTime?
+  ipAddress        String?
+  @@index([enrollmentId])
+  @@index([userId])
+}
+
+model LearnerNote {
+  id           String     @id @default(cuid())
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  authorId     String
+  author       User       @relation("LearnerNoteAuthor", fields: [authorId], references: [id])
+  content      String
+  type         String     @default("OBSERVATION")
+  isPrivate    Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  @@index([enrollmentId])
 }

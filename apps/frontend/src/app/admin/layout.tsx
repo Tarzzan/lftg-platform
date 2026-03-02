@@ -68,10 +68,12 @@ const navigation = [
   {
     section: 'Formation',
     items: [
-      { label: 'Cours', path: '/admin/formation/cours', icon: BookOpen },
+      { label: 'Catalogue de cours', path: '/admin/formation/cours', icon: BookOpen },
       { label: 'Cohortes', path: '/admin/formation/cohortes', icon: Users2 },
-      { label: 'Mes formations', path: '/admin/formation/mes-formations', icon: GraduationCap },
+      { label: 'Mon parcours', path: '/admin/formation/mon-parcours', icon: GraduationCap },
       { label: 'Quiz & Évaluations', path: '/admin/formation/quiz', icon: HelpCircle },
+      { label: 'Émargement', path: '/admin/formation/emargement', icon: Award },
+      { label: 'Tableau Qualiopi', path: '/admin/formation/qualiopi', icon: TrendingUp },
     ],
   },
   {

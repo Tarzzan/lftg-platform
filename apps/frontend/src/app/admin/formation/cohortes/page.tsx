@@ -15,7 +15,7 @@ function CohortModal({ isOpen, onClose, cohort, courses }: {
 
   const mutation = useMutation({
     mutationFn: (data: any) =>
-      isEdit ? formationApi.createCohort(data) : formationApi.createCohort(data),
+      isEdit ? formationApi.updateCohort(cohort.id, data) : formationApi.createCohort(data.courseId || '', data),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['cohorts'] }); onClose(); },
   });
 
