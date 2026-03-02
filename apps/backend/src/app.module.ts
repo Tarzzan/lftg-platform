@@ -30,7 +30,7 @@ import { CitesModule } from './modules/cites/cites.module';
 import { DocumentsModule } from './modules/documents/documents.module';
 import { HistoryModule } from './modules/history/history.module';
 // Phase 6
-import { PersonnelModule } from './modules/personnel/personnel.module';
+// PersonnelModule est géré par PluginsModule (plugins/personnel) — pas d'import direct
 import { ReportsModule } from './modules/reports/reports.module';
 // Phase 7
 import { MessagingModule } from './modules/messaging/messaging.module';
@@ -122,7 +122,7 @@ import { AutoReportsModule } from './modules/auto-reports/auto-reports.module';
     DocumentsModule,
     HistoryModule,
     // Phase 6
-    PersonnelModule,
+    // PersonnelModule chargé via PluginsModule
     ReportsModule,
     // Phase 7
     MessagingModule,

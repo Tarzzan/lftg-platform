@@ -10,4 +10,4 @@ import { AuditModule } from '../audit/audit.module';
   providers: [PersonnelService],
   exports: [PersonnelService],
 })
-export class PersonnelModule {}
+export class PersonnelCoreModule {}
