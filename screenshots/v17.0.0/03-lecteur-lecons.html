@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Soins quotidiens — Leçon 2 | LFTG Platform</title>
+  <style>
+    
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@600;700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #fafaf9; color: #1c1917; font-size: 14px; }
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 240px;
+    background: #14532d; color: white; padding: 0; overflow-y: auto;
+    display: flex; flex-direction: column;
+  }
+  .sidebar-logo {
+    padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sidebar-logo .logo-icon { font-size: 28px; }
+  .sidebar-logo .logo-text { font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; }
+  .sidebar-logo .logo-sub { font-size: 10px; opacity: 0.7; margin-top: 1px; }
+  .sidebar-section { padding: 12px 8px 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.5; }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px; padding: 8px 12px; margin: 1px 8px;
+    border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.15s;
+    color: rgba(255,255,255,0.75);
+  }
+  .sidebar-item:hover { background: rgba(255,255,255,0.1); color: white; }
+  .sidebar-item.active { background: #16a34a; color: white; font-weight: 600; }
+  .sidebar-item .icon { width: 16px; height: 16px; opacity: 0.8; }
+  .main { margin-left: 240px; min-height: 100vh; }
+  .topbar {
+    position: sticky; top: 0; z-index: 10; background: rgba(250,250,249,0.95);
+    backdrop-filter: blur(8px); border-bottom: 1px solid #e7e5e4;
+    padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .topbar-title { font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 700; }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+    border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none;
+    transition: all 0.15s;
+  }
+  .btn-primary { background: #16a34a; color: white; }
+  .btn-primary:hover { background: #15803d; }
+  .btn-outline { background: white; color: #1c1917; border: 1px solid #e7e5e4; }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .content { padding: 24px; }
+  .card {
+    background: white; border: 1px solid #e7e5e4; border-radius: 12px;
+    overflow: hidden; transition: all 0.2s;
+  }
+  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); transform: translateY(-1px); }
+  .badge {
+    display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge-green { background: #dcfce7; color: #166534; }
+  .badge-blue { background: #dbeafe; color: #1e40af; }
+  .badge-orange { background: #ffedd5; color: #9a3412; }
+  .badge-yellow { background: #fef9c3; color: #854d0e; }
+  .badge-gray { background: #f5f5f4; color: #57534e; }
+  .progress-bar { background: #e7e5e4; border-radius: 4px; height: 6px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 4px; background: #16a34a; transition: width 0.3s; }
+  .stat-card {
+    background: white; border: 1px solid #e7e5e4; border-radius: 12px;
+    padding: 20px; display: flex; flex-direction: column; gap: 4px;
+  }
+  .stat-value { font-family: 'Sora', sans-serif; font-size: 28px; font-weight: 700; }
+  .stat-label { font-size: 12px; color: #78716c; }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-weight: 700; font-size: 14px; color: white;
+    background: #16a34a;
+  }
+  .ring-container { position: relative; width: 80px; height: 80px; }
+  svg.ring { transform: rotate(-90deg); }
+
+    .lesson-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: calc(100vh);
+    }
+    .lesson-sidebar {
+      background: white;
+      border-right: 1px solid #e7e5e4;
+      overflow-y: auto;
+    }
+    .lesson-sidebar-header {
+      padding: 16px;
+      border-bottom: 1px solid #e7e5e4;
+      background: #14532d;
+      color: white;
+    }
+    .chapter-header {
+      padding: 10px 16px 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #78716c;
+    }
+    .lesson-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: all 0.15s;
+    }
+    .lesson-item:hover { background: #f5f5f4; }
+    .lesson-item.active { background: #f0fdf4; border-left-color: #16a34a; }
+    .lesson-item.done { color: #78716c; }
+    .lesson-num {
+      width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; flex-shrink: 0;
+      background: #e7e5e4; color: #78716c;
+    }
+    .lesson-num.done { background: #16a34a; color: white; }
+    .lesson-num.active { background: #16a34a; color: white; box-shadow: 0 0 0 3px rgba(22,163,74,0.2); }
+    .viewer {
+      background: #1e1e1e;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 380px;
+      position: relative;
+      overflow: hidden;
+    }
+    .viewer-toolbar {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      display: flex;
+      gap: 6px;
+    }
+    .viewer-btn {
+      background: rgba(255,255,255,0.15);
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+    }
+    .signature-pad {
+      border: 2px dashed #e7e5e4;
+      border-radius: 8px;
+      height: 100px;
+      background: #fafaf9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #78716c;
+      font-size: 13px;
+      cursor: crosshair;
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">🦜</span>
+      <div>
+        <div class="logo-text">LFTG Platform</div>
+        <div class="logo-sub">La Ferme Tropicale de Guyane</div>
+      </div>
+    </div>
+    <div style="padding: 8px 0; flex: 1;">
+      <div class="sidebar-section">Formation</div>
+      <div class="sidebar-item">📚 Catalogue des cours</div>
+      <div class="sidebar-item active">🎓 Mon parcours</div>
+      <div class="sidebar-item">✍️ Émargement</div>
+      <div class="sidebar-item">🏆 Qualiopi</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- Breadcrumb -->
+    <div class="topbar" style="position: relative; top: auto;">
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #78716c;">
+        <a href="#" style="color: #16a34a; text-decoration: none;">Mon parcours</a>
+        <span>›</span>
+        <span style="color: #1c1917; font-weight: 500;">Soins quotidiens aux animaux exotiques</span>
+        <span>›</span>
+        <span style="color: #1c1917;">Leçon 2 — Hygiène et nettoyage des enclos</span>
+      </div>
+      <div class="topbar-actions">
+        <span class="badge badge-green">Bloc 1 — Soins</span>
+        <span style="font-size: 12px; color: #78716c;">Leçon 2/4</span>
+      </div>
+    </div>
+
+    <div class="content" style="padding: 16px 24px;">
+      <div class="lesson-layout">
+        <!-- Plan du cours (sidebar gauche) -->
+        <div class="lesson-sidebar">
+          <div class="lesson-sidebar-header">
+            <div style="font-size: 11px; opacity: 0.7; margin-bottom: 4px;">📚 Plan du cours</div>
+            <div style="font-weight: 700; font-size: 13px;">Soins quotidiens aux animaux exotiques</div>
+            <div style="margin-top: 8px;">
+              <div class="progress-bar" style="background: rgba(255,255,255,0.2);">
+                <div class="progress-fill" style="width: 50%; background: #4ade80;"></div>
+              </div>
+              <div style="font-size: 11px; opacity: 0.7; margin-top: 4px;">2/4 leçons • 50%</div>
+            </div>
+          </div>
+
+          <div class="chapter-header">Chapitre 1 — Alimentation</div>
+          <div class="lesson-item done">
+            <div class="lesson-num done">✓</div>
+            <div>
+              <div style="font-size: 13px; font-weight: 500;">Régimes alimentaires par espèce</div>
+              <div style="font-size: 11px; color: #78716c;">PDF • 45 min</div>
+            </div>
+          </div>
+
+          <div class="chapter-header">Chapitre 2 — Hygiène</div>
+          <div class="lesson-item active">
+            <div class="lesson-num active">2</div>
+            <div>
+              <div style="font-size: 13px; font-weight: 600; color: #16a34a;">Hygiène et nettoyage des enclos</div>
+              <div style="font-size: 11px; color: #78716c;">Vidéo MP4 • 30 min • En cours</div>
+            </div>
+          </div>
+
+          <div class="chapter-header">Chapitre 3 — Comportement</div>
+          <div class="lesson-item">
+            <div class="lesson-num">3</div>
+            <div>
+              <div style="font-size: 13px;">Observation comportementale</div>
+              <div style="font-size: 11px; color: #78716c;">PDF + Quiz • 40 min</div>
+            </div>
+          </div>
+
+          <div class="chapter-header">Chapitre 4 — Urgences</div>
+          <div class="lesson-item">
+            <div class="lesson-num">4</div>
+            <div>
+              <div style="font-size: 13px; color: #78716c;">Protocoles d'urgence</div>
+              <div style="font-size: 11px; color: #78716c;">Vidéo + Quiz • 35 min</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contenu principal -->
+        <div style="padding: 0 0 0 20px;">
+          <!-- Titre de la leçon -->
+          <div style="margin-bottom: 16px;">
+            <div style="font-family: 'Sora', sans-serif; font-size: 20px; font-weight: 700; margin-bottom: 6px;">
+              Leçon 2 — Hygiène et nettoyage des enclos
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center; font-size: 12px; color: #78716c;">
+              <span>🎬 Vidéo MP4</span>
+              <span>⏱ 30 minutes</span>
+              <span class="badge badge-orange">Mode : Fenêtre embarquée</span>
+            </div>
+          </div>
+
+          <!-- Lecteur vidéo -->
+          <div class="viewer">
+            <div style="text-align: center; color: rgba(255,255,255,0.6);">
+              <div style="font-size: 64px; margin-bottom: 12px;">▶</div>
+              <div style="font-size: 14px; font-weight: 500;">hygiene_enclos_lftg.mp4</div>
+              <div style="font-size: 12px; opacity: 0.6; margin-top: 4px;">Cliquez pour lancer la lecture</div>
+            </div>
+            <!-- Barre de progression vidéo -->
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 12px; background: linear-gradient(transparent, rgba(0,0,0,0.8));">
+              <div style="background: rgba(255,255,255,0.2); border-radius: 2px; height: 4px; margin-bottom: 8px;">
+                <div style="background: #16a34a; width: 35%; height: 100%; border-radius: 2px;"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; color: rgba(255,255,255,0.7); font-size: 11px;">
+                <span>10:30</span>
+                <span>30:00</span>
+              </div>
+            </div>
+            <div class="viewer-toolbar">
+              <button class="viewer-btn">⬇ Télécharger</button>
+              <button class="viewer-btn">⛶ Plein écran</button>
+              <button class="viewer-btn">↗ Nouvel onglet</button>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 14px; margin: 16px 0;">
+            <div style="font-weight: 600; font-size: 13px; color: #166534; margin-bottom: 6px;">📋 Objectifs pédagogiques</div>
+            <ul style="font-size: 13px; color: #1c1917; padding-left: 16px; line-height: 1.8;">
+              <li>Maîtriser les protocoles de désinfection des enclos</li>
+              <li>Identifier les produits adaptés aux espèces présentes</li>
+              <li>Appliquer les normes sanitaires en vigueur</li>
+              <li>Renseigner les fiches de suivi de nettoyage</li>
+            </ul>
+          </div>
+
+          <!-- Émargement numérique -->
+          <div style="background: white; border: 1px solid #e7e5e4; border-radius: 12px; padding: 16px; margin-top: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <div>
+                <div style="font-weight: 700; font-size: 14px;">✍️ Émargement numérique</div>
+                <div style="font-size: 12px; color: #78716c;">Indicateur Qualiopi I10 — Attestation de présence</div>
+              </div>
+              <span class="badge badge-orange">Requis pour valider</span>
+            </div>
+            <div class="signature-pad">
+              <div style="text-align: center;">
+                <div style="font-size: 20px; margin-bottom: 4px;">✍️</div>
+                <div>Signez ici pour attester votre présence</div>
+                <div style="font-size: 11px; margin-top: 4px; opacity: 0.7;">Marie DUPONT — {date du jour} — 14:32</div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 10px;">
+              <button class="btn btn-outline btn-sm" style="flex: 1;">🗑 Effacer</button>
+              <button class="btn btn-primary" style="flex: 2;">✓ Valider et continuer →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

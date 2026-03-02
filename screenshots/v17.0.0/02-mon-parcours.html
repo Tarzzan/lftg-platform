@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Mon Parcours de Formation | LFTG Platform</title>
+  <style>
+    
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@600;700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #fafaf9; color: #1c1917; font-size: 14px; }
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 240px;
+    background: #14532d; color: white; padding: 0; overflow-y: auto;
+    display: flex; flex-direction: column;
+  }
+  .sidebar-logo {
+    padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sidebar-logo .logo-icon { font-size: 28px; }
+  .sidebar-logo .logo-text { font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; }
+  .sidebar-logo .logo-sub { font-size: 10px; opacity: 0.7; margin-top: 1px; }
+  .sidebar-section { padding: 12px 8px 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.5; }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px; padding: 8px 12px; margin: 1px 8px;
+    border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.15s;
+    color: rgba(255,255,255,0.75);
+  }
+  .sidebar-item:hover { background: rgba(255,255,255,0.1); color: white; }
+  .sidebar-item.active { background: #16a34a; color: white; font-weight: 600; }
+  .sidebar-item .icon { width: 16px; height: 16px; opacity: 0.8; }
+  .main { margin-left: 240px; min-height: 100vh; }
+  .topbar {
+    position: sticky; top: 0; z-index: 10; background: rgba(250,250,249,0.95);
+    backdrop-filter: blur(8px); border-bottom: 1px solid #e7e5e4;
+    padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .topbar-title { font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 700; }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+    border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none;
+    transition: all 0.15s;
+  }
+  .btn-primary { background: #16a34a; color: white; }
+  .btn-primary:hover { background: #15803d; }
+  .btn-outline { background: white; color: #1c1917; border: 1px solid #e7e5e4; }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .content { padding: 24px; }
+  .card {
+    background: white; border: 1px solid #e7e5e4; border-radius: 12px;
+    overflow: hidden; transition: all 0.2s;
+  }
+  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); transform: translateY(-1px); }
+  .badge {
+    display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge-green { background: #dcfce7; color: #166534; }
+  .badge-blue { background: #dbeafe; color: #1e40af; }
+  .badge-orange { background: #ffedd5; color: #9a3412; }
+  .badge-yellow { background: #fef9c3; color: #854d0e; }
+  .badge-gray { background: #f5f5f4; color: #57534e; }
+  .progress-bar { background: #e7e5e4; border-radius: 4px; height: 6px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 4px; background: #16a34a; transition: width 0.3s; }
+  .stat-card {
+    background: white; border: 1px solid #e7e5e4; border-radius: 12px;
+    padding: 20px; display: flex; flex-direction: column; gap: 4px;
+  }
+  .stat-value { font-family: 'Sora', sans-serif; font-size: 28px; font-weight: 700; }
+  .stat-label { font-size: 12px; color: #78716c; }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-weight: 700; font-size: 14px; color: white;
+    background: #16a34a;
+  }
+  .ring-container { position: relative; width: 80px; height: 80px; }
+  svg.ring { transform: rotate(-90deg); }
+
+    .hero {
+      background: linear-gradient(135deg, #14532d 0%, #166534 40%, #16a34a 100%);
+      padding: 36px 24px; color: white; position: relative; overflow: hidden;
+    }
+    .hero::after {
+      content: ''; position: absolute; right: -40px; top: -40px;
+      width: 300px; height: 300px; border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+    }
+    .ring-svg { transform: rotate(-90deg); }
+    .enrollment-card {
+      background: white; border: 1px solid #e7e5e4; border-radius: 12px;
+      padding: 20px; display: grid; grid-template-columns: auto 1fr auto; gap: 16px;
+      align-items: center; transition: all 0.2s;
+    }
+    .enrollment-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); transform: translateY(-1px); }
+    .chapter-dot {
+      width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">🦜</span>
+      <div>
+        <div class="logo-text">LFTG Platform</div>
+        <div class="logo-sub">La Ferme Tropicale de Guyane</div>
+      </div>
+    </div>
+    <div style="padding: 8px 0; flex: 1;">
+      <div class="sidebar-section">Formation</div>
+      <div class="sidebar-item">📚 Catalogue des cours</div>
+      <div class="sidebar-item active">🎓 Mon parcours</div>
+      <div class="sidebar-item">👥 Cohortes</div>
+      <div class="sidebar-item">✍️ Émargement</div>
+      <div class="sidebar-item">🏆 Tableau Qualiopi</div>
+    </div>
+    <div style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 8px;">
+      <div class="avatar" style="background: #0369a1;">M</div>
+      <div>
+        <div style="font-size: 12px; font-weight: 600;">Marie DUPONT</div>
+        <div style="font-size: 10px; opacity: 0.6;">SOIGNEUR</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- Hero avec progression globale -->
+    <div class="hero">
+      <div style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap;">
+        <div style="flex: 1;">
+          <div style="font-size: 13px; opacity: 0.75; margin-bottom: 4px;">Bonjour, Marie 👋</div>
+          <div style="font-family: 'Sora', sans-serif; font-size: 24px; font-weight: 800; margin-bottom: 8px;">Mon Parcours de Formation</div>
+          <div style="font-size: 13px; opacity: 0.8;">Référentiel RNCP Soigneur Animalier • Cohorte 2025-2026</div>
+          <div style="display: flex; gap: 24px; margin-top: 20px;">
+            <div>
+              <div style="font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 700;">3/4</div>
+              <div style="font-size: 11px; opacity: 0.7;">Cours en cours</div>
+            </div>
+            <div>
+              <div style="font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 700;">78%</div>
+              <div style="font-size: 11px; opacity: 0.7;">Progression globale</div>
+            </div>
+            <div>
+              <div style="font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 700;">12h</div>
+              <div style="font-size: 11px; opacity: 0.7;">Temps de formation</div>
+            </div>
+          </div>
+        </div>
+        <!-- Anneau de progression -->
+        <div style="position: relative; width: 120px; height: 120px; flex-shrink: 0;">
+          <svg width="120" height="120" viewBox="0 0 120 120" class="ring-svg">
+            <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="12"/>
+            <circle cx="60" cy="60" r="52" fill="none" stroke="#4ade80" stroke-width="12"
+              stroke-dasharray="326.7" stroke-dashoffset="71.9" stroke-linecap="round"/>
+          </svg>
+          <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; transform: rotate(90deg);">
+            <div style="font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 800; transform: rotate(-90deg);">78%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- Section En cours -->
+      <div style="margin-bottom: 24px;">
+        <div style="font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: #16a34a; display: inline-block;"></span>
+          En cours (3)
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+
+          <!-- Enrollment 1 -->
+          <div class="enrollment-card">
+            <div style="width: 56px; height: 56px; border-radius: 12px; background: linear-gradient(135deg, #166534, #16a34a); display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0;">🐦</div>
+            <div>
+              <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">Soins quotidiens aux animaux exotiques</div>
+              <div style="font-size: 12px; color: #78716c; margin-bottom: 8px;">Bloc 1 — Soins • 4 leçons • Dernière activité : aujourd'hui</div>
+              <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+                <span style="font-size: 11px;"><span class="chapter-dot" style="background: #16a34a;"></span>Alimentation</span>
+                <span style="font-size: 11px;"><span class="chapter-dot" style="background: #16a34a;"></span>Hygiène</span>
+                <span style="font-size: 11px;"><span class="chapter-dot" style="background: #16a34a;"></span>Comportement</span>
+                <span style="font-size: 11px; color: #78716c;"><span class="chapter-dot" style="background: #e7e5e4;"></span>Urgences</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 75%;"></div></div>
+              <div style="font-size: 11px; color: #78716c; margin-top: 3px;">3/4 leçons complétées • 75%</div>
+            </div>
+            <button class="btn btn-primary">Continuer →</button>
+          </div>
+
+          <!-- Enrollment 2 -->
+          <div class="enrollment-card">
+            <div style="width: 56px; height: 56px; border-radius: 12px; background: linear-gradient(135deg, #0369a1, #0ea5e9); display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0;">🌿</div>
+            <div>
+              <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">Biodiversité guyanaise et CITES</div>
+              <div style="font-size: 12px; color: #78716c; margin-bottom: 8px;">Bloc 2 — Biodiversité • 5 leçons • Dernière activité : hier</div>
+              <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+                <span style="font-size: 11px;"><span class="chapter-dot" style="background: #16a34a;"></span>Espèces</span>
+                <span style="font-size: 11px;"><span class="chapter-dot" style="background: #16a34a;"></span>CITES</span>
+                <span style="font-size: 11px; color: #78716c;"><span class="chapter-dot" style="background: #e7e5e4;"></span>Permis</span>
+                <span style="font-size: 11px; color: #78716c;"><span class="chapter-dot" style="background: #e7e5e4;"></span>Terrain</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 40%;"></div></div>
+              <div style="font-size: 11px; color: #78716c; margin-top: 3px;">2/5 leçons complétées • 40%</div>
+            </div>
+            <button class="btn btn-primary">Continuer →</button>
+          </div>
+
+          <!-- Enrollment 3 -->
+          <div class="enrollment-card">
+            <div style="width: 56px; height: 56px; border-radius: 12px; background: linear-gradient(135deg, #b45309, #f59e0b); display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0;">🏥</div>
+            <div>
+              <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">Premiers secours vétérinaires</div>
+              <div style="font-size: 12px; color: #78716c; margin-bottom: 8px;">Bloc 1 — Soins • 3 leçons • Dernière activité : il y a 3 jours</div>
+              <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+                <span style="font-size: 11px;"><span class="chapter-dot" style="background: #16a34a;"></span>Diagnostic</span>
+                <span style="font-size: 11px;"><span class="chapter-dot" style="background: #16a34a;"></span>Protocoles</span>
+                <span style="font-size: 11px; color: #78716c;"><span class="chapter-dot" style="background: #e7e5e4;"></span>Transport</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 67%;"></div></div>
+              <div style="font-size: 11px; color: #78716c; margin-top: 3px;">2/3 leçons complétées • 67%</div>
+            </div>
+            <button class="btn btn-primary">Continuer →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Terminé -->
+      <div>
+        <div style="font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+          <span style="width: 8px; height: 8px; border-radius: 50%; background: #22c55e; display: inline-block;"></span>
+          Terminés (1)
+        </div>
+        <div class="enrollment-card" style="opacity: 0.8;">
+          <div style="width: 56px; height: 56px; border-radius: 12px; background: linear-gradient(135deg, #166534, #16a34a); display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0;">✅</div>
+          <div>
+            <div style="font-weight: 600; font-size: 14px; margin-bottom: 4px;">Introduction à la Ferme Tropicale</div>
+            <div style="font-size: 12px; color: #78716c; margin-bottom: 8px;">Module d'accueil • 2 leçons • Complété le 15 janvier 2026</div>
+            <div class="progress-bar"><div class="progress-fill" style="width: 100%; background: #22c55e;"></div></div>
+            <div style="font-size: 11px; color: #16a34a; margin-top: 3px; font-weight: 600;">✓ Formation complétée — Attestation disponible</div>
+          </div>
+          <button class="btn btn-outline btn-sm">📄 Attestation</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

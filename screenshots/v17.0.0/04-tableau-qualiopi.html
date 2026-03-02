@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Tableau de Bord Qualiopi | LFTG Platform</title>
+  <style>
+    
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@600;700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #fafaf9; color: #1c1917; font-size: 14px; }
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 240px;
+    background: #14532d; color: white; padding: 0; overflow-y: auto;
+    display: flex; flex-direction: column;
+  }
+  .sidebar-logo {
+    padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sidebar-logo .logo-icon { font-size: 28px; }
+  .sidebar-logo .logo-text { font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; }
+  .sidebar-logo .logo-sub { font-size: 10px; opacity: 0.7; margin-top: 1px; }
+  .sidebar-section { padding: 12px 8px 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.5; }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px; padding: 8px 12px; margin: 1px 8px;
+    border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.15s;
+    color: rgba(255,255,255,0.75);
+  }
+  .sidebar-item:hover { background: rgba(255,255,255,0.1); color: white; }
+  .sidebar-item.active { background: #16a34a; color: white; font-weight: 600; }
+  .sidebar-item .icon { width: 16px; height: 16px; opacity: 0.8; }
+  .main { margin-left: 240px; min-height: 100vh; }
+  .topbar {
+    position: sticky; top: 0; z-index: 10; background: rgba(250,250,249,0.95);
+    backdrop-filter: blur(8px); border-bottom: 1px solid #e7e5e4;
+    padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .topbar-title { font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 700; }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+    border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none;
+    transition: all 0.15s;
+  }
+  .btn-primary { background: #16a34a; color: white; }
+  .btn-primary:hover { background: #15803d; }
+  .btn-outline { background: white; color: #1c1917; border: 1px solid #e7e5e4; }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .content { padding: 24px; }
+  .card {
+    background: white; border: 1px solid #e7e5e4; border-radius: 12px;
+    overflow: hidden; transition: all 0.2s;
+  }
+  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); transform: translateY(-1px); }
+  .badge {
+    display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge-green { background: #dcfce7; color: #166534; }
+  .badge-blue { background: #dbeafe; color: #1e40af; }
+  .badge-orange { background: #ffedd5; color: #9a3412; }
+  .badge-yellow { background: #fef9c3; color: #854d0e; }
+  .badge-gray { background: #f5f5f4; color: #57534e; }
+  .progress-bar { background: #e7e5e4; border-radius: 4px; height: 6px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 4px; background: #16a34a; transition: width 0.3s; }
+  .stat-card {
+    background: white; border: 1px solid #e7e5e4; border-radius: 12px;
+    padding: 20px; display: flex; flex-direction: column; gap: 4px;
+  }
+  .stat-value { font-family: 'Sora', sans-serif; font-size: 28px; font-weight: 700; }
+  .stat-label { font-size: 12px; color: #78716c; }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-weight: 700; font-size: 14px; color: white;
+    background: #16a34a;
+  }
+  .ring-container { position: relative; width: 80px; height: 80px; }
+  svg.ring { transform: rotate(-90deg); }
+
+    .qualiopi-hero {
+      background: linear-gradient(135deg, #1e3a5f 0%, #1d4ed8 50%, #0369a1 100%);
+      padding: 32px 24px; color: white; position: relative; overflow: hidden;
+    }
+    .indicator-card {
+      background: white; border: 1px solid #e7e5e4; border-radius: 12px;
+      padding: 20px; transition: all 0.2s;
+    }
+    .indicator-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+    .score-ring { position: relative; width: 70px; height: 70px; flex-shrink: 0; }
+    .alert-item {
+      display: flex; align-items: flex-start; gap: 12px; padding: 12px 16px;
+      border-radius: 8px; margin-bottom: 8px;
+    }
+    .alert-warning { background: #fffbeb; border: 1px solid #fde68a; }
+    .alert-danger { background: #fef2f2; border: 1px solid #fecaca; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">🦜</span>
+      <div>
+        <div class="logo-text">LFTG Platform</div>
+        <div class="logo-sub">La Ferme Tropicale de Guyane</div>
+      </div>
+    </div>
+    <div style="padding: 8px 0; flex: 1;">
+      <div class="sidebar-section">Formation</div>
+      <div class="sidebar-item">📚 Catalogue des cours</div>
+      <div class="sidebar-item">🎓 Mon parcours</div>
+      <div class="sidebar-item">👥 Cohortes</div>
+      <div class="sidebar-item">✍️ Émargement</div>
+      <div class="sidebar-item active">🏆 Tableau Qualiopi</div>
+    </div>
+    <div style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 8px;">
+      <div class="avatar">W</div>
+      <div>
+        <div style="font-size: 12px; font-weight: 600;">William MERI</div>
+        <div style="font-size: 10px; opacity: 0.6;">ADMIN</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- Hero Qualiopi -->
+    <div class="qualiopi-hero">
+      <div style="display: flex; align-items: center; gap: 32px; flex-wrap: wrap;">
+        <div style="flex: 1;">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+            <span style="font-size: 28px;">🏆</span>
+            <div>
+              <div style="font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 800;">Tableau de Bord Qualiopi</div>
+              <div style="font-size: 12px; opacity: 0.8;">Certification Qualité des Organismes de Formation — Audit prévu en fin de semaine</div>
+            </div>
+          </div>
+          <div style="background: rgba(255,255,255,0.1); border-radius: 8px; padding: 12px 16px; margin-top: 12px; display: inline-flex; gap: 24px;">
+            <div>
+              <div style="font-size: 11px; opacity: 0.7;">Organisme</div>
+              <div style="font-weight: 600; font-size: 13px;">La Ferme Tropicale de Guyane</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; opacity: 0.7;">SIRET</div>
+              <div style="font-weight: 600; font-size: 13px;">813 099 215 000 28</div>
+            </div>
+            <div>
+              <div style="font-size: 11px; opacity: 0.7;">Référentiel</div>
+              <div style="font-weight: 600; font-size: 13px;">RNCP Soigneur Animalier</div>
+            </div>
+          </div>
+        </div>
+        <!-- Score global -->
+        <div style="text-align: center;">
+          <div style="position: relative; width: 130px; height: 130px; margin: 0 auto;">
+            <svg width="130" height="130" viewBox="0 0 130 130" style="transform: rotate(-90deg);">
+              <circle cx="65" cy="65" r="56" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="14"/>
+              <circle cx="65" cy="65" r="56" fill="none" stroke="#4ade80" stroke-width="14"
+                stroke-dasharray="351.9" stroke-dashoffset="56.3" stroke-linecap="round"/>
+            </svg>
+            <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; transform: rotate(90deg);">
+              <div style="font-family: 'Sora', sans-serif; font-size: 28px; font-weight: 800; transform: rotate(-90deg);">84%</div>
+            </div>
+          </div>
+          <div style="font-size: 13px; font-weight: 600; margin-top: 8px;">Score de conformité</div>
+          <div style="font-size: 11px; opacity: 0.7;">6 indicateurs analysés</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px;">
+
+        <!-- I10 -->
+        <div class="indicator-card">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div class="score-ring">
+              <svg width="70" height="70" viewBox="0 0 70 70" style="transform: rotate(-90deg);">
+                <circle cx="35" cy="35" r="28" fill="none" stroke="#e7e5e4" stroke-width="8"/>
+                <circle cx="35" cy="35" r="28" fill="none" stroke="#22c55e" stroke-width="8"
+                  stroke-dasharray="175.9" stroke-dashoffset="17.6" stroke-linecap="round"/>
+              </svg>
+              <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transform: rotate(90deg);">
+                <span style="font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; transform: rotate(-90deg);">90%</span>
+              </div>
+            </div>
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                <span class="badge badge-green">I10</span>
+                <span style="font-weight: 600; font-size: 13px;">Suivi de l'assiduité</span>
+              </div>
+              <div style="font-size: 12px; color: #78716c; margin-bottom: 8px;">Émargements numériques horodatés</div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 90%;"></div></div>
+              <div style="font-size: 11px; color: #78716c; margin-top: 3px;">47/52 feuilles signées</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- I11 -->
+        <div class="indicator-card">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div class="score-ring">
+              <svg width="70" height="70" viewBox="0 0 70 70" style="transform: rotate(-90deg);">
+                <circle cx="35" cy="35" r="28" fill="none" stroke="#e7e5e4" stroke-width="8"/>
+                <circle cx="35" cy="35" r="28" fill="none" stroke="#22c55e" stroke-width="8"
+                  stroke-dasharray="175.9" stroke-dashoffset="28.1" stroke-linecap="round"/>
+              </svg>
+              <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transform: rotate(90deg);">
+                <span style="font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; transform: rotate(-90deg);">84%</span>
+              </div>
+            </div>
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                <span class="badge badge-green">I11</span>
+                <span style="font-weight: 600; font-size: 13px;">Progression des apprenants</span>
+              </div>
+              <div style="font-size: 12px; color: #78716c; margin-bottom: 8px;">Taux de complétion des modules</div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 84%;"></div></div>
+              <div style="font-size: 11px; color: #78716c; margin-top: 3px;">7/8 apprenants actifs</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- I12 -->
+        <div class="indicator-card">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div class="score-ring">
+              <svg width="70" height="70" viewBox="0 0 70 70" style="transform: rotate(-90deg);">
+                <circle cx="35" cy="35" r="28" fill="none" stroke="#e7e5e4" stroke-width="8"/>
+                <circle cx="35" cy="35" r="28" fill="none" stroke="#f59e0b" stroke-width="8"
+                  stroke-dasharray="175.9" stroke-dashoffset="42.2" stroke-linecap="round"/>
+              </svg>
+              <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transform: rotate(90deg);">
+                <span style="font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; transform: rotate(-90deg);">76%</span>
+              </div>
+            </div>
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                <span class="badge badge-yellow">I12</span>
+                <span style="font-weight: 600; font-size: 13px;">Engagement des apprenants</span>
+              </div>
+              <div style="font-size: 12px; color: #78716c; margin-bottom: 8px;">Quiz, interactions, temps de connexion</div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 76%; background: #f59e0b;"></div></div>
+              <div style="font-size: 11px; color: #78716c; margin-top: 3px;">Score moyen quiz : 76%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- I13 -->
+        <div class="indicator-card">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div class="score-ring">
+              <svg width="70" height="70" viewBox="0 0 70 70" style="transform: rotate(-90deg);">
+                <circle cx="35" cy="35" r="28" fill="none" stroke="#e7e5e4" stroke-width="8"/>
+                <circle cx="35" cy="35" r="28" fill="none" stroke="#22c55e" stroke-width="8"
+                  stroke-dasharray="175.9" stroke-dashoffset="21.1" stroke-linecap="round"/>
+              </svg>
+              <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transform: rotate(90deg);">
+                <span style="font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; transform: rotate(-90deg);">88%</span>
+              </div>
+            </div>
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                <span class="badge badge-green">I13</span>
+                <span style="font-weight: 600; font-size: 13px;">Ressources pédagogiques</span>
+              </div>
+              <div style="font-size: 12px; color: #78716c; margin-bottom: 8px;">Diversité et qualité des supports</div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 88%;"></div></div>
+              <div style="font-size: 11px; color: #78716c; margin-top: 3px;">PDF, MP4, PPT, HTML, ZIP</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- I14 -->
+        <div class="indicator-card">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div class="score-ring">
+              <svg width="70" height="70" viewBox="0 0 70 70" style="transform: rotate(-90deg);">
+                <circle cx="35" cy="35" r="28" fill="none" stroke="#e7e5e4" stroke-width="8"/>
+                <circle cx="35" cy="35" r="28" fill="none" stroke="#22c55e" stroke-width="8"
+                  stroke-dasharray="175.9" stroke-dashoffset="14.1" stroke-linecap="round"/>
+              </svg>
+              <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transform: rotate(90deg);">
+                <span style="font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; transform: rotate(-90deg);">92%</span>
+              </div>
+            </div>
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                <span class="badge badge-green">I14</span>
+                <span style="font-weight: 600; font-size: 13px;">Accompagnement pédagogique</span>
+              </div>
+              <div style="font-size: 12px; color: #78716c; margin-bottom: 8px;">Formateurs qualifiés, suivi individualisé</div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 92%;"></div></div>
+              <div style="font-size: 11px; color: #78716c; margin-top: 3px;">3 formateurs certifiés RNCP</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- I16 -->
+        <div class="indicator-card">
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div class="score-ring">
+              <svg width="70" height="70" viewBox="0 0 70 70" style="transform: rotate(-90deg);">
+                <circle cx="35" cy="35" r="28" fill="none" stroke="#e7e5e4" stroke-width="8"/>
+                <circle cx="35" cy="35" r="28" fill="none" stroke="#ef4444" stroke-width="8"
+                  stroke-dasharray="175.9" stroke-dashoffset="105.5" stroke-linecap="round"/>
+              </svg>
+              <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transform: rotate(90deg);">
+                <span style="font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; transform: rotate(-90deg); color: #ef4444;">40%</span>
+              </div>
+            </div>
+            <div style="flex: 1;">
+              <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                <span class="badge" style="background: #fee2e2; color: #991b1b;">I16</span>
+                <span style="font-weight: 600; font-size: 13px;">Gestion des abandons</span>
+              </div>
+              <div style="font-size: 12px; color: #78716c; margin-bottom: 8px;">Détection et suivi des décrocheurs</div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 40%; background: #ef4444;"></div></div>
+              <div style="font-size: 11px; color: #dc2626; margin-top: 3px; font-weight: 500;">⚠ 2 apprenants à risque — Action requise</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alertes -->
+      <div style="background: white; border: 1px solid #e7e5e4; border-radius: 12px; padding: 20px;">
+        <div style="font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 14px;">⚠️ Actions requises avant l'audit</div>
+
+        <div class="alert-item alert-danger">
+          <span style="font-size: 20px;">🔴</span>
+          <div>
+            <div style="font-weight: 600; font-size: 13px; color: #991b1b;">Indicateur I16 — 2 apprenants en décrochage</div>
+            <div style="font-size: 12px; color: #78716c; margin-top: 2px;">Jean-Pierre MARTIN et Amara DIALLO n'ont pas eu d'activité depuis 14 jours. Contacter immédiatement.</div>
+            <button class="btn btn-sm" style="background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; margin-top: 8px;">Envoyer une relance</button>
+          </div>
+        </div>
+
+        <div class="alert-item alert-warning">
+          <span style="font-size: 20px;">🟡</span>
+          <div>
+            <div style="font-weight: 600; font-size: 13px; color: #854d0e;">Indicateur I10 — 5 feuilles d'émargement manquantes</div>
+            <div style="font-size: 12px; color: #78716c; margin-top: 2px;">Sessions du 12 au 16 février non émargées. Régulariser avant l'audit.</div>
+            <button class="btn btn-sm" style="background: #fef9c3; color: #854d0e; border: 1px solid #fde68a; margin-top: 8px;">Voir les sessions</button>
+          </div>
+        </div>
+
+        <div class="alert-item" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+          <span style="font-size: 20px;">🟢</span>
+          <div>
+            <div style="font-weight: 600; font-size: 13px; color: #166534;">Indicateurs I13 & I14 — Conformes</div>
+            <div style="font-size: 12px; color: #78716c; margin-top: 2px;">Les ressources pédagogiques et l'accompagnement sont au niveau requis pour la certification.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

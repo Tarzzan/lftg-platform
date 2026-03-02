@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formation — Catalogue des Cours | LFTG Platform</title>
+  <style>
+    
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@600;700;800&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #fafaf9; color: #1c1917; font-size: 14px; }
+  .sidebar {
+    position: fixed; left: 0; top: 0; bottom: 0; width: 240px;
+    background: #14532d; color: white; padding: 0; overflow-y: auto;
+    display: flex; flex-direction: column;
+  }
+  .sidebar-logo {
+    padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.1);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sidebar-logo .logo-icon { font-size: 28px; }
+  .sidebar-logo .logo-text { font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; }
+  .sidebar-logo .logo-sub { font-size: 10px; opacity: 0.7; margin-top: 1px; }
+  .sidebar-section { padding: 12px 8px 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.5; }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px; padding: 8px 12px; margin: 1px 8px;
+    border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.15s;
+    color: rgba(255,255,255,0.75);
+  }
+  .sidebar-item:hover { background: rgba(255,255,255,0.1); color: white; }
+  .sidebar-item.active { background: #16a34a; color: white; font-weight: 600; }
+  .sidebar-item .icon { width: 16px; height: 16px; opacity: 0.8; }
+  .main { margin-left: 240px; min-height: 100vh; }
+  .topbar {
+    position: sticky; top: 0; z-index: 10; background: rgba(250,250,249,0.95);
+    backdrop-filter: blur(8px); border-bottom: 1px solid #e7e5e4;
+    padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .topbar-title { font-family: 'Sora', sans-serif; font-size: 18px; font-weight: 700; }
+  .topbar-actions { display: flex; gap: 8px; align-items: center; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+    border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; border: none;
+    transition: all 0.15s;
+  }
+  .btn-primary { background: #16a34a; color: white; }
+  .btn-primary:hover { background: #15803d; }
+  .btn-outline { background: white; color: #1c1917; border: 1px solid #e7e5e4; }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .content { padding: 24px; }
+  .card {
+    background: white; border: 1px solid #e7e5e4; border-radius: 12px;
+    overflow: hidden; transition: all 0.2s;
+  }
+  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); transform: translateY(-1px); }
+  .badge {
+    display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+  }
+  .badge-green { background: #dcfce7; color: #166534; }
+  .badge-blue { background: #dbeafe; color: #1e40af; }
+  .badge-orange { background: #ffedd5; color: #9a3412; }
+  .badge-yellow { background: #fef9c3; color: #854d0e; }
+  .badge-gray { background: #f5f5f4; color: #57534e; }
+  .progress-bar { background: #e7e5e4; border-radius: 4px; height: 6px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 4px; background: #16a34a; transition: width 0.3s; }
+  .stat-card {
+    background: white; border: 1px solid #e7e5e4; border-radius: 12px;
+    padding: 20px; display: flex; flex-direction: column; gap: 4px;
+  }
+  .stat-value { font-family: 'Sora', sans-serif; font-size: 28px; font-weight: 700; }
+  .stat-label { font-size: 12px; color: #78716c; }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; font-weight: 700; font-size: 14px; color: white;
+    background: #16a34a;
+  }
+  .ring-container { position: relative; width: 80px; height: 80px; }
+  svg.ring { transform: rotate(-90deg); }
+
+    .hero-banner {
+      background: linear-gradient(135deg, #14532d 0%, #16a34a 60%, #f59e0b 100%);
+      padding: 32px 24px; color: white; position: relative; overflow: hidden;
+    }
+    .hero-banner::before {
+      content: '🌿'; position: absolute; right: 40px; top: 50%; transform: translateY(-50%);
+      font-size: 80px; opacity: 0.15;
+    }
+    .hero-title { font-family: 'Sora', sans-serif; font-size: 26px; font-weight: 800; }
+    .hero-sub { font-size: 13px; opacity: 0.85; margin-top: 6px; }
+    .hero-stats { display: flex; gap: 32px; margin-top: 20px; }
+    .hero-stat-val { font-family: 'Sora', sans-serif; font-size: 24px; font-weight: 700; }
+    .hero-stat-lbl { font-size: 11px; opacity: 0.75; }
+    .filters { display: flex; gap: 8px; padding: 16px 24px; border-bottom: 1px solid #e7e5e4; background: white; flex-wrap: wrap; }
+    .filter-btn { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer; border: 1px solid #e7e5e4; background: white; color: #78716c; }
+    .filter-btn.active { background: #16a34a; color: white; border-color: #16a34a; }
+    .search-bar { flex: 1; min-width: 200px; padding: 6px 12px; border: 1px solid #e7e5e4; border-radius: 8px; font-size: 13px; }
+    .courses-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 24px; }
+    .course-card { background: white; border: 1px solid #e7e5e4; border-radius: 12px; overflow: hidden; transition: all 0.2s; }
+    .course-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.1); transform: translateY(-2px); }
+    .course-thumb {
+      height: 120px; display: flex; align-items: center; justify-content: center;
+      font-size: 48px; position: relative;
+    }
+    .course-thumb-overlay {
+      position: absolute; inset: 0; display: flex; align-items: flex-end; padding: 10px;
+    }
+    .course-body { padding: 14px; }
+    .course-title { font-weight: 600; font-size: 14px; margin-bottom: 6px; line-height: 1.3; }
+    .course-meta { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; flex-wrap: wrap; }
+    .course-desc { font-size: 12px; color: #78716c; line-height: 1.5; margin-bottom: 12px; }
+    .course-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid #e7e5e4; }
+    .course-stats { display: flex; gap: 12px; font-size: 11px; color: #78716c; }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">🦜</span>
+      <div>
+        <div class="logo-text">LFTG Platform</div>
+        <div class="logo-sub">La Ferme Tropicale de Guyane</div>
+      </div>
+    </div>
+    <div style="padding: 8px 0; flex: 1;">
+      <div class="sidebar-section">Tableau de bord</div>
+      <div class="sidebar-item">📊 Dashboard</div>
+      <div class="sidebar-section">Formation</div>
+      <div class="sidebar-item active">📚 Catalogue des cours</div>
+      <div class="sidebar-item">🎓 Mon parcours</div>
+      <div class="sidebar-item">👥 Cohortes</div>
+      <div class="sidebar-item">✍️ Émargement</div>
+      <div class="sidebar-item">🏆 Tableau Qualiopi</div>
+      <div class="sidebar-section">Animaux</div>
+      <div class="sidebar-item">🦜 Espèces & Animaux</div>
+      <div class="sidebar-item">🏠 Enclos</div>
+      <div class="sidebar-item">🥚 Couvées</div>
+      <div class="sidebar-section">Administration</div>
+      <div class="sidebar-item">👤 Utilisateurs</div>
+      <div class="sidebar-item">📦 Stock</div>
+      <div class="sidebar-item">👷 Personnel</div>
+    </div>
+    <div style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; gap: 8px;">
+      <div class="avatar">W</div>
+      <div>
+        <div style="font-size: 12px; font-weight: 600;">William MERI</div>
+        <div style="font-size: 10px; opacity: 0.6;">ADMIN</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+      <div class="hero-title">📚 Catalogue des Formations</div>
+      <div class="hero-sub">Référentiel RNCP Soigneur Animalier — La Ferme Tropicale de Guyane</div>
+      <div class="hero-stats">
+        <div>
+          <div class="hero-stat-val">3</div>
+          <div class="hero-stat-lbl">Blocs de compétences</div>
+        </div>
+        <div>
+          <div class="hero-stat-val">12</div>
+          <div class="hero-stat-lbl">Modules actifs</div>
+        </div>
+        <div>
+          <div class="hero-stat-val">8</div>
+          <div class="hero-stat-lbl">Apprenants inscrits</div>
+        </div>
+        <div>
+          <div class="hero-stat-val">94%</div>
+          <div class="hero-stat-lbl">Taux de complétion</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Topbar actions -->
+    <div class="topbar" style="position: relative; top: auto;">
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button class="filter-btn active">Tous (12)</button>
+        <button class="filter-btn">Bloc 1 — Soins (4)</button>
+        <button class="filter-btn">Bloc 2 — Biodiversité (4)</button>
+        <button class="filter-btn">Bloc 3 — Gestion (4)</button>
+        <button class="filter-btn">Brouillon</button>
+      </div>
+      <div class="topbar-actions">
+        <input class="search-bar" placeholder="🔍 Rechercher un cours..." style="width: 200px;" />
+        <button class="btn btn-primary">+ Nouveau cours</button>
+      </div>
+    </div>
+
+    <!-- Courses Grid -->
+    <div class="courses-grid">
+      <!-- Cours 1 -->
+      <div class="course-card">
+        <div class="course-thumb" style="background: linear-gradient(135deg, #166534, #16a34a);">
+          🐦
+          <div class="course-thumb-overlay">
+            <span class="badge badge-green">Bloc 1</span>
+          </div>
+        </div>
+        <div class="course-body">
+          <div class="course-title">Soins quotidiens aux animaux exotiques</div>
+          <div class="course-meta">
+            <span class="badge badge-green">Publié</span>
+            <span style="font-size: 11px; color: #78716c;">⏱ 6h • 4 leçons</span>
+          </div>
+          <div class="course-desc">Alimentation, hygiène, observation comportementale et protocoles de soins pour les espèces tropicales.</div>
+          <div class="progress-bar"><div class="progress-fill" style="width: 87%;"></div></div>
+          <div style="font-size: 11px; color: #78716c; margin-top: 4px;">87% de complétion moyenne</div>
+          <div class="course-footer">
+            <div class="course-stats">
+              <span>👥 6 inscrits</span>
+              <span>📄 PDF, MP4</span>
+            </div>
+            <button class="btn btn-outline btn-sm">Gérer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cours 2 -->
+      <div class="course-card">
+        <div class="course-thumb" style="background: linear-gradient(135deg, #0369a1, #0ea5e9);">
+          🌿
+          <div class="course-thumb-overlay">
+            <span class="badge badge-blue">Bloc 2</span>
+          </div>
+        </div>
+        <div class="course-body">
+          <div class="course-title">Biodiversité guyanaise et CITES</div>
+          <div class="course-meta">
+            <span class="badge badge-green">Publié</span>
+            <span style="font-size: 11px; color: #78716c;">⏱ 8h • 5 leçons</span>
+          </div>
+          <div class="course-desc">Réglementation CITES, espèces protégées de Guyane, permis et obligations légales pour les organismes de conservation.</div>
+          <div class="progress-bar"><div class="progress-fill" style="width: 72%;"></div></div>
+          <div style="font-size: 11px; color: #78716c; margin-top: 4px;">72% de complétion moyenne</div>
+          <div class="course-footer">
+            <div class="course-stats">
+              <span>👥 8 inscrits</span>
+              <span>📄 PPT, PDF</span>
+            </div>
+            <button class="btn btn-outline btn-sm">Gérer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cours 3 -->
+      <div class="course-card">
+        <div class="course-thumb" style="background: linear-gradient(135deg, #b45309, #f59e0b);">
+          🏥
+          <div class="course-thumb-overlay">
+            <span class="badge badge-orange">Bloc 1</span>
+          </div>
+        </div>
+        <div class="course-body">
+          <div class="course-title">Premiers secours vétérinaires</div>
+          <div class="course-meta">
+            <span class="badge badge-green">Publié</span>
+            <span style="font-size: 11px; color: #78716c;">⏱ 4h • 3 leçons</span>
+          </div>
+          <div class="course-desc">Identification des signes de détresse, protocoles d'urgence, immobilisation et transport des animaux blessés.</div>
+          <div class="progress-bar"><div class="progress-fill" style="width: 95%;"></div></div>
+          <div style="font-size: 11px; color: #78716c; margin-top: 4px;">95% de complétion moyenne</div>
+          <div class="course-footer">
+            <div class="course-stats">
+              <span>👥 7 inscrits</span>
+              <span>📄 MP4, PDF</span>
+            </div>
+            <button class="btn btn-outline btn-sm">Gérer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cours 4 -->
+      <div class="course-card">
+        <div class="course-thumb" style="background: linear-gradient(135deg, #7c3aed, #a855f7);">
+          📊
+          <div class="course-thumb-overlay">
+            <span class="badge" style="background: #ede9fe; color: #5b21b6;">Bloc 3</span>
+          </div>
+        </div>
+        <div class="course-body">
+          <div class="course-title">Gestion administrative et traçabilité</div>
+          <div class="course-meta">
+            <span class="badge badge-green">Publié</span>
+            <span style="font-size: 11px; color: #78716c;">⏱ 5h • 4 leçons</span>
+          </div>
+          <div class="course-desc">Registres d'inventaire, fiches de suivi individuel, rapports d'activité et outils de gestion numérique.</div>
+          <div class="progress-bar"><div class="progress-fill" style="width: 61%;"></div></div>
+          <div style="font-size: 11px; color: #78716c; margin-top: 4px;">61% de complétion moyenne</div>
+          <div class="course-footer">
+            <div class="course-stats">
+              <span>👥 5 inscrits</span>
+              <span>📄 ZIP, HTML</span>
+            </div>
+            <button class="btn btn-outline btn-sm">Gérer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cours 5 -->
+      <div class="course-card">
+        <div class="course-thumb" style="background: linear-gradient(135deg, #0f766e, #14b8a6);">
+          🌳
+          <div class="course-thumb-overlay">
+            <span class="badge badge-blue">Bloc 2</span>
+          </div>
+        </div>
+        <div class="course-body">
+          <div class="course-title">Écologie des forêts tropicales</div>
+          <div class="course-meta">
+            <span class="badge badge-yellow">En cours</span>
+            <span style="font-size: 11px; color: #78716c;">⏱ 7h • 5 leçons</span>
+          </div>
+          <div class="course-desc">Écosystèmes forestiers guyanais, chaînes alimentaires, interactions espèces-habitat et impacts anthropiques.</div>
+          <div class="progress-bar"><div class="progress-fill" style="width: 45%;"></div></div>
+          <div style="font-size: 11px; color: #78716c; margin-top: 4px;">45% de complétion moyenne</div>
+          <div class="course-footer">
+            <div class="course-stats">
+              <span>👥 4 inscrits</span>
+              <span>📄 MP4, PPT</span>
+            </div>
+            <button class="btn btn-outline btn-sm">Gérer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cours 6 — Brouillon -->
+      <div class="course-card" style="opacity: 0.75;">
+        <div class="course-thumb" style="background: linear-gradient(135deg, #78716c, #a8a29e);">
+          🔬
+          <div class="course-thumb-overlay">
+            <span class="badge badge-gray">Bloc 3</span>
+          </div>
+        </div>
+        <div class="course-body">
+          <div class="course-title">Techniques de reproduction assistée</div>
+          <div class="course-meta">
+            <span class="badge badge-gray">Brouillon</span>
+            <span style="font-size: 11px; color: #78716c;">⏱ 6h • 0/4 leçons</span>
+          </div>
+          <div class="course-desc">Protocoles d'incubation artificielle, suivi embryonnaire, soins aux nouveau-nés et taux de survie.</div>
+          <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
+          <div style="font-size: 11px; color: #78716c; margin-top: 4px;">En cours de création</div>
+          <div class="course-footer">
+            <div class="course-stats">
+              <span>👥 0 inscrits</span>
+              <span>📄 —</span>
+            </div>
+            <button class="btn btn-primary btn-sm">Éditer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
