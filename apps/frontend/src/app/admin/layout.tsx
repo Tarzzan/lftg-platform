@@ -9,7 +9,7 @@ import {
   Archive, ArrowLeftRight, User, Award, Home, Users2, Stethoscope,
   Calendar, Upload, Search, Command, ShoppingCart, FileText, Code2,
   MessageSquare, BarChart3, Ticket, Dna, Calculator, MapPin, Monitor,
-  HelpCircle, TrendingUp, Globe, CreditCard, Cloud,
+  HelpCircle, TrendingUp, Globe, CreditCard, Cloud, Trophy, Medal,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/auth-store';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
@@ -74,6 +74,7 @@ const navigation = [
       { label: 'Quiz & Évaluations', path: '/admin/formation/quiz', icon: HelpCircle },
       { label: 'Émargement', path: '/admin/formation/emargement', icon: Award },
       { label: 'Tableau Qualiopi', path: '/admin/formation/qualiopi', icon: TrendingUp },
+      { label: 'Mes Récompenses', path: '/admin/formation/recompenses', icon: Trophy },
     ],
   },
   {

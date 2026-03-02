@@ -38,6 +38,10 @@ model User {
   lessonCompletions  LessonCompletion[]
   signatures         Signature[]
   learnerNotes       LearnerNote[]      @relation("LearnerNoteAuthor")
+  lessonFeedbacks    LessonFeedback[]
+  privateNotes       LearnerPrivateNote[]
+  certificates       Certificate[]
+  badges             UserBadge[]
 }
 
 model Role {
@@ -376,11 +380,14 @@ model Course {
   tags        String[]  @default([])
   imageUrl    String?
   isPublished Boolean   @default(false)
-  chapters    Chapter[]
-  cohorts     Cohort[]
-  documents   FormationDocument[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  chapters      Chapter[]
+  cohorts       Cohort[]
+  documents     FormationDocument[]
+  objectives    CourseObjective[]
+  prerequisites CoursePrerequisite[]
+  certificates  Certificate[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 }
 
 model Chapter {
@@ -401,9 +408,12 @@ model Lesson {
   videoUrl  String?
   duration  Int?    // minutes
   order     Int
-  quizzes   Quiz[]
-  completions LessonCompletion[]
-  documents   FormationDocument[]
+  quizzes      Quiz[]
+  completions  LessonCompletion[]
+  documents    FormationDocument[]
+  objectives   LessonObjective[]
+  feedbacks    LessonFeedback[]
+  privateNotes LearnerPrivateNote[]
 }
 
 model Quiz {
@@ -442,6 +452,7 @@ model Enrollment {
   quizAnswers QuizAnswer[]
   signatures   Signature[]
   learnerNotes LearnerNote[]
+  certificate Certificate?
 }
 
 model QuizAnswer {
@@ -907,4 +918,97 @@ model LearnerNote {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
   @@index([enrollmentId])
+}
+
+// ─── Formation — Ingénierie Pédagogique v18 ───────────────────────────────
+
+model CourseObjective {
+  id       String @id @default(cuid())
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  text     String
+  order    Int    @default(0)
+  @@index([courseId])
+}
+
+model CoursePrerequisite {
+  id       String @id @default(cuid())
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  text     String
+  order    Int    @default(0)
+  @@index([courseId])
+}
+
+model LessonObjective {
+  id       String @id @default(cuid())
+  lessonId String
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  text     String
+  order    Int    @default(0)
+  @@index([lessonId])
+}
+
+model LessonFeedback {
+  id           String     @id @default(cuid())
+  lessonId     String
+  lesson       Lesson     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating       Int        // 1-5 étoiles
+  comment      String?
+  createdAt    DateTime   @default(now())
+  @@unique([lessonId, userId])
+  @@index([lessonId])
+}
+
+model LearnerPrivateNote {
+  id           String     @id @default(cuid())
+  lessonId     String
+  lesson       Lesson     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content      String
+  updatedAt    DateTime   @updatedAt
+  createdAt    DateTime   @default(now())
+  @@unique([lessonId, userId])
+  @@index([userId])
+}
+
+model Certificate {
+  id           String     @id @default(cuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId     String
+  course       Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  enrollmentId String     @unique
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  number       String     @unique // ex: LFTG-2026-0042
+  finalScore   Float?
+  issuedAt     DateTime   @default(now())
+  pdfUrl       String?
+  @@index([userId])
+  @@index([courseId])
+}
+
+model Badge {
+  id          String       @id @default(cuid())
+  code        String       @unique // ex: FIRST_LESSON, QUIZ_MASTER, BLOC1_COMPLETE
+  name        String
+  description String
+  icon        String       // emoji ou nom d'icône
+  color       String       @default("#22c55e")
+  condition   String       // description de la condition de débloquage
+  earnedBy    UserBadge[]
+}
+
+model UserBadge {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badgeId   String
+  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  earnedAt  DateTime @default(now())
+  @@unique([userId, badgeId])
+  @@index([userId])
 }

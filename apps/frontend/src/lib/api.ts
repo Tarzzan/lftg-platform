@@ -206,4 +206,25 @@ export const formationApi = {
 
   // Qualiopi Dashboard
   getQualiopi: (cohortId: string) => api.get(`/plugins/formation/cohorts/${cohortId}/qualiopi`).then((r) => r.data),
+
+  // Quiz management
+  getQuizzesByLesson: (lessonId: string) => api.get(`/plugins/formation/lessons/${lessonId}/quizzes`).then((r) => r.data),
+  deleteQuiz: (quizId: string) => api.delete(`/plugins/formation/quizzes/${quizId}`).then((r) => r.data),
+
+  // Objectives & Prerequisites
+  setCourseObjectives: (courseId: string, objectives: string[]) =>
+    api.post(`/plugins/formation/courses/${courseId}/objectives`, { objectives }).then((r) => r.data),
+  setCoursePrerequisites: (courseId: string, prerequisites: string[]) =>
+    api.post(`/plugins/formation/courses/${courseId}/prerequisites`, { prerequisites }).then((r) => r.data),
+  setLessonObjectives: (lessonId: string, objectives: string[]) =>
+    api.post(`/plugins/formation/lessons/${lessonId}/objectives`, { objectives }).then((r) => r.data),
+
+  // Certificates & Badges
+  getMyCertificates: () => api.get('/plugins/formation/my-certificates').then((r) => r.data),
+  getMyBadges: () => api.get('/plugins/formation/my-badges').then((r) => r.data),
+  getLeaderboard: () => api.get('/plugins/formation/leaderboard').then((r) => r.data),
+
+  // Feedback
+  submitFeedback: (data: any) => api.post('/plugins/formation/feedback', data).then((r) => r.data),
+  getFeedbacks: (cohortId: string) => api.get(`/plugins/formation/cohorts/${cohortId}/feedbacks`).then((r) => r.data),
 };

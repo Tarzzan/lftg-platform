@@ -7,7 +7,8 @@ import {
   Archive, ExternalLink, Layers, Clock, ChevronDown,
   ChevronRight, PenLine, BookOpen, Award, Loader2,
   Download, Maximize2, SkipForward, Star, HelpCircle,
-  Trash2, RefreshCw, CheckSquare
+  Trash2, RefreshCw, CheckSquare, StickyNote, MessageSquare,
+  ThumbsUp, ThumbsDown, Smile, Frown, Meh, Save, Plus, X
 } from 'lucide-react';
 import { formationApi } from '@/lib/api';
 
@@ -332,12 +333,156 @@ function QuizBlock({ quiz, enrollmentId }: { quiz: any; enrollmentId: string }) 
   );
 }
 
+// ─── Bloc-notes privé ────────────────────────────────────────────────────────
+function NotesPanel({ enrollmentId, lessonId }: { enrollmentId: string; lessonId: string }) {
+  const qc = useQueryClient();
+  const [newNote, setNewNote] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  const { data: notes = [] } = useQuery({
+    queryKey: ['notes', enrollmentId, lessonId],
+    queryFn: () => formationApi.getNotes(enrollmentId, true),
+  });
+
+  const lessonNotes = notes.filter((n: any) => n.lessonId === lessonId || !n.lessonId);
+
+  const addNote = async () => {
+    if (!newNote.trim()) return;
+    setSaving(true);
+    try {
+      await formationApi.addNote({ enrollmentId, lessonId, content: newNote, isPrivate: true });
+      setNewNote('');
+      qc.invalidateQueries({ queryKey: ['notes', enrollmentId, lessonId] });
+    } catch {}
+    setSaving(false);
+  };
+
+  const deleteNote = async (id: string) => {
+    await formationApi.deleteNote(id);
+    qc.invalidateQueries({ queryKey: ['notes', enrollmentId, lessonId] });
+  };
+
+  return (
+    <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 space-y-3">
+      <div className="flex items-center gap-2 mb-2">
+        <StickyNote className="w-4 h-4 text-amber-600" />
+        <h4 className="text-sm font-semibold text-amber-800">Mes notes privées</h4>
+        <span className="text-xs text-amber-500 ml-auto">{lessonNotes.length} note{lessonNotes.length !== 1 ? 's' : ''}</span>
+      </div>
+      <div className="flex gap-2">
+        <textarea
+          value={newNote}
+          onChange={e => setNewNote(e.target.value)}
+          rows={2}
+          placeholder="Ajoutez une note personnelle..."
+          className="flex-1 text-sm bg-white border border-amber-200 rounded-xl px-3 py-2 text-gray-700 placeholder-amber-300 focus:outline-none focus:border-amber-400 resize-none"
+        />
+        <button onClick={addNote} disabled={!newNote.trim() || saving}
+          className="px-3 py-2 bg-amber-500 text-white rounded-xl hover:bg-amber-600 disabled:opacity-40 transition-colors flex-shrink-0">
+          {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+        </button>
+      </div>
+      {lessonNotes.length > 0 && (
+        <div className="space-y-2 max-h-40 overflow-y-auto">
+          {lessonNotes.map((note: any) => (
+            <div key={note.id} className="flex items-start gap-2 bg-white rounded-xl p-3 border border-amber-100 group">
+              <p className="flex-1 text-xs text-gray-700 leading-relaxed">{note.content}</p>
+              <button onClick={() => deleteNote(note.id)}
+                className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-400 transition-all flex-shrink-0">
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Feedback de fin de leçon ─────────────────────────────────────────────────
+function LessonFeedback({ enrollmentId, lessonId, onSubmit }: { enrollmentId: string; lessonId: string; onSubmit: () => void }) {
+  const [rating, setRating] = useState<number>(0);
+  const [difficulty, setDifficulty] = useState<'EASY' | 'MEDIUM' | 'HARD' | null>(null);
+  const [comment, setComment] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+
+  const submitFeedback = async () => {
+    if (!rating) return;
+    try {
+      await formationApi.submitFeedback({ enrollmentId, lessonId, rating, difficulty, comment });
+      setSubmitted(true);
+      setTimeout(onSubmit, 1500);
+    } catch { onSubmit(); }
+  };
+
+  if (submitted) return (
+    <div className="flex items-center gap-3 p-4 bg-forest-50 border border-forest-200 rounded-2xl">
+      <CheckCircle className="w-5 h-5 text-forest-600" />
+      <p className="text-sm font-semibold text-forest-800">Merci pour votre retour !</p>
+    </div>
+  );
+
+  return (
+    <div className="bg-white border border-gray-200 rounded-2xl p-5 space-y-4 shadow-sm">
+      <div className="flex items-center gap-2">
+        <MessageSquare className="w-4 h-4 text-maroni-500" />
+        <h4 className="text-sm font-semibold text-gray-800">Évaluez cette leçon</h4>
+        <span className="text-xs text-gray-400 ml-auto">Indicateur Qualiopi I32</span>
+      </div>
+      {/* Étoiles */}
+      <div>
+        <p className="text-xs text-gray-500 mb-2">Note globale</p>
+        <div className="flex gap-1">
+          {[1,2,3,4,5].map(s => (
+            <button key={s} onClick={() => setRating(s)}
+              className={`transition-transform hover:scale-110 ${s <= rating ? 'text-gold-400' : 'text-gray-200'}`}>
+              <Star className="w-7 h-7 fill-current" />
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* Difficulté */}
+      <div>
+        <p className="text-xs text-gray-500 mb-2">Niveau de difficulté ressenti</p>
+        <div className="flex gap-2">
+          {[
+            { val: 'EASY', label: 'Facile', icon: Smile, color: 'text-forest-500 bg-forest-50 border-forest-200' },
+            { val: 'MEDIUM', label: 'Moyen', icon: Meh, color: 'text-gold-500 bg-gold-50 border-gold-200' },
+            { val: 'HARD', label: 'Difficile', icon: Frown, color: 'text-red-500 bg-red-50 border-red-200' },
+          ].map(({ val, label, icon: Icon, color }) => (
+            <button key={val} onClick={() => setDifficulty(val as any)}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border-2 transition-all
+                ${difficulty === val ? color : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300'}`}>
+              <Icon className="w-4 h-4" /> {label}
+            </button>
+          ))}
+        </div>
+      </div>
+      {/* Commentaire */}
+      <textarea value={comment} onChange={e => setComment(e.target.value)} rows={2}
+        placeholder="Un commentaire ? (optionnel)"
+        className="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-gray-700 placeholder-gray-400 focus:outline-none focus:border-maroni-400 resize-none" />
+      <div className="flex gap-2">
+        <button onClick={onSubmit} className="flex-1 py-2 text-sm text-gray-500 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+          Passer
+        </button>
+        <button onClick={submitFeedback} disabled={!rating}
+          className="flex-1 flex items-center justify-center gap-2 py-2 text-sm font-semibold bg-maroni-600 text-white rounded-xl hover:bg-maroni-700 disabled:opacity-40 transition-colors">
+          <Save className="w-4 h-4" /> Envoyer
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ─── Leçon viewer ─────────────────────────────────────────────────────────────
 function LessonViewer({ lesson, enrollmentId, isCompleted, onComplete }: {
   lesson: any; enrollmentId: string; isCompleted: boolean; onComplete: () => void;
 }) {
   const [showSignature, setShowSignature] = useState(false);
   const [signed, setSigned] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [showNotes, setShowNotes] = useState(false);
   const [startTime] = useState(Date.now());
   const qc = useQueryClient();
 
@@ -376,13 +521,25 @@ function LessonViewer({ lesson, enrollmentId, isCompleted, onComplete }: {
               </p>
             )}
           </div>
-          {isCompleted && (
-            <span className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 bg-forest-100 text-forest-700 rounded-full flex-shrink-0">
-              <CheckCircle className="w-3.5 h-3.5" /> Validée
-            </span>
-          )}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {isCompleted && (
+              <span className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 bg-forest-100 text-forest-700 rounded-full">
+                <CheckCircle className="w-3.5 h-3.5" /> Validée
+              </span>
+            )}
+            <button onClick={() => setShowNotes(!showNotes)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all border
+                ${showNotes ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-white text-gray-500 border-gray-200 hover:border-amber-300 hover:text-amber-600'}`}>
+              <StickyNote className="w-3.5 h-3.5" /> Notes
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Bloc-notes */}
+      {showNotes && (
+        <NotesPanel enrollmentId={enrollmentId} lessonId={lesson.id} />
+      )}
 
       {/* Contenu textuel */}
       {lesson.content && (
@@ -417,9 +574,15 @@ function LessonViewer({ lesson, enrollmentId, isCompleted, onComplete }: {
         </div>
       )}
 
-      {/* Validation / Émargement */}
-      <div className="pt-4 border-t border-gray-100">
-        {isCompleted || signed ? (
+      {/* Validation / Émargement + Feedback */}
+      <div className="pt-4 border-t border-gray-100 space-y-4">
+        {showFeedback ? (
+          <LessonFeedback
+            enrollmentId={enrollmentId}
+            lessonId={lesson.id}
+            onSubmit={() => { setShowFeedback(false); onComplete(); }}
+          />
+        ) : isCompleted || signed ? (
           <div className="flex items-center gap-3 p-4 bg-forest-50 border border-forest-200 rounded-2xl">
             <div className="w-10 h-10 rounded-xl bg-forest-100 flex items-center justify-center flex-shrink-0">
               <CheckCircle className="w-5 h-5 text-forest-600" />

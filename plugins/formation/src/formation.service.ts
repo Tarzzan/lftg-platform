@@ -330,4 +330,154 @@ export class FormationService {
     ]);
     return { totalCourses, totalCohorts, totalEnrollments, activeCohorts };
   }
+
+  // ─── Objectifs pédagogiques ───────────────────────────────────────────────
+  async setCourseObjectives(courseId: string, objectives: string[]) {
+    await this.prisma.courseObjective.deleteMany({ where: { courseId } });
+    return this.prisma.courseObjective.createMany({
+      data: objectives.map((text, order) => ({ courseId, text, order })),
+    });
+  }
+
+  async setCoursePrerequisites(courseId: string, prerequisites: string[]) {
+    await this.prisma.coursePrerequisite.deleteMany({ where: { courseId } });
+    return this.prisma.coursePrerequisite.createMany({
+      data: prerequisites.map((text, order) => ({ courseId, text, order })),
+    });
+  }
+
+  async setLessonObjectives(lessonId: string, objectives: string[]) {
+    await this.prisma.lessonObjective.deleteMany({ where: { lessonId } });
+    return this.prisma.lessonObjective.createMany({
+      data: objectives.map((text, order) => ({ lessonId, text, order })),
+    });
+  }
+
+  // ─── Feedback leçon ───────────────────────────────────────────────────────
+  async submitLessonFeedback(lessonId: string, userId: string, rating: number, comment?: string) {
+    return this.prisma.lessonFeedback.upsert({
+      where: { lessonId_userId: { lessonId, userId } },
+      update: { rating, comment },
+      create: { lessonId, userId, rating, comment },
+    });
+  }
+
+  async getLessonFeedbacks(lessonId: string) {
+    return this.prisma.lessonFeedback.findMany({
+      where: { lessonId },
+      include: { user: { select: { name: true } } },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  // ─── Notes privées apprenant ──────────────────────────────────────────────
+  async savePrivateNote(lessonId: string, userId: string, content: string) {
+    return this.prisma.learnerPrivateNote.upsert({
+      where: { lessonId_userId: { lessonId, userId } },
+      update: { content },
+      create: { lessonId, userId, content },
+    });
+  }
+
+  async getPrivateNote(lessonId: string, userId: string) {
+    return this.prisma.learnerPrivateNote.findUnique({
+      where: { lessonId_userId: { lessonId, userId } },
+    });
+  }
+
+  // ─── Certificats ──────────────────────────────────────────────────────────
+  async generateCertificate(enrollmentId: string) {
+    const enrollment = await this.prisma.enrollment.findUnique({
+      where: { id: enrollmentId },
+      include: {
+        cohort: { include: { course: true } },
+        certificate: true,
+      },
+    });
+    if (!enrollment) throw new NotFoundException(`Inscription ${enrollmentId} introuvable`);
+    if (enrollment.certificate) return enrollment.certificate;
+    const count = await this.prisma.certificate.count();
+    const number = `LFTG-${new Date().getFullYear()}-${String(count + 1).padStart(4, '0')}`;
+    return this.prisma.certificate.create({
+      data: {
+        userId: enrollment.userId,
+        courseId: enrollment.cohort.courseId,
+        enrollmentId,
+        number,
+        issuedAt: new Date(),
+      },
+    });
+  }
+
+  async getUserCertificates(userId: string) {
+    return this.prisma.certificate.findMany({
+      where: { userId },
+      include: { course: { select: { title: true, category: true } } },
+      orderBy: { issuedAt: 'desc' },
+    });
+  }
+
+  // ─── Badges & Gamification ────────────────────────────────────────────────
+  async getAllBadges() {
+    return this.prisma.badge.findMany({ orderBy: { code: 'asc' } });
+  }
+
+  async getUserBadges(userId: string) {
+    return this.prisma.userBadge.findMany({
+      where: { userId },
+      include: { badge: true },
+      orderBy: { earnedAt: 'desc' },
+    });
+  }
+
+  async awardBadge(userId: string, badgeCode: string) {
+    const badge = await this.prisma.badge.findUnique({ where: { code: badgeCode } });
+    if (!badge) return null;
+    return this.prisma.userBadge.upsert({
+      where: { userId_badgeId: { userId, badgeId: badge.id } },
+      update: {},
+      create: { userId, badgeId: badge.id },
+    });
+  }
+
+  async checkAndAwardBadges(userId: string) {
+    const awarded: string[] = [];
+    // Badge : première leçon complétée
+    const completions = await this.prisma.lessonCompletion.count({ where: { userId } });
+    if (completions >= 1) {
+      const b = await this.awardBadge(userId, 'FIRST_LESSON');
+      if (b) awarded.push('FIRST_LESSON');
+    }
+    // Badge : 10 leçons complétées
+    if (completions >= 10) {
+      const b = await this.awardBadge(userId, 'TEN_LESSONS');
+      if (b) awarded.push('TEN_LESSONS');
+    }
+    // Badge : score quiz > 90%
+    const quizAnswers = await this.prisma.quizAnswer.findMany({ where: { enrollment: { userId } } });
+    if (quizAnswers.length >= 5) {
+      const correctRate = quizAnswers.filter((a) => a.isCorrect).length / quizAnswers.length;
+      if (correctRate >= 0.9) {
+        const b = await this.awardBadge(userId, 'QUIZ_MASTER');
+        if (b) awarded.push('QUIZ_MASTER');
+      }
+    }
+    return awarded;
+  }
+
+  // ─── Quiz CRUD (constructeur admin) ──────────────────────────────────────
+  async updateQuiz(id: string, data: { question?: string; options?: string[]; answer?: string }) {
+    return this.prisma.quiz.update({ where: { id }, data });
+  }
+
+  async deleteQuiz(id: string) {
+    return this.prisma.quiz.delete({ where: { id } });
+  }
+
+  async getQuizzesByLesson(lessonId: string) {
+    return this.prisma.quiz.findMany({ where: { lessonId } });
+  }
 }
+
+// ─── Objectifs pédagogiques ───────────────────────────────────────────────
+// NOTE: méthodes ajoutées en dehors de la classe — à intégrer dans FormationService

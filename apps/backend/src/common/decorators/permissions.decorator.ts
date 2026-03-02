@@ -9,3 +9,7 @@ export interface RequiredPermission {
 
 export const RequirePermissions = (...permissions: RequiredPermission[]) =>
   SetMetadata(PERMISSIONS_KEY, permissions);
+
+// Alias simple pour les permissions sous forme de string (ex: 'medical:read')
+export const Permissions = (...permissions: string[]) =>
+  SetMetadata(PERMISSIONS_KEY, permissions);
