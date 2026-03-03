@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { GitBranch, Clock, CheckCircle, XCircle, ArrowRight } from 'lucide-react';
+import { GitBranch, Clock, CheckCircle, XCircle, ArrowRight, Plus } from 'lucide-react';
 import { workflowsApi } from '@/lib/api';
 import Link from 'next/link';
 
@@ -41,6 +41,12 @@ export default function WorkflowsPage() {
           <p className="text-sm text-muted-foreground mt-1">
             {instances?.length ?? 0} instances · {definitions?.length ?? 0} définitions
           </p>
+        </div>
+        <div className="flex gap-2">
+          <Link href="/admin/workflows/editor" className="btn-primary flex items-center gap-2">
+            <Plus className="w-4 h-4" />
+            Créer un workflow
+          </Link>
         </div>
       </div>
 
