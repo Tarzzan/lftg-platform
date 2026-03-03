@@ -45,8 +45,8 @@ const navigation = [
     section: 'Stock',
     items: [
       { label: 'Articles', path: '/admin/stock/articles', icon: Archive },
-      { label: 'Mouvements', path: '/admin/stock/articles', icon: ArrowLeftRight },
-      { label: 'Demandes', path: '/admin/stock/articles', icon: Package },
+      { label: 'Mouvements', path: '/admin/stock/mouvements', icon: ArrowLeftRight },
+      { label: 'Demandes', path: '/admin/stock/demandes', icon: Package },
     ],
   },
   {

@@ -1,10 +1,9 @@
 'use client';
-
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   Stethoscope, Calendar, AlertCircle, CheckCircle, Clock,
-  Search, Filter, Plus, Bird, Syringe, Pill, TrendingUp,
+  Search, Filter, Plus, Bird, Syringe, Pill, TrendingUp, X,
 } from 'lucide-react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
@@ -18,12 +17,16 @@ interface MedicalVisit {
   nextVisitDate?: string;
   animal: { id: string; name: string; species: { name: string } };
 }
-
 interface MedicalDashboard {
   totalVisits: number;
   upcomingVisits: number;
   activeAnimals: number;
   recentVisits: MedicalVisit[];
+}
+interface Animal {
+  id: string;
+  name: string;
+  species: { name: string };
 }
 
 const visitTypeLabels: Record<string, string> = {
@@ -34,7 +37,6 @@ const visitTypeLabels: Record<string, string> = {
   CHECKUP: 'Bilan',
   FOLLOWUP: 'Suivi',
 };
-
 const visitTypeColors: Record<string, string> = {
   ROUTINE: 'bg-green-100 text-green-700',
   EMERGENCY: 'bg-red-100 text-red-700',
@@ -49,12 +51,26 @@ export default function MedicalPage() {
   const [typeFilter, setTypeFilter] = useState('');
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [form, setForm] = useState({
+    animalId: '',
+    type: 'ROUTINE',
+    visitDate: new Date().toISOString().split('T')[0],
+    vetName: '',
+    diagnosis: '',
+    notes: '',
+    weight: '',
+    temperature: '',
+    nextVisitDate: '',
+  });
+  const [formError, setFormError] = useState('');
+
+  const queryClient = useQueryClient();
 
   const { data: dashboard } = useQuery<MedicalDashboard>({
     queryKey: ['medical-dashboard'],
     queryFn: () => api.get('/medical/dashboard').then(r => r.data),
   });
-
   const { data: visits = [], isLoading } = useQuery<MedicalVisit[]>({
     queryKey: ['medical-visits', search, typeFilter, dateFrom, dateTo],
     queryFn: () => {
@@ -65,6 +81,56 @@ export default function MedicalPage() {
       return api.get(`/medical/visits?${params}`).then(r => r.data);
     },
   });
+  const { data: animals = [] } = useQuery<Animal[]>({
+    queryKey: ['animals-list'],
+    queryFn: () => api.get('/plugins/animaux/animals').then(r => r.data),
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (data: typeof form) => {
+      const payload: Record<string, unknown> = {
+        animalId: data.animalId,
+        type: data.type,
+        visitDate: data.visitDate,
+        vetName: data.vetName,
+      };
+      if (data.diagnosis) payload.diagnosis = data.diagnosis;
+      if (data.notes) payload.notes = data.notes;
+      if (data.weight) payload.weight = parseFloat(data.weight);
+      if (data.temperature) payload.temperature = parseFloat(data.temperature);
+      if (data.nextVisitDate) payload.nextVisitDate = data.nextVisitDate;
+      return api.post('/medical/visits', payload);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['medical-visits'] });
+      queryClient.invalidateQueries({ queryKey: ['medical-dashboard'] });
+      setShowModal(false);
+      setForm({
+        animalId: '',
+        type: 'ROUTINE',
+        visitDate: new Date().toISOString().split('T')[0],
+        vetName: '',
+        diagnosis: '',
+        notes: '',
+        weight: '',
+        temperature: '',
+        nextVisitDate: '',
+      });
+      setFormError('');
+    },
+    onError: (err: unknown) => {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      setFormError(msg || 'Erreur lors de la création de la visite.');
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError('');
+    if (!form.animalId) { setFormError('Veuillez sélectionner un animal.'); return; }
+    if (!form.vetName.trim()) { setFormError('Le nom du vétérinaire est requis.'); return; }
+    createMutation.mutate(form);
+  };
 
   const filtered = visits.filter(v =>
     !search ||
@@ -81,7 +147,7 @@ export default function MedicalPage() {
           <h1 className="text-2xl font-display font-bold text-foreground">Suivi Médical</h1>
           <p className="text-muted-foreground text-sm mt-1">Historique des visites vétérinaires et traitements</p>
         </div>
-        <button className="btn-primary flex items-center gap-2">
+        <button onClick={() => setShowModal(true)} className="btn-primary flex items-center gap-2">
           <Plus className="w-4 h-4" />
           Nouvelle visite
         </button>
@@ -170,6 +236,154 @@ export default function MedicalPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Modale Nouvelle visite */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-border">
+              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                <Stethoscope className="w-5 h-5 text-forest-600" />
+                Nouvelle visite médicale
+              </h2>
+              <button onClick={() => { setShowModal(false); setFormError(''); }} className="p-2 hover:bg-muted rounded-lg transition-colors">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+              {formError && (
+                <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 text-sm">
+                  {formError}
+                </div>
+              )}
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Animal <span className="text-red-500">*</span></label>
+                <select
+                  value={form.animalId}
+                  onChange={e => setForm(f => ({ ...f, animalId: e.target.value }))}
+                  className="input w-full"
+                  required
+                >
+                  <option value="">Sélectionner un animal...</option>
+                  {animals.map(a => (
+                    <option key={a.id} value={a.id}>{a.name} — {a.species?.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">Type de visite <span className="text-red-500">*</span></label>
+                  <select
+                    value={form.type}
+                    onChange={e => setForm(f => ({ ...f, type: e.target.value }))}
+                    className="input w-full"
+                    required
+                  >
+                    {Object.entries(visitTypeLabels).map(([k, v]) => (
+                      <option key={k} value={k}>{v}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">Date de visite <span className="text-red-500">*</span></label>
+                  <input
+                    type="date"
+                    value={form.visitDate}
+                    onChange={e => setForm(f => ({ ...f, visitDate: e.target.value }))}
+                    className="input w-full"
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Vétérinaire <span className="text-red-500">*</span></label>
+                <input
+                  type="text"
+                  value={form.vetName}
+                  onChange={e => setForm(f => ({ ...f, vetName: e.target.value }))}
+                  placeholder="Dr. Nom Prénom"
+                  className="input w-full"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Diagnostic</label>
+                <textarea
+                  value={form.diagnosis}
+                  onChange={e => setForm(f => ({ ...f, diagnosis: e.target.value }))}
+                  placeholder="Diagnostic ou observations..."
+                  className="input w-full h-20 resize-none"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Notes</label>
+                <textarea
+                  value={form.notes}
+                  onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+                  placeholder="Notes complémentaires..."
+                  className="input w-full h-16 resize-none"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">Poids (kg)</label>
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={form.weight}
+                    onChange={e => setForm(f => ({ ...f, weight: e.target.value }))}
+                    placeholder="Ex: 2.5"
+                    className="input w-full"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-1">Température (°C)</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    min="0"
+                    value={form.temperature}
+                    onChange={e => setForm(f => ({ ...f, temperature: e.target.value }))}
+                    placeholder="Ex: 38.5"
+                    className="input w-full"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-1">Prochain rendez-vous</label>
+                <input
+                  type="date"
+                  value={form.nextVisitDate}
+                  onChange={e => setForm(f => ({ ...f, nextVisitDate: e.target.value }))}
+                  className="input w-full"
+                />
+              </div>
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => { setShowModal(false); setFormError(''); }}
+                  className="btn-secondary flex-1"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="submit"
+                  disabled={createMutation.isPending}
+                  className="btn-primary flex-1 flex items-center justify-center gap-2"
+                >
+                  {createMutation.isPending ? (
+                    <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
+                  ) : (
+                    <Plus className="w-4 h-4" />
+                  )}
+                  Créer la visite
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </div>
