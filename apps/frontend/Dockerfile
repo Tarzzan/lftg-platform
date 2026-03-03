@@ -25,10 +25,13 @@ ENV NODE_ENV production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder /app/apps/frontend/public ./public
-# Copier le build standalone (contient server.js autonome)
+# Copier les fichiers publics
+COPY --from=builder /app/apps/frontend/public ./apps/frontend/public
+
+# Copier le build standalone (contient server.js autonome + node_modules bundlés)
 COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/.next/standalone ./
-# Copier les fichiers statiques dans le bon emplacement
+
+# Copier les fichiers statiques dans le bon emplacement attendu par Next.js
 COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/.next/static ./apps/frontend/.next/static
 
 USER nextjs
