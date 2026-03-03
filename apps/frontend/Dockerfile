@@ -25,11 +25,14 @@ ENV NODE_ENV production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copier les fichiers publics
+# Copier les fichiers publics dans la structure monorepo attendue
 COPY --from=builder /app/apps/frontend/public ./apps/frontend/public
 
-# Copier le build standalone (contient server.js autonome + node_modules bundlés)
+# Copier le build standalone (contient server.js + node_modules avec symlinks)
 COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/.next/standalone ./
+
+# Copier le dossier .pnpm qui contient les vrais modules (résolution des symlinks)
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.pnpm ./node_modules/.pnpm
 
 # Copier les fichiers statiques dans le bon emplacement attendu par Next.js
 COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/.next/static ./apps/frontend/.next/static
