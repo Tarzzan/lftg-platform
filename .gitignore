@@ -1,0 +1,40 @@
+# Dépendances
+node_modules/
+.pnpm-store/
+
+# Build Next.js
+apps/frontend/.next/
+apps/frontend/out/
+
+# Build NestJS
+apps/backend/dist/
+
+# Turbo
+.turbo/
+coverage/
+
+# Environnement
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Prisma - client généré
+prisma-client/
+
+# Uploads
+uploads/
+
+# Screenshots
+screenshots/
+
+# Lock files npm
+/package-lock.json

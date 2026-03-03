@@ -1,0 +1,124 @@
+version: '3.9'
+
+services:
+  # ─────────────────────────────────────────
+  #  PostgreSQL Database
+  # ─────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: lftg-postgres-prod
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-lftg}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-lftg_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-lftg_platform}
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+    networks:
+      - lftg-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-lftg} -d ${POSTGRES_DB:-lftg_platform}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─────────────────────────────────────────
+  #  Redis Cache
+  # ─────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: lftg-redis-prod
+    restart: always
+    volumes:
+      - redis_data_prod:/data
+    networks:
+      - lftg-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─────────────────────────────────────────
+  #  Backend (NestJS)
+  # ─────────────────────────────────────────
+  backend:
+    build:
+      context: .
+      dockerfile: ./apps/backend/Dockerfile
+    container_name: lftg-backend-prod
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-lftg}:${POSTGRES_PASSWORD:-lftg_secret}@postgres:5432/${POSTGRES_DB:-lftg_platform}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      NODE_ENV: production
+      PORT: 3001
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost}
+    ports:
+      - "3001:3001"
+    networks:
+      - lftg-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3001/api/v1/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # ─────────────────────────────────────────
+  #  Frontend (Next.js)
+  # ─────────────────────────────────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: ./apps/frontend/Dockerfile
+    container_name: lftg-frontend-prod
+    restart: always
+    depends_on:
+      backend:
+        condition: service_healthy
+    environment:
+      # URL publique accessible depuis le navigateur (pas depuis le conteneur)
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001/api/v1}
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: "0.0.0.0"
+    networks:
+      - lftg-network
+
+  # ─────────────────────────────────────────
+  #  Nginx Reverse Proxy
+  # ─────────────────────────────────────────
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: lftg-nginx-prod
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/prod.conf:/etc/nginx/conf.d/default.conf
+      # - ./certs:/etc/nginx/certs  # Décommenter pour HTTPS
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - lftg-network
+
+volumes:
+  postgres_data_prod:
+    driver: local
+  redis_data_prod:
+    driver: local
+
+networks:
+  lftg-network:
+    driver: bridge

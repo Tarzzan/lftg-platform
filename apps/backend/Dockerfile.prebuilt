@@ -1,0 +1,40 @@
+FROM node:20-alpine
+
+# Installer OpenSSL pour Prisma
+RUN apk add --no-cache openssl
+
+WORKDIR /app
+
+RUN npm install -g pnpm@9
+
+# Copy workspace config
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml tsconfig.json tsconfig.base.json ./
+COPY apps/backend/package.json ./apps/backend/
+COPY packages/core/package.json ./packages/core/
+
+# Install ALL dependencies
+RUN pnpm install --frozen-lockfile
+
+# Copy pre-built backend (dist + i18n inclus)
+COPY apps/backend/dist ./apps/backend/dist
+
+# Copy Prisma schema
+COPY packages/core/prisma ./packages/core/prisma
+
+# Copy pre-generated Prisma client with Alpine binary (linux-musl-openssl-3.0.x)
+# Copie dans node_modules/.prisma (standard)
+COPY prisma-client/.prisma ./node_modules/.prisma
+# Copie aussi dans le store pnpm (chemin que pnpm résout)
+RUN PNPM_PRISMA_DIR=$(find /app/node_modules/.pnpm -type d -name ".prisma" -path "*@prisma+client*" 2>/dev/null | head -1) && \
+    if [ -n "$PNPM_PRISMA_DIR" ]; then \
+      cp -r /app/node_modules/.prisma/client/* "$PNPM_PRISMA_DIR/client/" 2>/dev/null || true; \
+      echo "Prisma client copié dans $PNPM_PRISMA_DIR"; \
+    else \
+      echo "WARN: Chemin pnpm Prisma non trouvé, utilisation du chemin standard"; \
+    fi
+
+ENV NODE_ENV=production
+EXPOSE 3001
+
+# Au démarrage : migrer la DB puis lancer le backend NestJS
+CMD ["sh", "-c", "cd /app && pnpm --filter @lftg/core exec prisma migrate deploy 2>/dev/null || true && node apps/backend/dist/apps/backend/src/main.js"]

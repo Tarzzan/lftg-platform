@@ -1,0 +1,27 @@
+version: '3.9'
+
+# Environnement de développement local
+# Usage: docker-compose -f docker-compose.dev.yml up
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: lftg-db-dev
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: lftg
+      POSTGRES_PASSWORD: lftg_secret
+      POSTGRES_DB: lftg_platform
+    ports:
+      - "5432:5432"
+    volumes:
+      - lftg_db_dev_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lftg -d lftg_platform"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  lftg_db_dev_data:
+    driver: local

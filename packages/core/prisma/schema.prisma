@@ -1,0 +1,1015 @@
+
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../../../node_modules/.prisma/client"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x", "debian-openssl-3.0.x"]
+}
+
+// =======================================
+//          CORE: AUTH & RBAC/ABAC
+// =======================================
+
+model User {
+  id                  String   @id @default(cuid())
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  email               String   @unique
+  name                String?
+  password            String
+  isActive            Boolean  @default(true)
+  refreshToken        String?
+  twoFactorSecret     String?
+  isTwoFactorEnabled  Boolean  @default(false)
+
+  roles              Role[]             @relation("UserRoles")
+  teams              Team[]             @relation("TeamUsers")
+  auditLogs          AuditLog[]
+  workflowInstances  WorkflowInstance[] @relation("InstanceAssignee")
+  workflowHistories  WorkflowHistory[]
+  salesCreated       Sale[]             @relation("SaleCreatedBy")
+  documents          Document[]
+  historyLogs        HistoryLog[]
+  pushSubscriptions  PushSubscription[]
+  lessonCompletions  LessonCompletion[]
+  signatures         Signature[]
+  learnerNotes       LearnerNote[]      @relation("LearnerNoteAuthor")
+  lessonFeedbacks    LessonFeedback[]
+  privateNotes       LearnerPrivateNote[]
+  certificates       Certificate[]
+  badges             UserBadge[]
+}
+
+model Role {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  description String?
+  users       User[]       @relation("UserRoles")
+  permissions Permission[]
+}
+
+model Permission {
+  id          String  @id @default(cuid())
+  action      String
+  subject     String
+  conditions  Json?
+  description String?
+  roles       Role[]
+}
+
+model Team {
+  id          String @id @default(cuid())
+  name        String @unique
+  description String?
+  users       User[] @relation("TeamUsers")
+}
+
+// =======================================
+//          CORE: AUDIT LOG
+// =======================================
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  timestamp DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  action    String
+  subject   String
+  details   Json?
+
+  @@index([userId])
+  @@index([timestamp])
+  @@index([subject])
+}
+
+// =======================================
+//          CORE: WORKFLOW ENGINE
+// =======================================
+
+model WorkflowDefinition {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  entityType  String
+  description String?
+  states      Json
+  transitions Json
+  formSchema  Json?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  instances WorkflowInstance[]
+}
+
+model WorkflowInstance {
+  id           String             @id @default(cuid())
+  definitionId String
+  definition   WorkflowDefinition @relation(fields: [definitionId], references: [id])
+  entityId     String
+  currentState String
+  context      Json               @default("{}")
+  assigneeId   String?
+  assignee     User?              @relation("InstanceAssignee", fields: [assigneeId], references: [id])
+  slaDeadline  DateTime?
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+
+  history WorkflowHistory[]
+
+  @@index([definitionId])
+  @@index([currentState])
+  @@index([assigneeId])
+}
+
+model WorkflowHistory {
+  id         String           @id @default(cuid())
+  instanceId String
+  instance   WorkflowInstance @relation(fields: [instanceId], references: [id])
+  timestamp  DateTime         @default(now())
+  fromState  String
+  toState    String
+  transition String
+  userId     String
+  user       User             @relation(fields: [userId], references: [id])
+  notes      String?
+  formData   Json?
+
+  @@index([instanceId])
+}
+
+// =======================================
+//          PLUGIN: PERSONNEL
+// =======================================
+
+model Employee {
+  id         String     @id @default(cuid())
+  userId     String     @unique
+  firstName  String?
+  lastName   String?
+  email      String?
+  phone      String?
+  jobTitle   String?
+  department String?
+  hireDate   DateTime?
+  documents    HrDocument[]
+  skills       Skill[]      @relation("EmployeeSkills")
+  agendaEvents AgendaEvent[]
+}
+
+model Skill {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  employees Employee[] @relation("EmployeeSkills")
+}
+
+model HrDocument {
+  id         String   @id @default(cuid())
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  name       String
+  url        String
+  type       String
+  uploadedAt DateTime @default(now())
+}
+
+// =======================================
+//          PLUGIN: STOCK
+// =======================================
+
+model StockItem {
+  id                String          @id @default(cuid())
+  name              String          @unique
+  description       String?
+  category          String?
+  quantity          Float           @default(0)
+  unit              String
+  lowStockThreshold Float           @default(0)
+  minThreshold      Float           @default(0)
+  maxThreshold      Float?
+  reference         String?         @unique
+  supplier          String?
+  unitPrice         Float?
+  location          String?
+  movements         StockMovement[]
+  requests          StockRequest[]
+  saleItems         SaleItem[]
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+}
+
+model StockMovement {
+  id        String    @id @default(cuid())
+  itemId    String
+  item      StockItem @relation(fields: [itemId], references: [id])
+  quantity  Float
+  type      String
+  userId    String
+  timestamp DateTime  @default(now())
+  notes     String?
+  requestId String?
+
+  @@index([itemId])
+}
+
+model StockRequest {
+  id          String    @id @default(cuid())
+  itemId      String
+  item        StockItem @relation(fields: [itemId], references: [id])
+  quantity    Float
+  reason      String?
+  requesterId String
+  status      String    @default("draft")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// =======================================
+//          PLUGIN: ANIMAUX & COUVEES
+// =======================================
+
+model Species {
+  id             String   @id @default(cuid())
+  name           String   @unique
+  scientificName String?
+  commonName     String?
+  description    String?
+  citesStatus    String?  // I, II, III, Non listé
+  citesAppendix  String?  // I, II, III
+  conservationStatus String? // CR, EN, VU, NT, LC
+  origin         String?
+  habitat        String?
+  diet           String?
+  lifespan       Int?     // années
+  gestationDays  Int?
+  incubationDays Int?
+  imageUrl       String?
+  animals        Animal[]
+  broods         Brood[]
+  nutritionPlans NutritionPlan[]
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Enclosure {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  code        String?  @unique
+  type        String   @default("terrarium") // terrarium, volière, bassin, paddock, cage
+  description String?
+  capacity    Int      @default(1)
+  surface     Float?   // m²
+  location    String?
+  status      String   @default("ACTIVE") // ACTIVE, MAINTENANCE, INACTIVE
+  features    String[] @default([])
+  latitude    Float?
+  longitude   Float?
+  imageUrl    String?
+  animals      Animal[]
+  siteId       String?
+  site         Site?       @relation(fields: [siteId], references: [id])
+  iotDevices   IotDevice[]
+  agendaEvents AgendaEvent[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Animal {
+  id           String       @id @default(cuid())
+  identifier   String       @unique
+  name         String?
+  speciesId    String
+  species      Species      @relation(fields: [speciesId], references: [id])
+  enclosureId  String?
+  enclosure    Enclosure?   @relation(fields: [enclosureId], references: [id])
+  birthDate    DateTime?
+  sex          String?      // M, F, UNKNOWN
+  status       String       @default("ACTIF") // ACTIF, VENDU, DÉCÉDÉ, TRANSFÉRÉ
+  origin       String?      // NAISSANCE, ACQUISITION, DON
+  acquisitionDate DateTime?
+  microchipId  String?
+  ringId       String?
+  weight       Float?       // grammes
+  notes        String?
+  imageUrl     String?
+  events         AnimalEvent[]
+  saleItems      SaleItem[]
+  sponsorships   Sponsorship[]
+  gpsDevice      GpsDevice?
+  predictions    MlPrediction[]
+  genealogy      Genealogy?
+  medicalVisits  MedicalVisit[]
+  agendaEvents   AgendaEvent[]
+  citesPermits   CitesPermit[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([speciesId])
+  @@index([enclosureId])
+  @@index([status])
+}
+
+model AnimalEvent {
+  id        String   @id @default(cuid())
+  animalId  String
+  animal    Animal   @relation(fields: [animalId], references: [id])
+  timestamp DateTime @default(now())
+  type      String   // MEDICAL, FEEDING, WEIGHT, TRANSFER, NOTE
+  notes     String?
+  userId    String
+  data      Json?
+
+  @@index([animalId])
+  @@index([type])
+}
+
+model Brood {
+  id                  String    @id @default(cuid())
+  reference           String?   @unique
+  speciesId           String
+  species             Species   @relation(fields: [speciesId], references: [id])
+  maleId              String?
+  femaleId            String?
+  incubatorId         String?
+  incubationStartDate DateTime
+  expectedHatchDate   DateTime?
+  hatchDate           DateTime?
+  eggCount            Int
+  fertilizedCount     Int?
+  hatchedCount        Int?
+  deadCount           Int?
+  temperature         Float?    // °C
+  humidity            Float?    // %
+  notes               String?
+  status              String    @default("INCUBATION") // INCUBATION, ECLOSION, TERMINEE, ECHEC
+  events              BroodEvent[]
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@index([speciesId])
+  @@index([status])
+}
+
+model BroodEvent {
+  id        String   @id @default(cuid())
+  broodId   String
+  brood     Brood    @relation(fields: [broodId], references: [id])
+  timestamp DateTime @default(now())
+  type      String   // CANDLING, TURNING, TEMPERATURE_CHECK, HATCHING, NOTE
+  notes     String?
+  data      Json?
+  userId    String
+
+  @@index([broodId])
+}
+
+// =======================================
+//          PLUGIN: FORMATION (LMS)
+// =======================================
+
+model Course {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  category    String?
+  level       String?   // DEBUTANT, INTERMEDIAIRE, AVANCE
+  duration    Int?      // minutes
+  tags        String[]  @default([])
+  imageUrl    String?
+  isPublished Boolean   @default(false)
+  chapters      Chapter[]
+  cohorts       Cohort[]
+  documents     FormationDocument[]
+  objectives    CourseObjective[]
+  prerequisites CoursePrerequisite[]
+  certificates  Certificate[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Chapter {
+  id       String   @id @default(cuid())
+  courseId String
+  course   Course   @relation(fields: [courseId], references: [id])
+  title    String
+  order    Int
+  lessons  Lesson[]
+}
+
+model Lesson {
+  id        String  @id @default(cuid())
+  chapterId String
+  chapter   Chapter @relation(fields: [chapterId], references: [id])
+  title     String
+  content   String?
+  videoUrl  String?
+  duration  Int?    // minutes
+  order     Int
+  quizzes      Quiz[]
+  completions  LessonCompletion[]
+  documents    FormationDocument[]
+  objectives   LessonObjective[]
+  feedbacks    LessonFeedback[]
+  privateNotes LearnerPrivateNote[]
+}
+
+model Quiz {
+  id        String       @id @default(cuid())
+  lessonId  String
+  lesson    Lesson       @relation(fields: [lessonId], references: [id])
+  question  String
+  options   Json
+  answer    String
+  answers   QuizAnswer[]
+}
+
+model Cohort {
+  id          String   @id @default(cuid())
+  courseId    String
+  course      Course   @relation(fields: [courseId], references: [id])
+  name        String
+  status      String   @default("DRAFT") // DRAFT, ACTIVE, COMPLETED, CANCELLED
+  maxStudents Int?
+  startDate   DateTime?
+  endDate     DateTime?
+  enrollments Enrollment[]
+  attendanceSheets AttendanceSheet[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Enrollment {
+  id          String    @id @default(cuid())
+  cohortId    String
+  cohort      Cohort    @relation(fields: [cohortId], references: [id])
+  userId      String
+  enrolledAt  DateTime  @default(now())
+  completedAt DateTime?
+  progress    Float     @default(0)
+  quizAnswers QuizAnswer[]
+  signatures   Signature[]
+  learnerNotes LearnerNote[]
+  certificate Certificate?
+}
+
+model QuizAnswer {
+  id           String     @id @default(cuid())
+  quizId       String
+  quiz         Quiz       @relation(fields: [quizId], references: [id])
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id])
+  answer       String
+  isCorrect    Boolean
+  answeredAt   DateTime   @default(now())
+}
+
+// =======================================
+//          PLUGIN: VENTES (Phase 4)
+// =======================================
+
+model Sale {
+  id            String     @id @default(cuid())
+  reference     String     @unique
+  type          String     // ANIMAL, PRODUCT, SERVICE, FORMATION
+  status        String     @default("PENDING") // PENDING, CONFIRMED, COMPLETED, CANCELLED, REFUNDED
+  buyerName     String
+  buyerEmail    String?
+  buyerPhone    String?
+  buyerAddress  String?
+  subtotal      Float      @default(0)
+  taxAmount     Float      @default(0)
+  total         Float      @default(0)
+  notes         String?
+  paymentMethod String?
+  paymentDate   DateTime?
+  dueDate       DateTime?
+  completedAt   DateTime?
+  cancelledAt   DateTime?
+  createdById   String
+  createdBy     User       @relation("SaleCreatedBy", fields: [createdById], references: [id])
+  items         SaleItem[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model SaleItem {
+  id          String     @id @default(cuid())
+  saleId      String
+  sale        Sale       @relation(fields: [saleId], references: [id], onDelete: Cascade)
+  description String
+  quantity    Int        @default(1)
+  unitPrice   Float
+  taxRate     Float      @default(0)
+  total       Float
+  animalId    String?
+  animal      Animal?    @relation(fields: [animalId], references: [id])
+  stockItemId String?
+  stockItem   StockItem? @relation(fields: [stockItemId], references: [id])
+
+  @@index([saleId])
+}
+
+// =======================================
+//          PHASE 10: ALERTS, NUTRITION, GPS, SPONSORSHIP, REALTIME
+// =======================================
+
+model Alert {
+  id          String     @id @default(cuid())
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  ruleId      String
+  rule        AlertRule  @relation(fields: [ruleId], references: [id])
+  entityType  String     // e.g., "Animal", "Enclosure", "IotDevice"
+  entityId    String
+  severity    String     // CRITICAL, WARNING, INFO
+  status      String     @default("ACTIVE") // ACTIVE, ACKNOWLEDGED, RESOLVED
+  acknowledgedAt DateTime?
+  resolvedAt  DateTime?
+  details     Json?
+
+  @@index([entityType, entityId])
+  @@index([status])
+  @@index([severity])
+}
+
+model AlertRule {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  entityType  String
+  conditions  Json     // e.g., { "field": "temperature", "operator": ">", "value": 35 }
+  severity    String
+  isEnabled   Boolean  @default(true)
+  alerts      Alert[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model NutritionPlan {
+  id          String   @id @default(cuid())
+  speciesId   String   @unique
+  species     Species  @relation(fields: [speciesId], references: [id])
+  name        String
+  description String?
+  meals       Meal[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Meal {
+  id              String        @id @default(cuid())
+  nutritionPlanId String
+  nutritionPlan   NutritionPlan @relation(fields: [nutritionPlanId], references: [id])
+  name            String        // e.g., "Petit-déjeuner", "Déjeuner", "Dîner"
+  time            String        // e.g., "08:00"
+  items           Json          // e.g., [{ "stockItemId": "...", "quantity": 100, "unit": "g" }]
+}
+
+model GpsDevice {
+  id         String     @id @default(cuid())
+  animalId   String     @unique
+  animal     Animal     @relation(fields: [animalId], references: [id])
+  deviceId   String     @unique
+  model      String?
+  battery    Float?     // Percentage
+  lastSeen   DateTime?
+  tracks     GpsTrack[]
+  isActive   Boolean    @default(true)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+}
+
+model GpsTrack {
+  id        String    @id @default(cuid())
+  deviceId  String
+  device    GpsDevice @relation(fields: [deviceId], references: [id])
+  timestamp DateTime  @default(now())
+  latitude  Float
+  longitude Float
+  altitude  Float?
+  speed     Float?
+
+  @@index([deviceId, timestamp])
+}
+
+model Sponsor {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  phone        String?
+  address      String?
+  sponsorships Sponsorship[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Sponsorship {
+  id         String   @id @default(cuid())
+  sponsorId  String
+  sponsor    Sponsor  @relation(fields: [sponsorId], references: [id])
+  animalId   String
+  animal     Animal   @relation(fields: [animalId], references: [id])
+  type       String   // MONTHLY, ANNUAL, ONE_TIME
+  amount     Float
+  startDate  DateTime
+  endDate    DateTime?
+  status     String   @default("ACTIVE") // ACTIVE, EXPIRED, CANCELLED
+  stripeSubscriptionId String? @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([sponsorId])
+  @@index([animalId])
+}
+
+// =======================================
+//          PHASE 11: IOT, ML, GENEALOGY, SITES, API V2, REPORTS
+// =======================================
+
+model Site {
+  id          String @id @default(cuid())
+  name        String @unique
+  location    String
+  description String?
+  enclosures  Enclosure[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model IotDevice {
+  id          String       @id @default(cuid())
+  enclosureId String
+  enclosure   Enclosure    @relation(fields: [enclosureId], references: [id])
+  type        String       // TEMPERATURE, HUMIDITY, CO2
+  model       String?
+  mqttTopic   String       @unique
+  status      String       @default("ACTIVE")
+  readings    IotReading[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model IotReading {
+  id        String    @id @default(cuid())
+  deviceId  String
+  device    IotDevice @relation(fields: [deviceId], references: [id])
+  timestamp DateTime  @default(now())
+  value     Float
+
+  @@index([deviceId, timestamp])
+}
+
+model MlPrediction {
+  id          String   @id @default(cuid())
+  animalId    String
+  animal      Animal   @relation(fields: [animalId], references: [id])
+  type        String   // REPRODUCTION, BEHAVIOR
+  prediction  Json
+  confidence  Float
+  createdAt   DateTime @default(now())
+
+  @@index([animalId, type])
+}
+
+model Genealogy {
+  animalId         String  @id
+  animal           Animal  @relation(fields: [animalId], references: [id])
+  fatherId         String?
+  motherId         String?
+  inbreedingCoefficient Float?
+}
+
+model ApiV2Key {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  partnerName String
+  permissions Json
+  requests    Int      @default(0)
+  lastUsed    DateTime?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AdvancedReport {
+  id          String   @id @default(cuid())
+  name        String
+  type        String   // CITES, ANNUAL, VETERINARY, DRAAF
+  status      String   @default("PENDING") // PENDING, GENERATING, COMPLETED, FAILED
+  fileUrl     String?
+  generatedAt DateTime?
+  params      Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ─── Agenda ───────────────────────────────────────────────────────────────
+model AgendaEvent {
+  id               String    @id @default(cuid())
+  title            String
+  description      String?
+  startDate        DateTime
+  endDate          DateTime?
+  allDay           Boolean   @default(false)
+  type             String    @default("OTHER")
+  priority         String    @default("NORMAL")
+  status           String    @default("PENDING")
+  animalId         String?
+  animal           Animal?   @relation(fields: [animalId], references: [id])
+  enclosureId      String?
+  enclosure        Enclosure? @relation(fields: [enclosureId], references: [id])
+  assignedToId     String?
+  assignedTo       Employee? @relation(fields: [assignedToId], references: [id])
+  recurrence       String    @default("NONE")
+  recurrenceEnd    DateTime?
+  reminderMinutes  Int?
+  reminderSent     Boolean   @default(false)
+  completedAt      DateTime?
+  parentEventId    String?
+  createdById      String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  @@index([startDate, type])
+}
+
+// ─── Médical ──────────────────────────────────────────────────────────────
+model MedicalVisit {
+  id           String      @id @default(cuid())
+  animalId     String
+  animal       Animal      @relation(fields: [animalId], references: [id])
+  visitDate    DateTime
+  type         String      @default("CHECKUP")
+  vetName      String?
+  diagnosis    String?
+  notes        String?
+  weight       Float?
+  temperature  Float?
+  treatments   Treatment[]
+  vaccinations Vaccination[]
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  @@index([animalId, visitDate])
+}
+
+model Treatment {
+  id             String       @id @default(cuid())
+  medicalVisitId String
+  medicalVisit   MedicalVisit @relation(fields: [medicalVisitId], references: [id], onDelete: Cascade)
+  name           String
+  dosage         String?
+  frequency      String?
+  duration       String?
+  startDate      DateTime?
+  endDate        DateTime?
+  notes          String?
+  createdAt      DateTime     @default(now())
+}
+
+model Vaccination {
+  id             String       @id @default(cuid())
+  medicalVisitId String
+  medicalVisit   MedicalVisit @relation(fields: [medicalVisitId], references: [id], onDelete: Cascade)
+  name           String
+  batch          String?
+  expiryDate     DateTime?
+  nextDueDate    DateTime?
+  notes          String?
+  createdAt      DateTime     @default(now())
+}
+
+// ─── Documents ────────────────────────────────────────────────────────────
+model Document {
+  id           String   @id @default(cuid())
+  name         String
+  type         String   @default("OTHER")
+  url          String
+  size         Int?
+  mimeType     String?
+  entityType   String?
+  entityId     String?
+  uploadedById String?
+  uploadedBy   User?    @relation(fields: [uploadedById], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  @@index([entityType, entityId])
+}
+
+// ─── Historique ───────────────────────────────────────────────────────────
+model HistoryLog {
+  id         String   @id @default(cuid())
+  entityType String
+  entityId   String
+  action     String
+  changes    Json?
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+  @@index([entityType, entityId])
+}
+
+// ─── Push Notifications ───────────────────────────────────────────────────
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userAgent String?
+  createdAt DateTime @default(now())
+  @@index([userId])
+}
+
+// ─── CITES Permits ────────────────────────────────────────────────────────
+model CitesPermit {
+  id           String    @id @default(cuid())
+  animalId     String?
+  animal       Animal?   @relation(fields: [animalId], references: [id])
+  permitNumber String    @unique
+  type         String    @default("IMPORT")
+  status       String    @default("PENDING")
+  issuedBy     String?
+  issuedAt     DateTime?
+  expiresAt    DateTime?
+  species      String?
+  quantity     Int       @default(1)
+  notes        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+// ─── Formation — Suivi Pédagogique Qualiopi ───────────────────────────────
+
+model LessonCompletion {
+  id          String   @id @default(cuid())
+  lessonId    String
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  completedAt DateTime @default(now())
+  timeSpent   Int?
+  @@unique([lessonId, userId])
+  @@index([userId])
+}
+
+model FormationDocument {
+  id          String   @id @default(cuid())
+  courseId    String?
+  course      Course?  @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  lessonId    String?
+  lesson      Lesson?  @relation(fields: [lessonId], references: [id], onDelete: SetNull)
+  title       String
+  type        String   @default("PDF")
+  url         String
+  size        Int?
+  mimeType    String?
+  displayMode String   @default("EMBED")
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  @@index([courseId])
+  @@index([lessonId])
+}
+
+model AttendanceSheet {
+  id           String      @id @default(cuid())
+  cohortId     String
+  cohort       Cohort      @relation(fields: [cohortId], references: [id], onDelete: Cascade)
+  sessionDate  DateTime
+  sessionTitle String?
+  duration     Int?
+  signatures   Signature[]
+  createdAt    DateTime    @default(now())
+  @@index([cohortId])
+}
+
+model Signature {
+  id               String           @id @default(cuid())
+  userId           String
+  user             User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  enrollmentId     String?
+  enrollment       Enrollment?      @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  attendanceSheetId String?
+  attendanceSheet  AttendanceSheet? @relation(fields: [attendanceSheetId], references: [id], onDelete: Cascade)
+  type             String           @default("PRESENCE")
+  signatureData    String
+  signedAt         DateTime         @default(now())
+  sessionDate      DateTime?
+  ipAddress        String?
+  @@index([enrollmentId])
+  @@index([userId])
+}
+
+model LearnerNote {
+  id           String     @id @default(cuid())
+  enrollmentId String
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  authorId     String
+  author       User       @relation("LearnerNoteAuthor", fields: [authorId], references: [id])
+  content      String
+  type         String     @default("OBSERVATION")
+  isPrivate    Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  @@index([enrollmentId])
+}
+
+// ─── Formation — Ingénierie Pédagogique v18 ───────────────────────────────
+
+model CourseObjective {
+  id       String @id @default(cuid())
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  text     String
+  order    Int    @default(0)
+  @@index([courseId])
+}
+
+model CoursePrerequisite {
+  id       String @id @default(cuid())
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  text     String
+  order    Int    @default(0)
+  @@index([courseId])
+}
+
+model LessonObjective {
+  id       String @id @default(cuid())
+  lessonId String
+  lesson   Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  text     String
+  order    Int    @default(0)
+  @@index([lessonId])
+}
+
+model LessonFeedback {
+  id           String     @id @default(cuid())
+  lessonId     String
+  lesson       Lesson     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating       Int        // 1-5 étoiles
+  comment      String?
+  createdAt    DateTime   @default(now())
+  @@unique([lessonId, userId])
+  @@index([lessonId])
+}
+
+model LearnerPrivateNote {
+  id           String     @id @default(cuid())
+  lessonId     String
+  lesson       Lesson     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content      String
+  updatedAt    DateTime   @updatedAt
+  createdAt    DateTime   @default(now())
+  @@unique([lessonId, userId])
+  @@index([userId])
+}
+
+model Certificate {
+  id           String     @id @default(cuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courseId     String
+  course       Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  enrollmentId String     @unique
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  number       String     @unique // ex: LFTG-2026-0042
+  finalScore   Float?
+  issuedAt     DateTime   @default(now())
+  pdfUrl       String?
+  @@index([userId])
+  @@index([courseId])
+}
+
+model Badge {
+  id          String       @id @default(cuid())
+  code        String       @unique // ex: FIRST_LESSON, QUIZ_MASTER, BLOC1_COMPLETE
+  name        String
+  description String
+  icon        String       // emoji ou nom d'icône
+  color       String       @default("#22c55e")
+  condition   String       // description de la condition de débloquage
+  earnedBy    UserBadge[]
+}
+
+model UserBadge {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badgeId   String
+  badge     Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  earnedAt  DateTime @default(now())
+  @@unique([userId, badgeId])
+  @@index([userId])
+}

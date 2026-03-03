@@ -1,0 +1,97 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: lftg-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-lftg}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-LftgProd2024Secure}
+      POSTGRES_DB: ${POSTGRES_DB:-lftg_platform}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - lftg-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-lftg} -d ${POSTGRES_DB:-lftg_platform}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: lftg-redis
+    restart: always
+    networks:
+      - lftg-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: ./apps/backend/Dockerfile.prebuilt
+    container_name: lftg-backend
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-lftg}:${POSTGRES_PASSWORD:-LftgProd2024Secure}@postgres:5432/${POSTGRES_DB:-lftg_platform}
+      JWT_SECRET: ${JWT_SECRET:-lftg_prod_jwt_secret_change_me}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-lftg_prod_refresh_change_me}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-15m}
+      JWT_REFRESH_EXPIRES_IN: ${JWT_REFRESH_EXPIRES_IN:-7d}
+      NODE_ENV: production
+      PORT: 3001
+      FRONTEND_URL: ${FRONTEND_URL:-http://51.210.15.92}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    ports:
+      - "3001:3001"
+    networks:
+      - lftg-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./apps/frontend/Dockerfile.prebuilt
+    container_name: lftg-frontend
+    restart: always
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://51.210.15.92/api/v1}
+      NODE_ENV: production
+      PORT: 3000
+      HOSTNAME: "0.0.0.0"
+    networks:
+      - lftg-network
+
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: lftg-nginx
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/prod.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - lftg-network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  lftg-network:
+    driver: bridge
