@@ -1,13 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { useDemoMode } from '@/lib/use-demo-mode';
 import {
   AreaChart, Area, BarChart, Bar, LineChart, Line,
   PieChart, Pie, Cell, RadarChart, Radar, PolarGrid, PolarAngleAxis,
   XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
 } from 'recharts';
 
-const REVENUE_DATA = [
+const DEMO_REVENUE_DATA = [
   { month: 'Sep', revenue: 28400, expenses: 18200, profit: 10200 },
   { month: 'Oct', revenue: 31200, expenses: 19800, profit: 11400 },
   { month: 'Nov', revenue: 29800, expenses: 17500, profit: 12300 },
@@ -16,7 +17,7 @@ const REVENUE_DATA = [
   { month: 'Fév', revenue: 41250, expenses: 23400, profit: 17850 },
 ];
 
-const FORECAST_DATA = [
+const DEMO_FORECAST_DATA = [
   { month: 'Mar', predicted: 43200, confidence: 90 },
   { month: 'Avr', predicted: 45800, confidence: 85 },
   { month: 'Mai', predicted: 48100, confidence: 80 },
@@ -25,7 +26,7 @@ const FORECAST_DATA = [
   { month: 'Aoû', predicted: 56400, confidence: 62 },
 ];
 
-const SPECIES_DATA = [
+const DEMO_SPECIES_DATA = [
   { species: 'Amazona', count: 45, healthy: 43, sick: 2 },
   { species: 'Ara', count: 32, healthy: 32, sick: 0 },
   { species: 'Dendrobates', count: 28, healthy: 27, sick: 1 },
@@ -34,21 +35,21 @@ const SPECIES_DATA = [
   { species: 'Autres', count: 102, healthy: 98, sick: 4 },
 ];
 
-const REVENUE_CATEGORY = [
+const DEMO_REVENUE_CATEGORY = [
   { name: 'Ventes animaux', value: 28750, color: '#2d6a4f' },
   { name: 'Formations', value: 7200, color: '#40916c' },
   { name: 'Consultations', value: 3800, color: '#52b788' },
   { name: 'Autres', value: 1500, color: '#95d5b2' },
 ];
 
-const HEALTH_TREND = Array.from({ length: 30 }, (_, i) => ({
+const DEMO_HEALTH_TREND = Array.from({ length: 30 }, (_, i) => ({
   day: `J-${29 - i}`,
   healthy: Math.round(240 + Math.random() * 8),
   sick: Math.round(3 + Math.random() * 4),
   observation: Math.round(2 + Math.random() * 3),
 }));
 
-const RADAR_DATA = [
+const DEMO_RADAR_DATA = [
   { metric: 'Santé animale', score: 97 },
   { metric: 'Conformité CITES', score: 97 },
   { metric: 'Présence RH', score: 94 },
@@ -57,7 +58,7 @@ const RADAR_DATA = [
   { metric: 'Formations', score: 85 },
 ];
 
-const KPIS = [
+const DEMO_KPIS = [
   { label: 'Chiffre d\'affaires', value: '41 250 €', change: '+18.5%', trend: 'up', icon: '💰', color: 'forest' },
   { label: 'Animaux vivants', value: '247', change: '+12', trend: 'up', icon: '🦜', color: 'maroni' },
   { label: 'Taux de réussite couvées', value: '78.4%', change: '+3.2%', trend: 'up', icon: '🥚', color: 'gold' },
@@ -73,6 +74,16 @@ const PERIODS = ['Semaine', 'Mois', 'Trimestre', 'Année'];
 export default function BiPage() {
   const [period, setPeriod] = useState('Mois');
   const [activeTab, setActiveTab] = useState('overview');
+
+  // Afficher les données de démonstration uniquement en mode démo
+  const isDemoMode = useDemoMode();
+  const REVENUE_DATA = isDemoMode ? DEMO_REVENUE_DATA : [];
+  const FORECAST_DATA = isDemoMode ? DEMO_FORECAST_DATA : [];
+  const SPECIES_DATA = isDemoMode ? DEMO_SPECIES_DATA : [];
+  const REVENUE_CATEGORY = isDemoMode ? DEMO_REVENUE_CATEGORY : [];
+  const HEALTH_TREND = isDemoMode ? DEMO_HEALTH_TREND : [];
+  const RADAR_DATA = isDemoMode ? DEMO_RADAR_DATA : [];
+  const KPIS = isDemoMode ? DEMO_KPIS : [];
 
   const tabs = [
     { id: 'overview', label: 'Vue d\'ensemble' },

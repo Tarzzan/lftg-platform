@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useDemoMode } from '@/lib/use-demo-mode';
 
 interface AgendaEvent {
   id: string;
@@ -16,7 +17,7 @@ interface AgendaEvent {
   recurrence?: string;
 }
 
-const MOCK_EVENTS: AgendaEvent[] = [
+const DEMO_EVENTS: AgendaEvent[] = [
   { id: '1', title: 'Visite vétérinaire — Amazona', type: 'MEDICAL', priority: 'HIGH', date: '2026-03-01', time: '09:00', animal: 'Amazona', assignedTo: 'Dr. Rousseau', status: 'PENDING' },
   { id: '2', title: 'Alimentation Reptilarium', type: 'FEEDING', priority: 'NORMAL', date: '2026-03-01', time: '08:00', enclosure: 'REP-01', assignedTo: 'Marie Dupont', status: 'COMPLETED', recurrence: 'DAILY' },
   { id: '3', title: 'Nettoyage Volière A', type: 'CLEANING', priority: 'NORMAL', date: '2026-03-02', time: '10:00', enclosure: 'VTA-01', assignedTo: 'Pierre Leblanc', status: 'PENDING', recurrence: 'WEEKLY' },
@@ -70,11 +71,15 @@ export default function AgendaPage() {
   const [filterType, setFilterType] = useState<string>('ALL');
   const [showModal, setShowModal] = useState(false);
 
+  // Afficher les données de démonstration uniquement en mode démo
+  const isDemoMode = useDemoMode();
+  const EVENTS = isDemoMode ? DEMO_EVENTS : [];
+
   const calendarDays = getCalendarDays(currentYear, currentMonth);
 
   const getEventsForDay = (day: number) => {
     const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-    return MOCK_EVENTS.filter(e => e.date === dateStr && (filterType === 'ALL' || e.type === filterType));
+    return EVENTS.filter(e => e.date === dateStr && (filterType === 'ALL' || e.type === filterType));
   };
 
   const selectedDayEvents = selectedDay ? getEventsForDay(selectedDay) : [];
@@ -87,6 +92,8 @@ export default function AgendaPage() {
     if (currentMonth === 11) { setCurrentMonth(0); setCurrentYear(y => y + 1); }
     else setCurrentMonth(m => m + 1);
   };
+
+  const urgentEvents = EVENTS.filter(e => e.priority === 'URGENT' || e.priority === 'HIGH');
 
   return (
     <div className="space-y-6">
@@ -276,30 +283,32 @@ export default function AgendaPage() {
         </div>
       </div>
 
-      {/* Prochains événements urgents */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h3 className="font-semibold text-gray-900 mb-4">⚠️ Événements urgents à venir</h3>
-        <div className="space-y-3">
-          {MOCK_EVENTS.filter(e => e.priority === 'URGENT' || e.priority === 'HIGH').map(event => (
-            <div key={event.id} className="flex items-center justify-between p-3 bg-red-50 rounded-xl border border-red-100">
-              <div className="flex items-center gap-3">
-                <span className="text-xl">{TYPE_CONFIG[event.type].emoji}</span>
-                <div>
-                  <div className="font-medium text-sm text-gray-900">{event.title}</div>
-                  <div className="text-xs text-gray-500">
-                    {new Date(event.date).toLocaleDateString('fr-FR')} {event.time ? `à ${event.time}` : ''} · {event.assignedTo}
+      {/* Prochains événements urgents — affiché uniquement si des événements existent */}
+      {urgentEvents.length > 0 && (
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <h3 className="font-semibold text-gray-900 mb-4">⚠️ Événements urgents à venir</h3>
+          <div className="space-y-3">
+            {urgentEvents.map(event => (
+              <div key={event.id} className="flex items-center justify-between p-3 bg-red-50 rounded-xl border border-red-100">
+                <div className="flex items-center gap-3">
+                  <span className="text-xl">{TYPE_CONFIG[event.type].emoji}</span>
+                  <div>
+                    <div className="font-medium text-sm text-gray-900">{event.title}</div>
+                    <div className="text-xs text-gray-500">
+                      {new Date(event.date).toLocaleDateString('fr-FR')} {event.time ? `à ${event.time}` : ''} · {event.assignedTo}
+                    </div>
                   </div>
                 </div>
+                <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                  event.priority === 'URGENT' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'
+                }`}>
+                  {PRIORITY_CONFIG[event.priority].label}
+                </span>
               </div>
-              <span className={`text-xs font-semibold px-2 py-1 rounded-full ${
-                event.priority === 'URGENT' ? 'bg-red-100 text-red-700' : 'bg-orange-100 text-orange-700'
-              }`}>
-                {PRIORITY_CONFIG[event.priority].label}
-              </span>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Modal création événement (simplifié) */}
       {showModal && (

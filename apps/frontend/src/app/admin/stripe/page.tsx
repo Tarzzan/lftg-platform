@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { useDemoMode } from '@/lib/use-demo-mode';
 
-const STRIPE_STATS = {
+const DEMO_STRIPE_STATS = {
   balance: 12450.80,
   pending: 3200.00,
   monthRevenue: 41250.00,
@@ -11,7 +12,7 @@ const STRIPE_STATS = {
   disputes: 0,
 };
 
-const TRANSACTIONS = [
+const DEMO_TRANSACTIONS = [
   { id: 'pi_1234', date: '01 Mar 2026', desc: 'Vente Ara ararauna × 2', amount: 4800, status: 'succeeded', method: 'Visa •••• 4242', customer: 'Jean Dupont' },
   { id: 'pi_1235', date: '28 Fév 2026', desc: 'Visite guidée × 4', amount: 140, status: 'succeeded', method: 'Mastercard •••• 5555', customer: 'Marie Martin' },
   { id: 'pi_1236', date: '27 Fév 2026', desc: 'Dendrobate azuré × 6', amount: 1200, status: 'succeeded', method: 'Visa •••• 1234', customer: 'Pierre Leblanc' },
@@ -19,7 +20,7 @@ const TRANSACTIONS = [
   { id: 'pi_1238', date: '25 Fév 2026', desc: 'Boa constrictor × 1', amount: 2500, status: 'refunded', method: 'Visa •••• 7777', customer: 'Luc Bernard' },
 ];
 
-const PRODUCTS = [
+const DEMO_PRODUCTS = [
   { id: 'prod_1', name: 'Ara ararauna', price: 2400, category: 'Animal', active: true, sales: 12 },
   { id: 'prod_2', name: 'Amazone à front bleu', price: 1800, category: 'Animal', active: true, sales: 8 },
   { id: 'prod_3', name: 'Dendrobate azuré', price: 200, category: 'Animal', active: true, sales: 24 },
@@ -28,9 +29,24 @@ const PRODUCTS = [
   { id: 'prod_6', name: 'Formation CITES', price: 350, category: 'Formation', active: true, sales: 18 },
 ];
 
+const EMPTY_STRIPE_STATS = {
+  balance: 0,
+  pending: 0,
+  monthRevenue: 0,
+  transactions: 0,
+  refunds: 0,
+  disputes: 0,
+};
+
 export default function StripePage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'transactions' | 'products' | 'payouts'>('overview');
   const [showWebhookModal, setShowWebhookModal] = useState(false);
+
+  // Afficher les données de démonstration uniquement en mode démo
+  const isDemoMode = useDemoMode();
+  const STRIPE_STATS = isDemoMode ? DEMO_STRIPE_STATS : EMPTY_STRIPE_STATS;
+  const TRANSACTIONS = isDemoMode ? DEMO_TRANSACTIONS : [];
+  const PRODUCTS = isDemoMode ? DEMO_PRODUCTS : [];
 
   const statusColors: Record<string, string> = {
     succeeded: 'bg-green-100 text-green-700',

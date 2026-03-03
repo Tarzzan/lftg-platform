@@ -38,3 +38,10 @@ screenshots/
 
 # Lock files npm
 /package-lock.json
+
+# Prisma client généré
+.prisma/
+apps/frontend/package-lock.json
+apps/frontend/tsconfig.tsbuildinfo
+apps/frontend/src/stories/
+apps/mobile/assets/

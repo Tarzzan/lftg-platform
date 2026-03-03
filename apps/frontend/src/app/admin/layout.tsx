@@ -1,4 +1,5 @@
 'use client';
+import DemoBanner from '@/components/DemoBanner';
 
 import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
@@ -254,6 +255,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        <DemoBanner />
         {/* Top bar */}
         <header className="h-14 bg-card border-b border-border flex items-center justify-between px-6 flex-shrink-0">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">

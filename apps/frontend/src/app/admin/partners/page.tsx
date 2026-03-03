@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { useDemoMode } from '@/lib/use-demo-mode';
 
-const PARTNERS = [
+const DEMO_PARTNERS = [
   { id: 'p1', name: 'CNRS Amazonie', type: 'Recherche', status: 'active', apiKey: 'lftg_pk_cnrs_••••••••••••4521', requests: 1247, lastUsed: 'Il y a 2h', permissions: ['animals:read', 'medical:read', 'gbif:read'] },
   { id: 'p2', name: 'Parc Amazonien de Guyane', type: 'Conservation', status: 'active', apiKey: 'lftg_pk_pag_••••••••••••8834', requests: 432, lastUsed: 'Il y a 1 jour', permissions: ['animals:read', 'cites:read'] },
   { id: 'p3', name: 'Université des Antilles', type: 'Éducation', status: 'active', apiKey: 'lftg_pk_ua_••••••••••••2291', requests: 89, lastUsed: 'Il y a 3 jours', permissions: ['animals:read', 'formation:read'] },
@@ -22,8 +23,12 @@ const PERMISSIONS = [
 
 export default function PartnersPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [selectedPartner, setSelectedPartner] = useState<typeof PARTNERS[0] | null>(null);
   const [newPartner, setNewPartner] = useState({ name: '', type: '', permissions: [] as string[] });
+
+  // Afficher les données de démonstration uniquement en mode démo
+  const isDemoMode = useDemoMode();
+  const PARTNERS = isDemoMode ? DEMO_PARTNERS : [];
+  const [selectedPartner, setSelectedPartner] = useState<typeof DEMO_PARTNERS[0] | null>(null);
 
   const statusColors: Record<string, string> = {
     active: 'bg-green-100 text-green-700',

@@ -71,6 +71,7 @@ import { RbacAccessModule } from './modules/rbac/rbac.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { GalleryModule } from './modules/gallery/gallery.module';
 import { AutoReportsModule } from './modules/auto-reports/auto-reports.module';
+import { DemoModule } from './modules/demo/demo.module';
 
 @Module({
   imports: [
@@ -163,6 +164,7 @@ import { AutoReportsModule } from './modules/auto-reports/auto-reports.module';
     AnalyticsModule,
     GalleryModule,
     AutoReportsModule,
+    DemoModule,
   ],
 })
 export class AppModule {}

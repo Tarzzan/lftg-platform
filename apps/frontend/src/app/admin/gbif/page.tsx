@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { useDemoMode } from '@/lib/use-demo-mode';
 
-const GBIF_SPECIES = [
+const DEMO_GBIF_SPECIES = [
   { name: 'Ara ararauna', common: 'Ara bleu et jaune', class: 'Aves', family: 'Psittacidae', iucn: 'LC', cites: 'II', occurrences: 48291, lftgCount: 8, emoji: '🦜', color: 'from-blue-500 to-yellow-400' },
   { name: 'Amazona amazonica', common: 'Amazone à front bleu', class: 'Aves', family: 'Psittacidae', iucn: 'LC', cites: 'II', occurrences: 32156, lftgCount: 12, emoji: '🦜', color: 'from-green-500 to-emerald-400' },
   { name: 'Dendrobates azureus', common: 'Dendrobate azuré', class: 'Amphibia', family: 'Dendrobatidae', iucn: 'VU', cites: 'II', occurrences: 1247, lftgCount: 24, emoji: '🐸', color: 'from-blue-600 to-cyan-400' },
@@ -10,7 +11,7 @@ const GBIF_SPECIES = [
   { name: 'Caiman crocodilus', common: 'Caïman à lunettes', class: 'Reptilia', family: 'Alligatoridae', iucn: 'LC', cites: 'II', occurrences: 15678, lftgCount: 2, emoji: '🐊', color: 'from-green-700 to-lime-500' },
 ];
 
-const OCCURRENCES_GUYANE = [
+const DEMO_OCCURRENCES_GUYANE = [
   { species: 'Ara ararauna', lat: 4.93, lng: -52.33, locality: 'Cayenne', date: '15 Jan 2026', observer: 'MNHN' },
   { species: 'Ara ararauna', lat: 5.50, lng: -54.03, locality: 'Saint-Laurent-du-Maroni', date: '03 Déc 2025', observer: 'CNRS' },
   { species: 'Dendrobates azureus', lat: 3.88, lng: -53.00, locality: 'Maripasoula', date: '22 Nov 2025', observer: 'WWF' },
@@ -35,9 +36,14 @@ const IUCN_LABELS: Record<string, string> = {
 };
 
 export default function GbifPage() {
-  const [selectedSpecies, setSelectedSpecies] = useState<typeof GBIF_SPECIES[0] | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterClass, setFilterClass] = useState('all');
+
+  // Afficher les données de démonstration uniquement en mode démo
+  const isDemoMode = useDemoMode();
+  const GBIF_SPECIES = isDemoMode ? DEMO_GBIF_SPECIES : [];
+  const OCCURRENCES_GUYANE = isDemoMode ? DEMO_OCCURRENCES_GUYANE : [];
+  const [selectedSpecies, setSelectedSpecies] = useState<typeof DEMO_GBIF_SPECIES[0] | null>(null);
 
   const filtered = GBIF_SPECIES.filter(sp => {
     const matchSearch = !searchQuery || sp.name.toLowerCase().includes(searchQuery.toLowerCase()) || sp.common.toLowerCase().includes(searchQuery.toLowerCase());

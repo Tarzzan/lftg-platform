@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useDemoMode } from '@/lib/use-demo-mode';
 
 interface HistoryEntry {
   id: string;
@@ -13,7 +14,7 @@ interface HistoryEntry {
   changes?: Record<string, { before: any; after: any }>;
 }
 
-const MOCK_HISTORY: HistoryEntry[] = [
+const DEMO_HISTORY: HistoryEntry[] = [
   {
     id: '1', entityType: 'ANIMAL', entityId: 'a1', entityName: 'Amazona', action: 'UPDATE',
     user: { name: 'Marie Dupont', avatar: 'MD' }, timestamp: '2026-03-01T09:15:00',
@@ -94,7 +95,11 @@ export default function HistoryPage() {
   const [filterAction, setFilterAction] = useState('ALL');
   const [search, setSearch] = useState('');
 
-  const filtered = MOCK_HISTORY.filter(entry => {
+  // Afficher les données de démonstration uniquement en mode démo
+  const isDemoMode = useDemoMode();
+  const HISTORY_DATA = isDemoMode ? DEMO_HISTORY : [];
+
+  const filtered = HISTORY_DATA.filter(entry => {
     if (filterEntity !== 'ALL' && entry.entityType !== filterEntity) return false;
     if (filterAction !== 'ALL' && entry.action !== filterAction) return false;
     if (search && !entry.entityName.toLowerCase().includes(search.toLowerCase()) &&
@@ -216,7 +221,7 @@ export default function HistoryPage() {
           {filtered.length === 0 && (
             <div className="text-center py-12 text-gray-400">
               <div className="text-4xl mb-3">📜</div>
-              <p>Aucune entrée d'historique trouvée</p>
+              <p>Aucune entrée d&apos;historique trouvée</p>
             </div>
           )}
         </div>
@@ -225,66 +230,78 @@ export default function HistoryPage() {
         <div className="space-y-4">
           <div className="bg-white rounded-xl border border-gray-200 p-5">
             <h3 className="font-semibold text-gray-900 mb-4">Activité par type</h3>
-            <div className="space-y-3">
-              {Object.entries(ENTITY_CONFIG).map(([type, config]) => {
-                const count = MOCK_HISTORY.filter(e => e.entityType === type).length;
-                if (count === 0) return null;
-                return (
-                  <div key={type} className="flex items-center gap-3">
-                    <span className="text-lg">{config.emoji}</span>
-                    <div className="flex-1">
-                      <div className="flex justify-between text-sm mb-1">
-                        <span className="text-gray-700">{config.label}</span>
-                        <span className="font-medium">{count}</span>
-                      </div>
-                      <div className="bg-gray-200 rounded-full h-1.5">
-                        <div
-                          className="bg-forest-500 h-1.5 rounded-full"
-                          style={{ width: `${(count / MOCK_HISTORY.length) * 100}%` }}
-                        />
+            {HISTORY_DATA.length === 0 ? (
+              <p className="text-sm text-gray-400 text-center py-4">Aucune activité</p>
+            ) : (
+              <div className="space-y-3">
+                {Object.entries(ENTITY_CONFIG).map(([type, config]) => {
+                  const count = HISTORY_DATA.filter(e => e.entityType === type).length;
+                  if (count === 0) return null;
+                  return (
+                    <div key={type} className="flex items-center gap-3">
+                      <span className="text-lg">{config.emoji}</span>
+                      <div className="flex-1">
+                        <div className="flex justify-between text-sm mb-1">
+                          <span className="text-gray-700">{config.label}</span>
+                          <span className="font-medium">{count}</span>
+                        </div>
+                        <div className="bg-gray-200 rounded-full h-1.5">
+                          <div
+                            className="bg-forest-500 h-1.5 rounded-full"
+                            style={{ width: `${(count / HISTORY_DATA.length) * 100}%` }}
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <div className="bg-white rounded-xl border border-gray-200 p-5">
             <h3 className="font-semibold text-gray-900 mb-4">Activité par action</h3>
-            <div className="space-y-2">
-              {Object.entries(ACTION_CONFIG).map(([action, config]) => {
-                const count = MOCK_HISTORY.filter(e => e.action === action).length;
-                if (count === 0) return null;
-                return (
-                  <div key={action} className="flex items-center justify-between">
-                    <span className={`text-xs px-2 py-1 rounded-full font-medium ${config.color}`}>
-                      {config.icon} {config.label}
-                    </span>
-                    <span className="font-semibold text-sm">{count}</span>
-                  </div>
-                );
-              })}
-            </div>
+            {HISTORY_DATA.length === 0 ? (
+              <p className="text-sm text-gray-400 text-center py-4">Aucune activité</p>
+            ) : (
+              <div className="space-y-2">
+                {Object.entries(ACTION_CONFIG).map(([action, config]) => {
+                  const count = HISTORY_DATA.filter(e => e.action === action).length;
+                  if (count === 0) return null;
+                  return (
+                    <div key={action} className="flex items-center justify-between">
+                      <span className={`text-xs px-2 py-1 rounded-full font-medium ${config.color}`}>
+                        {config.icon} {config.label}
+                      </span>
+                      <span className="font-semibold text-sm">{count}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <div className="bg-white rounded-xl border border-gray-200 p-5">
             <h3 className="font-semibold text-gray-900 mb-4">Utilisateurs actifs</h3>
-            <div className="space-y-2">
-              {[...new Set(MOCK_HISTORY.map(e => e.user.name))].map(name => {
-                const count = MOCK_HISTORY.filter(e => e.user.name === name).length;
-                const avatar = MOCK_HISTORY.find(e => e.user.name === name)?.user.avatar || '';
-                return (
-                  <div key={name} className="flex items-center gap-3">
-                    <div className="w-7 h-7 bg-forest-100 text-forest-700 rounded-full flex items-center justify-center text-xs font-bold">
-                      {avatar}
+            {HISTORY_DATA.length === 0 ? (
+              <p className="text-sm text-gray-400 text-center py-4">Aucune activité</p>
+            ) : (
+              <div className="space-y-2">
+                {[...new Set(HISTORY_DATA.map(e => e.user.name))].map(name => {
+                  const count = HISTORY_DATA.filter(e => e.user.name === name).length;
+                  const avatar = HISTORY_DATA.find(e => e.user.name === name)?.user.avatar || '';
+                  return (
+                    <div key={name} className="flex items-center gap-3">
+                      <div className="w-7 h-7 bg-forest-100 text-forest-700 rounded-full flex items-center justify-center text-xs font-bold">
+                        {avatar}
+                      </div>
+                      <span className="text-sm text-gray-700 flex-1">{name}</span>
+                      <span className="text-xs font-medium text-gray-500">{count} action(s)</span>
                     </div>
-                    <span className="text-sm text-gray-700 flex-1">{name}</span>
-                    <span className="text-xs font-medium text-gray-500">{count} action(s)</span>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </div>
       </div>

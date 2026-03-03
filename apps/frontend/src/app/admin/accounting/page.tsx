@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { useDemoMode } from '@/lib/use-demo-mode';
 
-const JOURNAL_ENTRIES = [
+const DEMO_JOURNAL_ENTRIES = [
   { id: 'je-1', date: '2026-02-28', journal: 'VT', piece: 'FAC-2026-089', account: '411000', label: 'Client Dupont - Vente Amazona', debit: 1200, credit: 0, balance: 1200 },
   { id: 'je-2', date: '2026-02-28', journal: 'VT', piece: 'FAC-2026-089', account: '707100', label: 'Vente animaux - Amazona', debit: 0, credit: 1000, balance: -1000 },
   { id: 'je-3', date: '2026-02-28', journal: 'VT', piece: 'FAC-2026-089', account: '445710', label: 'TVA collectée 20%', debit: 0, credit: 200, balance: -200 },
@@ -13,7 +14,7 @@ const JOURNAL_ENTRIES = [
   { id: 'je-8', date: '2026-02-26', journal: 'BQ', piece: 'VIR-2026-012', account: '411000', label: 'Règlement client', debit: 0, credit: 2400, balance: -2400 },
 ];
 
-const ACCOUNT_SUMMARY = [
+const DEMO_ACCOUNT_SUMMARY = [
   { account: '411000', label: 'Clients', balance: 8450, type: 'ASSET' },
   { account: '401000', label: 'Fournisseurs', balance: -3200, type: 'LIABILITY' },
   { account: '512000', label: 'Banque', balance: 42150, type: 'ASSET' },
@@ -25,7 +26,7 @@ const ACCOUNT_SUMMARY = [
   { account: '445660', label: 'TVA déductible', balance: 3050, type: 'ASSET' },
 ];
 
-const JOURNALS = [
+const DEMO_JOURNALS = [
   { code: 'VT', label: 'Ventes', entries: 45, total: 41250 },
   { code: 'AC', label: 'Achats', entries: 28, total: -18400 },
   { code: 'BQ', label: 'Banque', entries: 62, total: 22850 },
@@ -43,6 +44,12 @@ export default function AccountingPage() {
   const [activeTab, setActiveTab] = useState('journal');
   const [journalFilter, setJournalFilter] = useState('ALL');
   const [exportPeriod, setExportPeriod] = useState('2026-02');
+
+  // Afficher les données de démonstration uniquement en mode démo
+  const isDemoMode = useDemoMode();
+  const JOURNAL_ENTRIES = isDemoMode ? DEMO_JOURNAL_ENTRIES : [];
+  const ACCOUNT_SUMMARY = isDemoMode ? DEMO_ACCOUNT_SUMMARY : [];
+  const JOURNALS = isDemoMode ? DEMO_JOURNALS : [];
 
   const filteredEntries = journalFilter === 'ALL'
     ? JOURNAL_ENTRIES
