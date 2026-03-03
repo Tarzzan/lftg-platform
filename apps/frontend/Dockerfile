@@ -38,5 +38,5 @@ EXPOSE 3000
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
-# server.js est généré dans apps/frontend/ par le standalone output du monorepo
-CMD ["node", "apps/frontend/server.js"]
+# server.js est généré à la racine /app/ par le standalone output du monorepo pnpm
+CMD ["node", "server.js"]
