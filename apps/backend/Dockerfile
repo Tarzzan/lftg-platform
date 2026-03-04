@@ -44,7 +44,8 @@ COPY --from=builder /app/plugins/animaux-couvees/package.json ./plugins/animaux-
 COPY --from=builder /app/plugins/formation/package.json ./plugins/formation/
 COPY --from=builder /app/plugins/personnel/package.json ./plugins/personnel/
 COPY --from=builder /app/plugins/stock/package.json ./plugins/stock/
-# Install production dependencies only
+
+# Install production dependencies (prisma is now in dependencies, not devDependencies)
 RUN pnpm install --prod --frozen-lockfile
 
 # Copy build artifacts
@@ -57,4 +58,4 @@ COPY --from=builder /app/apps/backend/src/i18n ./apps/backend/dist/i18n
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "npx prisma migrate deploy --schema=packages/core/prisma/schema.prisma && node apps/backend/dist/main.js"]
+CMD ["sh", "-c", "pnpm --filter backend exec prisma migrate deploy --schema=../../packages/core/prisma/schema.prisma && node apps/backend/dist/main.js"]
