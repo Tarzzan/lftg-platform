@@ -13,24 +13,25 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
+RUN npm install -g pnpm@9
 RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
 
-# Copier le build standalone complet (server.js + node_modules + apps/)
-COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/.next/standalone ./
+# Copier les fichiers de configuration du workspace
+COPY --from=builder /app/package.json /app/pnpm-workspace.yaml /app/pnpm-lock.yaml /app/tsconfig.json ./
+COPY --from=builder /app/apps/frontend/package.json ./apps/frontend/
 
-# Copier les fichiers statiques Next.js
-COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/.next/static ./apps/frontend/.next/static
+# Installer les dépendances de production
+RUN pnpm install --frozen-lockfile --prod
 
-# Copier les fichiers publics
+# Copier le build Next.js complet
+COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/.next ./apps/frontend/.next
 COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/public ./apps/frontend/public
-
-# Copier .pnpm pour résoudre les symlinks pnpm
-# Les symlinks dans node_modules pointent vers ../../../node_modules/.pnpm/
-# Depuis /app/node_modules/, ../../../ = / (racine)
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.pnpm /node_modules/.pnpm
+COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/next.config.js ./apps/frontend/
 
 USER nextjs
 EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
-CMD ["node", "server.js"]
+
+WORKDIR /app/apps/frontend
+CMD ["npx", "next", "start", "-p", "3000"]
