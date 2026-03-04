@@ -373,6 +373,21 @@ export class FormationService {
     });
   }
 
+  async getCohortFeedbacks(cohortId: string) {
+    // Récupère tous les feedbacks des leçons des cours de cette cohorte
+    const cohort = await this.prisma.cohort.findUnique({
+      where: { id: cohortId },
+      include: { course: { include: { chapters: { include: { lessons: true } } } } },
+    });
+    if (!cohort) return [];
+    const lessonIds = cohort.course.chapters.flatMap(c => c.lessons.map(l => l.id));
+    return this.prisma.lessonFeedback.findMany({
+      where: { lessonId: { in: lessonIds } },
+      include: { user: { select: { name: true } }, lesson: { select: { title: true } } },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
   // ─── Notes privées apprenant ──────────────────────────────────────────────
   async savePrivateNote(lessonId: string, userId: string, content: string) {
     return this.prisma.learnerPrivateNote.upsert({

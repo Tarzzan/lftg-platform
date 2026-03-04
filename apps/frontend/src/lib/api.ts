@@ -15,6 +15,20 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Intercepteur de réponse : rediriger vers /login si token expiré (401)
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      useAuthStore.getState().clearAuth();
+      if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+        window.location.href = '/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 // ─── Auth ─────────────────────────────────────────────────────────────────
 export const authApi = {
   login: (email: string, password: string) =>

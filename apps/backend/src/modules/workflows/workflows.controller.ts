@@ -1,5 +1,5 @@
 import {
-  Controller, Get, Post, Put, Body, Param, Query, UseGuards,
+  Controller, Get, Post, Put, Patch, Body, Param, Query, UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { WorkflowsService } from './workflows.service';
@@ -32,6 +32,11 @@ export class WorkflowsController {
   }
 
   @Put('definitions/:id')
+  updateDefinitionPut(@Param('id') id: string, @Body() body: any) {
+    return this.service.updateDefinition(id, body);
+  }
+
+  @Patch('definitions/:id')
   updateDefinition(@Param('id') id: string, @Body() body: any) {
     return this.service.updateDefinition(id, body);
   }

@@ -98,8 +98,17 @@ export class AnimauxCouveesService {
     return this.prisma.brood.create({ data, include: { species: true } });
   }
 
+  async findBroodById(id: string) {
+    return this.prisma.brood.findUnique({ where: { id }, include: { species: true } });
+  }
+
   async updateBrood(id: string, data: any) {
     return this.prisma.brood.update({ where: { id }, data });
+  }
+
+  async deleteBrood(id: string) {
+    await this.prisma.brood.delete({ where: { id } });
+    return { deleted: true };
   }
 
   // --- Dashboard widgets ---

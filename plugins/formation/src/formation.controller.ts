@@ -201,4 +201,7 @@ export class FormationController {
 
   @Get('lessons/:id/feedbacks')
   getFeedbacks(@Param('id') lessonId: string) { return this.service.getLessonFeedbacks(lessonId); }
+
+  @Get('cohorts/:id/feedbacks')
+  getCohortFeedbacks(@Param('id') cohortId: string) { return this.service.getCohortFeedbacks(cohortId); }
 }

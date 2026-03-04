@@ -72,6 +72,12 @@ export class AnimauxCouveesController {
   @ApiOperation({ summary: 'Crée une nouvelle couvée' })
   createBrood(@Body() body: any) { return this.service.createBrood(body); }
 
+  @Get('broods/:id')
+  findOneBrood(@Param('id') id: string) { return this.service.findBroodById(id); }
+
   @Patch('broods/:id')
   updateBrood(@Param('id') id: string, @Body() body: any) { return this.service.updateBrood(id, body); }
+
+  @Delete('broods/:id')
+  deleteBrood(@Param('id') id: string) { return this.service.deleteBrood(id); }
 }
