@@ -1,0 +1,12 @@
+{
+  "name": "@lftg/plugin-animaux-couvees",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@nestjs/common": "^10.3.0",
+    "@nestjs/swagger": "^7.3.0",
+    "@nestjs/platform-express": "^10.3.0",
+    "@prisma/client": "^5.10.0",
+    "multer": "^2.1.0"
+  }
+}

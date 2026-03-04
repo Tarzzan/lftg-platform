@@ -1,8 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // REQUIS pour le Dockerfile multi-stage : génère .next/standalone avec server.js autonome
-  output: 'standalone',
+  // Mode standard (next start) — pas de standalone
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1',
   },
