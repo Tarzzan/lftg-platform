@@ -10,14 +10,14 @@
     "prisma:studio": "prisma studio --schema=prisma/schema.prisma"
   },
   "dependencies": {
-    "@prisma/client": "^5.10.0",
+    "@prisma/client": "~5.10.0",
     "bcryptjs": "^2.4.3"
   },
   "devDependencies": {
     "@faker-js/faker": "^10.3.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/node": "^20.19.35",
-    "prisma": "^5.10.0",
+    "prisma": "~5.10.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },

@@ -4,7 +4,7 @@ WORKDIR /app
 RUN npm install -g pnpm@9
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml tsconfig.json ./
 COPY apps/frontend/package.json ./apps/frontend/
-RUN pnpm install --no-frozen-lockfile
+RUN pnpm install --frozen-lockfile
 COPY apps/frontend ./apps/frontend
 RUN pnpm --filter frontend build
 
@@ -21,7 +21,7 @@ COPY --from=builder /app/package.json /app/pnpm-workspace.yaml /app/pnpm-lock.ya
 COPY --from=builder /app/apps/frontend/package.json ./apps/frontend/
 
 # Installer les dépendances de production
-RUN pnpm install --no-frozen-lockfile --prod
+RUN pnpm install --frozen-lockfile --prod
 
 # Copier le build Next.js complet
 COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/.next ./apps/frontend/.next

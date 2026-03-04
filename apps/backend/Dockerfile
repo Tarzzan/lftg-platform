@@ -16,7 +16,7 @@ COPY plugins/personnel/package.json ./plugins/personnel/
 COPY plugins/stock/package.json ./plugins/stock/
 
 # Install all dependencies (plugins inclus dans le workspace)
-RUN pnpm install --no-frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 # Copy source
 COPY apps/backend ./apps/backend
@@ -45,7 +45,7 @@ COPY --from=builder /app/plugins/formation/package.json ./plugins/formation/
 COPY --from=builder /app/plugins/personnel/package.json ./plugins/personnel/
 COPY --from=builder /app/plugins/stock/package.json ./plugins/stock/
 # Install production dependencies only
-RUN pnpm install --prod --no-frozen-lockfile
+RUN pnpm install --prod --frozen-lockfile
 
 # Copy build artifacts
 COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
