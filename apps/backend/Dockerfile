@@ -34,8 +34,8 @@ FROM node:20-alpine AS runner
 
 WORKDIR /app
 
-# OpenSSL est requis par Prisma pour les migrations
-RUN apk add --no-cache openssl
+# OpenSSL est requis par Prisma pour les migrations et le query engine
+RUN apk add --no-cache openssl openssl-dev
 
 RUN npm install -g pnpm@9
 
@@ -51,14 +51,18 @@ COPY --from=builder /app/plugins/stock/package.json ./plugins/stock/
 # Install production dependencies (prisma is now in dependencies, not devDependencies)
 RUN pnpm install --prod --frozen-lockfile
 
+# Copy Prisma schema (needed for generate + migrate)
+COPY --from=builder /app/packages/core/prisma ./packages/core/prisma
+
+# Generate Prisma client in the runner (ensures correct binary for Alpine)
+RUN cd packages/core && pnpm exec prisma generate --schema=prisma/schema.prisma
+
 # Copy build artifacts
 COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
-COPY --from=builder /app/packages/core/prisma ./packages/core/prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 # Copy i18n files
 COPY --from=builder /app/apps/backend/src/i18n ./apps/backend/dist/apps/backend/src/i18n
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "pnpm --filter backend exec prisma migrate deploy --schema=../../packages/core/prisma/schema.prisma && node apps/backend/dist/apps/backend/src/main.js"]
+CMD ["sh", "-c", "cd /app/packages/core && pnpm exec prisma migrate deploy --schema=prisma/schema.prisma && cd /app && node apps/backend/dist/apps/backend/src/main.js"]
