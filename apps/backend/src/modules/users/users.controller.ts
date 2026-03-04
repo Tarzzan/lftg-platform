@@ -18,7 +18,11 @@ export class UsersController {
   findOne(@Param('id') id: string) { return this.service.findById(id); }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: { name?: string; isActive?: boolean }) {
+  @ApiOperation({ summary: 'Met à jour un utilisateur (nom, email, mot de passe, statut, rôles)' })
+  update(
+    @Param('id') id: string,
+    @Body() body: { name?: string; email?: string; password?: string; isActive?: boolean; roleIds?: string[] },
+  ) {
     return this.service.update(id, body);
   }
 

@@ -1,5 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -22,9 +23,49 @@ export class UsersService {
     return result;
   }
 
-  async update(id: string, data: { name?: string; isActive?: boolean }) {
+  async update(
+    id: string,
+    data: {
+      name?: string;
+      email?: string;
+      password?: string;
+      isActive?: boolean;
+      roleIds?: string[];
+    },
+  ) {
     await this.findById(id);
-    return this.prisma.user.update({ where: { id }, data, select: { id: true, email: true, name: true, isActive: true } });
+
+    // Vérifier l'unicité de l'email si modifié
+    if (data.email) {
+      const existing = await this.prisma.user.findUnique({ where: { email: data.email } });
+      if (existing && existing.id !== id) {
+        throw new ConflictException('Cet email est déjà utilisé par un autre utilisateur');
+      }
+    }
+
+    // Construire les données Prisma
+    const prismaData: any = {};
+    if (data.name !== undefined) prismaData.name = data.name;
+    if (data.email !== undefined) prismaData.email = data.email;
+    if (data.isActive !== undefined) prismaData.isActive = data.isActive;
+    if (data.password) {
+      prismaData.password = await bcrypt.hash(data.password, 10);
+    }
+    if (data.roleIds !== undefined) {
+      prismaData.roles = { set: data.roleIds.map((rid) => ({ id: rid })) };
+    }
+
+    return this.prisma.user.update({
+      where: { id },
+      data: prismaData,
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        isActive: true,
+        roles: { select: { id: true, name: true } },
+      },
+    });
   }
 
   async assignRoles(userId: string, roleIds: string[]) {
