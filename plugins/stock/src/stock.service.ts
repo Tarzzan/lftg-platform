@@ -24,20 +24,22 @@ export class StockService {
   }
 
   async createItem(data: any) {
-    const { minQuantity, category, ...rest } = data;
+    const { minQuantity, category, price, ...rest } = data;
     const mapped = {
       ...rest,
       ...(minQuantity !== undefined ? { lowStockThreshold: minQuantity } : {}),
+      ...(price !== undefined ? { unitPrice: price } : {}),
     };
     return this.prisma.stockItem.create({ data: mapped });
   }
 
   async updateItem(id: string, data: any) {
     await this.findItemById(id);
-    const { minQuantity, category, ...rest } = data;
+    const { minQuantity, category, price, ...rest } = data;
     const mapped = {
       ...rest,
       ...(minQuantity !== undefined ? { lowStockThreshold: minQuantity } : {}),
+      ...(price !== undefined ? { unitPrice: price } : {}),
     };
     return this.prisma.stockItem.update({ where: { id }, data: mapped });
   }
