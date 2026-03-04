@@ -25,11 +25,11 @@ export class PersonnelService {
   async createEmployee(data: any) {
     return this.prisma.employee.create({
       data: {
-        userId: data.userId,
+        ...(data.userId ? { userId: data.userId } : {}),
         firstName: data.firstName,
         lastName: data.lastName,
-        email: data.email,
-        phone: data.phone,
+        email: data.email || null,
+        phone: data.phone || null,
         jobTitle: data.jobTitle,
         department: data.department,
         hireDate: data.hireDate ? new Date(data.hireDate) : undefined,

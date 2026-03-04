@@ -41,11 +41,15 @@ export class FormationService {
   }
 
   async createCourse(data: any) {
-    return this.prisma.course.create({ data });
+    const { thumbnailUrl, ...rest } = data;
+    const mapped = { ...rest, ...(thumbnailUrl !== undefined ? { imageUrl: thumbnailUrl || null } : {}) };
+    return this.prisma.course.create({ data: mapped });
   }
 
   async updateCourse(id: string, data: any) {
-    return this.prisma.course.update({ where: { id }, data });
+    const { thumbnailUrl, ...rest } = data;
+    const mapped = { ...rest, ...(thumbnailUrl !== undefined ? { imageUrl: thumbnailUrl || null } : {}) };
+    return this.prisma.course.update({ where: { id }, data: mapped });
   }
 
   async deleteCourse(id: string) {

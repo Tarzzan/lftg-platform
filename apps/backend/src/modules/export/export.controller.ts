@@ -1,4 +1,4 @@
-import { Controller, Get, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { ExportService } from './export.service';
@@ -23,5 +23,27 @@ export class ExportController {
     return this.exportService.exportAnimauxCsv(res);
   }
 
-  // ... autres routes d'export ...
+  @Get('personnel/csv')
+  @ApiOperation({ summary: 'Exporter la liste du personnel en CSV' })
+  async personnelCsv(@Res() res: Response) {
+    return this.exportService.exportPersonnelCsv(res);
+  }
+
+  @Get('formation/csv')
+  @ApiOperation({ summary: 'Exporter le catalogue de formations en CSV' })
+  async formationCsv(@Res() res: Response) {
+    return this.exportService.exportFormationCsv(res);
+  }
+
+  @Get('audit/csv')
+  @ApiOperation({ summary: 'Exporter les logs d\'audit en CSV' })
+  async auditCsv(@Query('limit') limit: string, @Res() res: Response) {
+    return this.exportService.exportAuditCsv(res, limit ? parseInt(limit) : 1000);
+  }
+
+  @Get('stock/report')
+  @ApiOperation({ summary: 'Rapport complet du stock en CSV' })
+  async stockReport(@Res() res: Response) {
+    return this.exportService.exportStockReport(res);
+  }
 }

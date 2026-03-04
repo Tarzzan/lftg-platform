@@ -23,13 +23,23 @@ export class StockService {
     return item;
   }
 
-  async createItem(data: { name: string; description?: string; unit: string; quantity?: number; lowStockThreshold?: number }) {
-    return this.prisma.stockItem.create({ data });
+  async createItem(data: any) {
+    const { minQuantity, category, ...rest } = data;
+    const mapped = {
+      ...rest,
+      ...(minQuantity !== undefined ? { lowStockThreshold: minQuantity } : {}),
+    };
+    return this.prisma.stockItem.create({ data: mapped });
   }
 
-  async updateItem(id: string, data: Partial<{ name: string; description: string; unit: string; lowStockThreshold: number }>) {
+  async updateItem(id: string, data: any) {
     await this.findItemById(id);
-    return this.prisma.stockItem.update({ where: { id }, data });
+    const { minQuantity, category, ...rest } = data;
+    const mapped = {
+      ...rest,
+      ...(minQuantity !== undefined ? { lowStockThreshold: minQuantity } : {}),
+    };
+    return this.prisma.stockItem.update({ where: { id }, data: mapped });
   }
 
   async deleteItem(id: string) {
