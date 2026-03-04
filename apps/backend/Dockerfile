@@ -57,8 +57,8 @@ COPY --from=builder /app/packages/core/prisma ./packages/core/prisma
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 
 # Copy i18n files
-COPY --from=builder /app/apps/backend/src/i18n ./apps/backend/dist/i18n
+COPY --from=builder /app/apps/backend/src/i18n ./apps/backend/dist/apps/backend/src/i18n
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "pnpm --filter backend exec prisma migrate deploy --schema=../../packages/core/prisma/schema.prisma && node apps/backend/dist/main.js"]
+CMD ["sh", "-c", "pnpm --filter backend exec prisma migrate deploy --schema=../../packages/core/prisma/schema.prisma && node apps/backend/dist/apps/backend/src/main.js"]
