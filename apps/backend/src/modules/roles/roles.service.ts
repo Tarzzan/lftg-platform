@@ -15,8 +15,16 @@ export class RolesService {
     return role;
   }
 
-  async create(data: { name: string; description?: string }) {
-    return this.prisma.role.create({ data });
+  async create(data: { name: string; description?: string; permissions?: any[] }) {
+    // Extraire uniquement les champs valides pour Prisma (ignorer permissions[])
+    const { name, description, permissions } = data;
+    const role = await this.prisma.role.create({ data: { name, description } });
+    // Si des permissions sont fournies sous forme de tableau d'objets {action, subject}
+    if (permissions && Array.isArray(permissions) && permissions.length > 0 && permissions[0]?.action) {
+      await this.addPermissions(role.id, permissions);
+      return this.prisma.role.findUnique({ where: { id: role.id }, include: { permissions: true } });
+    }
+    return role;
   }
 
   async update(id: string, data: { name?: string; description?: string }) {
