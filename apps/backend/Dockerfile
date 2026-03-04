@@ -55,8 +55,12 @@ RUN pnpm install --prod --frozen-lockfile
 COPY --from=builder /app/packages/core/prisma ./packages/core/prisma
 
 # Generate Prisma client in the runner (ensures correct binary for Alpine linux-musl)
-# prisma CLI is in backend's prod dependencies
 RUN pnpm --filter backend exec prisma generate --schema=../../packages/core/prisma/schema.prisma
+
+# CRITICAL: pnpm résout .prisma/client depuis le store pnpm, pas depuis node_modules/.prisma/client
+# On doit copier le client généré dans TOUS les emplacements du store pnpm
+RUN cp -rf /app/node_modules/.prisma/client/* /app/node_modules/.pnpm/@prisma+client@5.10.2_prisma@5.10.2/node_modules/.prisma/client/ 2>/dev/null || true && \
+    cp -rf /app/node_modules/.prisma/client/* /app/node_modules/.pnpm/@prisma+client@5.10.2_prisma@5.22.0/node_modules/.prisma/client/ 2>/dev/null || true
 
 # Copy build artifacts
 COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
