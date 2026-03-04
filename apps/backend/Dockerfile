@@ -34,6 +34,9 @@ FROM node:20-alpine AS runner
 
 WORKDIR /app
 
+# OpenSSL est requis par Prisma pour les migrations
+RUN apk add --no-cache openssl
+
 RUN npm install -g pnpm@9
 
 # Copy workspace config + lockfile pour prod install
