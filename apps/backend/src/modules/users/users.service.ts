@@ -23,6 +23,42 @@ export class UsersService {
     return result;
   }
 
+  async create(data: {
+    name: string;
+    email: string;
+    password: string;
+    roleIds?: string[];
+    isActive?: boolean;
+  }) {
+    // Vérifier l'unicité de l'email
+    const existing = await this.prisma.user.findUnique({ where: { email: data.email } });
+    if (existing) {
+      throw new ConflictException('Cet email est déjà utilisé');
+    }
+
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+
+    return this.prisma.user.create({
+      data: {
+        name: data.name,
+        email: data.email,
+        password: hashedPassword,
+        isActive: data.isActive ?? true,
+        ...(data.roleIds?.length
+          ? { roles: { connect: data.roleIds.map((id) => ({ id })) } }
+          : {}),
+      },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        isActive: true,
+        roles: { select: { id: true, name: true } },
+        createdAt: true,
+      },
+    });
+  }
+
   async update(
     id: string,
     data: {
@@ -66,6 +102,12 @@ export class UsersService {
         roles: { select: { id: true, name: true } },
       },
     });
+  }
+
+  async remove(id: string) {
+    await this.findById(id);
+    await this.prisma.user.delete({ where: { id } });
+    return { deleted: true };
   }
 
   async assignRoles(userId: string, roleIds: string[]) {
