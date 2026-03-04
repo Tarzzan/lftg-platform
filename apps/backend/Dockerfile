@@ -54,8 +54,9 @@ RUN pnpm install --prod --frozen-lockfile
 # Copy Prisma schema (needed for generate + migrate)
 COPY --from=builder /app/packages/core/prisma ./packages/core/prisma
 
-# Generate Prisma client in the runner (ensures correct binary for Alpine)
-RUN cd packages/core && pnpm exec prisma generate --schema=prisma/schema.prisma
+# Generate Prisma client in the runner (ensures correct binary for Alpine linux-musl)
+# prisma CLI is in backend's prod dependencies
+RUN pnpm --filter backend exec prisma generate --schema=../../packages/core/prisma/schema.prisma
 
 # Copy build artifacts
 COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
@@ -65,4 +66,4 @@ COPY --from=builder /app/apps/backend/src/i18n ./apps/backend/dist/apps/backend/
 
 EXPOSE 3001
 
-CMD ["sh", "-c", "cd /app/packages/core && pnpm exec prisma migrate deploy --schema=prisma/schema.prisma && cd /app && node apps/backend/dist/apps/backend/src/main.js"]
+CMD ["sh", "-c", "pnpm --filter backend exec prisma migrate deploy --schema=../../packages/core/prisma/schema.prisma && node apps/backend/dist/apps/backend/src/main.js"]
