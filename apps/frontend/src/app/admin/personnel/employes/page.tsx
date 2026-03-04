@@ -1,248 +1,317 @@
 'use client';
-import { useState } from 'react';
 
-const EMPLOYEES = [
-  { id: 'emp-001', matricule: 'LFTG-001', nom: 'William MERI', poste: 'Directeur de la ferme', departement: 'Direction', typeContrat: 'CDI', dateEmbauche: '01/03/2018', congesRestants: 17, heuresSup: 12, statut: 'Actif', avatar: '👨‍💼' },
-  { id: 'emp-002', matricule: 'LFTG-002', nom: 'Marie Dupont', poste: 'Soigneur principal', departement: 'Soins', typeContrat: 'CDI', dateEmbauche: '15/06/2020', congesRestants: 13, heuresSup: 8, statut: 'Actif', avatar: '👩‍🔬' },
-  { id: 'emp-003', matricule: 'LFTG-003', nom: 'Dr. Rousseau', poste: 'Vétérinaire', departement: 'Médical', typeContrat: 'CDI', dateEmbauche: '10/01/2021', congesRestants: 20, heuresSup: 0, statut: 'Actif', avatar: '👨‍⚕️' },
-  { id: 'emp-004', matricule: 'LFTG-004', nom: 'Jean Martin', poste: 'Gestionnaire stock', departement: 'Logistique', typeContrat: 'CDI', dateEmbauche: '01/03/2022', congesRestants: 10, heuresSup: 3, statut: 'Actif', avatar: '📦' },
-  { id: 'emp-005', matricule: 'LFTG-005', nom: 'Sophie Bernard', poste: 'Soigneur', departement: 'Soins', typeContrat: 'CDD', dateEmbauche: '01/09/2023', congesRestants: 22, heuresSup: 0, statut: 'Formation', avatar: '👩‍🎓' },
-];
+import { useState, useMemo } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { Plus, Search, Trash2, Edit2, User } from 'lucide-react';
+import { personnelApi, usersApi } from '@/lib/api';
 
 const DEPT_COLORS: Record<string, string> = {
   Direction: 'bg-purple-100 text-purple-800',
   Soins: 'bg-green-100 text-green-800',
   Médical: 'bg-blue-100 text-blue-800',
   Logistique: 'bg-orange-100 text-orange-800',
-};
-
-const CONTRACT_COLORS: Record<string, string> = {
-  CDI: 'bg-emerald-100 text-emerald-800',
-  CDD: 'bg-yellow-100 text-yellow-800',
-  STAGE: 'bg-gray-100 text-gray-800',
+  Élevage: 'bg-yellow-100 text-yellow-800',
+  Formation: 'bg-indigo-100 text-indigo-800',
 };
 
 export default function EmployesPage() {
+  const qc = useQueryClient();
   const [search, setSearch] = useState('');
   const [filterDept, setFilterDept] = useState('');
-  const [filterContrat, setFilterContrat] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [editEmployee, setEditEmployee] = useState<any>(null);
 
-  const filtered = EMPLOYEES.filter(e => {
-    const q = search.toLowerCase();
-    const matchSearch = !q || e.nom.toLowerCase().includes(q) || e.poste.toLowerCase().includes(q) || e.matricule.toLowerCase().includes(q);
-    const matchDept = !filterDept || e.departement === filterDept;
-    const matchContrat = !filterContrat || e.typeContrat === filterContrat;
-    return matchSearch && matchDept && matchContrat;
+  const { data: employees = [], isLoading } = useQuery({
+    queryKey: ['personnel-employees'],
+    queryFn: personnelApi.employees,
   });
 
-  const depts = [...new Set(EMPLOYEES.map(e => e.departement))];
+  const { data: users = [] } = useQuery({
+    queryKey: ['users'],
+    queryFn: usersApi.list,
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => personnelApi.deleteEmployee(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['personnel-employees'] }),
+  });
+
+  const filtered = useMemo(() => {
+    let list = employees as any[];
+    if (search) {
+      const q = search.toLowerCase();
+      list = list.filter((e: any) =>
+        (e.firstName ?? '').toLowerCase().includes(q) ||
+        (e.lastName ?? '').toLowerCase().includes(q) ||
+        (e.jobTitle ?? '').toLowerCase().includes(q) ||
+        (e.email ?? '').toLowerCase().includes(q)
+      );
+    }
+    if (filterDept) list = list.filter((e: any) => e.department === filterDept);
+    return list;
+  }, [employees, search, filterDept]);
+
+  const depts = [...new Set((employees as any[]).map((e: any) => e.department).filter(Boolean))];
 
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Employés</h1>
-          <p className="text-sm text-gray-500 mt-1">{EMPLOYEES.length} membres du personnel actifs</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Employés</h1>
+          <p className="text-sm text-gray-500 mt-1">{(employees as any[]).length} membre{(employees as any[]).length !== 1 ? 's' : ''} du personnel</p>
         </div>
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => { setEditEmployee(null); setShowModal(true); }}
           className="flex items-center gap-2 px-4 py-2 bg-forest-600 text-white rounded-lg hover:bg-forest-700 transition-colors text-sm font-medium"
         >
-          <span>+</span> Nouvel employé
+          <Plus className="w-4 h-4" /> Nouvel employé
         </button>
       </div>
 
-      {/* KPIs RH */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[
-          { label: 'Effectif total', value: '5', icon: '👥', color: 'text-forest-600' },
-          { label: 'Taux de présence', value: '94.5%', icon: '✅', color: 'text-emerald-600' },
-          { label: 'Heures sup. totales', value: '23h', icon: '⏰', color: 'text-orange-600' },
-          { label: 'Congés en attente', value: '2', icon: '📅', color: 'text-yellow-600' },
-        ].map((kpi) => (
-          <div key={kpi.label} className="bg-white rounded-xl border border-gray-200 p-4">
-            <div className="flex items-center gap-3">
-              <span className="text-2xl">{kpi.icon}</span>
-              <div>
-                <div className={`text-2xl font-bold ${kpi.color}`}>{kpi.value}</div>
-                <div className="text-xs text-gray-500">{kpi.label}</div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
       {/* Filtres */}
-      <div className="bg-white rounded-xl border border-gray-200 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
         <div className="flex flex-wrap gap-3">
-          <input
-            type="text"
-            placeholder="Rechercher un employé..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="flex-1 min-w-48 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-forest-500"
-          />
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Rechercher un employé..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              className="w-full pl-9 pr-4 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-forest-500 bg-white dark:bg-gray-700"
+            />
+          </div>
           <select
             value={filterDept}
             onChange={e => setFilterDept(e.target.value)}
-            className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-forest-500"
+            className="px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-forest-500 bg-white dark:bg-gray-700"
           >
             <option value="">Tous les départements</option>
             {depts.map(d => <option key={d} value={d}>{d}</option>)}
           </select>
-          <select
-            value={filterContrat}
-            onChange={e => setFilterContrat(e.target.value)}
-            className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-forest-500"
-          >
-            <option value="">Tous les contrats</option>
-            <option value="CDI">CDI</option>
-            <option value="CDD">CDD</option>
-            <option value="STAGE">Stage</option>
-          </select>
         </div>
       </div>
 
-      {/* Liste des employés */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filtered.map(emp => (
-          <div key={emp.id} className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-forest-100 rounded-full flex items-center justify-center text-2xl flex-shrink-0">
-                {emp.avatar}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="font-semibold text-gray-900 truncate">{emp.nom}</h3>
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${CONTRACT_COLORS[emp.typeContrat]}`}>
-                    {emp.typeContrat}
-                  </span>
-                </div>
-                <p className="text-sm text-gray-500 mt-0.5">{emp.poste}</p>
-                <div className="flex items-center gap-2 mt-2">
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${DEPT_COLORS[emp.departement]}`}>
-                    {emp.departement}
-                  </span>
-                  <span className="text-xs text-gray-400">{emp.matricule}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-4 pt-4 border-t border-gray-100 grid grid-cols-3 gap-2 text-center">
-              <div>
-                <div className="text-sm font-bold text-forest-600">{emp.congesRestants}j</div>
-                <div className="text-xs text-gray-400">Congés restants</div>
-              </div>
-              <div>
-                <div className="text-sm font-bold text-orange-600">{emp.heuresSup}h</div>
-                <div className="text-xs text-gray-400">Heures sup.</div>
-              </div>
-              <div>
-                <div className={`text-xs px-2 py-1 rounded-full font-medium ${emp.statut === 'Actif' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
-                  {emp.statut}
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-3 flex gap-2">
-              <a
-                href={`/admin/personnel/employes/${emp.id}`}
-                className="flex-1 text-center px-3 py-1.5 bg-forest-50 text-forest-700 rounded-lg text-xs font-medium hover:bg-forest-100 transition-colors"
-              >
-                Voir la fiche
-              </a>
-              <button className="px-3 py-1.5 border border-gray-200 text-gray-600 rounded-lg text-xs font-medium hover:bg-gray-50 transition-colors">
-                Planning
-              </button>
-            </div>
-          </div>
-        ))}
+      {/* Liste */}
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Employé</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Poste</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Département</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Date embauche</th>
+              <th className="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {isLoading ? (
+              <tr><td colSpan={6} className="text-center py-12 text-gray-400 text-sm">Chargement...</td></tr>
+            ) : filtered.length === 0 ? (
+              <tr>
+                <td colSpan={6} className="text-center py-12 text-gray-400 text-sm">
+                  <User className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                  Aucun employé trouvé
+                </td>
+              </tr>
+            ) : filtered.map((emp: any) => (
+              <tr key={emp.id} className="border-b border-gray-100 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 bg-forest-100 dark:bg-forest-900 rounded-full flex items-center justify-center text-sm font-semibold text-forest-700 dark:text-forest-300">
+                      {(emp.firstName?.[0] ?? '').toUpperCase()}{(emp.lastName?.[0] ?? '').toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{emp.firstName} {emp.lastName}</p>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">{emp.jobTitle ?? '—'}</td>
+                <td className="px-4 py-3">
+                  {emp.department ? (
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${DEPT_COLORS[emp.department] ?? 'bg-gray-100 text-gray-800'}`}>
+                      {emp.department}
+                    </span>
+                  ) : '—'}
+                </td>
+                <td className="px-4 py-3 text-sm text-gray-500">{emp.email ?? '—'}</td>
+                <td className="px-4 py-3 text-sm text-gray-500">
+                  {emp.hireDate ? new Date(emp.hireDate).toLocaleDateString('fr-FR') : '—'}
+                </td>
+                <td className="px-4 py-3">
+                  <div className="flex items-center justify-end gap-1">
+                    <a
+                      href={`/admin/personnel/employes/${emp.id}`}
+                      className="px-2.5 py-1.5 text-xs font-medium bg-forest-50 text-forest-700 rounded-lg hover:bg-forest-100 transition-colors"
+                    >
+                      Fiche
+                    </a>
+                    <button
+                      onClick={() => { setEditEmployee(emp); setShowModal(true); }}
+                      className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+                    >
+                      <Edit2 className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      onClick={() => { if (confirm('Supprimer cet employé ?')) deleteMutation.mutate(emp.id); }}
+                      className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      {/* Répartition par département */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h2 className="text-base font-semibold text-gray-900 mb-4">Répartition par département</h2>
-        <div className="space-y-3">
-          {depts.map(dept => {
-            const count = EMPLOYEES.filter(e => e.departement === dept).length;
-            const pct = Math.round((count / EMPLOYEES.length) * 100);
-            return (
-              <div key={dept} className="flex items-center gap-3">
-                <div className="w-24 text-sm text-gray-600">{dept}</div>
-                <div className="flex-1 bg-gray-100 rounded-full h-3 overflow-hidden">
-                  <div
-                    className="h-full bg-forest-500 rounded-full transition-all"
-                    style={{ width: `${pct}%` }}
-                  />
-                </div>
-                <div className="w-16 text-right text-sm text-gray-500">{count} ({pct}%)</div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Modal création employé */}
+      {/* Modal création/édition employé */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-gray-900">Nouvel employé</h2>
-              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+        <EmployeeModal
+          employee={editEmployee}
+          users={users}
+          onClose={() => { setShowModal(false); setEditEmployee(null); }}
+          onSuccess={() => {
+            qc.invalidateQueries({ queryKey: ['personnel-employees'] });
+            setShowModal(false);
+            setEditEmployee(null);
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+function EmployeeModal({ employee, users, onClose, onSuccess }: { employee: any; users: any; onClose: () => void; onSuccess: () => void }) {
+  const isEdit = !!employee;
+  const [form, setForm] = useState({
+    userId: employee?.userId ?? '',
+    firstName: employee?.firstName ?? '',
+    lastName: employee?.lastName ?? '',
+    email: employee?.email ?? '',
+    phone: employee?.phone ?? '',
+    jobTitle: employee?.jobTitle ?? '',
+    department: employee?.department ?? '',
+    hireDate: employee?.hireDate ? new Date(employee.hireDate).toISOString().split('T')[0] : '',
+  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+    setForm(f => ({ ...f, [k]: e.target.value }));
+
+  const handleSubmit = async (ev: React.FormEvent) => {
+    ev.preventDefault();
+    setError('');
+    if (!form.firstName.trim() || !form.lastName.trim()) {
+      setError('Le prénom et le nom sont requis');
+      return;
+    }
+    setLoading(true);
+    try {
+      if (isEdit) {
+        await personnelApi.updateEmployee(employee.id, form);
+      } else {
+        // Si pas de userId sélectionné, on en génère un temporaire
+        const payload = { ...form };
+        if (!payload.userId) {
+          payload.userId = `temp-${Date.now()}`;
+        }
+        await personnelApi.createEmployee(payload);
+      }
+      onSuccess();
+    } catch (err: any) {
+      setError(err?.response?.data?.message || 'Une erreur est survenue');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+            {isEdit ? 'Modifier l\'employé' : 'Nouvel employé'}
+          </h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {!isEdit && (
+            <div>
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Utilisateur lié (optionnel)</label>
+              <select
+                value={form.userId}
+                onChange={set('userId')}
+                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700"
+              >
+                <option value="">— Aucun utilisateur —</option>
+                {(users as any[]).map((u: any) => (
+                  <option key={u.id} value={u.id}>{u.name} ({u.email})</option>
+                ))}
+              </select>
             </div>
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Prénom</label>
-                  <input className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" placeholder="Prénom" />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Nom</label>
-                  <input className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" placeholder="Nom" />
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Poste</label>
-                <input className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" placeholder="Intitulé du poste" />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Département</label>
-                  <select className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm">
-                    <option>Direction</option>
-                    <option>Soins</option>
-                    <option>Médical</option>
-                    <option>Logistique</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Type de contrat</label>
-                  <select className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm">
-                    <option>CDI</option>
-                    <option>CDD</option>
-                    <option>STAGE</option>
-                    <option>ALTERNANCE</option>
-                  </select>
-                </div>
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Date d'embauche</label>
-                <input type="date" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm" />
-              </div>
+          )}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Prénom *</label>
+              <input value={form.firstName} onChange={set('firstName')} className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700" placeholder="Prénom" />
             </div>
-            <div className="flex gap-3 mt-6">
-              <button onClick={() => setShowModal(false)} className="flex-1 px-4 py-2 border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50">
-                Annuler
-              </button>
-              <button className="flex-1 px-4 py-2 bg-forest-600 text-white rounded-lg text-sm font-medium hover:bg-forest-700">
-                Créer l'employé
-              </button>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Nom *</label>
+              <input value={form.lastName} onChange={set('lastName')} className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700" placeholder="Nom" />
             </div>
           </div>
-        </div>
-      )}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+              <input type="email" value={form.email} onChange={set('email')} className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700" placeholder="email@lftg.fr" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Téléphone</label>
+              <input value={form.phone} onChange={set('phone')} className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700" placeholder="0694..." />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Poste</label>
+            <input value={form.jobTitle} onChange={set('jobTitle')} className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700" placeholder="Intitulé du poste" />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Département</label>
+              <select value={form.department} onChange={set('department')} className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700">
+                <option value="">— Sélectionner —</option>
+                <option>Direction</option>
+                <option>Soins</option>
+                <option>Médical</option>
+                <option>Logistique</option>
+                <option>Élevage</option>
+                <option>Formation</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Date d&apos;embauche</label>
+              <input type="date" value={form.hireDate} onChange={set('hireDate')} className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700" />
+            </div>
+          </div>
+
+          {error && (
+            <p className="text-sm text-red-500 bg-red-50 dark:bg-red-900/20 px-3 py-2 rounded-lg">{error}</p>
+          )}
+
+          <div className="flex gap-3 mt-6">
+            <button type="button" onClick={onClose} className="flex-1 px-4 py-2 border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50">
+              Annuler
+            </button>
+            <button type="submit" disabled={loading} className="flex-1 px-4 py-2 bg-forest-600 text-white rounded-lg text-sm font-medium hover:bg-forest-700 disabled:opacity-50">
+              {loading ? 'Enregistrement...' : isEdit ? 'Enregistrer' : 'Créer l\'employé'}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

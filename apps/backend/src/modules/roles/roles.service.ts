@@ -24,6 +24,17 @@ export class RolesService {
     return this.prisma.role.update({ where: { id }, data });
   }
 
+  async delete(id: string) {
+    await this.findById(id);
+    // Déconnecter les permissions avant de supprimer
+    await this.prisma.role.update({
+      where: { id },
+      data: { permissions: { set: [] } },
+    });
+    await this.prisma.role.delete({ where: { id } });
+    return { deleted: true };
+  }
+
   async addPermissions(roleId: string, permissions: { action: string; subject: string; conditions?: any }[]) {
     const perms = await Promise.all(
       permissions.map((p) =>

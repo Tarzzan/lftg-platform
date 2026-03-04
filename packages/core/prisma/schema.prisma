@@ -159,6 +159,7 @@ model Employee {
   documents    HrDocument[]
   skills       Skill[]      @relation("EmployeeSkills")
   agendaEvents AgendaEvent[]
+  leaves       Leave[]
 }
 
 model Skill {
@@ -175,6 +176,19 @@ model HrDocument {
   url        String
   type       String
   uploadedAt DateTime @default(now())
+}
+
+model Leave {
+  id         String   @id @default(cuid())
+  employeeId String
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  type       String   @default("conge_paye") // conge_paye, rtt, maladie, sans_solde
+  startDate  DateTime
+  endDate    DateTime
+  status     String   @default("pending") // pending, approved, refused
+  reason     String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 // =======================================

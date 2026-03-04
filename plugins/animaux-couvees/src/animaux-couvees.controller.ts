@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { AnimauxCouveesService } from './animaux-couvees.service';
 import { JwtAuthGuard } from '../../../apps/backend/src/common/guards/jwt-auth.guard';
@@ -50,6 +50,10 @@ export class AnimauxCouveesController {
 
   @Patch('animals/:id')
   update(@Param('id') id: string, @Body() body: any) { return this.service.updateAnimal(id, body); }
+
+  @Delete('animals/:id')
+  @ApiOperation({ summary: 'Supprime un animal' })
+  remove(@Param('id') id: string) { return this.service.deleteAnimal(id); }
 
   @Post('animals/:id/events')
   @ApiOperation({ summary: 'Ajoute un événement à un animal' })

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { StockService } from './stock.service';
 import { JwtAuthGuard } from '../../../apps/backend/src/common/guards/jwt-auth.guard';
@@ -28,6 +28,10 @@ export class StockController {
 
   @Patch('items/:id')
   update(@Param('id') id: string, @Body() body: any) { return this.service.updateItem(id, body); }
+
+  @Delete('items/:id')
+  @ApiOperation({ summary: 'Supprime un article' })
+  remove(@Param('id') id: string) { return this.service.deleteItem(id); }
 
   @Get('movements')
   @ApiOperation({ summary: 'Liste les mouvements de stock' })

@@ -130,6 +130,7 @@ export const personnelApi = {
   getEmployee: (id: string) => api.get(`/plugins/personnel/employees/${id}`).then((r) => r.data),
   createEmployee: (data: any) => api.post('/plugins/personnel/employees', data).then((r) => r.data),
   updateEmployee: (id: string, data: any) => api.patch(`/plugins/personnel/employees/${id}`, data).then((r) => r.data),
+  deleteEmployee: (id: string) => api.delete(`/plugins/personnel/employees/${id}`).then((r) => r.data),
   skills: () => api.get('/plugins/personnel/skills').then((r) => r.data),
   createSkill: (data: any) => api.post('/plugins/personnel/skills', data).then((r) => r.data),
   leaves: (employeeId?: string) =>

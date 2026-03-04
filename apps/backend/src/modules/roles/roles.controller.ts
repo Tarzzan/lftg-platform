@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Body, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { RolesService } from './roles.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -25,6 +25,10 @@ export class RolesController {
   update(@Param('id') id: string, @Body() body: { name?: string; description?: string }) {
     return this.service.update(id, body);
   }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Supprime un rôle' })
+  remove(@Param('id') id: string) { return this.service.delete(id); }
 
   @Post(':id/permissions')
   @ApiOperation({ summary: 'Ajoute des permissions à un rôle' })

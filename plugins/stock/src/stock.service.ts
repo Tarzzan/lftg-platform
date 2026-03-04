@@ -32,6 +32,15 @@ export class StockService {
     return this.prisma.stockItem.update({ where: { id }, data });
   }
 
+  async deleteItem(id: string) {
+    await this.findItemById(id);
+    // Supprimer d'abord les mouvements et demandes liés
+    await this.prisma.stockMovement.deleteMany({ where: { itemId: id } });
+    await this.prisma.stockRequest.deleteMany({ where: { itemId: id } });
+    await this.prisma.stockItem.delete({ where: { id } });
+    return { deleted: true };
+  }
+
   // --- Movements ---
   async recordMovement(data: { itemId: string; quantity: number; type: string; userId: string; notes?: string }) {
     const item = await this.prisma.stockItem.findUnique({ where: { id: data.itemId } });

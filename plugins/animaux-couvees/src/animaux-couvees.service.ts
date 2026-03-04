@@ -63,6 +63,14 @@ export class AnimauxCouveesService {
     return this.prisma.animal.update({ where: { id }, data });
   }
 
+  async deleteAnimal(id: string) {
+    await this.findAnimalById(id);
+    // Supprimer d'abord les événements liés
+    await this.prisma.animalEvent.deleteMany({ where: { animalId: id } });
+    await this.prisma.animal.delete({ where: { id } });
+    return { deleted: true };
+  }
+
   // --- Events ---
   async addEvent(data: { animalId: string; type: string; notes?: string; userId: string }) {
     return this.prisma.animalEvent.create({ data });
