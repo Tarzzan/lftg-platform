@@ -414,7 +414,7 @@ model Course {
 model Chapter {
   id       String   @id @default(cuid())
   courseId String
-  course   Course   @relation(fields: [courseId], references: [id])
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   title    String
   order    Int
   lessons  Lesson[]
@@ -423,7 +423,7 @@ model Chapter {
 model Lesson {
   id        String  @id @default(cuid())
   chapterId String
-  chapter   Chapter @relation(fields: [chapterId], references: [id])
+  chapter   Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
   title     String
   content   String?
   videoUrl  String?
@@ -440,7 +440,7 @@ model Lesson {
 model Quiz {
   id        String       @id @default(cuid())
   lessonId  String
-  lesson    Lesson       @relation(fields: [lessonId], references: [id])
+  lesson    Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   question  String
   options   Json
   answer    String
@@ -450,7 +450,7 @@ model Quiz {
 model Cohort {
   id          String   @id @default(cuid())
   courseId    String
-  course      Course   @relation(fields: [courseId], references: [id])
+  course      Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   name        String
   status      String   @default("DRAFT") // DRAFT, ACTIVE, COMPLETED, CANCELLED
   maxStudents Int?
@@ -465,7 +465,7 @@ model Cohort {
 model Enrollment {
   id          String    @id @default(cuid())
   cohortId    String
-  cohort      Cohort    @relation(fields: [cohortId], references: [id])
+  cohort      Cohort    @relation(fields: [cohortId], references: [id], onDelete: Cascade)
   userId      String
   enrolledAt  DateTime  @default(now())
   completedAt DateTime?
@@ -479,9 +479,9 @@ model Enrollment {
 model QuizAnswer {
   id           String     @id @default(cuid())
   quizId       String
-  quiz         Quiz       @relation(fields: [quizId], references: [id])
+  quiz         Quiz       @relation(fields: [quizId], references: [id], onDelete: Cascade)
   enrollmentId String
-  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id])
+  enrollment   Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
   answer       String
   isCorrect    Boolean
   answeredAt   DateTime   @default(now())

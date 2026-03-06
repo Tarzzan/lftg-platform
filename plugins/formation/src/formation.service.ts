@@ -53,6 +53,64 @@ export class FormationService {
   }
 
   async deleteCourse(id: string) {
+    // Suppression manuelle en cascade (les FK n'ont pas onDelete: Cascade en base)
+    // 1. Récupérer tous les chapitres et leçons du cours
+    const chapters = await this.prisma.chapter.findMany({
+      where: { courseId: id },
+      include: { lessons: { include: { quizzes: true } } },
+    });
+
+    for (const chapter of chapters) {
+      for (const lesson of chapter.lessons) {
+        // Supprimer les réponses aux quiz de la leçon
+        const quizIds = lesson.quizzes.map((q) => q.id);
+        if (quizIds.length > 0) {
+          await this.prisma.quizAnswer.deleteMany({ where: { quizId: { in: quizIds } } });
+        }
+        // Supprimer les quiz
+        await this.prisma.quiz.deleteMany({ where: { lessonId: lesson.id } });
+        // Supprimer les documents de la leçon
+        await this.prisma.formationDocument.deleteMany({ where: { lessonId: lesson.id } });
+        // Supprimer les complétions, objectifs, feedbacks, notes privées
+        await this.prisma.lessonCompletion.deleteMany({ where: { lessonId: lesson.id } });
+        await this.prisma.lessonObjective.deleteMany({ where: { lessonId: lesson.id } });
+        await this.prisma.lessonFeedback.deleteMany({ where: { lessonId: lesson.id } });
+        await this.prisma.learnerPrivateNote.deleteMany({ where: { lessonId: lesson.id } });
+      }
+      // Supprimer les leçons du chapitre
+      await this.prisma.lesson.deleteMany({ where: { chapterId: chapter.id } });
+    }
+    // Supprimer les chapitres
+    await this.prisma.chapter.deleteMany({ where: { courseId: id } });
+
+    // Supprimer les cohortes et leurs dépendances
+    const cohorts = await this.prisma.cohort.findMany({
+      where: { courseId: id },
+      include: { enrollments: true, attendanceSheets: true },
+    });
+    for (const cohort of cohorts) {
+      const enrollmentIds = cohort.enrollments.map((e) => e.id);
+      if (enrollmentIds.length > 0) {
+        await this.prisma.quizAnswer.deleteMany({ where: { enrollmentId: { in: enrollmentIds } } });
+        await this.prisma.signature.deleteMany({ where: { enrollmentId: { in: enrollmentIds } } });
+        await this.prisma.learnerNote.deleteMany({ where: { enrollmentId: { in: enrollmentIds } } });
+        await this.prisma.certificate.deleteMany({ where: { enrollmentId: { in: enrollmentIds } } });
+      }
+      await this.prisma.enrollment.deleteMany({ where: { cohortId: cohort.id } });
+      for (const sheet of cohort.attendanceSheets) {
+        await this.prisma.signature.deleteMany({ where: { attendanceSheetId: sheet.id } });
+      }
+      await this.prisma.attendanceSheet.deleteMany({ where: { cohortId: cohort.id } });
+    }
+    await this.prisma.cohort.deleteMany({ where: { courseId: id } });
+
+    // Supprimer les documents du cours, objectifs, prérequis, certificats
+    await this.prisma.formationDocument.deleteMany({ where: { courseId: id } });
+    await this.prisma.courseObjective.deleteMany({ where: { courseId: id } });
+    await this.prisma.coursePrerequisite.deleteMany({ where: { courseId: id } });
+    await this.prisma.certificate.deleteMany({ where: { courseId: id } });
+
+    // Supprimer le cours
     return this.prisma.course.delete({ where: { id } });
   }
 
