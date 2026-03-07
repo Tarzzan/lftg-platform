@@ -68,7 +68,7 @@ services:
       SMTP_HOST: smtp.gmail.com
       SMTP_PORT: "587"
       SMTP_USER: lftg973@gmail.com
-      SMTP_PASS: kpoqexejlukgpdf
+      SMTP_PASS: vrdigqahfehxxofg
       EMAIL_FROM: LFTG <lftg973@gmail.com>
     ports:
       - "3001:3001"
