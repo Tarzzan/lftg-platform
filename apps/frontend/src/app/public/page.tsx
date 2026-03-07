@@ -34,7 +34,29 @@ const STATS = [
 
 export default function PublicHomePage() {
   const [weather, setWeather] = useState({ temp: 29, humidity: 78, desc: 'Partiellement nuageux', icon: '⛅' });
-  const [activeTab, setActiveTab] = useState<'especes' | 'visites' | 'actualites'>('especes');
+  const [activeTab, setActiveTab] = useState<'especes' | 'visites' | 'actualites' | 'contact'>('especes');
+  const [contactForm, setContactForm] = useState({ senderName: '', senderEmail: '', phone: '', subject: '', message: '' });
+  const [contactStatus, setContactStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
+
+  const handleContactSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setContactStatus('sending');
+    try {
+      const res = await fetch('/api/v1/email/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(contactForm),
+      });
+      if (res.ok) {
+        setContactStatus('success');
+        setContactForm({ senderName: '', senderEmail: '', phone: '', subject: '', message: '' });
+      } else {
+        setContactStatus('error');
+      }
+    } catch {
+      setContactStatus('error');
+    }
+  };
   const [selectedSpecies, setSelectedSpecies] = useState<typeof SPECIES_DATA[0] | null>(null);
 
   useEffect(() => {
@@ -74,6 +96,7 @@ export default function PublicHomePage() {
             <button onClick={() => setActiveTab('especes')} className={`hover:text-white transition-colors ${activeTab === 'especes' ? 'text-gold-400 font-medium' : ''}`}>Nos Espèces</button>
             <button onClick={() => setActiveTab('visites')} className={`hover:text-white transition-colors ${activeTab === 'visites' ? 'text-gold-400 font-medium' : ''}`}>Visites</button>
             <button onClick={() => setActiveTab('actualites')} className={`hover:text-white transition-colors ${activeTab === 'actualites' ? 'text-gold-400 font-medium' : ''}`}>Actualités</button>
+            <button onClick={() => setActiveTab('contact')} className={`hover:text-white transition-colors ${activeTab === 'contact' ? 'text-gold-400 font-medium' : ''}`}>Contact</button>
           </div>
           <div className="flex items-center gap-3">
             <div className="hidden sm:flex items-center gap-2 bg-forest-800/60 rounded-full px-3 py-1.5 text-sm">
@@ -176,7 +199,7 @@ export default function PublicHomePage() {
         <div className="max-w-7xl mx-auto">
           {/* Tabs */}
           <div className="flex gap-2 mb-8 bg-forest-800/40 rounded-xl p-1 w-fit">
-            {(['especes', 'visites', 'actualites'] as const).map(tab => (
+            {(['especes', 'visites', 'actualites', 'contact'] as const).map(tab => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -186,7 +209,7 @@ export default function PublicHomePage() {
                     : 'text-forest-300 hover:text-white'
                 }`}
               >
-                {tab === 'especes' ? '🦜 Nos Espèces' : tab === 'visites' ? '🌿 Visites' : '📰 Actualités'}
+                {tab === 'especes' ? '🦜 Nos Espèces' : tab === 'visites' ? '🌿 Visites' : tab === 'actualites' ? '📰 Actualités' : '✉️ Contact'}
               </button>
             ))}
           </div>

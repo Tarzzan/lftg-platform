@@ -1,5 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import * as nodemailer from 'nodemailer';
+import { Transporter } from 'nodemailer';
 
 export interface EmailPayload {
   to: string | string[];
@@ -17,52 +19,55 @@ export interface AlertEmailData {
 }
 
 @Injectable()
-export class EmailService {
+export class EmailService implements OnModuleInit {
   private readonly logger = new Logger(EmailService.name);
   private readonly from: string;
-  private readonly resendApiKey: string | undefined;
+  private transporter: Transporter | null = null;
 
   constructor(private readonly config: ConfigService) {
-    this.from = this.config.get('EMAIL_FROM', 'noreply@lftg.fr');
-    this.resendApiKey = this.config.get('RESEND_API_KEY');
+    this.from = this.config.get('EMAIL_FROM', 'LFTG <lftg973@gmail.com>');
+  }
+
+  onModuleInit() {
+    const smtpHost = this.config.get('SMTP_HOST');
+    const smtpUser = this.config.get('SMTP_USER');
+    const smtpPass = this.config.get('SMTP_PASS');
+
+    if (smtpHost && smtpUser && smtpPass) {
+      this.transporter = nodemailer.createTransport({
+        host: smtpHost,
+        port: Number(this.config.get('SMTP_PORT', '587')),
+        secure: false, // STARTTLS
+        auth: { user: smtpUser, pass: smtpPass },
+        tls: { rejectUnauthorized: false },
+      });
+      this.logger.log(`Service email initialisé (SMTP: ${smtpHost})`);
+    } else {
+      this.logger.warn('Variables SMTP non configurées — mode mock activé');
+    }
   }
 
   // ─── Envoi générique ─────────────────────────────────────────────────────
 
   async sendEmail(payload: EmailPayload): Promise<{ success: boolean; id?: string }> {
-    if (!this.resendApiKey) {
+    if (!this.transporter) {
       this.logger.warn(`[EMAIL MOCK] To: ${payload.to} | Subject: ${payload.subject}`);
       this.logger.debug(`[EMAIL MOCK] Body: ${payload.text || payload.html.replace(/<[^>]*>/g, '')}`);
       return { success: true, id: `mock-${Date.now()}` };
     }
 
     try {
-      const response = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${this.resendApiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          from: payload.from || this.from,
-          to: Array.isArray(payload.to) ? payload.to : [payload.to],
-          subject: payload.subject,
-          html: payload.html,
-          text: payload.text,
-        }),
+      const info = await this.transporter.sendMail({
+        from: payload.from || this.from,
+        to: Array.isArray(payload.to) ? payload.to.join(', ') : payload.to,
+        subject: payload.subject,
+        html: payload.html,
+        text: payload.text,
       });
-
-      if (!response.ok) {
-        const error = await response.text();
-        this.logger.error(`Email send failed: ${error}`);
-        return { success: false };
-      }
-
-      const result = await response.json() as { id: string };
-      this.logger.log(`Email sent successfully: ${result.id}`);
-      return { success: true, id: result.id };
+      this.logger.log(`Email envoyé avec succès: ${info.messageId}`);
+      return { success: true, id: info.messageId };
     } catch (error) {
-      this.logger.error('Email send error:', error);
+      this.logger.error('Erreur envoi email:', error);
       return { success: false };
     }
   }
@@ -244,6 +249,63 @@ export class EmailService {
       </div>
       <a href="${data.appUrl}/login" class="btn">Accéder à la plateforme</a>
     `, 'Bienvenue sur LFTG Platform');
+  }
+
+  // ─── Formulaire de contact ───────────────────────────────────────────────
+
+  async sendContactForm(data: {
+    senderName: string;
+    senderEmail: string;
+    subject: string;
+    message: string;
+    phone?: string;
+  }) {
+    const adminEmail = this.config.get('SMTP_USER', 'lftg973@gmail.com');
+    // Email à l'admin avec le message
+    await this.sendEmail({
+      to: adminEmail,
+      subject: `[Contact LFTG] ${data.subject}`,
+      html: this.buildContactTemplate(data),
+      text: `Nouveau message de ${data.senderName} (${data.senderEmail}) :\n\n${data.message}`,
+    });
+    // Email de confirmation à l'expéditeur
+    await this.sendEmail({
+      to: data.senderEmail,
+      subject: 'Votre message a bien été reçu — LFTG',
+      html: this.buildContactConfirmationTemplate(data),
+      text: `Bonjour ${data.senderName}, nous avons bien reçu votre message et vous répondrons dans les plus brefs délais.`,
+    });
+    return { success: true };
+  }
+
+  private buildContactTemplate(data: any): string {
+    return this.buildBaseTemplate(`
+      <p>Un nouveau message a été envoyé via le formulaire de contact :</p>
+      <div class="alert-box">
+        <table>
+          <tr><th>Nom</th><td><strong>${data.senderName}</strong></td></tr>
+          <tr><th>Email</th><td><a href="mailto:${data.senderEmail}">${data.senderEmail}</a></td></tr>
+          ${data.phone ? `<tr><th>Téléphone</th><td>${data.phone}</td></tr>` : ''}
+          <tr><th>Sujet</th><td>${data.subject}</td></tr>
+        </table>
+      </div>
+      <p><strong>Message :</strong></p>
+      <p style="background:#f9fafb;padding:16px;border-radius:8px;border-left:4px solid #166534;">${data.message.replace(/\n/g, '<br>')}</p>
+      <a href="mailto:${data.senderEmail}" class="btn">Répondre à ${data.senderName}</a>
+    `, `Nouveau contact — ${data.subject}`);
+  }
+
+  private buildContactConfirmationTemplate(data: any): string {
+    return this.buildBaseTemplate(`
+      <p>Bonjour <strong>${data.senderName}</strong>,</p>
+      <p>Nous avons bien reçu votre message concernant <strong>"${data.subject}"</strong>.</p>
+      <p>Notre équipe vous répondra dans les plus brefs délais à l'adresse <strong>${data.senderEmail}</strong>.</p>
+      <div class="alert-box success">
+        <p>Votre message :</p>
+        <p style="font-style:italic;">${data.message.replace(/\n/g, '<br>')}</p>
+      </div>
+      <p>Merci de votre intérêt pour La Ferme Tropicale de Guyane !</p>
+    `, 'Votre message a bien été reçu');
   }
 
   private buildBroodAlertTemplate(data: any): string {

@@ -1,10 +1,16 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { EmailService } from '../email/email.service';
+import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private emailService: EmailService,
+    private config: ConfigService,
+  ) {}
 
   async findAll() {
     return this.prisma.user.findMany({
@@ -38,7 +44,7 @@ export class UsersService {
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
-    return this.prisma.user.create({
+    const user = await this.prisma.user.create({
       data: {
         name: data.name,
         email: data.email,
@@ -57,6 +63,17 @@ export class UsersService {
         createdAt: true,
       },
     });
+
+    // Envoyer l'email de bienvenue avec le mot de passe temporaire
+    const appUrl = this.config.get('FRONTEND_URL', 'http://51.210.15.92');
+    this.emailService.sendWelcomeEmail({
+      recipientEmail: user.email,
+      recipientName: user.name,
+      temporaryPassword: data.password,
+      appUrl,
+    }).catch(() => {}); // Ne pas bloquer la création si l'email échoue
+
+    return user;
   }
 
   async update(
