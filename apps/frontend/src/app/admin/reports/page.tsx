@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useState } from 'react';
@@ -51,6 +52,7 @@ export default function ReportsPage() {
       return res.data;
     },
     onSuccess: (blob) => {
+      toast.success('Opération réussie avec succès');
       const url = URL.createObjectURL(blob);
       setGeneratedUrl(url);
       setError(null);
@@ -61,6 +63,7 @@ export default function ReportsPage() {
       a.click();
     },
     onError: (err: any) => {
+      toast.error('Une erreur est survenue. Veuillez réessayer.');
       setError(err?.response?.data?.message || 'Erreur lors de la génération du rapport');
       setGeneratedUrl(null);
     },

@@ -14,7 +14,7 @@ const STATUS_COLORS: Record<string, string> = {
 export default function StripePage() {
   const [period, setPeriod] = useState<'week' | 'month' | 'year'>('month');
 
-  const { data: stats, isLoading: loadingStats, refetch: refetchStats } = useQuery({
+  const { data: stats, isLoading: loadingStats, isError: statsError, refetch: refetchStats } = useQuery({
     queryKey: ['stripe-stats', period],
     queryFn: () => api.get(`/stripe/stats?period=${period}`).then(r => r.data),
   });

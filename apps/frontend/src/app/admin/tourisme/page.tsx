@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useState } from 'react';
@@ -52,7 +53,7 @@ export default function TourismePage() {
   const [showNewVisiteForm, setShowNewVisiteForm] = useState(false);
   const [newVisite, setNewVisite] = useState({ title: '', date: '', time: '', guide: '', max: 10, price: 0, type: 'GUIDED' });
 
-  const { data: visites = [], isLoading: loadingVisites } = useQuery<Visite[]>({
+  const { data: visites = [], isLoading, isError, refetch: loadingVisites } = useQuery<Visite[]>({
     queryKey: ['tourisme-visites'],
     queryFn: async () => {
       const res = await api.get('/tourisme/visites');
@@ -82,6 +83,7 @@ export default function TourismePage() {
       return res.data;
     },
     onSuccess: () => {
+      toast.success('Opération réussie avec succès');
       queryClient.invalidateQueries({ queryKey: ['tourisme-visites'] });
       setShowNewVisiteForm(false);
       setNewVisite({ title: '', date: '', time: '', guide: '', max: 10, price: 0, type: 'GUIDED' });

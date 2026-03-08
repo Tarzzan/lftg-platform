@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
@@ -48,6 +49,7 @@ export default function BroodDetailPage() {
   const addEventMutation = useMutation({
     mutationFn: (data: any) => api.post(`/plugins/animaux/broods/${id}/events`, data),
     onSuccess: () => {
+      toast.success('Opération réussie avec succès');
       queryClient.invalidateQueries({ queryKey: ['brood', id] });
       setShowAddEvent(false);
       setNewEvent({ type: 'NOTE', notes: '', temperature: '', humidity: '' });

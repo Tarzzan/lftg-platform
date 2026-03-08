@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -102,6 +103,7 @@ export default function MedicalPage() {
       return api.post('/medical/visits', payload);
     },
     onSuccess: () => {
+      toast.success('Opération réussie avec succès');
       queryClient.invalidateQueries({ queryKey: ['medical-visits'] });
       queryClient.invalidateQueries({ queryKey: ['medical-dashboard'] });
       setShowModal(false);
@@ -119,6 +121,7 @@ export default function MedicalPage() {
       setFormError('');
     },
     onError: (err: unknown) => {
+      toast.error('Une erreur est survenue. Veuillez réessayer.');
       const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
       setFormError(msg || 'Erreur lors de la création de la visite.');
     },

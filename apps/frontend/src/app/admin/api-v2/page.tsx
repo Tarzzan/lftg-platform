@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Key, Plus, Trash2, Copy, Eye, EyeOff, RefreshCw, CheckCircle, Code } from 'lucide-react';
@@ -22,6 +23,7 @@ export default function ApiV2Page() {
   const createMutation = useMutation({
     mutationFn: (data: any) => api.post('/public/v2/api-keys', data).then(r => r.data),
     onSuccess: (data) => {
+      toast.success('Opération réussie avec succès');
       qc.invalidateQueries({ queryKey: ['api-keys'] });
       setNewKey(data.key ?? data.apiKey ?? data.token ?? null);
       setShowForm(false);

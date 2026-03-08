@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -274,7 +275,8 @@ function QuizBlock({ quiz, enrollmentId }: { quiz: any; enrollmentId: string }) 
 
   const submitMutation = useMutation({
     mutationFn: (answer: string) => formationApi.submitQuizAnswer({ quizId: quiz.id, enrollmentId, answer }),
-    onSuccess: () => { setSubmitted(true); qc.invalidateQueries({ queryKey: ['enrollment-progress'] }); },
+    onSuccess: () => {
+      toast.success('Opération réussie avec succès'); setSubmitted(true); qc.invalidateQueries({ queryKey: ['enrollment-progress'] }); },
   });
 
   return (
@@ -488,7 +490,8 @@ function LessonViewer({ lesson, enrollmentId, isCompleted, onComplete }: {
 
   const completeMutation = useMutation({
     mutationFn: (timeSpent: number) => formationApi.completeLesson(lesson.id, timeSpent),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['enrollment-progress'] }); onComplete(); },
+    onSuccess: () => {
+      toast.success('Opération réussie avec succès'); qc.invalidateQueries({ queryKey: ['enrollment-progress'] }); onComplete(); },
   });
 
   const signMutation = useMutation({
@@ -500,6 +503,7 @@ function LessonViewer({ lesson, enrollmentId, isCompleted, onComplete }: {
       sessionDate: new Date().toISOString(),
     }),
     onSuccess: () => {
+      toast.success('Opération réussie avec succès');
       setSigned(true);
       setShowSignature(false);
       const timeSpent = Math.round((Date.now() - startTime) / 1000);

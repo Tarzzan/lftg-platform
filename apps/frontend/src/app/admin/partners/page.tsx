@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useState } from 'react';
@@ -52,6 +53,7 @@ export default function PartnersPage() {
       return res.data;
     },
     onSuccess: () => {
+      toast.success('Opération réussie avec succès');
       queryClient.invalidateQueries({ queryKey: ['partners'] });
       setShowForm(false);
       setForm({ name: '', type: 'FOURNISSEUR', email: '', phone: '', website: '', notes: '' });

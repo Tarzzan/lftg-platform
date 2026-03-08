@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -72,6 +73,7 @@ export default function VentesPage() {
   const createMutation = useMutation({
     mutationFn: (data: any) => api.post('/ventes', data),
     onSuccess: () => {
+      toast.success('Opération réussie avec succès');
       queryClient.invalidateQueries({ queryKey: ['sales'] });
       queryClient.invalidateQueries({ queryKey: ['sales-stats'] });
       setShowModal(false);
@@ -82,6 +84,7 @@ export default function VentesPage() {
     mutationFn: ({ id, status }: { id: string; status: string }) =>
       api.put(`/ventes/${id}/status`, { status }),
     onSuccess: () => {
+      toast.success('Opération réussie avec succès');
       queryClient.invalidateQueries({ queryKey: ['sales'] });
       queryClient.invalidateQueries({ queryKey: ['sales-stats'] });
     },

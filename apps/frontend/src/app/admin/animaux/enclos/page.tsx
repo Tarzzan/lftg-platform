@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useState } from 'react';
@@ -79,6 +80,7 @@ export default function EnclosPage() {
       return res.data;
     },
     onSuccess: () => {
+      toast.success('Opération réussie avec succès');
       queryClient.invalidateQueries({ queryKey: ['enclos'] });
       queryClient.invalidateQueries({ queryKey: ['enclos-stats'] });
       setShowForm(false);

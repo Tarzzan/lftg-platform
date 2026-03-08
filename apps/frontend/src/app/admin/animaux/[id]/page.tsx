@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
@@ -93,6 +94,7 @@ export default function AnimalDetailPage() {
   const createVisitMutation = useMutation({
     mutationFn: (data: any) => api.post('/medical/visits', { ...data, animalId: id }),
     onSuccess: () => {
+      toast.success('Opération réussie avec succès');
       queryClient.invalidateQueries({ queryKey: ['animal-medical', id] });
       setShowVisitModal(false);
       setVisitForm({ type: 'ROUTINE', visitDate: new Date().toISOString().split('T')[0], vetName: '', diagnosis: '', notes: '', weight: '', temperature: '', nextVisitDate: '' });

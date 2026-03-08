@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Clock, Plus, Play, Trash2, Mail, RefreshCw, CheckCircle, Calendar, FileText } from 'lucide-react';
@@ -33,7 +34,8 @@ export default function AutoReportsPage() {
 
   const createMutation = useMutation({
     mutationFn: (data: any) => api.post('/auto-reports/schedules', data).then(r => r.data),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['auto-reports-schedules'] }); setShowForm(false); setForm({ name: '', type: 'health', frequency: 'weekly', recipients: '' }); },
+    onSuccess: () => {
+      toast.success('Opération réussie avec succès'); qc.invalidateQueries({ queryKey: ['auto-reports-schedules'] }); setShowForm(false); setForm({ name: '', type: 'health', frequency: 'weekly', recipients: '' }); },
   });
 
   const deleteMutation = useMutation({

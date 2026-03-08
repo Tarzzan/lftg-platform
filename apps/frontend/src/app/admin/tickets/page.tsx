@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
@@ -61,6 +62,7 @@ export default function TicketsPage() {
       return res.data;
     },
     onSuccess: () => {
+      toast.success('Opération réussie avec succès');
       queryClient.invalidateQueries({ queryKey: ['tickets'] });
       setShowCreate(false);
       setNewTicket({ title: '', description: '', priority: 'medium', category: 'GENERAL' });

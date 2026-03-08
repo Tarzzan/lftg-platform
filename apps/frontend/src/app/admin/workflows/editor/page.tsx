@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { GitBranch, Plus, Play, Pause, Trash2, Clock, CheckCircle, XCircle, RefreshCw, ChevronRight, Zap } from 'lucide-react';
@@ -32,12 +33,14 @@ export default function WorkflowsEditorPage() {
 
   const createMutation = useMutation({
     mutationFn: (data: any) => api.post('/workflows/definitions', data).then(r => r.data),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['workflow-definitions'] }); setShowForm(false); setForm({ name: '', description: '', trigger: 'manual' }); },
+    onSuccess: () => {
+      toast.success('Opération réussie avec succès'); qc.invalidateQueries({ queryKey: ['workflow-definitions'] }); setShowForm(false); setForm({ name: '', description: '', trigger: 'manual' }); },
   });
 
   const triggerMutation = useMutation({
     mutationFn: (defId: string) => api.post('/workflows/instances', { definitionId: defId }).then(r => r.data),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['workflow-instances'] }); setActiveTab('instances'); },
+    onSuccess: () => {
+      toast.success('Opération réussie avec succès'); qc.invalidateQueries({ queryKey: ['workflow-instances'] }); setActiveTab('instances'); },
   });
 
   const defs: any[] = Array.isArray(definitions) ? definitions : (definitions?.data ?? []);

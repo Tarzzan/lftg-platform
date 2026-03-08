@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useState } from 'react';
@@ -50,6 +51,7 @@ export default function SitesPage() {
       return res.data;
     },
     onSuccess: () => {
+      toast.success('Opération réussie avec succès');
       queryClient.invalidateQueries({ queryKey: ['sites'] });
       setShowForm(false);
       setForm({ name: '', location: '', address: '', phone: '', email: '', type: 'PRINCIPAL', capacity: 0, manager: '', openingHours: '', description: '' });

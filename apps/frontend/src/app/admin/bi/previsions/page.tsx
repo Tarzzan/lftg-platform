@@ -37,7 +37,7 @@ interface VisitesForecast {
 }
 
 export default function PrevisionsPage() {
-  const { data: revenue, isLoading: loadingRevenue } = useQuery<RevenueData>({
+  const { data: revenue, isLoading, isError, refetch: loadingRevenue } = useQuery<RevenueData>({
     queryKey: ['previsions-revenue'],
     queryFn: async () => {
       const res = await api.get('/previsions/revenue');

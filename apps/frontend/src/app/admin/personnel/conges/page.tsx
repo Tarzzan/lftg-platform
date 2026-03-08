@@ -1,5 +1,6 @@
 // DYNAMIC VERSION - Connected to API
 'use client';
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, Calendar, CheckCircle, XCircle, Search, Loader2 } from 'lucide-react';
@@ -37,6 +38,7 @@ export default function CongesPage() {
   const createMutation = useMutation({
     mutationFn: (data: any) => api.post('/plugins/personnel/leaves', data),
     onSuccess: () => {
+      toast.success('Opération réussie avec succès');
       qc.invalidateQueries({ queryKey: ['leaves'] });
       setShowForm(false);
       setForm({ employeeId: '', type: 'conge_paye', startDate: '', endDate: '', reason: '' });

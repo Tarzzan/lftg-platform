@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { rolesApi, usersApi } from '@/lib/api';
@@ -9,7 +10,7 @@ export default function RbacPage() {
   const [showRoleModal, setShowRoleModal] = useState(false);
   const [newRole, setNewRole] = useState({ name: '', description: '' });
 
-  const { data: roles = [], isLoading: rolesLoading } = useQuery({
+  const { data: roles = [], isLoading: rolesLoading, isError: rolesError, refetch: refetchRoles } = useQuery({
     queryKey: ['roles'],
     queryFn: rolesApi.list,
   });
@@ -22,6 +23,7 @@ export default function RbacPage() {
   const createRoleMutation = useMutation({
     mutationFn: (data: any) => rolesApi.create(data),
     onSuccess: () => {
+      toast.success('Opération réussie avec succès');
       qc.invalidateQueries({ queryKey: ['roles'] });
       setShowRoleModal(false);
       setNewRole({ name: '', description: '' });

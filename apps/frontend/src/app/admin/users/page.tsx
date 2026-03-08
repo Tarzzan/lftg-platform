@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Users, Plus, Search, Shield, CheckCircle, XCircle, Edit2, Trash2 } from 'lucide-react';
@@ -59,7 +60,7 @@ export default function UsersPage() {
 
         {/* Table */}
         {isLoading ? (
-          <div className="text-center py-12 text-muted-foreground text-sm">Chargement...</div>
+          <div className="space-y-3 py-6">{[1,2,3,4].map(i => <div key={i} className="h-8 animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg mx-4" />)}</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">

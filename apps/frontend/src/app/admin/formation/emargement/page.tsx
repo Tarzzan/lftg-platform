@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
@@ -107,6 +108,7 @@ export default function EmargementPage() {
       sessionDate: new Date(newSheet.sessionDate).toISOString(),
     }),
     onSuccess: () => {
+      toast.success('Opération réussie avec succès');
       qc.invalidateQueries({ queryKey: ['attendance', selectedCohort] });
       setShowCreate(false);
       setNewSheet({ title: '', sessionDate: '', duration: '7', expectedCount: '10' });

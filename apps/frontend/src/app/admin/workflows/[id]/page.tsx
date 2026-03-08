@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 
 import { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
@@ -76,6 +77,7 @@ export default function WorkflowDetailPage() {
     mutationFn: ({ transitionKey, notes }: { transitionKey: string; notes: string }) =>
       workflowsApi.transition(id, { transition: transitionKey, notes }),
     onSuccess: () => {
+      toast.success('Opération réussie avec succès');
       qc.invalidateQueries({ queryKey: ['workflow-instance', id] });
       qc.invalidateQueries({ queryKey: ['workflow-instances'] });
       setSelectedTransition(null);

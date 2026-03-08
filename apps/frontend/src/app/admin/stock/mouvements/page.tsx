@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useState } from 'react';
@@ -32,7 +33,7 @@ export default function StockMouvementsPage() {
   const [form, setForm] = useState({ itemId: '', type: 'IN', quantity: 1, reason: '' });
   const [filterType, setFilterType] = useState('ALL');
 
-  const { data: movements = [], isLoading } = useQuery<StockMovement[]>({
+  const { data: movements = [], isLoading, isError, refetch } = useQuery<StockMovement[]>({
     queryKey: ['stock-movements'],
     queryFn: async () => {
       const res = await api.get('/plugins/stock/movements');
@@ -55,6 +56,7 @@ export default function StockMouvementsPage() {
       return res.data;
     },
     onSuccess: () => {
+      toast.success('Opération réussie avec succès');
       queryClient.invalidateQueries({ queryKey: ['stock-movements'] });
       queryClient.invalidateQueries({ queryKey: ['stock-items-list'] });
       setShowForm(false);

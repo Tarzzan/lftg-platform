@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { Webhook, Plus, Send, Trash2, CheckCircle, XCircle, Globe, RefreshCw } from 'lucide-react';

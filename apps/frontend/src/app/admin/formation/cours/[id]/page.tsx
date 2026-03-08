@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { useState, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -140,7 +141,8 @@ function LessonEditor({ lesson, onClose }: { lesson: any; onClose: () => void })
 
   const updateMutation = useMutation({
     mutationFn: () => formationApi.updateLesson(lesson.id, { title, content, duration: duration ? parseInt(duration) : undefined }),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['course'] }); onClose(); },
+    onSuccess: () => {
+      toast.success('Opération réussie avec succès'); qc.invalidateQueries({ queryKey: ['course'] }); onClose(); },
   });
 
   const deleteDocMutation = useMutation({
@@ -221,7 +223,8 @@ function ChapterSection({ chapter, courseId }: { chapter: any; courseId: string 
 
   const addLessonMutation = useMutation({
     mutationFn: () => formationApi.addLesson(chapter.id, { title: newLessonTitle, order: chapter.lessons.length + 1 }),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['course'] }); setNewLessonTitle(''); setAddingLesson(false); },
+    onSuccess: () => {
+      toast.success('Opération réussie avec succès'); qc.invalidateQueries({ queryKey: ['course'] }); setNewLessonTitle(''); setAddingLesson(false); },
   });
 
   const deleteLessonMutation = useMutation({
@@ -329,7 +332,8 @@ export default function CourseDetailPage() {
 
   const addChapterMutation = useMutation({
     mutationFn: () => formationApi.addChapter(id, { title: newChapterTitle, order: (course?.chapters?.length || 0) + 1 }),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['course', id] }); setNewChapterTitle(''); setAddingChapter(false); },
+    onSuccess: () => {
+      toast.success('Opération réussie avec succès'); qc.invalidateQueries({ queryKey: ['course', id] }); setNewChapterTitle(''); setAddingChapter(false); },
   });
 
   const togglePublishMutation = useMutation({

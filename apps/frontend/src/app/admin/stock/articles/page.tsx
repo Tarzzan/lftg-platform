@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 
 import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -20,7 +21,7 @@ export default function StockArticlesPage() {
   const [articleModal, setArticleModal] = useState<{ open: boolean; article?: any }>({ open: false });
   const [movementModal, setMovementModal] = useState<{ open: boolean; article?: any }>({ open: false });
 
-  const { data: items = [], isLoading } = useQuery({
+  const { data: items = [], isLoading, isError, refetch } = useQuery({
     queryKey: ['stock-articles'],
     queryFn: stockApi.items,
   });

@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -55,6 +56,7 @@ export default function CouveesPage() {
   const createMutation = useMutation({
     mutationFn: (data: any) => api.post('/plugins/animaux/broods', data),
     onSuccess: () => {
+      toast.success('Opération réussie avec succès');
       queryClient.invalidateQueries({ queryKey: ['broods'] });
       setShowModal(false);
       setForm({ speciesId: '', eggCount: '', incubationStartDate: new Date().toISOString().split('T')[0], expectedHatchDate: '', temperature: '', humidity: '', incubatorId: '', notes: '' });

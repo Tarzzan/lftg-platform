@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -32,6 +33,7 @@ export default function EspecesPage() {
       ? api.put(`/plugins/animaux/species/${editSpecies.id}`, data)
       : api.post('/plugins/animaux/species', data),
     onSuccess: () => {
+      toast.success('Opération réussie avec succès');
       queryClient.invalidateQueries({ queryKey: ['species'] });
       setShowModal(false);
       setEditSpecies(null);

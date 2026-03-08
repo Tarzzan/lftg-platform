@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
@@ -40,7 +41,8 @@ export default function CitesPage() {
 
   const createMutation = useMutation({
     mutationFn: (data: any) => api.post('/cites/permits', data).then(r => r.data),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['cites-permits'] }); setShowModal(false); },
+    onSuccess: () => {
+      toast.success('Opération réussie avec succès'); qc.invalidateQueries({ queryKey: ['cites-permits'] }); setShowModal(false); },
   });
 
   const checkSpecies = async () => {

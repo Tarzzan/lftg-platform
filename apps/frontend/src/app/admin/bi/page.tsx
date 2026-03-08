@@ -24,7 +24,7 @@ interface HealthTrend {
 }
 
 export default function BIDashboardPage() {
-  const { data: dashboard, isLoading: loadingDash } = useQuery<BIDashboard>({
+  const { data: dashboard, isLoading, isError, refetch: loadingDash } = useQuery<BIDashboard>({
     queryKey: ['bi-dashboard'],
     queryFn: async () => {
       const res = await api.get('/bi/dashboard');

@@ -215,9 +215,7 @@ export default function ContactMessagesPage() {
           {/* Liste */}
           <div className="flex-1 overflow-y-auto">
             {loading ? (
-              <div className="flex items-center justify-center h-32 text-muted-foreground text-sm">
-                Chargement...
-              </div>
+              <div className="space-y-3 py-6">{[1,2,3,4].map(i => <div key={i} className="h-8 animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg mx-4" />)}</div>
             ) : filteredMessages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-32 text-muted-foreground text-sm gap-2">
                 <span className="text-3xl">📭</span>

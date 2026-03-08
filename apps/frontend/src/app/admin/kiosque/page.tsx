@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useState } from 'react';
@@ -69,6 +70,7 @@ export default function KiosquePage() {
       return res.data;
     },
     onSuccess: (data) => {
+      toast.success('Opération réussie avec succès');
       setScanResult(data?.message || 'Scan enregistré');
       queryClient.invalidateQueries({ queryKey: ['kiosque-tasks'] });
     },

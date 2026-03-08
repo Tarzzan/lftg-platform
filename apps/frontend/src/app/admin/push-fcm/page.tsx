@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useState } from 'react';
@@ -37,10 +38,12 @@ export default function PushFCMPage() {
       return res.data;
     },
     onSuccess: (data) => {
+      toast.success('Opération réussie avec succès');
       setBroadcastResult(`Notification envoyée à ${data.sent || 0} abonné(s)`);
       setBroadcastForm({ title: '', body: '', url: '' });
     },
     onError: () => {
+      toast.error('Une erreur est survenue. Veuillez réessayer.');
       setBroadcastResult('Erreur lors de l\'envoi');
     },
   });
@@ -51,6 +54,7 @@ export default function PushFCMPage() {
       return res.data;
     },
     onSuccess: () => {
+      toast.success('Opération réussie avec succès');
       setBroadcastResult('Notification de test envoyée');
     },
   });

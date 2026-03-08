@@ -1,4 +1,5 @@
 'use client';
+import { toast } from 'sonner';
 
 import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -16,7 +17,8 @@ function CohortModal({ isOpen, onClose, cohort, courses }: {
   const mutation = useMutation({
     mutationFn: (data: any) =>
       isEdit ? formationApi.updateCohort(cohort.id, data) : formationApi.createCohort(data.courseId || '', data),
-    onSuccess: () => { qc.invalidateQueries({ queryKey: ['cohorts'] }); onClose(); },
+    onSuccess: () => {
+      toast.success('Opération réussie avec succès'); qc.invalidateQueries({ queryKey: ['cohorts'] }); onClose(); },
   });
 
   const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
