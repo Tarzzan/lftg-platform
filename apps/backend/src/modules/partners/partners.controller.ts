@@ -6,7 +6,7 @@ import { PartnersService, CreatePartnerDto } from './partners.service';
 @ApiTags('Partenaires API')
 @ApiBearerAuth()
 @Public()
-@@Controller('partners')
+@Controller('partners')
 export class PartnersController {
   constructor(private readonly partnersService: PartnersService) {}
 

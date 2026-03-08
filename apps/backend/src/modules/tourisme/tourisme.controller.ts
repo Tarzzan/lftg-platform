@@ -6,7 +6,7 @@ import { TourismeService } from './tourisme.service';
 @ApiTags('Tourisme')
 @ApiBearerAuth()
 @Public()
-@@Controller('tourisme')
+@Controller('tourisme')
 export class TourismeController {
   constructor(private readonly tourismeService: TourismeService) {}
 

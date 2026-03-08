@@ -6,7 +6,7 @@ import { KiosqueService } from './kiosque.service';
 @ApiTags('Kiosque')
 @ApiBearerAuth()
 @Public()
-@@Controller('kiosque')
+@Controller('kiosque')
 export class KiosqueController {
   constructor(private readonly kiosqueService: KiosqueService) {}
 

@@ -1,13 +1,17 @@
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Controller, Get, Post, Body, Query, UseGuards} from '@nestjs/common';
 import { MlService } from './ml.service';
 
+@ApiTags('Machine Learning')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@@Controller('ml')
+@Controller('ml')
 export class MlController {
   constructor(private readonly mlService: MlService) {}
 
   @Get('breeding-predictions')
+  @ApiOperation({ summary: 'Prédictions de reproduction' })
   getBreedingPredictions() {
     return this.mlService.getBreedingPredictions();
   }

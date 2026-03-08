@@ -6,7 +6,7 @@ import { CitesApiService } from './cites-api.service';
 @ApiTags('CITES API Externe')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@@Controller('cites-api')
+@Controller('cites-api')
 export class CitesApiController {
   constructor(private readonly citesApiService: CitesApiService) {}
 

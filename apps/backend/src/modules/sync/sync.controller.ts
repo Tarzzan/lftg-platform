@@ -6,7 +6,7 @@ import { SyncService, SyncPayload } from './sync.service';
 @ApiTags('Synchronisation hors-ligne')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@@Controller('sync')
+@Controller('sync')
 export class SyncController {
   constructor(private readonly syncService: SyncService) {}
 

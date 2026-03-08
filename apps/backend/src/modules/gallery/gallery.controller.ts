@@ -1,7 +1,10 @@
 import { Controller, Post, Get, Body, UseGuards } from "@nestjs/common";
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { GalleryService } from "./gallery.service";
 import { JwtAuthGuard } from "../../common/guards/jwt-auth.guard";
 
+@ApiTags('Galerie')
+@ApiBearerAuth()
 @Controller("gallery")
 @UseGuards(JwtAuthGuard)
 export class GalleryController {

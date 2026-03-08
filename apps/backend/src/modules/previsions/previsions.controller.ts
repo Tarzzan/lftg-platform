@@ -6,7 +6,7 @@ import { PrevisionsService } from './previsions.service';
 @ApiTags('Prévisions BI')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@@Controller('previsions')
+@Controller('previsions')
 export class PrevisionsController {
   constructor(private readonly previsionsService: PrevisionsService) {}
 

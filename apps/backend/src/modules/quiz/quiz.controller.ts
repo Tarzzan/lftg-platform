@@ -6,7 +6,7 @@ import { QuizService } from './quiz.service';
 @ApiTags('Quiz & Certificats')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@@Controller('quiz')
+@Controller('quiz')
 export class QuizController {
   constructor(private readonly quizService: QuizService) {}
 

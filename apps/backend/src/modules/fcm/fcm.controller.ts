@@ -1,9 +1,12 @@
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Controller, Post, Body, UseGuards} from '@nestjs/common';
 import { FcmService } from './fcm.service';
 
+@ApiTags('Notifications FCM')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@@Controller('fcm')
+@Controller('fcm')
 export class FcmController {
   constructor(private readonly fcmService: FcmService) {}
 

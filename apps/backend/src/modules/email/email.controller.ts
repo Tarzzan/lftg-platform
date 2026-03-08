@@ -1,3 +1,4 @@
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 // @ts-nocheck
 import { Controller, Post, Body, UseGuards, HttpCode } from '@nestjs/common';
 import { EmailService } from './email.service';
@@ -6,6 +7,8 @@ import { PermissionsGuard } from '../../common/guards/permissions.guard';
 import { Permissions } from '../../common/decorators/permissions.decorator';
 import { Public } from '../../common/decorators/public.decorator';
 
+@ApiTags('Email')
+@ApiBearerAuth()
 @Controller('email')
 export class EmailController {
   constructor(private readonly emailService: EmailService) {}

@@ -1,9 +1,12 @@
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { Controller, Get, Post, Body, Param, UseGuards} from '@nestjs/common';
 import { IotService } from './iot.service';
 
+@ApiTags('IoT & Capteurs')
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@@Controller('iot')
+@Controller('iot')
 export class IotController {
   constructor(private readonly iotService: IotService) {}
 
