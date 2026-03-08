@@ -109,7 +109,7 @@ export class AgendaService {
       data: {
         status: 'COMPLETED',
         completedAt: new Date(),
-        completionNotes: notes,
+        // completionNotes n'existe pas dans le schéma Prisma
       },
     });
   }

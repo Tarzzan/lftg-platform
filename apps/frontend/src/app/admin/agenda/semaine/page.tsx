@@ -1,187 +1,175 @@
 'use client';
 import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '@/lib/api';
 
 const HOURS = Array.from({ length: 14 }, (_, i) => i + 7); // 7h à 20h
 
-const EVENTS = [
-  { id: 'e1', titre: 'Soins Volière A', heure: 8, duree: 1, jour: 1, type: 'soins', couleur: 'bg-green-100 border-green-400 text-green-800', employe: 'Marie Dupont' },
-  { id: 'e2', titre: 'Visite vétérinaire — Amazona', heure: 9, duree: 1.5, jour: 1, type: 'medical', couleur: 'bg-blue-100 border-blue-400 text-blue-800', employe: 'Dr. Rousseau' },
-  { id: 'e3', titre: 'Alimentation reptiles', heure: 10, duree: 1, jour: 2, type: 'soins', couleur: 'bg-green-100 border-green-400 text-green-800', employe: 'Sophie Bernard' },
-  { id: 'e4', titre: 'Vaccination — Lot A', heure: 14, duree: 2, jour: 2, type: 'medical', couleur: 'bg-blue-100 border-blue-400 text-blue-800', employe: 'Dr. Rousseau' },
-  { id: 'e5', titre: 'Nettoyage enclos reptiles', heure: 8, duree: 2, jour: 3, type: 'entretien', couleur: 'bg-orange-100 border-orange-400 text-orange-800', employe: 'Jean Martin' },
-  { id: 'e6', titre: 'Pesée mensuelle — Oiseaux', heure: 11, duree: 2, jour: 3, type: 'medical', couleur: 'bg-blue-100 border-blue-400 text-blue-800', employe: 'Marie Dupont' },
-  { id: 'e7', titre: 'Formation premiers secours', heure: 9, duree: 7, jour: 4, type: 'formation', couleur: 'bg-purple-100 border-purple-400 text-purple-800', employe: 'Sophie Bernard' },
-  { id: 'e8', titre: 'Contrôle couvées', heure: 8, duree: 1, jour: 5, type: 'soins', couleur: 'bg-green-100 border-green-400 text-green-800', employe: 'Marie Dupont' },
-  { id: 'e9', titre: 'Inventaire stock', heure: 14, duree: 2, jour: 5, type: 'admin', couleur: 'bg-gray-100 border-gray-400 text-gray-800', employe: 'Jean Martin' },
-  { id: 'e10', titre: 'Soins weekend — Toutes zones', heure: 8, duree: 3, jour: 6, type: 'soins', couleur: 'bg-green-100 border-green-400 text-green-800', employe: 'Marie Dupont' },
-  { id: 'e11', titre: 'Urgence médicale — Dendro', heure: 15, duree: 1, jour: 6, type: 'urgence', couleur: 'bg-red-100 border-red-400 text-red-800', employe: 'Dr. Rousseau' },
-];
-
-const DAYS = [
-  { label: 'Lun', date: '03/03' },
-  { label: 'Mar', date: '04/03' },
-  { label: 'Mer', date: '05/03' },
-  { label: 'Jeu', date: '06/03' },
-  { label: 'Ven', date: '07/03' },
-  { label: 'Sam', date: '08/03' },
-  { label: 'Dim', date: '09/03' },
-];
-
-const TYPE_LABELS: Record<string, string> = {
-  soins: '🌿 Soins',
-  medical: '🩺 Médical',
-  entretien: '🔧 Entretien',
-  formation: '🎓 Formation',
-  admin: '📋 Admin',
-  urgence: '🚨 Urgence',
+const TYPE_CONFIG: Record<string, { label: string; color: string }> = {
+  MEDICAL:    { label: 'Médical',      color: 'bg-blue-100 border-blue-400 text-blue-800' },
+  FEEDING:    { label: 'Alimentation', color: 'bg-green-100 border-green-400 text-green-800' },
+  CLEANING:   { label: 'Nettoyage',    color: 'bg-orange-100 border-orange-400 text-orange-800' },
+  TRAINING:   { label: 'Formation',    color: 'bg-purple-100 border-purple-400 text-purple-800' },
+  INSPECTION: { label: 'Inspection',   color: 'bg-amber-100 border-amber-400 text-amber-800' },
+  OTHER:      { label: 'Autre',        color: 'bg-gray-100 border-gray-400 text-gray-800' },
 };
 
+const DAYS_FR = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+
+function getWeekDays(date: Date) {
+  const day = date.getDay();
+  const diff = (day === 0 ? -6 : 1 - day);
+  const monday = new Date(date);
+  monday.setDate(date.getDate() + diff);
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    return d;
+  });
+}
+
 export default function AgendaSemainePage() {
-  const [selectedEvent, setSelectedEvent] = useState<typeof EVENTS[0] | null>(null);
-  const [filterType, setFilterType] = useState('');
+  const [weekOffset, setWeekOffset] = useState(0);
+  const queryClient = useQueryClient();
 
-  const CELL_HEIGHT = 60; // px par heure
+  const baseDate = new Date();
+  baseDate.setDate(baseDate.getDate() + weekOffset * 7);
+  const weekDays = getWeekDays(baseDate);
 
-  const filteredEvents = filterType ? EVENTS.filter(e => e.type === filterType) : EVENTS;
+  const startDate = weekDays[0].toISOString().split('T')[0];
+  const endDate = weekDays[6].toISOString().split('T')[0];
+
+  const { data: events = [], isLoading } = useQuery({
+    queryKey: ['agenda-week', startDate, endDate],
+    queryFn: () => api.get(`/agenda?startDate=${startDate}&endDate=${endDate}`).then(r => r.data),
+  });
+
+  const completeMutation = useMutation({
+    mutationFn: (id: string) => api.patch(`/agenda/${id}/complete`),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['agenda-week'] }),
+  });
+
+  const getEventsForDayAndHour = (dayIndex: number, hour: number) => {
+    const dayStr = weekDays[dayIndex].toISOString().split('T')[0];
+    return (events as any[]).filter(e => {
+      const eDate = new Date(e.startDate);
+      return eDate.toISOString().split('T')[0] === dayStr && eDate.getHours() === hour;
+    });
+  };
+
+  const formatWeekRange = () => {
+    const start = weekDays[0].toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+    const end = weekDays[6].toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+    return `${start} — ${end}`;
+  };
 
   return (
-    <div className="p-6 space-y-4">
+    <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Agenda — Vue semaine</h1>
-          <p className="text-sm text-gray-500 mt-1">Semaine du 3 au 9 mars 2026</p>
+          <h1 className="text-2xl font-bold text-gray-900">📅 Vue semaine</h1>
+          <p className="text-gray-500 text-sm mt-1">{formatWeekRange()}</p>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="flex bg-gray-100 rounded-lg p-1">
-            <a href="/admin/agenda" className="px-3 py-1.5 rounded-md text-sm font-medium text-gray-500 hover:text-gray-700">Mois</a>
-            <span className="px-3 py-1.5 rounded-md text-sm font-medium bg-white text-gray-900 shadow-sm">Semaine</span>
-          </div>
-          <button className="flex items-center gap-2 px-4 py-2 bg-forest-600 text-white rounded-lg hover:bg-forest-700 transition-colors text-sm font-medium">
-            + Événement
-          </button>
-        </div>
-      </div>
-
-      {/* Filtres par type */}
-      <div className="flex items-center gap-2 flex-wrap">
-        <button
-          onClick={() => setFilterType('')}
-          className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${!filterType ? 'bg-forest-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
-        >
-          Tous
-        </button>
-        {Object.entries(TYPE_LABELS).map(([type, label]) => (
+        <div className="flex gap-2">
           <button
-            key={type}
-            onClick={() => setFilterType(type === filterType ? '' : type)}
-            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${filterType === type ? 'bg-forest-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+            onClick={() => setWeekOffset(w => w - 1)}
+            className="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition-colors"
           >
-            {label}
+            ← Semaine précédente
           </button>
-        ))}
+          <button
+            onClick={() => setWeekOffset(0)}
+            className="px-3 py-2 bg-forest-600 text-white rounded-lg text-sm hover:bg-forest-700 transition-colors"
+          >
+            Aujourd'hui
+          </button>
+          <button
+            onClick={() => setWeekOffset(w => w + 1)}
+            className="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition-colors"
+          >
+            Semaine suivante →
+          </button>
+        </div>
       </div>
 
-      {/* Calendrier semaine */}
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-        {/* En-têtes */}
-        <div className="grid border-b border-gray-100" style={{ gridTemplateColumns: '60px repeat(7, 1fr)' }}>
-          <div className="p-3 bg-gray-50 border-r border-gray-100" />
-          {DAYS.map((day, i) => (
-            <div
-              key={day.label}
-              className={`p-3 text-center border-r border-gray-100 last:border-r-0 ${i >= 5 ? 'bg-purple-50' : 'bg-gray-50'}`}
-            >
-              <div className="text-xs font-medium text-gray-500">{day.label}</div>
-              <div className={`text-sm font-bold mt-0.5 ${i >= 5 ? 'text-purple-700' : 'text-gray-900'}`}>{day.date}</div>
-            </div>
-          ))}
+      {isLoading ? (
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin w-8 h-8 border-4 border-forest-600 border-t-transparent rounded-full" />
         </div>
-
-        {/* Grille horaire */}
-        <div className="overflow-y-auto" style={{ maxHeight: '600px' }}>
-          <div className="relative" style={{ display: 'grid', gridTemplateColumns: '60px repeat(7, 1fr)' }}>
-            {/* Colonne heures */}
-            <div className="border-r border-gray-100">
-              {HOURS.map(h => (
-                <div key={h} className="border-b border-gray-50 flex items-start justify-end pr-2 pt-1" style={{ height: `${CELL_HEIGHT}px` }}>
-                  <span className="text-xs text-gray-400">{h}:00</span>
+      ) : (
+        <div className="bg-white rounded-xl border border-gray-200 overflow-auto">
+          {/* En-têtes des jours */}
+          <div className="grid border-b border-gray-200" style={{ gridTemplateColumns: '60px repeat(7, 1fr)' }}>
+            <div className="p-2 text-xs text-gray-400 border-r border-gray-100" />
+            {weekDays.map((day, i) => {
+              const isToday = day.toDateString() === new Date().toDateString();
+              const dayEvents = (events as any[]).filter(e => new Date(e.startDate).toISOString().split('T')[0] === day.toISOString().split('T')[0]);
+              return (
+                <div key={i} className={`p-2 text-center border-r border-gray-100 ${isToday ? 'bg-forest-50' : ''}`}>
+                  <div className={`text-xs font-semibold uppercase tracking-wide ${isToday ? 'text-forest-700' : 'text-gray-500'}`}>
+                    {DAYS_FR[i]}
+                  </div>
+                  <div className={`text-lg font-bold mt-0.5 ${isToday ? 'text-forest-700' : 'text-gray-900'}`}>
+                    {day.getDate()}
+                  </div>
+                  {dayEvents.length > 0 && (
+                    <div className="text-xs text-gray-400">{dayEvents.length} evt</div>
+                  )}
                 </div>
-              ))}
-            </div>
+              );
+            })}
+          </div>
 
-            {/* Colonnes jours */}
-            {DAYS.map((day, dayIdx) => (
-              <div key={day.label} className={`relative border-r border-gray-100 last:border-r-0 ${dayIdx >= 5 ? 'bg-purple-50/20' : ''}`}>
-                {/* Lignes horaires */}
-                {HOURS.map(h => (
-                  <div key={h} className="border-b border-gray-50" style={{ height: `${CELL_HEIGHT}px` }} />
-                ))}
-
-                {/* Événements */}
-                {filteredEvents
-                  .filter(e => e.jour === dayIdx + 1)
-                  .map(event => {
-                    const top = (event.heure - 7) * CELL_HEIGHT;
-                    const height = event.duree * CELL_HEIGHT - 4;
-                    return (
-                      <div
-                        key={event.id}
-                        className={`absolute left-1 right-1 rounded-lg border-l-4 p-2 cursor-pointer hover:shadow-md transition-shadow overflow-hidden ${event.couleur}`}
-                        style={{ top: `${top + 2}px`, height: `${height}px` }}
-                        onClick={() => setSelectedEvent(event)}
-                      >
-                        <div className="text-xs font-semibold leading-tight truncate">{event.titre}</div>
-                        {height > 40 && (
-                          <div className="text-xs opacity-70 mt-0.5 truncate">{event.employe}</div>
-                        )}
-                        {height > 60 && (
-                          <div className="text-xs opacity-60 mt-0.5">{event.heure}:00 – {event.heure + event.duree}:00</div>
-                        )}
-                      </div>
-                    );
-                  })}
+          {/* Grille horaire */}
+          <div className="overflow-y-auto max-h-[600px]">
+            {HOURS.map(hour => (
+              <div key={hour} className="grid border-b border-gray-100" style={{ gridTemplateColumns: '60px repeat(7, 1fr)', minHeight: '60px' }}>
+                <div className="p-2 text-xs text-gray-400 border-r border-gray-100 text-right pr-3 pt-2">
+                  {hour}:00
+                </div>
+                {weekDays.map((day, dayIndex) => {
+                  const isToday = day.toDateString() === new Date().toDateString();
+                  const hourEvents = getEventsForDayAndHour(dayIndex, hour);
+                  return (
+                    <div key={dayIndex} className={`border-r border-gray-100 p-1 relative ${isToday ? 'bg-forest-50/30' : ''}`}>
+                      {hourEvents.map(event => (
+                        <div
+                          key={event.id}
+                          className={`text-xs rounded border px-1.5 py-1 mb-0.5 cursor-pointer hover:opacity-80 transition-opacity ${
+                            TYPE_CONFIG[event.type]?.color || 'bg-gray-100 border-gray-300 text-gray-700'
+                          } ${event.status === 'COMPLETED' ? 'opacity-60 line-through' : ''}`}
+                          title={`${event.title}${event.assignedTo ? ` — ${event.assignedTo.firstName} ${event.assignedTo.lastName}` : ''}`}
+                          onClick={() => {
+                            if (event.status === 'PENDING' && confirm(`Marquer "${event.title}" comme complété ?`)) {
+                              completeMutation.mutate(event.id);
+                            }
+                          }}
+                        >
+                          <div className="font-medium truncate">{event.title}</div>
+                          {event.assignedTo && (
+                            <div className="opacity-70 truncate">{event.assignedTo.firstName}</div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })}
               </div>
             ))}
           </div>
         </div>
-      </div>
-
-      {/* Panneau détail événement */}
-      {selectedEvent && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <h2 className="text-lg font-bold text-gray-900">{selectedEvent.titre}</h2>
-                <p className="text-sm text-gray-500 mt-0.5">{TYPE_LABELS[selectedEvent.type]}</p>
-              </div>
-              <button onClick={() => setSelectedEvent(null)} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
-            </div>
-            <div className="space-y-3">
-              {[
-                { label: 'Date', value: DAYS[selectedEvent.jour - 1].date + '/2026' },
-                { label: 'Horaire', value: `${selectedEvent.heure}:00 – ${selectedEvent.heure + selectedEvent.duree}:00 (${selectedEvent.duree}h)` },
-                { label: 'Responsable', value: selectedEvent.employe },
-                { label: 'Type', value: TYPE_LABELS[selectedEvent.type] },
-              ].map(item => (
-                <div key={item.label} className="flex justify-between py-2 border-b border-gray-50">
-                  <span className="text-sm text-gray-500">{item.label}</span>
-                  <span className="text-sm font-medium text-gray-900">{item.value}</span>
-                </div>
-              ))}
-            </div>
-            <div className="flex gap-3 mt-6">
-              <button onClick={() => setSelectedEvent(null)} className="flex-1 px-4 py-2 border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50">
-                Fermer
-              </button>
-              <button className="flex-1 px-4 py-2 bg-forest-600 text-white rounded-lg text-sm font-medium hover:bg-forest-700">
-                Modifier
-              </button>
-            </div>
-          </div>
-        </div>
       )}
+
+      {/* Légende */}
+      <div className="flex flex-wrap gap-3">
+        {Object.entries(TYPE_CONFIG).map(([type, config]) => (
+          <div key={type} className="flex items-center gap-1.5 text-xs text-gray-600">
+            <div className={`w-3 h-3 rounded border ${config.color}`} />
+            {config.label}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

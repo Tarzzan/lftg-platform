@@ -1,183 +1,226 @@
 'use client';
 
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/lib/api';
 
-const dietPlans = [
-  {
-    id: 'dp-1',
-    name: 'Régime Psittacidés',
-    species: 'Ara, Amazone, Conure',
-    animalsCount: 24,
-    mealsPerDay: 2,
-    totalCalories: 320,
-    components: [
-      { food: 'Graines de tournesol', quantity: 50, unit: 'g', frequency: 'quotidien' },
-      { food: 'Fruits frais (mangue, goyave)', quantity: 80, unit: 'g', frequency: 'quotidien' },
-      { food: 'Légumes verts', quantity: 40, unit: 'g', frequency: 'quotidien' },
-      { food: 'Granulés enrichis', quantity: 30, unit: 'g', frequency: 'quotidien' },
-      { food: 'Vitamines A+D3', quantity: 2, unit: 'ml', frequency: 'hebdomadaire' },
-    ],
-    status: 'active',
-  },
-  {
-    id: 'dp-2',
-    name: 'Régime Dendrobatidés',
-    species: 'Dendrobates azureus, D. tinctorius',
-    animalsCount: 48,
-    mealsPerDay: 1,
-    totalCalories: 15,
-    components: [
-      { food: 'Drosophiles vivantes', quantity: 20, unit: 'individus', frequency: 'quotidien' },
-      { food: 'Grillons micro', quantity: 10, unit: 'individus', frequency: 'tous les 2 jours' },
-      { food: 'Poudrage calcium', quantity: 0.1, unit: 'g', frequency: '3x/semaine' },
-    ],
-    status: 'active',
-  },
-  {
-    id: 'dp-3',
-    name: 'Régime Tortues terrestres',
-    species: 'Geochelone carbonaria',
-    animalsCount: 12,
-    mealsPerDay: 1,
-    totalCalories: 180,
-    components: [
-      { food: 'Feuilles de pissenlit', quantity: 100, unit: 'g', frequency: 'quotidien' },
-      { food: 'Fleurs hibiscus', quantity: 30, unit: 'g', frequency: 'quotidien' },
-      { food: 'Calcium en poudre', quantity: 1, unit: 'g', frequency: '2x/semaine' },
-      { food: 'Fruits rouges', quantity: 20, unit: 'g', frequency: '2x/semaine' },
-    ],
-    status: 'active',
-  },
-  {
-    id: 'dp-4',
-    name: 'Régime Serpents',
-    species: 'Boa constrictor, Python regius',
-    animalsCount: 8,
-    mealsPerDay: 0.14,
-    totalCalories: 450,
-    components: [
-      { food: 'Souris adultes congelées', quantity: 2, unit: 'individus', frequency: 'hebdomadaire' },
-      { food: 'Rats juvéniles', quantity: 1, unit: 'individu', frequency: 'bi-mensuel' },
-    ],
-    status: 'active',
-  },
-];
+interface NutritionPlan {
+  id: string;
+  name: string;
+  description?: string;
+  species: { id: string; name: string; scientificName?: string };
+  meals: Array<{
+    id: string;
+    name: string;
+    time: string;
+    items: Array<{ stockItemId?: string; food?: string; quantity: number; unit: string; calories?: number }>;
+  }>;
+  createdAt: string;
+  updatedAt: string;
+}
 
-const todaySchedule = [
-  { time: '07:00', species: 'Psittacidés', food: 'Fruits frais + légumes', keeper: 'Marie L.', done: true },
-  { time: '08:30', species: 'Dendrobatidés', food: 'Drosophiles vivantes', keeper: 'Pierre M.', done: true },
-  { time: '10:00', species: 'Tortues terrestres', food: 'Feuilles + fleurs', keeper: 'Marie L.', done: false },
-  { time: '12:00', species: 'Psittacidés', food: 'Granulés + graines', keeper: 'Jean-Paul B.', done: false },
-  { time: '15:00', species: 'Serpents (hebdo)', food: 'Souris congelées', keeper: 'Pierre M.', done: false },
-  { time: '17:30', species: 'Psittacidés', food: 'Vitamines A+D3', keeper: 'Marie L.', done: false },
-];
+interface ScheduleItem {
+  planId: string;
+  planName: string;
+  speciesName: string;
+  mealName: string;
+  time: string;
+  items: Array<{ food?: string; quantity: number; unit: string; calories?: number }>;
+  done: boolean;
+}
 
-const stockAlerts = [
-  { food: 'Graines de tournesol', current: 2, min: 5, unit: 'kg', status: 'critical' },
-  { food: 'Vitamines A+D3', current: 3, min: 5, unit: 'flacons', status: 'warning' },
-  { food: 'Drosophiles (culture)', current: 8, min: 10, unit: 'boîtes', status: 'warning' },
-];
+interface NutritionStats {
+  totalPlans: number;
+  speciesCovered: number;
+  feedingsToday: number;
+  feedingsDone: number;
+  avgConsumptionRate: number;
+  alertsNutrition: number;
+  lastUpdate: string;
+}
 
 export default function NutritionPage() {
-  const [tab, setTab] = useState<'plans' | 'schedule' | 'stock'>('plans');
-  const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
-  const [schedule, setSchedule] = useState(todaySchedule);
+  const [activeTab, setActiveTab] = useState<'plans' | 'schedule' | 'stats'>('schedule');
+  const [selectedPlan, setSelectedPlan] = useState<NutritionPlan | null>(null);
 
-  const plan = dietPlans.find(p => p.id === selectedPlan);
+  const { data: plans = [], isLoading: plansLoading } = useQuery<NutritionPlan[]>({
+    queryKey: ['nutrition-plans'],
+    queryFn: () => api.get('/nutrition/plans').then(r => r.data),
+  });
 
-  const toggleDone = (idx: number) => {
-    setSchedule(prev => prev.map((s, i) => i === idx ? { ...s, done: !s.done } : s));
-  };
+  const { data: schedule = [], isLoading: scheduleLoading } = useQuery<ScheduleItem[]>({
+    queryKey: ['nutrition-schedule-today'],
+    queryFn: () => api.get('/nutrition/schedule/today').then(r => r.data),
+  });
+
+  const { data: stats } = useQuery<NutritionStats>({
+    queryKey: ['nutrition-stats'],
+    queryFn: () => api.get('/nutrition/stats').then(r => r.data),
+  });
+
+  const isLoading = plansLoading || scheduleLoading;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Module Nutrition</h1>
-          <p className="text-sm text-gray-500 mt-1">Plans alimentaires et calendrier d'alimentation</p>
+          <h1 className="text-2xl font-bold text-gray-900">🌿 Nutrition & Alimentation</h1>
+          <p className="text-gray-500 text-sm mt-1">Plans nutritionnels et suivi des repas</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-forest-600 text-white rounded-lg hover:bg-forest-700 text-sm font-medium">
-          + Nouveau plan
-        </button>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {[
-          { label: 'Plans actifs', value: dietPlans.length, icon: '📋', color: 'text-forest-700' },
-          { label: 'Animaux suivis', value: dietPlans.reduce((s, p) => s + p.animalsCount, 0), icon: '🐾', color: 'text-blue-700' },
-          { label: 'Repas aujourd\'hui', value: todaySchedule.length, icon: '🍽️', color: 'text-amber-700' },
-          { label: 'Alertes stock', value: stockAlerts.length, icon: '⚠️', color: 'text-red-700' },
-        ].map(s => (
-          <div key={s.label} className="bg-white rounded-xl border border-gray-100 p-4">
-            <div className="flex items-center gap-2 mb-1">
-              <span>{s.icon}</span>
-              <span className="text-xs text-gray-500">{s.label}</span>
-            </div>
-            <div className={`text-3xl font-bold ${s.color}`}>{s.value}</div>
+      {stats && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className="text-2xl font-bold text-forest-700">{stats.totalPlans}</div>
+            <div className="text-sm text-gray-500 mt-1">Plans nutritionnels</div>
           </div>
-        ))}
-      </div>
+          <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className="text-2xl font-bold text-blue-700">{stats.speciesCovered}</div>
+            <div className="text-sm text-gray-500 mt-1">Espèces couvertes</div>
+          </div>
+          <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className="text-2xl font-bold text-amber-700">{stats.feedingsDone}/{stats.feedingsToday}</div>
+            <div className="text-sm text-gray-500 mt-1">Repas du jour</div>
+          </div>
+          <div className="bg-white rounded-xl border border-gray-200 p-4">
+            <div className={`text-2xl font-bold ${stats.avgConsumptionRate >= 80 ? 'text-green-700' : 'text-red-700'}`}>
+              {stats.avgConsumptionRate}%
+            </div>
+            <div className="text-sm text-gray-500 mt-1">Taux de consommation</div>
+          </div>
+        </div>
+      )}
 
-      {/* Tabs */}
-      <div className="flex gap-1 bg-gray-100 p-1 rounded-lg w-fit">
-        {(['plans', 'schedule', 'stock'] as const).map(t => (
+      {/* Onglets */}
+      <div className="flex border-b border-gray-200">
+        {[
+          { key: 'schedule', label: '📋 Planning du jour' },
+          { key: 'plans', label: '📖 Plans nutritionnels' },
+          { key: 'stats', label: '📊 Statistiques' },
+        ].map(tab => (
           <button
-            key={t}
-            onClick={() => setTab(t)}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-              tab === t ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key as typeof activeTab)}
+            className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+              activeTab === tab.key
+                ? 'border-forest-600 text-forest-700'
+                : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
           >
-            {t === 'plans' ? '📋 Plans alimentaires' : t === 'schedule' ? '📅 Calendrier du jour' : '📦 Stock alimentaire'}
+            {tab.label}
           </button>
         ))}
       </div>
 
-      {tab === 'plans' && (
-        <div className="grid md:grid-cols-2 gap-4">
-          {dietPlans.map(p => (
-            <div
-              key={p.id}
-              className={`bg-white rounded-xl border cursor-pointer transition-all ${
-                selectedPlan === p.id ? 'border-forest-400 ring-2 ring-forest-100' : 'border-gray-100 hover:border-forest-200'
-              }`}
-              onClick={() => setSelectedPlan(selectedPlan === p.id ? null : p.id)}
-            >
-              <div className="p-5">
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <h3 className="font-semibold text-gray-900">{p.name}</h3>
-                    <p className="text-xs text-gray-500 mt-0.5">{p.species}</p>
+      {isLoading && (
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin w-8 h-8 border-4 border-forest-600 border-t-transparent rounded-full" />
+        </div>
+      )}
+
+      {/* Planning du jour */}
+      {!isLoading && activeTab === 'schedule' && (
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="p-4 border-b border-gray-100">
+            <h3 className="font-semibold text-gray-900">Planning des repas — {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</h3>
+          </div>
+          {schedule.length === 0 ? (
+            <div className="text-center py-12 text-gray-400">
+              <div className="text-4xl mb-3">🌿</div>
+              <p>Aucun plan nutritionnel configuré</p>
+              <p className="text-sm mt-1">Créez des plans nutritionnels pour les espèces de votre collection</p>
+            </div>
+          ) : (
+            <div className="divide-y divide-gray-100">
+              {schedule.map((item, index) => (
+                <div key={index} className={`flex items-start gap-4 p-4 transition-colors ${item.done ? 'bg-green-50' : 'hover:bg-gray-50'}`}>
+                  <div className="flex-shrink-0 w-16 text-center">
+                    <div className="text-sm font-bold text-gray-900">{item.time}</div>
+                    <div className={`text-xs mt-1 ${item.done ? 'text-green-600' : 'text-gray-400'}`}>
+                      {item.done ? '✓ Fait' : 'À faire'}
+                    </div>
                   </div>
-                  <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">● Actif</span>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-medium text-sm text-gray-900">{item.mealName}</div>
+                    <div className="text-xs text-gray-500 mt-0.5">🦎 {item.speciesName}</div>
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      {item.items.map((food, fi) => (
+                        <span key={fi} className="text-xs bg-green-50 text-green-700 border border-green-200 rounded-full px-2 py-0.5">
+                          {food.food || `Aliment ${fi + 1}`} — {food.quantity} {food.unit}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  {!item.done && (
+                    <button className="flex-shrink-0 px-3 py-1.5 text-xs font-medium bg-forest-600 text-white rounded-lg hover:bg-forest-700 transition-colors">
+                      Valider
+                    </button>
+                  )}
                 </div>
-                <div className="grid grid-cols-3 gap-3 text-center">
-                  <div className="bg-gray-50 rounded-lg p-2">
-                    <div className="text-lg font-bold text-gray-900">{p.animalsCount}</div>
-                    <div className="text-xs text-gray-500">animaux</div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Plans nutritionnels */}
+      {!isLoading && activeTab === 'plans' && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {plans.length === 0 ? (
+            <div className="col-span-2 text-center py-12 text-gray-400 bg-white rounded-xl border border-gray-200">
+              <div className="text-4xl mb-3">📖</div>
+              <p>Aucun plan nutritionnel créé</p>
+            </div>
+          ) : (
+            plans.map(plan => (
+              <div
+                key={plan.id}
+                className="bg-white rounded-xl border border-gray-200 overflow-hidden cursor-pointer hover:border-forest-300 transition-colors"
+                onClick={() => setSelectedPlan(selectedPlan?.id === plan.id ? null : plan)}
+              >
+                <div className="p-4">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <h3 className="font-semibold text-gray-900">{plan.name}</h3>
+                      <p className="text-sm text-gray-500 mt-0.5">
+                        🦎 {plan.species.name}
+                        {plan.species.scientificName && (
+                          <span className="italic ml-1">({plan.species.scientificName})</span>
+                        )}
+                      </p>
+                    </div>
+                    <span className="text-xs bg-green-100 text-green-700 border border-green-200 px-2 py-0.5 rounded-full">
+                      Actif
+                    </span>
                   </div>
-                  <div className="bg-gray-50 rounded-lg p-2">
-                    <div className="text-lg font-bold text-gray-900">{p.mealsPerDay < 1 ? '1/sem' : p.mealsPerDay + 'x'}</div>
-                    <div className="text-xs text-gray-500">repas/jour</div>
+                  <div className="mt-3 flex gap-4 text-sm text-gray-600">
+                    <span>🍽️ {plan.meals.length} repas/jour</span>
                   </div>
-                  <div className="bg-gray-50 rounded-lg p-2">
-                    <div className="text-lg font-bold text-gray-900">{p.totalCalories}</div>
-                    <div className="text-xs text-gray-500">kcal/j</div>
-                  </div>
+                  {plan.description && (
+                    <p className="mt-2 text-xs text-gray-500">{plan.description}</p>
+                  )}
                 </div>
 
-                {selectedPlan === p.id && (
-                  <div className="mt-4 border-t border-gray-100 pt-4">
-                    <h4 className="text-xs font-semibold text-gray-600 uppercase tracking-wide mb-3">Composition du régime</h4>
-                    <div className="space-y-2">
-                      {p.components.map((c, i) => (
-                        <div key={i} className="flex items-center justify-between text-sm">
-                          <span className="text-gray-700">🌿 {c.food}</span>
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium text-gray-900">{c.quantity} {c.unit}</span>
-                            <span className="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{c.frequency}</span>
+                {selectedPlan?.id === plan.id && (
+                  <div className="border-t border-gray-100 p-4 bg-gray-50">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-3">Détail des repas</h4>
+                    <div className="space-y-3">
+                      {plan.meals.map(meal => (
+                        <div key={meal.id} className="bg-white rounded-lg border border-gray-200 p-3">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-xs font-bold text-gray-900 bg-gray-100 px-2 py-0.5 rounded">{meal.time}</span>
+                            <span className="text-sm font-medium text-gray-800">{meal.name}</span>
+                          </div>
+                          <div className="space-y-1">
+                            {(meal.items as any[]).map((item, i) => (
+                              <div key={i} className="flex items-center justify-between text-xs text-gray-600">
+                                <span>{item.food || item.name || `Aliment ${i + 1}`}</span>
+                                <span className="font-medium">{item.quantity} {item.unit}</span>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       ))}
@@ -185,104 +228,70 @@ export default function NutritionPage() {
                   </div>
                 )}
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       )}
 
-      {tab === 'schedule' && (
-        <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-          <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between">
-            <h3 className="font-semibold text-gray-900">Calendrier du jour — 1 Mars 2026</h3>
-            <div className="text-sm text-gray-500">
-              {schedule.filter(s => s.done).length}/{schedule.length} repas effectués
-            </div>
-          </div>
-          <div className="divide-y divide-gray-50">
-            {schedule.map((s, i) => (
-              <div key={i} className={`flex items-center gap-4 px-5 py-4 ${s.done ? 'opacity-60' : ''}`}>
-                <div className="text-sm font-mono font-bold text-gray-700 w-14">{s.time}</div>
-                <div className="flex-1">
-                  <div className="font-medium text-gray-900 text-sm">{s.species}</div>
-                  <div className="text-xs text-gray-500">{s.food}</div>
+      {/* Statistiques */}
+      {!isLoading && activeTab === 'stats' && stats && (
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <h3 className="font-semibold text-gray-900 mb-6">Statistiques nutritionnelles</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 mb-3">Repas du jour</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Repas planifiés</span>
+                  <span className="font-medium">{stats.feedingsToday}</span>
                 </div>
-                <div className="text-xs text-gray-500">👤 {s.keeper}</div>
-                <button
-                  onClick={() => toggleDone(i)}
-                  className={`w-7 h-7 rounded-full border-2 flex items-center justify-center transition-colors ${
-                    s.done ? 'bg-green-500 border-green-500 text-white' : 'border-gray-300 hover:border-forest-400'
-                  }`}
-                >
-                  {s.done && '✓'}
-                </button>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Repas effectués</span>
+                  <span className="font-medium text-green-600">{stats.feedingsDone}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Restants</span>
+                  <span className="font-medium text-amber-600">{stats.feedingsToday - stats.feedingsDone}</span>
+                </div>
               </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {tab === 'stock' && (
-        <div className="space-y-4">
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-            <h3 className="font-semibold text-amber-800 mb-3">⚠️ Alertes de stock alimentaire</h3>
-            <div className="space-y-3">
-              {stockAlerts.map((a, i) => (
-                <div key={i} className="flex items-center justify-between bg-white rounded-lg p-3 border border-amber-100">
-                  <div>
-                    <div className="font-medium text-gray-900 text-sm">{a.food}</div>
-                    <div className="text-xs text-gray-500 mt-0.5">
-                      Stock actuel : <strong>{a.current} {a.unit}</strong> / Minimum : {a.min} {a.unit}
-                    </div>
+              {stats.feedingsToday > 0 && (
+                <div className="mt-3">
+                  <div className="flex justify-between text-xs text-gray-500 mb-1">
+                    <span>Progression</span>
+                    <span>{Math.round((stats.feedingsDone / stats.feedingsToday) * 100)}%</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-24 bg-gray-100 rounded-full h-2">
-                      <div
-                        className={`h-2 rounded-full ${a.status === 'critical' ? 'bg-red-500' : 'bg-amber-500'}`}
-                        style={{ width: `${Math.min(100, (a.current / a.min) * 100)}%` }}
-                      />
-                    </div>
-                    <button className="text-xs px-3 py-1.5 bg-forest-600 text-white rounded-lg hover:bg-forest-700">
-                      Commander
-                    </button>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div
+                      className="bg-forest-600 h-2 rounded-full transition-all"
+                      style={{ width: `${Math.round((stats.feedingsDone / stats.feedingsToday) * 100)}%` }}
+                    />
                   </div>
                 </div>
-              ))}
+              )}
             </div>
-          </div>
-
-          <div className="bg-white rounded-xl border border-gray-100 p-5">
-            <h3 className="font-semibold text-gray-900 mb-4">Inventaire alimentaire complet</h3>
-            <div className="grid md:grid-cols-2 gap-3">
-              {[
-                { food: 'Graines de tournesol', current: 2, max: 20, unit: 'kg' },
-                { food: 'Fruits frais (mangue)', current: 15, max: 20, unit: 'kg' },
-                { food: 'Légumes verts', current: 8, max: 15, unit: 'kg' },
-                { food: 'Granulés enrichis', current: 12, max: 25, unit: 'kg' },
-                { food: 'Vitamines A+D3', current: 3, max: 10, unit: 'flacons' },
-                { food: 'Drosophiles (culture)', current: 8, max: 20, unit: 'boîtes' },
-                { food: 'Grillons micro', current: 15, max: 20, unit: 'boîtes' },
-                { food: 'Calcium poudre', current: 6, max: 10, unit: 'kg' },
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <div className="flex-1">
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-gray-700">{item.food}</span>
-                      <span className="text-gray-500">{item.current}/{item.max} {item.unit}</span>
-                    </div>
-                    <div className="w-full bg-gray-100 rounded-full h-1.5">
-                      <div
-                        className={`h-1.5 rounded-full ${
-                          item.current / item.max < 0.3 ? 'bg-red-500' :
-                          item.current / item.max < 0.5 ? 'bg-amber-500' : 'bg-green-500'
-                        }`}
-                        style={{ width: `${(item.current / item.max) * 100}%` }}
-                      />
-                    </div>
-                  </div>
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 mb-3">Plans nutritionnels</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Plans actifs</span>
+                  <span className="font-medium">{stats.totalPlans}</span>
                 </div>
-              ))}
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Espèces couvertes</span>
+                  <span className="font-medium">{stats.speciesCovered}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-gray-600">Alertes nutrition</span>
+                  <span className={`font-medium ${stats.alertsNutrition > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                    {stats.alertsNutrition > 0 ? `${stats.alertsNutrition} alerte(s)` : 'Aucune alerte'}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
+          <p className="text-xs text-gray-400 mt-6">
+            Dernière mise à jour : {new Date(stats.lastUpdate).toLocaleString('fr-FR')}
+          </p>
         </div>
       )}
     </div>
