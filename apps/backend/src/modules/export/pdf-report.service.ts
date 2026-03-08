@@ -26,7 +26,7 @@ export class PdfReportService {
       }),
       this.prisma.stockMovement.findMany({
         where: { createdAt: { gte: startDate, lte: endDate } },
-        include: { article: true },
+        include: { item: true },
       }),
       this.prisma.medicalVisit.findMany({
         where: { visitDate: { gte: startDate, lte: endDate } },
@@ -80,11 +80,11 @@ export class PdfReportService {
   // ─── Rapport inventaire stock ─────────────────────────────────────────────
 
   async generateStockInventoryReport(): Promise<{ html: string; filename: string }> {
-    const articles = await this.prisma.stockArticle.findMany({
+    const articles = await this.prisma.stockItem.findMany({
       orderBy: [{ category: 'asc' }, { name: 'asc' }],
     });
 
-    const lowStock = articles.filter(a => a.quantity <= a.threshold);
+    const lowStock = articles.filter(a => a.quantity <= a.lowStockThreshold);
     const html = this.buildStockInventoryHTML({ articles, lowStock });
 
     return {
@@ -213,9 +213,9 @@ export class PdfReportService {
           <tbody>
             ${data.stockMovements.map((m: any) => `
               <tr>
-                <td>${m.article?.name || '—'}</td>
+                <td>${m.item?.name || '—'}</td>
                 <td><span class="badge ${m.type === 'ENTREE' ? 'badge-green' : 'badge-red'}">${m.type}</span></td>
-                <td>${m.quantity} ${m.article?.unit || ''}</td>
+                <td>${m.quantity} ${m.item?.unit || ''}</td>
                 <td>${new Date(m.createdAt).toLocaleDateString('fr-FR')}</td>
               </tr>
             `).join('')}
@@ -322,11 +322,11 @@ export class PdfReportService {
             ${(articles as any[]).map((a: any) => `
               <tr>
                 <td>${a.name}</td>
-                <td style="${a.quantity <= a.threshold ? 'color:#dc2626;font-weight:600' : ''}">${a.quantity}</td>
+                <td style="${a.quantity <= a.lowStockThreshold ? 'color:#dc2626;font-weight:600' : ''}">${a.quantity}</td>
                 <td>${a.unit}</td>
-                <td>${a.threshold}</td>
+                <td>${a.lowStockThreshold}</td>
                 <td>${a.location || '—'}</td>
-                <td><span class="badge ${a.quantity <= a.threshold ? 'badge-red' : a.quantity <= a.threshold * 1.5 ? 'badge-amber' : 'badge-green'}">${a.quantity <= a.threshold ? 'Critique' : a.quantity <= a.threshold * 1.5 ? 'Faible' : 'OK'}</span></td>
+                <td><span class="badge ${a.quantity <= a.lowStockThreshold ? 'badge-red' : a.quantity <= a.lowStockThreshold * 1.5 ? 'badge-amber' : 'badge-green'}">${a.quantity <= a.lowStockThreshold ? 'Critique' : a.quantity <= a.lowStockThreshold * 1.5 ? 'Faible' : 'OK'}</span></td>
               </tr>
             `).join('')}
           </tbody>

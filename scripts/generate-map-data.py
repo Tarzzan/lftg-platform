@@ -423,6 +423,17 @@ def main():
              {"name": "Généalogie", "status": "done", "page": "/admin/genealogy"},
              {"name": "Carte GPS interactive", "status": "done", "page": "/admin/gps"},
          ]},
+        {"id": "sprint8", "name": "Sprint 8 — Alertes, Analytics, Élevage, IoT, Tickets, Messagerie, Parrainage, Ventes", "status": "done", "completedAt": "2026-03-08",
+         "tasks": [
+             {"name": "Alertes & Surveillance", "status": "done", "page": "/admin/alertes"},
+             {"name": "Analytics", "status": "done", "page": "/admin/analytics"},
+             {"name": "Élevage & Génétique", "status": "done", "page": "/admin/elevage"},
+             {"name": "IoT & Capteurs", "status": "done", "page": "/admin/iot"},
+             {"name": "Tickets & Support", "status": "done", "page": "/admin/tickets"},
+             {"name": "Messagerie interne", "status": "done", "page": "/admin/messaging"},
+             {"name": "Parrainage d'animaux", "status": "done", "page": "/admin/parrainage"},
+             {"name": "Statistiques ventes", "status": "done", "page": "/admin/ventes/stats"},
+         ]},
     ]
 
     # Sortie JS
