@@ -1,179 +1,198 @@
 'use client';
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Shield, Users, AlertTriangle, Lock, RefreshCw, Eye, Activity, Clock } from 'lucide-react';
+import { api } from '@/lib/api';
 
-const sessions = [
-  { user: 'admin@lftg.fr', ip: '192.168.1.10', device: 'Chrome / macOS', createdAt: '2026-03-01 09:00', expiresAt: '2026-03-01 09:15', status: 'active' },
-  { user: 'soigneur@lftg.fr', ip: '192.168.1.22', device: 'Firefox / Windows', createdAt: '2026-03-01 08:30', expiresAt: '2026-03-01 08:45', status: 'expired' },
-  { user: 'veterinaire@lftg.fr', ip: '10.0.0.5', device: 'Safari / iOS', createdAt: '2026-03-01 10:15', expiresAt: '2026-03-01 10:30', status: 'active' },
-];
-
-const auditLogs = [
-  { time: '12:05:32', user: 'admin@lftg.fr', action: 'LOGIN', ip: '192.168.1.10', status: 'success' },
-  { time: '11:58:14', user: 'soigneur@lftg.fr', action: 'TOKEN_REFRESH', ip: '192.168.1.22', status: 'success' },
-  { time: '11:45:07', user: 'unknown@test.com', action: 'LOGIN', ip: '45.33.32.156', status: 'failed' },
-  { time: '11:30:22', user: 'veterinaire@lftg.fr', action: '2FA_VERIFY', ip: '10.0.0.5', status: 'success' },
-  { time: '10:15:00', user: 'admin@lftg.fr', action: 'LOGOUT', ip: '192.168.1.10', status: 'success' },
-];
+const ACTION_COLORS: Record<string, string> = {
+  CREATE: 'bg-green-100 text-green-800',
+  UPDATE: 'bg-blue-100 text-blue-800',
+  DELETE: 'bg-red-100 text-red-800',
+  LOGIN: 'bg-purple-100 text-purple-800',
+  LOGOUT: 'bg-gray-100 text-gray-600',
+  EXPORT: 'bg-orange-100 text-orange-800',
+  VIEW: 'bg-indigo-100 text-indigo-800',
+};
 
 export default function SecurityPage() {
-  const [tab, setTab] = useState<'sessions' | '2fa' | 'audit'>('sessions');
-  const [twoFaEnabled, setTwoFaEnabled] = useState(false);
+  const [activeTab, setActiveTab] = useState<'audit' | 'users' | 'roles'>('audit');
+
+  const { data: auditLogs, isLoading: loadingAudit, refetch } = useQuery({
+    queryKey: ['security-audit'],
+    queryFn: () => api.get('/audit?limit=50').then(r => r.data),
+    refetchInterval: 30000,
+  });
+
+  const { data: users, isLoading: loadingUsers } = useQuery({
+    queryKey: ['security-users'],
+    queryFn: () => api.get('/users').then(r => r.data),
+  });
+
+  const { data: roles, isLoading: loadingRoles } = useQuery({
+    queryKey: ['security-roles'],
+    queryFn: () => api.get('/roles').then(r => r.data),
+  });
+
+  const logs: any[] = Array.isArray(auditLogs) ? auditLogs : (auditLogs?.data ?? auditLogs?.logs ?? []);
+  const userList: any[] = Array.isArray(users) ? users : (users?.data ?? []);
+  const roleList: any[] = Array.isArray(roles) ? roles : (roles?.data ?? []);
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Sécurité & Authentification</h1>
-          <p className="text-gray-500 mt-1">JWT refresh tokens, 2FA TOTP, blacklist Redis</p>
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <Shield className="w-7 h-7 text-indigo-600" />
+            Sécurité & Audit
+          </h1>
+          <p className="text-gray-500 mt-1">Gestion des accès, rôles et journal d'audit</p>
         </div>
-        <div className="flex gap-2">
-          <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">JWT v13.0.0</span>
-          <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">TOTP 2FA</span>
-        </div>
+        <button onClick={() => refetch()} className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 text-sm">
+          <RefreshCw className="w-4 h-4 text-gray-500" />
+          Actualiser
+        </button>
       </div>
 
-      {/* Métriques */}
-      <div className="grid grid-cols-4 gap-4">
+      {/* KPIs */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: 'Sessions actives', value: '2', color: 'text-green-600' },
-          { label: 'Tokens blacklistés', value: '14', color: 'text-red-600' },
-          { label: 'Tentatives échouées (24h)', value: '3', color: 'text-orange-600' },
-          { label: 'Utilisateurs 2FA', value: '3/5', color: 'text-blue-600' },
-        ].map((m) => (
-          <div key={m.label} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
-            <p className="text-sm text-gray-500">{m.label}</p>
-            <p className={`text-2xl font-bold mt-1 ${m.color}`}>{m.value}</p>
+          { label: 'Utilisateurs actifs', value: userList.filter(u => u.isActive !== false).length, icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
+          { label: 'Rôles définis', value: roleList.length, icon: Lock, color: 'text-purple-600', bg: 'bg-purple-50' },
+          { label: 'Événements audit (50)', value: logs.length, icon: Activity, color: 'text-green-600', bg: 'bg-green-50' },
+          { label: 'Actions critiques', value: logs.filter(l => l.action === 'DELETE' || l.action === 'EXPORT').length, icon: AlertTriangle, color: 'text-red-600', bg: 'bg-red-50' },
+        ].map(kpi => (
+          <div key={kpi.label} className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm text-gray-500">{kpi.label}</span>
+              <div className={`p-2 rounded-lg ${kpi.bg}`}>
+                <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
+              </div>
+            </div>
+            <p className="text-2xl font-bold text-gray-900">{kpi.value}</p>
           </div>
         ))}
       </div>
 
-      {/* Configuration JWT */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Configuration JWT</h2>
-        <div className="grid grid-cols-2 gap-4">
-          {[
-            { label: 'Access Token TTL', value: '15 minutes' },
-            { label: 'Refresh Token TTL', value: '7 jours' },
-            { label: 'Algorithme', value: 'HS256' },
-            { label: 'Blacklist Redis', value: 'Activée' },
-            { label: 'Rotation refresh tokens', value: 'Activée' },
-            { label: 'Cookie HttpOnly', value: 'Activé' },
-          ].map((c) => (
-            <div key={c.label} className="flex justify-between p-3 bg-gray-50 rounded-lg">
-              <span className="text-sm text-gray-600">{c.label}</span>
-              <span className="text-sm font-medium text-gray-900">{c.value}</span>
-            </div>
-          ))}
-        </div>
+      {/* Tabs */}
+      <div className="flex gap-1 bg-gray-100 rounded-lg p-1 w-fit">
+        {(['audit', 'users', 'roles'] as const).map(tab => (
+          <button key={tab} onClick={() => setActiveTab(tab)}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === tab ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
+            {tab === 'audit' ? 'Journal d\'audit' : tab === 'users' ? 'Utilisateurs' : 'Rôles'}
+          </button>
+        ))}
       </div>
 
-      {/* Onglets */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="flex border-b border-gray-200">
-          {(['sessions', '2fa', 'audit'] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`px-6 py-3 text-sm font-medium ${tab === t ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-            >
-              {t === 'sessions' ? 'Sessions actives' : t === '2fa' ? 'Configuration 2FA' : 'Journal d\'audit'}
-            </button>
-          ))}
-        </div>
-
-        {tab === 'sessions' && (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
-                <tr>
-                  {['Utilisateur', 'IP', 'Appareil', 'Créé le', 'Expire le', 'Statut', 'Action'].map((h) => (
-                    <th key={h} className="px-4 py-3 text-left">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {sessions.map((s, i) => (
-                  <tr key={i} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm font-medium text-gray-900">{s.user}</td>
-                    <td className="px-4 py-3 font-mono text-sm text-gray-600">{s.ip}</td>
-                    <td className="px-4 py-3 text-sm text-gray-500">{s.device}</td>
-                    <td className="px-4 py-3 text-sm text-gray-500">{s.createdAt}</td>
-                    <td className="px-4 py-3 text-sm text-gray-500">{s.expiresAt}</td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${s.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
-                        {s.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      {s.status === 'active' && (
-                        <button className="px-2 py-1 text-xs bg-red-50 text-red-600 rounded hover:bg-red-100">Révoquer</button>
-                      )}
-                    </td>
+      {/* Audit */}
+      {activeTab === 'audit' && (
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+          {loadingAudit ? (
+            <div className="p-8 text-center text-gray-400"><RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2" />Chargement...</div>
+          ) : logs.length === 0 ? (
+            <div className="p-8 text-center text-gray-400"><Activity className="w-10 h-10 mx-auto mb-2 opacity-30" /><p>Aucun événement d'audit</p></div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-gray-50">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ressource</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Utilisateur</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">IP</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {tab === '2fa' && (
-          <div className="p-6 space-y-6">
-            <div className="flex items-center justify-between p-4 bg-blue-50 rounded-xl">
-              <div>
-                <p className="font-semibold text-blue-900">Authentification à deux facteurs (TOTP)</p>
-                <p className="text-sm text-blue-700 mt-1">Sécurisez votre compte avec une application d'authentification (Google Authenticator, Authy)</p>
-              </div>
-              <button
-                onClick={() => setTwoFaEnabled(!twoFaEnabled)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium ${twoFaEnabled ? 'bg-red-600 text-white' : 'bg-blue-600 text-white'}`}
-              >
-                {twoFaEnabled ? 'Désactiver 2FA' : 'Activer 2FA'}
-              </button>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {logs.map((log: any, i: number) => (
+                    <tr key={log.id ?? i} className="hover:bg-gray-50">
+                      <td className="px-4 py-3">
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${ACTION_COLORS[log.action] ?? 'bg-gray-100 text-gray-600'}`}>
+                          {log.action ?? '—'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-gray-600">{log.resource ?? log.entity ?? '—'}{log.resourceId ? ` #${log.resourceId}` : ''}</td>
+                      <td className="px-4 py-3 text-gray-600">{log.user?.name ?? log.user?.email ?? log.userId ?? '—'}</td>
+                      <td className="px-4 py-3 text-gray-500 font-mono text-xs">{log.ipAddress ?? log.ip ?? '—'}</td>
+                      <td className="px-4 py-3 text-gray-500 text-xs">
+                        {log.createdAt ? new Date(log.createdAt).toLocaleString('fr-FR') : '—'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
+          )}
+        </div>
+      )}
 
-            {twoFaEnabled && (
-              <div className="p-4 bg-gray-50 rounded-xl text-center">
-                <p className="text-sm text-gray-600 mb-4">Scannez ce QR code avec votre application d'authentification</p>
-                <div className="w-40 h-40 bg-gray-200 rounded-lg mx-auto flex items-center justify-center">
-                  <span className="text-gray-400 text-sm">QR Code 2FA</span>
+      {/* Users */}
+      {activeTab === 'users' && (
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+          {loadingUsers ? (
+            <div className="p-8 text-center text-gray-400"><RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2" />Chargement...</div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-gray-50">
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nom</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rôle</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Créé le</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {userList.map((u: any) => (
+                    <tr key={u.id} className="hover:bg-gray-50">
+                      <td className="px-4 py-3 font-medium text-gray-900">{u.name ?? (`${u.firstName ?? ''} ${u.lastName ?? ''}`.trim() || '—')}</td>
+                      <td className="px-4 py-3 text-gray-600">{u.email}</td>
+                      <td className="px-4 py-3">
+                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">{u.role ?? u.roles?.[0] ?? '—'}</span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${u.isActive !== false ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
+                          {u.isActive !== false ? 'Actif' : 'Inactif'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-gray-500 text-xs">
+                        {u.createdAt ? new Date(u.createdAt).toLocaleDateString('fr-FR') : '—'}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Roles */}
+      {activeTab === 'roles' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {loadingRoles ? (
+            <div className="col-span-3 text-center py-8 text-gray-400"><RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2" />Chargement...</div>
+          ) : roleList.length === 0 ? (
+            <div className="col-span-3 text-center py-8 text-gray-400"><Lock className="w-10 h-10 mx-auto mb-2 opacity-30" /><p>Aucun rôle défini</p></div>
+          ) : roleList.map((role: any) => (
+            <div key={role.id} className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+              <div className="flex items-center gap-2 mb-2">
+                <Lock className="w-4 h-4 text-indigo-600" />
+                <p className="font-medium text-gray-900">{role.name}</p>
+              </div>
+              {role.description && <p className="text-sm text-gray-500 mb-2">{role.description}</p>}
+              {role.permissions && (
+                <div className="flex flex-wrap gap-1">
+                  {(Array.isArray(role.permissions) ? role.permissions : []).slice(0, 5).map((p: string) => (
+                    <span key={p} className="px-1.5 py-0.5 bg-indigo-50 text-indigo-700 rounded text-xs">{p}</span>
+                  ))}
+                  {role.permissions.length > 5 && <span className="text-xs text-gray-400">+{role.permissions.length - 5}</span>}
                 </div>
-                <p className="text-xs text-gray-500 mt-2">otpauth://totp/LFTG:admin@lftg.fr?secret=BASE32SECRET</p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {tab === 'audit' && (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
-                <tr>
-                  {['Heure', 'Utilisateur', 'Action', 'IP', 'Résultat'].map((h) => (
-                    <th key={h} className="px-4 py-3 text-left">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {auditLogs.map((log, i) => (
-                  <tr key={i} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-mono text-sm text-gray-500">{log.time}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700">{log.user}</td>
-                    <td className="px-4 py-3">
-                      <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-mono">{log.action}</span>
-                    </td>
-                    <td className="px-4 py-3 font-mono text-sm text-gray-500">{log.ip}</td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${log.status === 'success' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                        {log.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

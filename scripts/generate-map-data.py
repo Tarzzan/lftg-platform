@@ -452,6 +452,17 @@ def main():
              {"name": "GBIF Taxonomie", "status": "done", "page": "/admin/gbif"},
              {"name": "Partenaires", "status": "done", "page": "/admin/partners"},
          ]},
+        {"id": "sprint11", "name": "Sprint 11 — Enclos, ML, Realtime, Push FCM, Sites, Advanced Reports, Gallery", "status": "done", "completedAt": "2026-03-08",
+         "tasks": [
+             {"name": "Enclos & Habitats", "status": "done", "page": "/admin/animaux/enclos"},
+             {"name": "ML & Prédictions IA", "status": "done", "page": "/admin/ml"},
+             {"name": "Realtime & Métriques", "status": "done", "page": "/admin/realtime"},
+             {"name": "Push FCM & Notifications", "status": "done", "page": "/admin/push-fcm"},
+             {"name": "Sites & Localisations", "status": "done", "page": "/admin/sites"},
+             {"name": "Rapports avancés CITES", "status": "done", "page": "/admin/advanced-reports"},
+             {"name": "Galerie Photo", "status": "done", "page": "/admin/gallery"},
+             {"name": "Fix gallery backend (GET /gallery)", "status": "done", "page": "/admin/gallery"},
+         ]},
     ]
 
     # Sortie JS

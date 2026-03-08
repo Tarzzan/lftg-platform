@@ -1,456 +1,188 @@
 'use client';
-
-import { useState, useCallback, useRef } from 'react';
-import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
-import {
-  ArrowLeft, Save, Play, Plus, Trash2, Settings,
-  GitBranch, CheckCircle, XCircle, Clock, AlertCircle,
-  ChevronRight, Zap, Users, Mail, Database,
-} from 'lucide-react';
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { GitBranch, Plus, Play, Pause, Trash2, Clock, CheckCircle, XCircle, RefreshCw, ChevronRight, Zap } from 'lucide-react';
 import { api } from '@/lib/api';
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-interface WorkflowStep {
-  id: string;
-  type: 'start' | 'approval' | 'notification' | 'condition' | 'action' | 'end';
-  label: string;
-  description?: string;
-  assignedRole?: string;
-  x: number;
-  y: number;
-  connections: string[]; // IDs des steps suivants
-  config?: Record<string, any>;
-}
-
-const STEP_TYPES = [
-  { type: 'approval', label: 'Approbation', icon: <CheckCircle className="w-4 h-4" />, color: 'bg-forest-100 border-forest-400 text-forest-700', description: 'Requiert une approbation manuelle' },
-  { type: 'notification', label: 'Notification', icon: <Mail className="w-4 h-4" />, color: 'bg-blue-100 border-blue-400 text-blue-700', description: 'Envoie une notification' },
-  { type: 'condition', label: 'Condition', icon: <GitBranch className="w-4 h-4" />, color: 'bg-amber-100 border-amber-400 text-amber-700', description: 'Branchement conditionnel' },
-  { type: 'action', label: 'Action', icon: <Zap className="w-4 h-4" />, color: 'bg-purple-100 border-purple-400 text-purple-700', description: 'Action automatique' },
-];
-
-const STEP_COLORS: Record<string, string> = {
-  start: 'bg-green-100 border-green-500 text-green-800',
-  approval: 'bg-forest-100 border-forest-500 text-forest-800',
-  notification: 'bg-blue-100 border-blue-500 text-blue-800',
-  condition: 'bg-amber-100 border-amber-500 text-amber-800',
-  action: 'bg-purple-100 border-purple-500 text-purple-800',
-  end: 'bg-red-100 border-red-500 text-red-800',
+const STATUS_COLORS: Record<string, string> = {
+  active: 'bg-green-100 text-green-800',
+  inactive: 'bg-gray-100 text-gray-600',
+  running: 'bg-blue-100 text-blue-800',
+  completed: 'bg-green-100 text-green-800',
+  failed: 'bg-red-100 text-red-800',
+  pending: 'bg-yellow-100 text-yellow-800',
 };
 
-const STEP_ICONS: Record<string, React.ReactNode> = {
-  start: <Play className="w-4 h-4" />,
-  approval: <CheckCircle className="w-4 h-4" />,
-  notification: <Mail className="w-4 h-4" />,
-  condition: <GitBranch className="w-4 h-4" />,
-  action: <Zap className="w-4 h-4" />,
-  end: <XCircle className="w-4 h-4" />,
-};
+export default function WorkflowsEditorPage() {
+  const qc = useQueryClient();
+  const [activeTab, setActiveTab] = useState<'definitions' | 'instances'>('definitions');
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({ name: '', description: '', trigger: 'manual' });
 
-// ─── Composant principal ──────────────────────────────────────────────────────
-
-export default function WorkflowEditorPage() {
-  const router = useRouter();
-  const canvasRef = useRef<HTMLDivElement>(null);
-
-  const [workflowName, setWorkflowName] = useState('Nouveau workflow');
-  const [workflowDescription, setWorkflowDescription] = useState('');
-  const [steps, setSteps] = useState<WorkflowStep[]>([
-    { id: 'start', type: 'start', label: 'Début', x: 80, y: 200, connections: [] },
-    { id: 'end', type: 'end', label: 'Fin', x: 680, y: 200, connections: [] },
-  ]);
-  const [selectedStep, setSelectedStep] = useState<string | null>(null);
-  const [dragging, setDragging] = useState<{ id: string; offsetX: number; offsetY: number } | null>(null);
-  const [connecting, setConnecting] = useState<string | null>(null);
-  const [showSettings, setShowSettings] = useState(false);
-
-  const saveMutation = useMutation({
-    mutationFn: (data: any) => api.post('/workflows/definitions', data),
-    onSuccess: () => router.push('/admin/workflows'),
+  const { data: definitions, isLoading: loadingDefs } = useQuery({
+    queryKey: ['workflow-definitions'],
+    queryFn: () => api.get('/workflows/definitions').then(r => r.data),
   });
 
-  // ─── Drag & Drop ──────────────────────────────────────────────────────────
+  const { data: instances, isLoading: loadingInst } = useQuery({
+    queryKey: ['workflow-instances'],
+    queryFn: () => api.get('/workflows/instances').then(r => r.data),
+    refetchInterval: 10000,
+  });
 
-  const handleMouseDown = useCallback((e: React.MouseEvent, stepId: string) => {
-    if (e.button !== 0) return;
-    e.stopPropagation();
-    const step = steps.find(s => s.id === stepId);
-    if (!step) return;
-    const rect = (e.target as HTMLElement).closest('[data-step]')?.getBoundingClientRect();
-    if (!rect) return;
-    setDragging({ id: stepId, offsetX: e.clientX - rect.left, offsetY: e.clientY - rect.top });
-    setSelectedStep(stepId);
-  }, [steps]);
+  const createMutation = useMutation({
+    mutationFn: (data: any) => api.post('/workflows/definitions', data).then(r => r.data),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['workflow-definitions'] }); setShowForm(false); setForm({ name: '', description: '', trigger: 'manual' }); },
+  });
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!dragging || !canvasRef.current) return;
-    const canvasRect = canvasRef.current.getBoundingClientRect();
-    const x = e.clientX - canvasRect.left - dragging.offsetX;
-    const y = e.clientY - canvasRect.top - dragging.offsetY;
-    setSteps(prev => prev.map(s => s.id === dragging.id ? { ...s, x: Math.max(0, x), y: Math.max(0, y) } : s));
-  }, [dragging]);
+  const triggerMutation = useMutation({
+    mutationFn: (defId: string) => api.post('/workflows/instances', { definitionId: defId }).then(r => r.data),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ['workflow-instances'] }); setActiveTab('instances'); },
+  });
 
-  const handleMouseUp = useCallback(() => {
-    setDragging(null);
-  }, []);
-
-  // ─── Connexions ───────────────────────────────────────────────────────────
-
-  const handleConnect = useCallback((fromId: string, toId: string) => {
-    if (fromId === toId) return;
-    setSteps(prev => prev.map(s => {
-      if (s.id === fromId && !s.connections.includes(toId)) {
-        return { ...s, connections: [...s.connections, toId] };
-      }
-      return s;
-    }));
-    setConnecting(null);
-  }, []);
-
-  // ─── Ajouter une étape ────────────────────────────────────────────────────
-
-  const addStep = useCallback((type: string) => {
-    const id = `step-${Date.now()}`;
-    const typeConfig = STEP_TYPES.find(t => t.type === type);
-    const newStep: WorkflowStep = {
-      id,
-      type: type as any,
-      label: typeConfig?.label || type,
-      description: typeConfig?.description,
-      x: 200 + Math.random() * 200,
-      y: 100 + Math.random() * 200,
-      connections: [],
-    };
-    setSteps(prev => [...prev, newStep]);
-    setSelectedStep(id);
-  }, []);
-
-  const deleteStep = useCallback((id: string) => {
-    if (id === 'start' || id === 'end') return;
-    setSteps(prev => prev
-      .filter(s => s.id !== id)
-      .map(s => ({ ...s, connections: s.connections.filter(c => c !== id) }))
-    );
-    if (selectedStep === id) setSelectedStep(null);
-  }, [selectedStep]);
-
-  // ─── Sauvegarder ─────────────────────────────────────────────────────────
-
-  const handleSave = () => {
-    const definition = {
-      name: workflowName,
-      description: workflowDescription,
-      steps: steps.map(s => ({
-        id: s.id,
-        type: s.type,
-        label: s.label,
-        description: s.description,
-        assignedRole: s.assignedRole,
-        connections: s.connections,
-        config: s.config,
-        position: { x: s.x, y: s.y },
-      })),
-    };
-    saveMutation.mutate(definition);
-  };
-
-  const selectedStepData = steps.find(s => s.id === selectedStep);
-
-  // ─── Rendu des connexions SVG ─────────────────────────────────────────────
-
-  const renderConnections = () => {
-    const lines: React.ReactNode[] = [];
-    steps.forEach(step => {
-      step.connections.forEach(targetId => {
-        const target = steps.find(s => s.id === targetId);
-        if (!target) return;
-        const x1 = step.x + 80;
-        const y1 = step.y + 28;
-        const x2 = target.x;
-        const y2 = target.y + 28;
-        const cx1 = x1 + (x2 - x1) * 0.5;
-        const cy1 = y1;
-        const cx2 = x1 + (x2 - x1) * 0.5;
-        const cy2 = y2;
-        lines.push(
-          <g key={`${step.id}-${targetId}`}>
-            <path
-              d={`M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2}`}
-              stroke="#166534"
-              strokeWidth="2"
-              fill="none"
-              strokeDasharray={step.type === 'condition' ? '6,3' : undefined}
-              markerEnd="url(#arrowhead)"
-            />
-          </g>
-        );
-      });
-    });
-    return lines;
-  };
+  const defs: any[] = Array.isArray(definitions) ? definitions : (definitions?.data ?? []);
+  const insts: any[] = Array.isArray(instances) ? instances : (instances?.data ?? []);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-8rem)] -m-6">
-      {/* Toolbar */}
-      <div className="flex items-center gap-4 px-6 py-3 bg-card border-b border-border flex-shrink-0">
-        <button onClick={() => router.back()} className="p-2 rounded-lg hover:bg-muted transition-colors">
-          <ArrowLeft className="w-4 h-4" />
+    <div className="p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+            <GitBranch className="w-7 h-7 text-indigo-600" />
+            Workflows
+          </h1>
+          <p className="text-gray-500 mt-1">Automatisation des processus métier</p>
+        </div>
+        <button onClick={() => setShowForm(true)} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+          <Plus className="w-4 h-4" />
+          Nouveau workflow
         </button>
-        <div className="flex-1">
-          <input
-            type="text"
-            value={workflowName}
-            onChange={e => setWorkflowName(e.target.value)}
-            className="text-lg font-display font-bold text-foreground bg-transparent border-none outline-none focus:bg-muted rounded px-2 py-0.5 w-full max-w-sm"
-          />
-        </div>
-        <div className="flex items-center gap-2">
-          <button onClick={() => setShowSettings(!showSettings)} className="btn-secondary flex items-center gap-2">
-            <Settings className="w-4 h-4" />
-            Paramètres
-          </button>
-          <button
-            onClick={handleSave}
-            disabled={saveMutation.isPending}
-            className="btn-primary flex items-center gap-2"
-          >
-            <Save className="w-4 h-4" />
-            {saveMutation.isPending ? 'Sauvegarde...' : 'Sauvegarder'}
-          </button>
-        </div>
       </div>
 
-      <div className="flex flex-1 overflow-hidden">
-        {/* Palette d'étapes */}
-        <div className="w-56 flex-shrink-0 bg-card border-r border-border p-4 overflow-y-auto">
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Étapes disponibles</p>
-          <div className="space-y-2">
-            {STEP_TYPES.map(stepType => (
-              <button
-                key={stepType.type}
-                onClick={() => addStep(stepType.type)}
-                className={`w-full text-left p-3 rounded-xl border-2 ${stepType.color} hover:opacity-80 transition-opacity`}
-              >
-                <div className="flex items-center gap-2 mb-1">
-                  {stepType.icon}
-                  <span className="text-sm font-semibold">{stepType.label}</span>
-                </div>
-                <p className="text-xs opacity-75">{stepType.description}</p>
-              </button>
-            ))}
-          </div>
+      {/* Tabs */}
+      <div className="flex gap-1 bg-gray-100 rounded-lg p-1 w-fit">
+        {(['definitions', 'instances'] as const).map(tab => (
+          <button key={tab} onClick={() => setActiveTab(tab)}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === tab ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
+            {tab === 'definitions' ? `Définitions (${defs.length})` : `Instances (${insts.length})`}
+          </button>
+        ))}
+      </div>
 
-          <div className="mt-6">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Légende</p>
-            <div className="space-y-1.5 text-xs">
-              <div className="flex items-center gap-2"><div className="w-6 h-0.5 bg-forest-600" /><span>Connexion directe</span></div>
-              <div className="flex items-center gap-2"><div className="w-6 h-0.5 bg-forest-600 border-dashed border-t-2" /><span>Condition</span></div>
+      {/* Formulaire création */}
+      {showForm && (
+        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+          <h3 className="font-semibold text-gray-900 mb-4">Nouveau workflow</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+              <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="Ex: Notification naissance animal" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Déclencheur</label>
+              <select value={form.trigger} onChange={e => setForm(f => ({ ...f, trigger: e.target.value }))}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="manual">Manuel</option>
+                <option value="animal.born">Naissance animal</option>
+                <option value="medical.created">Visite médicale</option>
+                <option value="sale.created">Vente</option>
+                <option value="cron">Planifié (Cron)</option>
+              </select>
             </div>
           </div>
-
-          <div className="mt-6">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Étapes ({steps.length})</p>
-            <div className="space-y-1">
-              {steps.map(s => (
-                <button
-                  key={s.id}
-                  onClick={() => setSelectedStep(s.id)}
-                  className={`w-full text-left px-2 py-1.5 rounded-lg text-xs flex items-center gap-2 transition-colors ${selectedStep === s.id ? 'bg-forest-100 text-forest-700' : 'hover:bg-muted text-muted-foreground'}`}
-                >
-                  {STEP_ICONS[s.type]}
-                  <span className="truncate">{s.label}</span>
-                </button>
-              ))}
-            </div>
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              rows={2} placeholder="Description du workflow..." />
+          </div>
+          <div className="flex gap-2">
+            <button onClick={() => createMutation.mutate(form)} disabled={createMutation.isPending || !form.name}
+              className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 text-sm">
+              {createMutation.isPending ? 'Création...' : 'Créer'}
+            </button>
+            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm">Annuler</button>
           </div>
         </div>
+      )}
 
-        {/* Canvas */}
-        <div
-          ref={canvasRef}
-          className="flex-1 relative overflow-hidden bg-[radial-gradient(circle,_#e5e7eb_1px,_transparent_1px)] bg-[size:24px_24px] cursor-default"
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onClick={() => { setSelectedStep(null); setConnecting(null); }}
-        >
-          {/* SVG pour les connexions */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 1 }}>
-            <defs>
-              <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                <polygon points="0 0, 10 3.5, 0 7" fill="#166534" />
-              </marker>
-            </defs>
-            {renderConnections()}
-          </svg>
-
-          {/* Étapes */}
-          {steps.map(step => (
-            <div
-              key={step.id}
-              data-step={step.id}
-              className={`absolute select-none cursor-move rounded-xl border-2 shadow-sm transition-shadow ${STEP_COLORS[step.type]} ${selectedStep === step.id ? 'shadow-lg ring-2 ring-forest-400 ring-offset-2' : 'hover:shadow-md'}`}
-              style={{ left: step.x, top: step.y, width: 160, zIndex: 2 }}
-              onMouseDown={e => handleMouseDown(e, step.id)}
-              onClick={e => { e.stopPropagation(); setSelectedStep(step.id); }}
-            >
-              <div className="p-3">
-                <div className="flex items-center gap-2 mb-1">
-                  {STEP_ICONS[step.type]}
-                  <span className="text-sm font-semibold truncate">{step.label}</span>
-                </div>
-                {step.description && (
-                  <p className="text-xs opacity-70 truncate">{step.description}</p>
-                )}
-                {step.assignedRole && (
-                  <div className="mt-1 flex items-center gap-1 text-xs opacity-70">
-                    <Users className="w-3 h-3" />
-                    <span>{step.assignedRole}</span>
+      {/* Définitions */}
+      {activeTab === 'definitions' && (
+        <div className="space-y-3">
+          {loadingDefs ? (
+            <div className="text-center py-8 text-gray-400"><RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2" />Chargement...</div>
+          ) : defs.length === 0 ? (
+            <div className="text-center py-12 text-gray-400">
+              <GitBranch className="w-12 h-12 mx-auto mb-3 opacity-30" />
+              <p className="font-medium">Aucun workflow défini</p>
+              <p className="text-sm mt-1">Créez votre premier workflow pour automatiser vos processus</p>
+            </div>
+          ) : defs.map((def: any) => (
+            <div key={def.id} className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-indigo-50 rounded-lg">
+                    <Zap className="w-4 h-4 text-indigo-600" />
                   </div>
-                )}
+                  <div>
+                    <p className="font-medium text-gray-900">{def.name}</p>
+                    <p className="text-xs text-gray-500">{def.description ?? 'Aucune description'}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[def.status] ?? 'bg-gray-100 text-gray-600'}`}>
+                        {def.status ?? 'inactive'}
+                      </span>
+                      {def.trigger && <span className="text-xs text-gray-400">Déclencheur: {def.trigger}</span>}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => triggerMutation.mutate(def.id)} disabled={triggerMutation.isPending}
+                    className="flex items-center gap-1 px-3 py-1.5 bg-green-600 text-white rounded-lg hover:bg-green-700 text-xs transition-colors">
+                    <Play className="w-3 h-3" />
+                    Exécuter
+                  </button>
+                </div>
               </div>
-
-              {/* Boutons de connexion */}
-              {step.type !== 'end' && (
-                <button
-                  className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-forest-600 text-white flex items-center justify-center hover:bg-forest-700 transition-colors shadow-md"
-                  onClick={e => {
-                    e.stopPropagation();
-                    if (connecting) {
-                      handleConnect(connecting, step.id);
-                    } else {
-                      setConnecting(step.id);
-                    }
-                  }}
-                  title={connecting ? 'Connecter ici' : 'Démarrer une connexion'}
-                >
-                  {connecting === step.id ? <ChevronRight className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
-                </button>
-              )}
-
-              {/* Bouton supprimer */}
-              {step.type !== 'start' && step.type !== 'end' && (
-                <button
-                  className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition-colors shadow-sm opacity-0 group-hover:opacity-100"
-                  onClick={e => { e.stopPropagation(); deleteStep(step.id); }}
-                >
-                  <XCircle className="w-3 h-3" />
-                </button>
-              )}
             </div>
           ))}
-
-          {/* Indicateur de connexion en cours */}
-          {connecting && (
-            <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-forest-600 text-white text-xs px-3 py-1.5 rounded-full shadow-lg z-10">
-              Cliquez sur une autre étape pour créer la connexion — <button onClick={() => setConnecting(null)} className="underline">Annuler</button>
-            </div>
-          )}
         </div>
+      )}
 
-        {/* Panneau de propriétés */}
-        {selectedStepData && (
-          <div className="w-64 flex-shrink-0 bg-card border-l border-border p-4 overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-sm font-semibold text-foreground">Propriétés</p>
-              {selectedStepData.type !== 'start' && selectedStepData.type !== 'end' && (
-                <button onClick={() => deleteStep(selectedStepData.id)} className="p-1.5 rounded-lg hover:bg-red-50 text-muted-foreground hover:text-red-600 transition-colors">
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
-              )}
+      {/* Instances */}
+      {activeTab === 'instances' && (
+        <div className="space-y-3">
+          {loadingInst ? (
+            <div className="text-center py-8 text-gray-400"><RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2" />Chargement...</div>
+          ) : insts.length === 0 ? (
+            <div className="text-center py-12 text-gray-400">
+              <Clock className="w-12 h-12 mx-auto mb-3 opacity-30" />
+              <p className="font-medium">Aucune instance en cours</p>
             </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1">Libellé</label>
-                <input
-                  type="text"
-                  value={selectedStepData.label}
-                  onChange={e => setSteps(prev => prev.map(s => s.id === selectedStepData.id ? { ...s, label: e.target.value } : s))}
-                  className="input w-full text-sm"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1">Description</label>
-                <textarea
-                  value={selectedStepData.description || ''}
-                  onChange={e => setSteps(prev => prev.map(s => s.id === selectedStepData.id ? { ...s, description: e.target.value } : s))}
-                  rows={2}
-                  className="input w-full text-sm resize-none"
-                />
-              </div>
-
-              {selectedStepData.type === 'approval' && (
-                <div>
-                  <label className="block text-xs font-medium text-muted-foreground mb-1">Rôle approbateur</label>
-                  <select
-                    value={selectedStepData.assignedRole || ''}
-                    onChange={e => setSteps(prev => prev.map(s => s.id === selectedStepData.id ? { ...s, assignedRole: e.target.value } : s))}
-                    className="input w-full text-sm"
-                  >
-                    <option value="">Sélectionner un rôle</option>
-                    {['admin', 'gestionnaire', 'responsable', 'soigneur'].map(r => (
-                      <option key={r} value={r}>{r}</option>
-                    ))}
-                  </select>
+          ) : insts.map((inst: any) => (
+            <div key={inst.id} className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className={`p-2 rounded-lg ${inst.status === 'completed' ? 'bg-green-50' : inst.status === 'failed' ? 'bg-red-50' : 'bg-blue-50'}`}>
+                  {inst.status === 'completed' ? <CheckCircle className="w-4 h-4 text-green-600" /> :
+                   inst.status === 'failed' ? <XCircle className="w-4 h-4 text-red-600" /> :
+                   <RefreshCw className="w-4 h-4 text-blue-600 animate-spin" />}
                 </div>
-              )}
-
-              {selectedStepData.type === 'notification' && (
                 <div>
-                  <label className="block text-xs font-medium text-muted-foreground mb-1">Destinataires</label>
-                  <select
-                    value={selectedStepData.config?.recipients || ''}
-                    onChange={e => setSteps(prev => prev.map(s => s.id === selectedStepData.id ? { ...s, config: { ...s.config, recipients: e.target.value } } : s))}
-                    className="input w-full text-sm"
-                  >
-                    <option value="">Sélectionner</option>
-                    {['Demandeur', 'Approbateurs', 'Tous les admins', 'Soigneurs'].map(r => (
-                      <option key={r} value={r}>{r}</option>
-                    ))}
-                  </select>
+                  <p className="font-medium text-gray-900">{inst.definitionName ?? inst.workflowName ?? `Instance #${inst.id?.slice(0, 8)}`}</p>
+                  <p className="text-xs text-gray-500">
+                    {inst.startedAt ? new Date(inst.startedAt).toLocaleString('fr-FR') : '—'}
+                    {inst.completedAt && ` → ${new Date(inst.completedAt).toLocaleString('fr-FR')}`}
+                  </p>
                 </div>
-              )}
-
-              <div>
-                <label className="block text-xs font-medium text-muted-foreground mb-1">Connexions ({selectedStepData.connections.length})</label>
-                {selectedStepData.connections.length === 0 ? (
-                  <p className="text-xs text-muted-foreground italic">Aucune connexion</p>
-                ) : (
-                  <div className="space-y-1">
-                    {selectedStepData.connections.map(cId => {
-                      const target = steps.find(s => s.id === cId);
-                      return target ? (
-                        <div key={cId} className="flex items-center justify-between text-xs bg-muted rounded px-2 py-1">
-                          <span className="flex items-center gap-1">
-                            <ChevronRight className="w-3 h-3 text-forest-600" />
-                            {target.label}
-                          </span>
-                          <button
-                            onClick={() => setSteps(prev => prev.map(s => s.id === selectedStepData.id ? { ...s, connections: s.connections.filter(c => c !== cId) } : s))}
-                            className="text-red-400 hover:text-red-600"
-                          >
-                            ×
-                          </button>
-                        </div>
-                      ) : null;
-                    })}
-                  </div>
-                )}
               </div>
-
-              <div className="pt-2 border-t border-border">
-                <p className="text-xs text-muted-foreground">
-                  Position : ({Math.round(selectedStepData.x)}, {Math.round(selectedStepData.y)})
-                </p>
-                <p className="text-xs text-muted-foreground">Type : {selectedStepData.type}</p>
-              </div>
+              <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[inst.status] ?? 'bg-gray-100 text-gray-600'}`}>
+                {inst.status ?? 'unknown'}
+              </span>
             </div>
-          </div>
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
