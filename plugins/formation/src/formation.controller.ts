@@ -9,6 +9,7 @@ import { ApiTags, ApiBearerAuth, ApiOperation, ApiConsumes } from '@nestjs/swagg
 import { FormationService } from './formation.service';
 import { JwtAuthGuard } from '../../../apps/backend/src/common/guards/jwt-auth.guard';
 import { CurrentUser } from '../../../apps/backend/src/common/decorators/current-user.decorator';
+import { Public } from '../../../apps/backend/src/common/decorators/public.decorator';
 
 const ALLOWED_EXTENSIONS = ['.pdf', '.ppt', '.pptx', '.mp4', '.mkv', '.avi', '.zip', '.html', '.txt', '.md'];
 
@@ -39,10 +40,12 @@ export class FormationController {
   @ApiOperation({ summary: 'Statistiques globales de la formation' })
   getStats() { return this.service.getFormationStats(); }
 
+  @Public()
   @Get('courses')
   @ApiOperation({ summary: 'Liste tous les cours' })
   findAll(@Query('published') published?: string) { return this.service.findAllCourses(published === 'true'); }
 
+  @Public()
   @Get('courses/:id')
   findOne(@Param('id') id: string) { return this.service.findCourseById(id); }
 

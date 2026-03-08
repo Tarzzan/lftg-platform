@@ -7,6 +7,7 @@ import { PersonnelModule } from '../../../../../plugins/personnel/src/personnel.
 import { StockModule } from '../../../../../plugins/stock/src/stock.module';
 import { AnimauxCouveesModule } from '../../../../../plugins/animaux-couvees/src/animaux-couvees.module';
 import { FormationModule } from '../../../../../plugins/formation/src/formation.module';
+import { ContactModule } from '../../../../../plugins/contact/src/contact.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { FormationModule } from '../../../../../plugins/formation/src/formation.
     StockModule,
     AnimauxCouveesModule,
     FormationModule,
+    ContactModule,
   ],
   controllers: [PluginsController],
   providers: [PluginRegistryService],

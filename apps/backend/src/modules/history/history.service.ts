@@ -10,7 +10,6 @@ export interface HistoryEntry {
   action: 'CREATE' | 'UPDATE' | 'DELETE' | 'STATUS_CHANGE';
   userId: string;
   changes?: Record<string, { before: any; after: any }>;
-  metadata?: Record<string, any>;
 }
 
 @Injectable()
@@ -24,8 +23,7 @@ export class HistoryService {
         entityId: entry.entityId,
         action: entry.action,
         userId: entry.userId,
-        changes: entry.changes ? JSON.stringify(entry.changes) : null,
-        metadata: entry.metadata ? JSON.stringify(entry.metadata) : null,
+        changes: entry.changes ? entry.changes : undefined,
       },
     });
   }
@@ -34,7 +32,7 @@ export class HistoryService {
     return this.prisma.historyLog.findMany({
       where: { entityType, entityId },
       include: {
-        user: { select: { id: true, firstName: true, lastName: true, email: true } },
+        user: { select: { id: true, name: true, email: true } },
       },
       orderBy: { createdAt: 'desc' },
     });
@@ -43,6 +41,9 @@ export class HistoryService {
   async getUserActivity(userId: string, limit = 50) {
     return this.prisma.historyLog.findMany({
       where: { userId },
+      include: {
+        user: { select: { id: true, name: true } },
+      },
       orderBy: { createdAt: 'desc' },
       take: limit,
     });
@@ -51,7 +52,7 @@ export class HistoryService {
   async getRecentActivity(limit = 100) {
     return this.prisma.historyLog.findMany({
       include: {
-        user: { select: { id: true, firstName: true, lastName: true } },
+        user: { select: { id: true, name: true } },
       },
       orderBy: { createdAt: 'desc' },
       take: limit,
@@ -61,13 +62,11 @@ export class HistoryService {
   async computeDiff(before: Record<string, any>, after: Record<string, any>): Promise<Record<string, { before: any; after: any }>> {
     const changes: Record<string, { before: any; after: any }> = {};
     const allKeys = new Set([...Object.keys(before), ...Object.keys(after)]);
-
     for (const key of allKeys) {
       if (JSON.stringify(before[key]) !== JSON.stringify(after[key])) {
         changes[key] = { before: before[key], after: after[key] };
       }
     }
-
     return changes;
   }
 }

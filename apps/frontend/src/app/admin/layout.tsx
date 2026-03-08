@@ -6,11 +6,12 @@ import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
   LayoutDashboard, Users, Shield, GitBranch, Package, Bird, GraduationCap,
-  ClipboardList, Settings, LogOut, ChevronRight, Leaf, Egg, BookOpen,
+  ClipboardList, Settings, LogOut, ChevronRight, ChevronLeft, Leaf, Egg, BookOpen,
   Archive, ArrowLeftRight, User, Award, Home, Users2, Stethoscope,
   Calendar, Upload, Search, Command, ShoppingCart, FileText, Code2,
   MessageSquare, BarChart3, Ticket, Dna, Calculator, MapPin, Monitor,
   HelpCircle, TrendingUp, Globe, CreditCard, Cloud, Trophy, Medal,
+  PanelLeftClose, PanelLeftOpen, Mail,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/auth-store';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
@@ -106,6 +107,7 @@ const navigation = [
       { label: 'Agenda (semaine)', path: '/admin/agenda/semaine', icon: Calendar },
       { label: 'Rapports PDF', path: '/admin/reports', icon: FileText },
       { label: 'Historique', path: '/admin/history', icon: ClipboardList },
+      { label: 'Carte GPS', path: '/admin/gps', icon: MapPin },
     ],
   },
   {
@@ -118,6 +120,7 @@ const navigation = [
     section: 'Communication',
     items: [
       { label: 'Messagerie', path: '/admin/messaging', icon: MessageSquare },
+      { label: 'Messages de contact', path: '/admin/contact-messages', icon: Mail },
       { label: 'Tickets & Incidents', path: '/admin/tickets', icon: Ticket },
     ],
   },
@@ -157,9 +160,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const { user, clearAuth } = useAuthStore();
   const { isOpen: cmdOpen, open: openCmd, close: closeCmd } = useCommandPalette();
   const [hydrated, setHydrated] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
 
   useEffect(() => {
     setHydrated(true);
+    // Restaurer l'état de la sidebar depuis localStorage
+    const saved = localStorage.getItem('lftg-sidebar-collapsed');
+    if (saved !== null) setCollapsed(saved === 'true');
   }, []);
 
   useEffect(() => {
@@ -174,47 +181,99 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     router.push('/login');
   };
 
+  const toggleSidebar = () => {
+    const next = !collapsed;
+    setCollapsed(next);
+    localStorage.setItem('lftg-sidebar-collapsed', String(next));
+  };
+
   return (
     <div className="flex h-screen bg-background overflow-hidden">
       {/* Command Palette */}
       <CommandPalette isOpen={cmdOpen} onClose={closeCmd} />
 
       {/* Sidebar */}
-      <aside className="w-64 flex-shrink-0 bg-card border-r border-border flex flex-col">
-        {/* Brand */}
-        <div className="p-4 border-b border-border">
-          <div className="flex items-center gap-3">
+      <aside
+        className={`flex-shrink-0 bg-card border-r border-border flex flex-col transition-all duration-300 ease-in-out ${
+          collapsed ? 'w-16' : 'w-64'
+        }`}
+      >
+        {/* Brand + Toggle button */}
+        <div className={`p-4 border-b border-border flex items-center ${collapsed ? 'justify-center' : 'justify-between'}`}>
+          <div className={`flex items-center gap-3 min-w-0 ${collapsed ? 'justify-center' : ''}`}>
             <div className="w-9 h-9 rounded-xl bg-jungle-gradient flex items-center justify-center text-xl flex-shrink-0">
               🦜
             </div>
-            <div className="min-w-0">
-              <p className="text-sm font-display font-bold text-foreground truncate">LFTG Platform</p>
-              <p className="text-xs text-muted-foreground truncate">La Ferme Tropicale</p>
-            </div>
+            {!collapsed && (
+              <div className="min-w-0">
+                <p className="text-sm font-display font-bold text-foreground truncate">LFTG Platform</p>
+                <p className="text-xs text-muted-foreground truncate">La Ferme Tropicale</p>
+              </div>
+            )}
           </div>
+          {!collapsed && (
+            <button
+              onClick={toggleSidebar}
+              title="Réduire la sidebar"
+              className="ml-2 flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            >
+              <PanelLeftClose className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
-        {/* Recherche rapide */}
-        <div className="px-3 pt-3">
-          <button
-            onClick={openCmd}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors text-sm"
-          >
-            <Search className="w-3.5 h-3.5" />
-            <span className="flex-1 text-left text-xs">Rechercher...</span>
-            <kbd className="flex items-center gap-0.5 text-[10px] bg-background border border-border rounded px-1 py-0.5">
-              <Command className="w-2.5 h-2.5" />K
-            </kbd>
-          </button>
-        </div>
+        {/* Bouton d'expansion quand collapsed */}
+        {collapsed && (
+          <div className="flex justify-center py-2 border-b border-border">
+            <button
+              onClick={toggleSidebar}
+              title="Agrandir la sidebar"
+              className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            >
+              <PanelLeftOpen className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+
+        {/* Recherche rapide (masquée si collapsed) */}
+        {!collapsed && (
+          <div className="px-3 pt-3">
+            <button
+              onClick={openCmd}
+              className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/80 transition-colors text-sm"
+            >
+              <Search className="w-3.5 h-3.5" />
+              <span className="flex-1 text-left text-xs">Rechercher...</span>
+              <kbd className="flex items-center gap-0.5 text-[10px] bg-background border border-border rounded px-1 py-0.5">
+                <Command className="w-2.5 h-2.5" />K
+              </kbd>
+            </button>
+          </div>
+        )}
+
+        {/* Icône recherche quand collapsed */}
+        {collapsed && (
+          <div className="flex justify-center pt-2">
+            <button
+              onClick={openCmd}
+              title="Rechercher (⌘K)"
+              className="w-8 h-8 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            >
+              <Search className="w-4 h-4" />
+            </button>
+          </div>
+        )}
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto p-3 space-y-4 mt-2">
           {navigation.map((group) => (
             <div key={group.section}>
-              <p className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                {group.section}
-              </p>
+              {!collapsed && (
+                <p className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                  {group.section}
+                </p>
+              )}
+              {collapsed && <div className="my-1 border-t border-border/50" />}
               <div className="space-y-0.5">
                 {group.items.map((item) => {
                   const Icon = item.icon;
@@ -223,11 +282,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     <Link
                       key={item.path}
                       href={item.path}
-                      className={`sidebar-item ${isActive ? 'active' : ''}`}
+                      title={collapsed ? item.label : undefined}
+                      className={`sidebar-item ${isActive ? 'active' : ''} ${collapsed ? 'justify-center px-0' : ''}`}
                     >
                       <Icon className="w-4 h-4 flex-shrink-0" />
-                      <span className="truncate">{item.label}</span>
-                      {isActive && <ChevronRight className="w-3 h-3 ml-auto text-forest-600" />}
+                      {!collapsed && <span className="truncate">{item.label}</span>}
+                      {!collapsed && isActive && <ChevronRight className="w-3 h-3 ml-auto text-forest-600" />}
                     </Link>
                   );
                 })}
@@ -238,18 +298,36 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         {/* User footer */}
         <div className="p-3 border-t border-border">
-          <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-muted">
-            <div className="w-8 h-8 rounded-full bg-forest-100 flex items-center justify-center text-forest-700 font-semibold text-sm flex-shrink-0">
-              {user.name?.[0]?.toUpperCase() || user.email[0].toUpperCase()}
+          {collapsed ? (
+            <div className="flex flex-col items-center gap-2">
+              <div
+                className="w-8 h-8 rounded-full bg-forest-100 flex items-center justify-center text-forest-700 font-semibold text-sm flex-shrink-0"
+                title={user.name || user.email}
+              >
+                {user.name?.[0]?.toUpperCase() || user.email[0].toUpperCase()}
+              </div>
+              <button
+                onClick={handleLogout}
+                title="Se déconnecter"
+                className="text-muted-foreground hover:text-red-500 transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
             </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-medium text-foreground truncate">{user.name || user.email}</p>
-              <p className="text-[10px] text-muted-foreground truncate">{user.roles?.[0] || 'Utilisateur'}</p>
+          ) : (
+            <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-muted">
+              <div className="w-8 h-8 rounded-full bg-forest-100 flex items-center justify-center text-forest-700 font-semibold text-sm flex-shrink-0">
+                {user.name?.[0]?.toUpperCase() || user.email[0].toUpperCase()}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-medium text-foreground truncate">{user.name || user.email}</p>
+                <p className="text-[10px] text-muted-foreground truncate">{user.roles?.[0] || 'Utilisateur'}</p>
+              </div>
+              <button onClick={handleLogout} className="text-muted-foreground hover:text-red-500 transition-colors">
+                <LogOut className="w-4 h-4" />
+              </button>
             </div>
-            <button onClick={handleLogout} className="text-muted-foreground hover:text-red-500 transition-colors">
-              <LogOut className="w-4 h-4" />
-            </button>
-          </div>
+          )}
         </div>
       </aside>
 

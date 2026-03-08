@@ -2,13 +2,13 @@ FROM node:20-alpine
 WORKDIR /app
 # Copy standalone build (includes node_modules nécessaires)
 COPY apps/frontend/.next/standalone ./
-# Copy static files (CSS, JS, images) - must be at /app/.next/static
-COPY apps/frontend/.next/static ./.next/static
+# Copy static files (CSS, JS, images) - must be at /app/apps/frontend/.next/static (monorepo)
+COPY apps/frontend/.next/static ./apps/frontend/.next/static
 # Copy public assets
-COPY apps/frontend/public ./public
+COPY apps/frontend/public ./apps/frontend/public
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 EXPOSE 3000
-# Lancer le serveur standalone Next.js
-CMD ["node", "server.js"]
+# Lancer le serveur standalone Next.js (monorepo: server.js est dans apps/frontend/)
+CMD ["node", "apps/frontend/server.js"]

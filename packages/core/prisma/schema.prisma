@@ -46,6 +46,7 @@ model User {
   privateNotes       LearnerPrivateNote[]
   certificates       Certificate[]
   badges             UserBadge[]
+  contactReplies     ContactReply[]  @relation("ContactReplyAuthor")
 }
 
 model Role {
@@ -1075,4 +1076,36 @@ model TicketComment {
   createdAt DateTime @default(now())
 
   @@index([ticketId])
+}
+
+// =======================================
+//     PLUGIN: CONTACT (Formulaire public)
+// =======================================
+model ContactMessage {
+  id          String         @id @default(cuid())
+  reference   String         @unique
+  senderName  String
+  senderEmail String
+  phone       String?
+  subject     String
+  message     String
+  status      String         @default("UNREAD")  // UNREAD, READ, REPLIED, ARCHIVED
+  replies     ContactReply[]
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([status])
+  @@index([senderEmail])
+}
+
+model ContactReply {
+  id               String         @id @default(cuid())
+  contactMessageId String
+  contactMessage   ContactMessage @relation(fields: [contactMessageId], references: [id], onDelete: Cascade)
+  authorId         String
+  author           User           @relation("ContactReplyAuthor", fields: [authorId], references: [id])
+  content          String
+  createdAt        DateTime       @default(now())
+
+  @@index([contactMessageId])
 }

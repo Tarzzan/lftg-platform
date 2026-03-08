@@ -11,6 +11,7 @@ COPY package.json pnpm-workspace.yaml pnpm-lock.yaml tsconfig.json tsconfig.base
 COPY apps/backend/package.json ./apps/backend/
 COPY packages/core/package.json ./packages/core/
 COPY plugins/animaux-couvees/package.json ./plugins/animaux-couvees/
+COPY plugins/contact/package.json ./plugins/contact/
 COPY plugins/formation/package.json ./plugins/formation/
 COPY plugins/personnel/package.json ./plugins/personnel/
 COPY plugins/stock/package.json ./plugins/stock/
@@ -44,6 +45,7 @@ COPY --from=builder /app/package.json /app/pnpm-workspace.yaml /app/pnpm-lock.ya
 COPY --from=builder /app/apps/backend/package.json ./apps/backend/
 COPY --from=builder /app/packages/core/package.json ./packages/core/
 COPY --from=builder /app/plugins/animaux-couvees/package.json ./plugins/animaux-couvees/
+COPY --from=builder /app/plugins/contact/package.json ./plugins/contact/
 COPY --from=builder /app/plugins/formation/package.json ./plugins/formation/
 COPY --from=builder /app/plugins/personnel/package.json ./plugins/personnel/
 COPY --from=builder /app/plugins/stock/package.json ./plugins/stock/

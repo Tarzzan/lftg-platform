@@ -16,15 +16,14 @@ export interface CitesCheckResult {
 }
 
 export interface CitesPermitDto {
-  animalId: string;
-  permitType: 'EXPORT' | 'IMPORT' | 'RE_EXPORT' | 'INTRODUCTION_FROM_SEA' | 'CAPTIVE_BRED';
-  purpose: 'COMMERCIAL' | 'SCIENTIFIC' | 'PERSONAL' | 'ZOO' | 'BREEDING';
-  destinationCountry?: string;
-  originCountry?: string;
-  quantity: number;
-  validFrom: string;
-  validUntil: string;
+  animalId?: string;
+  type?: string;
+  status?: string;
   issuedBy?: string;
+  issuedAt?: string;
+  expiresAt?: string;
+  species?: string;
+  quantity?: number;
   permitNumber: string;
   notes?: string;
 }
@@ -51,26 +50,31 @@ export class CitesService {
 
   async checkSpecies(scientificName: string): Promise<CitesCheckResult> {
     const key = scientificName.toLowerCase().trim();
-    const dbEntry = this.citesDatabase[key];
 
-    if (!dbEntry) {
-      // Vérifier dans la base locale
+    // Chercher dans la base Prisma d'abord
+    const dbEntry = await this.prisma.citesEntry?.findFirst?.({
+      where: { scientificName: { contains: key, mode: 'insensitive' } },
+    }).catch(() => null);
+
+    // Chercher dans la base locale
+    const localEntry = this.citesDatabase[key];
+
+    if (!localEntry && !dbEntry) {
+      // Essayer de trouver via l'espèce animale
       const species = await this.prisma.species.findFirst({
         where: { scientificName: { contains: scientificName, mode: 'insensitive' } },
-      });
+      }).catch(() => null);
 
-      if (species?.citesAppendix) {
+      if (species?.citesAppendix && species.citesAppendix !== 'NON_LISTE') {
         return {
           scientificName,
-          commonName: species.commonName,
           appendix: species.citesAppendix as CitesAppendix,
-          isProtected: species.citesAppendix !== 'NON_LISTE',
+          isProtected: true,
           requiresPermit: ['I', 'II', 'III'].includes(species.citesAppendix),
           permitType: species.citesAppendix === 'I' ? 'CITES Annexe I — Permis import ET export' : 'CITES Annexe II — Permis export',
           restrictions: species.conservationStatus ? [`Statut UICN: ${species.conservationStatus}`] : [],
         };
       }
-
       return {
         scientificName,
         appendix: 'NON_LISTE',
@@ -81,17 +85,17 @@ export class CitesService {
       };
     }
 
-    const isAppendixI = dbEntry.appendix === 'I';
-
+    const entry = localEntry || { appendix: dbEntry.appendix as CitesAppendix, restrictions: [] };
+    const isAppendixI = entry.appendix === 'I';
     return {
       scientificName,
-      appendix: dbEntry.appendix,
+      appendix: entry.appendix,
       isProtected: true,
       requiresPermit: true,
       permitType: isAppendixI
         ? 'CITES Annexe I — Permis import ET export requis'
-        : `CITES Annexe ${dbEntry.appendix} — Permis export requis`,
-      restrictions: dbEntry.restrictions,
+        : `CITES Annexe ${entry.appendix} — Permis export requis`,
+      restrictions: entry.restrictions,
       notes: isAppendixI
         ? 'ATTENTION: Espèce Annexe I — Commerce commercial interdit. Uniquement à des fins non commerciales avec permis.'
         : 'Espèce réglementée — Permis CITES requis pour tout commerce international.',
@@ -102,18 +106,15 @@ export class CitesService {
     return this.prisma.citesPermit.create({
       data: {
         animalId: dto.animalId,
-        permitType: dto.permitType,
-        purpose: dto.purpose,
-        destinationCountry: dto.destinationCountry,
-        originCountry: dto.originCountry,
-        quantity: dto.quantity,
-        validFrom: new Date(dto.validFrom),
-        validUntil: new Date(dto.validUntil),
+        type: dto.type || 'IMPORT',
+        status: dto.status || 'PENDING',
         issuedBy: dto.issuedBy,
+        issuedAt: dto.issuedAt ? new Date(dto.issuedAt) : null,
+        expiresAt: dto.expiresAt ? new Date(dto.expiresAt) : null,
+        species: dto.species,
+        quantity: dto.quantity || 1,
         permitNumber: dto.permitNumber,
         notes: dto.notes,
-        createdById,
-        status: 'ACTIVE',
       },
     });
   }
@@ -121,31 +122,29 @@ export class CitesService {
   async getPermitsByAnimal(animalId: string) {
     return this.prisma.citesPermit.findMany({
       where: { animalId },
-      orderBy: { validUntil: 'desc' },
+      orderBy: { createdAt: 'desc' },
     });
   }
 
   async getExpiringPermits(daysAhead = 30) {
     const future = new Date();
     future.setDate(future.getDate() + daysAhead);
-
     return this.prisma.citesPermit.findMany({
       where: {
-        validUntil: { lte: future, gte: new Date() },
+        expiresAt: { lte: future, gte: new Date() },
         status: 'ACTIVE',
       },
       include: {
         animal: { select: { id: true, name: true, identifier: true } },
       },
-      orderBy: { validUntil: 'asc' },
+      orderBy: { expiresAt: 'asc' },
     });
   }
 
   async getAllPermits(params: { status?: string; type?: string }) {
     const where: any = {};
     if (params.status) where.status = params.status;
-    if (params.type) where.permitType = params.type;
-
+    if (params.type) where.type = params.type;
     return this.prisma.citesPermit.findMany({
       where,
       include: {
@@ -156,11 +155,11 @@ export class CitesService {
           },
         },
       },
-      orderBy: { validUntil: 'asc' },
+      orderBy: { createdAt: 'desc' },
     });
   }
 
-  async updatePermitStatus(id: string, status: 'ACTIVE' | 'EXPIRED' | 'REVOKED' | 'SUSPENDED') {
+  async updatePermitStatus(id: string, status: 'ACTIVE' | 'EXPIRED' | 'REVOKED' | 'SUSPENDED' | 'PENDING') {
     return this.prisma.citesPermit.update({
       where: { id },
       data: { status },
@@ -179,7 +178,7 @@ export class CitesService {
   }> {
     const [animals, activePermits, expiringPermits] = await Promise.all([
       this.prisma.animal.findMany({
-        where: { status: 'ALIVE', deletedAt: null },
+        where: { status: 'ACTIF' },
         include: {
           species: { select: { citesAppendix: true, commonName: true } },
           citesPermits: { where: { status: 'ACTIVE' } },
@@ -188,12 +187,10 @@ export class CitesService {
       this.prisma.citesPermit.count({ where: { status: 'ACTIVE' } }),
       this.getExpiringPermits(30),
     ]);
-
     const protectedAnimals = animals.filter(a => a.species?.citesAppendix && a.species.citesAppendix !== 'NON_LISTE');
     const appendixI = animals.filter(a => a.species?.citesAppendix === 'I');
     const appendixII = animals.filter(a => a.species?.citesAppendix === 'II');
     const missingPermits = protectedAnimals.filter(a => a.citesPermits.length === 0);
-
     const alerts: string[] = [];
     if (expiringPermits.length > 0) {
       alerts.push(`${expiringPermits.length} permis CITES expirent dans les 30 prochains jours`);
@@ -204,7 +201,6 @@ export class CitesService {
     if (appendixI.length > 0) {
       alerts.push(`${appendixI.length} animaux Annexe I — vérification de conformité recommandée`);
     }
-
     return {
       totalAnimals: animals.length,
       protectedAnimals: protectedAnimals.length,
