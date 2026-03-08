@@ -1,340 +1,232 @@
 'use client';
+import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { api } from '@/lib/api';
 
-import { useState, useRef, useEffect } from 'react';
+interface Participant {
+  id: string;
+  name: string;
+  avatar?: string;
+  role?: string;
+}
 
-const MOCK_CONVERSATIONS = [
-  {
-    id: 'conv-1',
-    name: 'Équipe Soins',
-    type: 'GROUP',
-    zone: 'Volière A+B',
-    avatar: '🦜',
-    participants: ['William MERI', 'Marie Dupont', 'Sophie Bernard'],
-    lastMessage: 'Le perroquet Amazona a été nourri à 8h30',
-    lastSender: 'Marie Dupont',
-    lastTime: '08:30',
-    unread: 2,
-  },
-  {
-    id: 'conv-2',
-    name: 'Urgences Médicales',
-    type: 'GROUP',
-    zone: 'Infirmerie',
-    avatar: '🏥',
-    participants: ['William MERI', 'Dr. Rousseau'],
-    lastMessage: '⚠️ Dendrobate en observation — fièvre légère',
-    lastSender: 'Dr. Rousseau',
-    lastTime: '09:15',
-    unread: 1,
-  },
-  {
-    id: 'conv-3',
-    name: 'Marie Dupont',
-    type: 'DIRECT',
-    zone: null,
-    avatar: '👩‍🔬',
-    participants: ['William MERI', 'Marie Dupont'],
-    lastMessage: 'Rapport de la semaine envoyé',
-    lastSender: 'Vous',
-    lastTime: 'Hier',
-    unread: 0,
-  },
-  {
-    id: 'conv-4',
-    name: 'Logistique & Stock',
-    type: 'GROUP',
-    zone: 'Entrepôt',
-    avatar: '📦',
-    participants: ['William MERI', 'Jean Martin'],
-    lastMessage: 'Stock de graines de tournesol critique — commande urgente',
-    lastSender: 'Jean Martin',
-    lastTime: '07:45',
-    unread: 3,
-  },
-  {
-    id: 'conv-5',
-    name: 'Dr. Rousseau',
-    type: 'DIRECT',
-    zone: null,
-    avatar: '👨‍⚕️',
-    participants: ['William MERI', 'Dr. Rousseau'],
-    lastMessage: 'Prochain bilan de santé prévu vendredi',
-    lastSender: 'Dr. Rousseau',
-    lastTime: 'Lun',
-    unread: 0,
-  },
-];
+interface Conversation {
+  id: string;
+  name?: string;
+  type: 'DIRECT' | 'GROUP';
+  zone?: string;
+  participants: Participant[];
+  lastMessage?: { content: string; createdAt: string; sender?: { name: string } };
+  unreadCount?: number;
+}
 
-const MOCK_MESSAGES: Record<string, any[]> = {
-  'conv-1': [
-    { id: 'm-1', sender: 'Marie Dupont', avatar: '👩‍🔬', content: 'Bonjour ! Soins du matin terminés pour la Volière A', time: '07:00', isMe: false, type: 'TEXT' },
-    { id: 'm-2', sender: 'Sophie Bernard', avatar: '👩‍🎓', content: 'Parfait ! Je prends en charge la Volière B', time: '07:05', isMe: false, type: 'TEXT' },
-    { id: 'm-3', sender: 'Vous', avatar: '👨‍💼', content: 'Merci à tous. N\'oubliez pas la pesée mensuelle cet après-midi à 14h', time: '07:30', isMe: true, type: 'TEXT' },
-    { id: 'm-4', sender: 'Marie Dupont', avatar: '👩‍🔬', content: 'Noté ! On sera là', time: '07:32', isMe: false, type: 'TEXT' },
-    { id: 'm-5', sender: 'Sophie Bernard', avatar: '👩‍🎓', content: 'Présente aussi 👍', time: '07:35', isMe: false, type: 'TEXT' },
-    { id: 'm-6', sender: 'Marie Dupont', avatar: '👩‍🔬', content: 'Le perroquet Amazona a été nourri à 8h30', time: '08:30', isMe: false, type: 'TEXT' },
-  ],
-  'conv-2': [
-    { id: 'm-7', sender: 'Dr. Rousseau', avatar: '👨‍⚕️', content: 'Visite de routine terminée. Tous les animaux en bonne santé.', time: '06:00', isMe: false, type: 'TEXT' },
-    { id: 'm-8', sender: 'Vous', avatar: '👨‍💼', content: 'Merci Docteur, bon rapport !', time: '06:15', isMe: true, type: 'TEXT' },
-    { id: 'm-9', sender: 'Dr. Rousseau', avatar: '👨‍⚕️', content: '⚠️ Dendrobate en observation — fièvre légère', time: '09:15', isMe: false, type: 'ALERT' },
-  ],
-  'conv-3': [
-    { id: 'm-10', sender: 'Marie Dupont', avatar: '👩‍🔬', content: 'Bonjour William, voici le rapport de la semaine', time: 'Hier 16:00', isMe: false, type: 'TEXT' },
-    { id: 'm-11', sender: 'Vous', avatar: '👨‍💼', content: 'Rapport de la semaine envoyé', time: 'Hier 16:30', isMe: true, type: 'TEXT' },
-  ],
-  'conv-4': [
-    { id: 'm-12', sender: 'Jean Martin', avatar: '📦', content: 'Inventaire du matin effectué', time: '07:00', isMe: false, type: 'TEXT' },
-    { id: 'm-13', sender: 'Jean Martin', avatar: '📦', content: 'Stock de graines de tournesol critique — commande urgente', time: '07:45', isMe: false, type: 'ALERT' },
-    { id: 'm-14', sender: 'Vous', avatar: '👨‍💼', content: 'Je m\'en occupe, commande passée', time: '08:00', isMe: true, type: 'TEXT' },
-  ],
-};
-
-const typeColors: Record<string, string> = {
-  GROUP: 'bg-forest-100 text-forest-700',
-  DIRECT: 'bg-maroni-100 text-maroni-700',
-};
+interface Message {
+  id: string;
+  content: string;
+  createdAt: string;
+  sender: { id: string; name: string; avatar?: string };
+  type?: string;
+}
 
 export default function MessagingPage() {
-  const [selectedConv, setSelectedConv] = useState(MOCK_CONVERSATIONS[0]);
-  const [messages, setMessages] = useState(MOCK_MESSAGES['conv-1']);
+  const queryClient = useQueryClient();
+  const [selectedConv, setSelectedConv] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
-  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const filteredConvs = MOCK_CONVERSATIONS.filter(c =>
-    c.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const { data: conversations = [], isLoading, isError } = useQuery<Conversation[]>({
+    queryKey: ['conversations'],
+    queryFn: async () => {
+      const res = await api.get('/messaging/conversations');
+      return Array.isArray(res.data) ? res.data : [];
+    },
+    refetchInterval: 10000,
+  });
 
-  const totalUnread = MOCK_CONVERSATIONS.reduce((sum, c) => sum + c.unread, 0);
+  const { data: messages = [], isLoading: loadingMessages } = useQuery<Message[]>({
+    queryKey: ['messages', selectedConv],
+    queryFn: async () => {
+      const res = await api.get(`/messaging/conversations/${selectedConv}/messages`);
+      return Array.isArray(res.data) ? res.data : [];
+    },
+    enabled: !!selectedConv,
+    refetchInterval: 5000,
+  });
 
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  const { data: unread } = useQuery<{ count: number }>({
+    queryKey: ['unread-messages'],
+    queryFn: async () => {
+      const res = await api.get('/messaging/unread');
+      return res.data;
+    },
+    refetchInterval: 15000,
+  });
 
-  const selectConversation = (conv: typeof MOCK_CONVERSATIONS[0]) => {
-    setSelectedConv(conv);
-    setMessages(MOCK_MESSAGES[conv.id] || []);
+  const sendMutation = useMutation({
+    mutationFn: async (content: string) => {
+      const res = await api.post('/messaging/messages', {
+        conversationId: selectedConv,
+        content,
+        type: 'TEXT',
+      });
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['messages', selectedConv] });
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+      setNewMessage('');
+    },
+  });
+
+  const markReadMutation = useMutation({
+    mutationFn: async (convId: string) => {
+      const res = await api.post(`/messaging/conversations/${convId}/read`);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['conversations'] });
+      queryClient.invalidateQueries({ queryKey: ['unread-messages'] });
+    },
+  });
+
+  const handleSelectConv = (id: string) => {
+    setSelectedConv(id);
+    markReadMutation.mutate(id);
   };
 
-  const sendMessage = () => {
-    if (!newMessage.trim()) return;
-    const msg = {
-      id: `m-${Date.now()}`,
-      sender: 'Vous',
-      avatar: '👨‍💼',
-      content: newMessage,
-      time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
-      isMe: true,
-      type: 'TEXT',
-    };
-    setMessages(prev => [...prev, msg]);
-    setNewMessage('');
-  };
+  const selectedConvData = conversations.find((c) => c.id === selectedConv);
 
   return (
-    <div className="h-[calc(100vh-4rem)] flex flex-col">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+    <div className="p-6 h-[calc(100vh-120px)] flex flex-col space-y-4">
+      <div className="flex items-center justify-between flex-shrink-0">
         <div>
-          <h1 className="text-2xl font-bold text-wood-900">Messagerie Interne</h1>
-          <p className="text-sm text-wood-500 mt-1">Communication en temps réel entre les équipes</p>
-        </div>
-        <div className="flex items-center gap-3">
-          {totalUnread > 0 && (
-            <span className="bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-full">
-              {totalUnread} non lus
-            </span>
-          )}
-          <button className="btn-primary text-sm px-4 py-2">
-            + Nouvelle conversation
-          </button>
+          <h1 className="text-2xl font-bold text-white">Messagerie interne</h1>
+          <p className="text-slate-400 mt-1">
+            {unread?.count ? `${unread.count} message${unread.count > 1 ? 's' : ''} non lu${unread.count > 1 ? 's' : ''}` : 'Tous les messages lus'}
+          </p>
         </div>
       </div>
 
-      {/* Main chat layout */}
-      <div className="flex flex-1 gap-0 rounded-2xl overflow-hidden border border-wood-200 shadow-sm min-h-0">
-        {/* Sidebar conversations */}
-        <div className="w-80 bg-white border-r border-wood-200 flex flex-col">
-          {/* Search */}
-          <div className="p-4 border-b border-wood-100">
-            <input
-              type="text"
-              placeholder="Rechercher une conversation..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              className="w-full px-3 py-2 text-sm border border-wood-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-forest-500"
-            />
+      <div className="flex flex-1 gap-4 min-h-0">
+        {/* Liste des conversations */}
+        <div className="w-72 flex-shrink-0 bg-slate-800 rounded-xl border border-slate-700 overflow-hidden flex flex-col">
+          <div className="p-3 border-b border-slate-700">
+            <p className="text-white font-semibold text-sm">Conversations</p>
           </div>
-
-          {/* Conversation list */}
-          <div className="flex-1 overflow-y-auto">
-            {filteredConvs.map(conv => (
-              <button
-                key={conv.id}
-                onClick={() => selectConversation(conv)}
-                className={`w-full p-4 flex items-start gap-3 hover:bg-wood-50 transition-colors border-b border-wood-50 text-left ${selectedConv.id === conv.id ? 'bg-forest-50 border-l-4 border-l-forest-500' : ''}`}
-              >
-                <div className="relative flex-shrink-0">
-                  <div className="w-10 h-10 rounded-full bg-forest-100 flex items-center justify-center text-xl">
-                    {conv.avatar}
+          {isLoading ? (
+            <div className="flex items-center justify-center flex-1">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-500" />
+            </div>
+          ) : isError ? (
+            <p className="text-red-400 text-sm p-4 text-center">Erreur de chargement</p>
+          ) : conversations.length === 0 ? (
+            <p className="text-slate-500 text-sm p-4 text-center">Aucune conversation</p>
+          ) : (
+            <div className="overflow-y-auto flex-1">
+              {conversations.map((conv) => (
+                <button
+                  key={conv.id}
+                  onClick={() => handleSelectConv(conv.id)}
+                  className={`w-full text-left p-3 border-b border-slate-700/50 hover:bg-slate-700/50 transition-colors ${
+                    selectedConv === conv.id ? 'bg-indigo-900/30 border-l-2 border-l-indigo-500' : ''
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <p className="text-white text-sm font-medium truncate">
+                      {conv.name || conv.participants.map((p) => p.name).join(', ')}
+                    </p>
+                    {conv.unreadCount ? (
+                      <span className="ml-2 px-1.5 py-0.5 bg-indigo-600 text-white text-xs rounded-full flex-shrink-0">
+                        {conv.unreadCount}
+                      </span>
+                    ) : null}
                   </div>
-                  {conv.unread > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
-                      {conv.unread}
+                  <div className="flex items-center gap-1 mt-0.5">
+                    <span className={`text-xs px-1.5 py-0.5 rounded ${conv.type === 'GROUP' ? 'bg-purple-900/30 text-purple-400' : 'bg-blue-900/30 text-blue-400'}`}>
+                      {conv.type === 'GROUP' ? 'Groupe' : 'Direct'}
                     </span>
+                    {conv.zone && <span className="text-slate-500 text-xs truncate">{conv.zone}</span>}
+                  </div>
+                  {conv.lastMessage && (
+                    <p className="text-slate-500 text-xs mt-1 truncate">{conv.lastMessage.content}</p>
                   )}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-0.5">
-                    <span className={`text-sm font-semibold truncate ${conv.unread > 0 ? 'text-wood-900' : 'text-wood-700'}`}>
-                      {conv.name}
-                    </span>
-                    <span className="text-xs text-wood-400 flex-shrink-0 ml-2">{conv.lastTime}</span>
-                  </div>
-                  {conv.zone && (
-                    <span className={`text-xs px-1.5 py-0.5 rounded-full ${typeColors[conv.type]} mb-1 inline-block`}>
-                      {conv.zone}
-                    </span>
-                  )}
-                  <p className={`text-xs truncate ${conv.unread > 0 ? 'text-wood-700 font-medium' : 'text-wood-400'}`}>
-                    {conv.lastSender !== 'Vous' ? `${conv.lastSender}: ` : ''}{conv.lastMessage}
-                  </p>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Chat area */}
-        <div className="flex-1 flex flex-col bg-gray-50">
-          {/* Chat header */}
-          <div className="bg-white border-b border-wood-200 px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-forest-100 flex items-center justify-center text-xl">
-                {selectedConv.avatar}
-              </div>
-              <div>
-                <h2 className="font-semibold text-wood-900">{selectedConv.name}</h2>
-                <p className="text-xs text-wood-500">
-                  {selectedConv.type === 'GROUP'
-                    ? `${selectedConv.participants.length} participants · ${selectedConv.zone || 'Groupe'}`
-                    : 'Message direct'}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button className="p-2 rounded-lg hover:bg-wood-100 text-wood-500 transition-colors" title="Appel">
-                📞
-              </button>
-              <button className="p-2 rounded-lg hover:bg-wood-100 text-wood-500 transition-colors" title="Participants">
-                👥
-              </button>
-              <button className="p-2 rounded-lg hover:bg-wood-100 text-wood-500 transition-colors" title="Paramètres">
-                ⚙️
-              </button>
-            </div>
-          </div>
-
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-4">
-            {/* Date separator */}
-            <div className="flex items-center gap-3">
-              <div className="flex-1 h-px bg-wood-200" />
-              <span className="text-xs text-wood-400 px-3 py-1 bg-wood-100 rounded-full">Aujourd'hui</span>
-              <div className="flex-1 h-px bg-wood-200" />
-            </div>
-
-            {messages.map(msg => (
-              <div key={msg.id} className={`flex items-end gap-3 ${msg.isMe ? 'flex-row-reverse' : ''}`}>
-                {!msg.isMe && (
-                  <div className="w-8 h-8 rounded-full bg-forest-100 flex items-center justify-center text-sm flex-shrink-0">
-                    {msg.avatar}
-                  </div>
-                )}
-                <div className={`max-w-[70%] ${msg.isMe ? 'items-end' : 'items-start'} flex flex-col gap-1`}>
-                  {!msg.isMe && (
-                    <span className="text-xs text-wood-500 ml-1">{msg.sender}</span>
-                  )}
-                  <div className={`px-4 py-2.5 rounded-2xl text-sm ${
-                    msg.type === 'ALERT'
-                      ? 'bg-red-50 border border-red-200 text-red-800'
-                      : msg.isMe
-                        ? 'bg-forest-600 text-white rounded-br-sm'
-                        : 'bg-white text-wood-800 shadow-sm rounded-bl-sm'
-                  }`}>
-                    {msg.type === 'ALERT' && <span className="mr-1">⚠️</span>}
-                    {msg.content}
-                  </div>
-                  <span className="text-xs text-wood-400 mx-1">{msg.time}</span>
-                </div>
-              </div>
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Message input */}
-          <div className="bg-white border-t border-wood-200 px-6 py-4">
-            <div className="flex items-center gap-3">
-              <button className="p-2 rounded-lg hover:bg-wood-100 text-wood-500 transition-colors" title="Joindre un fichier">
-                📎
-              </button>
-              <button className="p-2 rounded-lg hover:bg-wood-100 text-wood-500 transition-colors" title="Emoji">
-                😊
-              </button>
-              <div className="flex-1 relative">
-                <input
-                  type="text"
-                  placeholder={`Message à ${selectedConv.name}...`}
-                  value={newMessage}
-                  onChange={e => setNewMessage(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && sendMessage()}
-                  className="w-full px-4 py-2.5 text-sm border border-wood-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-forest-500 bg-wood-50"
-                />
-              </div>
-              <button
-                onClick={sendMessage}
-                disabled={!newMessage.trim()}
-                className="p-2.5 rounded-xl bg-forest-600 text-white hover:bg-forest-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-              >
-                ➤
-              </button>
-            </div>
-            <p className="text-xs text-wood-400 mt-2 ml-1">Appuyez sur Entrée pour envoyer · Maj+Entrée pour un saut de ligne</p>
-          </div>
-        </div>
-
-        {/* Right panel — participants */}
-        <div className="w-64 bg-white border-l border-wood-200 p-4 hidden xl:block">
-          <h3 className="font-semibold text-wood-700 text-sm mb-4">Participants ({selectedConv.participants.length})</h3>
-          <div className="space-y-3">
-            {selectedConv.participants.map((p, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-forest-100 flex items-center justify-center text-sm">
-                  {['👨‍💼', '👩‍🔬', '👩‍🎓', '📦', '👨‍⚕️'][i] || '👤'}
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-wood-800">{p}</p>
-                  <div className="flex items-center gap-1">
-                    <div className="w-2 h-2 rounded-full bg-green-500" />
-                    <span className="text-xs text-wood-400">En ligne</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-6 pt-4 border-t border-wood-100">
-            <h3 className="font-semibold text-wood-700 text-sm mb-3">Fichiers partagés</h3>
-            <div className="space-y-2">
-              {['Rapport_semaine.pdf', 'Planning_Mars.xlsx', 'Protocole_soins.docx'].map((f, i) => (
-                <button key={i} className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-wood-50 text-left transition-colors">
-                  <span className="text-lg">{['📄', '📊', '📝'][i]}</span>
-                  <span className="text-xs text-wood-600 truncate">{f}</span>
                 </button>
               ))}
             </div>
-          </div>
+          )}
+        </div>
+
+        {/* Zone de messages */}
+        <div className="flex-1 bg-slate-800 rounded-xl border border-slate-700 flex flex-col min-h-0">
+          {!selectedConv ? (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center">
+                <p className="text-4xl mb-3">💬</p>
+                <p className="text-slate-300 font-semibold">Sélectionnez une conversation</p>
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* Header */}
+              <div className="p-4 border-b border-slate-700 flex-shrink-0">
+                <p className="text-white font-semibold">
+                  {selectedConvData?.name || selectedConvData?.participants.map((p) => p.name).join(', ')}
+                </p>
+                <p className="text-slate-400 text-xs">
+                  {selectedConvData?.participants.length} participant{(selectedConvData?.participants.length || 0) > 1 ? 's' : ''}
+                  {selectedConvData?.zone ? ` · ${selectedConvData.zone}` : ''}
+                </p>
+              </div>
+
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                {loadingMessages ? (
+                  <div className="flex items-center justify-center h-20">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-500" />
+                  </div>
+                ) : messages.length === 0 ? (
+                  <p className="text-slate-500 text-center text-sm py-8">Aucun message dans cette conversation</p>
+                ) : (
+                  messages.map((msg) => (
+                    <div key={msg.id} className="flex gap-3">
+                      <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs flex-shrink-0">
+                        {msg.sender.avatar || msg.sender.name.charAt(0)}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-white text-sm font-semibold">{msg.sender.name}</span>
+                          <span className="text-slate-500 text-xs">
+                            {new Date(msg.createdAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        </div>
+                        <p className="text-slate-300 text-sm mt-0.5">{msg.content}</p>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Zone de saisie */}
+              <div className="p-4 border-t border-slate-700 flex-shrink-0">
+                <div className="flex gap-3">
+                  <input
+                    type="text"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && newMessage.trim() && sendMutation.mutate(newMessage.trim())}
+                    placeholder="Écrire un message..."
+                    className="flex-1 bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-indigo-500"
+                  />
+                  <button
+                    onClick={() => newMessage.trim() && sendMutation.mutate(newMessage.trim())}
+                    disabled={!newMessage.trim() || sendMutation.isPending}
+                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-colors"
+                  >
+                    Envoyer
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
