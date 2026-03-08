@@ -22,31 +22,36 @@ def analyze_page(path: Path) -> dict:
 
     lines = len(content.splitlines())
 
-    # Détecter les imports API réels
+    # Détecter les imports API réels (deux patterns : import { ...Api } et import { api })
     api_imports = re.findall(r"import\s*\{([^}]+)\}\s*from\s*['\"]@/lib/api['\"]", content)
     api_calls = []
     for imp in api_imports:
-        api_calls.extend([x.strip() for x in imp.split(',') if 'Api' in x])
+        api_calls.extend([x.strip() for x in imp.split(',') if 'Api' in x or x.strip() == 'api'])
+
+    # Détecter useQuery / useMutation (react-query) comme indicateur fort de connexion API
+    has_usequery = bool(re.search(r'useQuery|useMutation|useInfiniteQuery', content))
+    if has_usequery:
+        api_calls = api_calls or ['api']  # Considérer comme connecté si useQuery présent
 
     # Détecter les données statiques / mock
-    has_mock = bool(re.search(r'(mock|MOCK|demo|DEMO|static|hardcoded|placeholder)', content, re.I))
-    has_useeffect = 'useEffect' in content
-    has_fetch = bool(re.search(r'(fetch|axios|api\.|\.get\(|\.post\()', content))
-    has_loading = bool(re.search(r'(loading|isLoading|setLoading)', content))
-    has_error = bool(re.search(r'(error|setError|catch)', content))
+    has_mock = bool(re.search(r'(isDemoMode|demoData|DEMO_DATA|mockData|hardcoded|placeholder)', content, re.I))
+    has_useeffect = 'useEffect' in content or has_usequery
+    has_fetch = bool(re.search(r'(fetch|axios|api\.get|api\.post|api\.put|api\.delete|\.get\(|\.post\()', content))
+    has_loading = bool(re.search(r'(loading|isLoading|setLoading|isFetching)', content))
+    has_error = bool(re.search(r'(isError|error\.message|setError|catch\s*\(|onError)', content))
     has_form = bool(re.search(r'(onSubmit|handleSubmit|<form|<Form)', content, re.I))
     has_table = bool(re.search(r'(<table|<Table|\.map\(.*=>\s*<tr)', content, re.I))
     has_search = bool(re.search(r'(search|filter|Search|Filter)', content))
 
     # Déterminer le statut réel
-    if api_calls and has_useeffect and has_fetch and has_loading:
+    if api_calls and has_useeffect and (has_fetch or has_usequery) and has_loading:
         if has_error:
             status = 'done'       # Connecté avec gestion d'erreur = terminé
         else:
             status = 'connected'  # Connecté mais sans gestion d'erreur
-    elif has_useeffect and has_fetch:
+    elif has_useeffect and (has_fetch or has_usequery):
         status = 'connected'      # Connexion partielle
-    elif has_mock and not has_fetch:
+    elif has_mock and not has_fetch and not has_usequery:
         status = 'stub'           # Données statiques uniquement
     elif lines < 80:
         status = 'stub'           # Page trop courte = stub
@@ -402,6 +407,21 @@ def main():
              {"name": "Stock — Mouvements", "status": "done", "page": "/admin/stock/mouvements"},
              {"name": "Stock — Demandes", "status": "done", "page": "/admin/stock/demandes"},
              {"name": "Planning Personnel", "status": "done", "page": "/admin/personnel/planning"},
+         ]},
+        {"id": "sprint6", "name": "Sprint 6 — Médical, Agenda & Nutrition", "status": "done", "completedAt": "2026-03-08",
+         "tasks": [
+             {"name": "Agenda mensuel", "status": "done", "page": "/admin/agenda"},
+             {"name": "Agenda semaine", "status": "done", "page": "/admin/agenda/semaine"},
+             {"name": "Nutrition", "status": "done", "page": "/admin/nutrition"},
+             {"name": "Médical — bug fix", "status": "done", "page": "/admin/medical"},
+         ]},
+        {"id": "sprint7", "name": "Sprint 7 — CITES, Comptabilité, Généalogie & GPS", "status": "done", "completedAt": "2026-03-08",
+         "tasks": [
+             {"name": "Historique", "status": "done", "page": "/admin/history"},
+             {"name": "CITES", "status": "done", "page": "/admin/cites"},
+             {"name": "Comptabilité FEC", "status": "done", "page": "/admin/accounting"},
+             {"name": "Généalogie", "status": "done", "page": "/admin/genealogy"},
+             {"name": "Carte GPS interactive", "status": "done", "page": "/admin/gps"},
          ]},
     ]
 
