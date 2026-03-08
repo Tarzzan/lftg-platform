@@ -434,6 +434,24 @@ def main():
              {"name": "Parrainage d'animaux", "status": "done", "page": "/admin/parrainage"},
              {"name": "Statistiques ventes", "status": "done", "page": "/admin/ventes/stats"},
          ]},
+        {"id": "sprint9", "name": "Sprint 9 — Kiosque, Tourisme, Prévisions, Reports, Corrections PDF", "status": "done", "completedAt": "2026-03-08",
+         "tasks": [
+             {"name": "Kiosque interactif", "status": "done", "page": "/admin/kiosque"},
+             {"name": "Tourisme & visites", "status": "done", "page": "/admin/tourisme"},
+             {"name": "Prévisions & projections", "status": "done", "page": "/admin/previsions"},
+             {"name": "Rapports PDF", "status": "done", "page": "/admin/reports"},
+             {"name": "Correction bug StockItem PDF", "status": "done", "page": "/admin/reports"},
+         ]},
+        {"id": "sprint10", "name": "Sprint 10 — Stock, BI, Export, Météo, GBIF, Partenaires", "status": "done", "completedAt": "2026-03-08",
+         "tasks": [
+             {"name": "Stock — Mouvements", "status": "done", "page": "/admin/stock/mouvements"},
+             {"name": "Stock — Demandes", "status": "done", "page": "/admin/stock/demandes"},
+             {"name": "BI Dashboard", "status": "done", "page": "/admin/bi"},
+             {"name": "Export CSV/PDF", "status": "done", "page": "/admin/export"},
+             {"name": "Météo & recommandations", "status": "done", "page": "/admin/meteo"},
+             {"name": "GBIF Taxonomie", "status": "done", "page": "/admin/gbif"},
+             {"name": "Partenaires", "status": "done", "page": "/admin/partners"},
+         ]},
     ]
 
     # Sortie JS
