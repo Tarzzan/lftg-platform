@@ -235,3 +235,35 @@ export const formationApi = {
   submitFeedback: (data: any) => api.post('/plugins/formation/feedback', data).then((r) => r.data),
   getFeedbacks: (cohortId: string) => api.get(`/plugins/formation/cohorts/${cohortId}/feedbacks`).then((r) => r.data),
 };
+
+
+// ─── Enclos (via plugin animaux) ──────────────────────────────────────────
+export const enclosApi = {
+  list: () => api.get('/plugins/animaux/enclosures').then((r) => r.data),
+  get: (id: string) => api.get(`/plugins/animaux/enclosures/${id}`).then((r) => r.data),
+  create: (data: any) => api.post('/plugins/animaux/enclosures', data).then((r) => r.data),
+  update: (id: string, data: any) => api.patch(`/plugins/animaux/enclosures/${id}`, data).then((r) => r.data),
+  delete: (id: string) => api.delete(`/plugins/animaux/enclosures/${id}`).then((r) => r.data),
+};
+
+// ─── Stats Dashboard ──────────────────────────────────────────────────────
+export const dashboardApi = {
+  stats: () => api.get('/stats/dashboard').then((r) => r.data),
+  animalsBySpecies: () => api.get('/stats/animals/by-species').then((r) => r.data),
+  stockEvolution: (days?: number) => api.get('/stats/stock/evolution', { params: { days: days ?? 30 } }).then((r) => r.data),
+  workflowsByState: () => api.get('/stats/workflows/by-state').then((r) => r.data),
+  formationProgress: () => api.get('/stats/formation/progress').then((r) => r.data),
+};
+
+// ─── Contact Messages (admin) ─────────────────────────────────────────────
+export const contactMessagesApi = {
+  list: (params?: any) => api.get('/contact-messages', { params }).then((r) => r.data),
+  get: (id: string) => api.get(`/contact-messages/${id}`).then((r) => r.data),
+  stats: () => api.get('/contact-messages/stats').then((r) => r.data),
+  updateStatus: (id: string, status: string) => api.patch(`/contact-messages/${id}/status`, { status }).then((r) => r.data),
+  reply: (id: string, content: string) => api.post(`/contact-messages/${id}/reply`, { content }).then((r) => r.data),
+  delete: (id: string) => api.delete(`/contact-messages/${id}`).then((r) => r.data),
+  // Public endpoint (no auth)
+  submit: (data: { name: string; email: string; subject?: string; message: string }) =>
+    api.post('/contact-messages/public', data).then((r) => r.data),
+};

@@ -1,36 +1,35 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { dashboardApi } from '@/lib/api';
 
-const services = [
-  { name: 'lftg-postgres-prod', image: 'postgres:15-alpine', status: 'running', port: '5433:5432', cpu: '2.1%', memory: '128 MB', uptime: '3j 14h 22m' },
-  { name: 'lftg-redis-prod', image: 'redis:7-alpine', status: 'running', port: '6380:6379', cpu: '0.3%', memory: '12 MB', uptime: '3j 14h 22m' },
-  { name: 'lftg-backend-prod', image: 'lftg-platform_backend', status: 'running', port: '3001:3000', cpu: '5.7%', memory: '256 MB', uptime: '3j 14h 20m' },
-  { name: 'lftg-frontend-prod', image: 'lftg-platform_frontend', status: 'running', port: '3000:3000', cpu: '1.2%', memory: '192 MB', uptime: '3j 14h 19m' },
-  { name: 'lftg-nginx-prod', image: 'nginx:1.25-alpine', status: 'running', port: '80:80, 443:443', cpu: '0.1%', memory: '8 MB', uptime: '3j 14h 19m' },
+interface DashboardStats {
+  animals?: { alive: number; species: number; activeBroods: number };
+  stock?: { total: number; lowStock: number };
+  workflows?: { total: number };
+  hr?: { employees: number };
+  formation?: { courses: number };
+}
+
+const SERVICES_STATIC = [
+  { name: 'lftg-postgres-prod', image: 'postgres:15-alpine', port: '5432', role: 'Base de données' },
+  { name: 'lftg-redis-prod', image: 'redis:7-alpine', port: '6379', role: 'Cache & Sessions' },
+  { name: 'lftg-backend-prod', image: 'lftg-platform_backend', port: '3001', role: 'API NestJS' },
+  { name: 'lftg-frontend-prod', image: 'lftg-platform_frontend', port: '3000', role: 'Next.js Frontend' },
+  { name: 'lftg-nginx-prod', image: 'nginx:1.25-alpine', port: '80', role: 'Reverse Proxy' },
 ];
 
-const statusColor: Record<string, string> = {
-  running: 'bg-green-100 text-green-800',
-  stopped: 'bg-red-100 text-red-800',
-  restarting: 'bg-yellow-100 text-yellow-800',
-};
-
-export default function DockerPage() {
-  const [tab, setTab] = useState<'services' | 'compose' | 'logs'>('services');
-
-  const composeContent = `version: '3.8'
-
+const COMPOSE_CONTENT = `version: '3.8'
 services:
   postgres:
     image: postgres:15-alpine
     container_name: lftg-postgres-prod
     restart: always
     environment:
-      POSTGRES_USER: \${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: \${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: \${POSTGRES_DB:-lftg-prod}
+      POSTGRES_USER: \${POSTGRES_USER}
+      POSTGRES_PASSWORD: \${POSTGRES_PASSWORD}
+      POSTGRES_DB: lftg_platform
     volumes:
-      - postgres_data_prod:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - lftg-network
 
@@ -51,10 +50,11 @@ services:
       - postgres
       - redis
     environment:
-      - DATABASE_URL=postgresql://\${POSTGRES_USER}:\${POSTGRES_PASSWORD}@postgres:5432/\${POSTGRES_DB}
-      - REDIS_URL=redis://redis:6379
-      - JWT_SECRET=\${JWT_SECRET}
-      - NODE_ENV=production
+      DATABASE_URL: postgresql://\${POSTGRES_USER}:\${POSTGRES_PASSWORD}@postgres:5432/lftg_platform
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: \${JWT_SECRET}
+    ports:
+      - "3001:3001"
     networks:
       - lftg-network
 
@@ -64,9 +64,12 @@ services:
       dockerfile: ./apps/frontend/Dockerfile
     container_name: lftg-frontend-prod
     restart: always
+    depends_on:
+      - backend
     environment:
-      - NEXT_PUBLIC_API_URL=http://backend:3000
-      - NODE_ENV=production
+      NEXT_PUBLIC_API_URL: http://nginx/api/v1
+    ports:
+      - "3000:3000"
     networks:
       - lftg-network
 
@@ -76,72 +79,91 @@ services:
     restart: always
     ports:
       - "80:80"
-      - "443:443"
     volumes:
-      - ./nginx/prod.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - frontend
       - backend
+      - frontend
     networks:
       - lftg-network
 
 volumes:
-  postgres_data_prod:
+  postgres_data:
 
 networks:
   lftg-network:
     driver: bridge`;
 
-  const logs = [
-    { time: '2026-03-01 12:00:01', service: 'backend', level: 'info', message: '🦜 LFTG Platform API v13.0.0 démarrée sur http://localhost:3001' },
-    { time: '2026-03-01 12:00:00', service: 'frontend', level: 'info', message: '✓ Ready in 2.4s — http://localhost:3000' },
-    { time: '2026-03-01 11:59:58', service: 'postgres', level: 'info', message: 'database system is ready to accept connections' },
-    { time: '2026-03-01 11:59:57', service: 'redis', level: 'info', message: 'Ready to accept connections tcp' },
-    { time: '2026-03-01 11:59:56', service: 'nginx', level: 'info', message: 'nginx/1.25.3 started' },
-  ];
+export default function DockerPage() {
+  const [tab, setTab] = useState<'services' | 'compose' | 'health'>('services');
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [healthStatus, setHealthStatus] = useState<'checking' | 'healthy' | 'error'>('checking');
+
+  useEffect(() => {
+    setLoading(true);
+    dashboardApi.stats()
+      .then((data) => {
+        setStats(data);
+        setHealthStatus('healthy');
+      })
+      .catch((e: any) => {
+        setError(e?.response?.data?.message || 'Erreur de connexion');
+        setHealthStatus('error');
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const isHealthy = healthStatus === 'healthy';
 
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Infrastructure Docker</h1>
-          <p className="text-gray-500 mt-1">Gestion des conteneurs Docker en production</p>
+          <p className="text-gray-500 mt-1">Gestion des conteneurs et de la configuration</p>
         </div>
-        <div className="flex gap-2">
-          <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium">
-            ▶ Démarrer tous
-          </button>
-          <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm font-medium">
-            ■ Arrêter tous
-          </button>
+        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium ${isHealthy ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+          <span className={`w-2 h-2 rounded-full ${isHealthy ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
+          {loading ? 'Vérification...' : isHealthy ? 'Tous les services actifs' : 'Problème détecté'}
         </div>
       </div>
 
-      {/* Métriques globales */}
-      <div className="grid grid-cols-4 gap-4">
-        {[
-          { label: 'Conteneurs actifs', value: '5/5', color: 'text-green-600' },
-          { label: 'CPU total', value: '9.4%', color: 'text-blue-600' },
-          { label: 'Mémoire totale', value: '596 MB', color: 'text-purple-600' },
-          { label: 'Uptime moyen', value: '3j 14h', color: 'text-orange-600' },
-        ].map((m) => (
-          <div key={m.label} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
-            <p className="text-sm text-gray-500">{m.label}</p>
-            <p className={`text-2xl font-bold mt-1 ${m.color}`}>{m.value}</p>
-          </div>
-        ))}
+      {/* Métriques live */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {loading ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm animate-pulse">
+              <div className="h-3 bg-gray-200 rounded w-2/3 mb-2" />
+              <div className="h-7 bg-gray-200 rounded w-1/2" />
+            </div>
+          ))
+        ) : (
+          [
+            { label: 'Conteneurs actifs', value: SERVICES_STATIC.length, color: 'text-green-600' },
+            { label: 'Animaux en DB', value: stats?.animals?.alive ?? 0, color: 'text-blue-600' },
+            { label: 'Employés', value: stats?.hr?.employees ?? 0, color: 'text-purple-600' },
+            { label: 'Formations', value: stats?.formation?.courses ?? 0, color: 'text-orange-600' },
+          ].map((m) => (
+            <div key={m.label} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+              <p className="text-sm text-gray-500">{m.label}</p>
+              <p className={`text-2xl font-bold mt-1 ${m.color}`}>{m.value}</p>
+            </div>
+          ))
+        )}
       </div>
 
       {/* Onglets */}
       <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
         <div className="flex border-b border-gray-200">
-          {(['services', 'compose', 'logs'] as const).map((t) => (
+          {(['services', 'compose', 'health'] as const).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`px-6 py-3 text-sm font-medium capitalize ${tab === t ? 'border-b-2 border-green-600 text-green-600' : 'text-gray-500 hover:text-gray-700'}`}
+              className={`px-6 py-3 text-sm font-medium ${tab === t ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
             >
-              {t === 'services' ? 'Services' : t === 'compose' ? 'docker-compose.prod.yml' : 'Logs en direct'}
+              {t === 'services' ? 'Conteneurs' : t === 'compose' ? 'docker-compose.yml' : 'Health Check'}
             </button>
           ))}
         </div>
@@ -151,30 +173,22 @@ networks:
             <table className="w-full">
               <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
                 <tr>
-                  {['Conteneur', 'Image', 'Statut', 'Ports', 'CPU', 'Mémoire', 'Uptime', 'Actions'].map((h) => (
+                  {['Conteneur', 'Image', 'Port', 'Rôle', 'Statut'].map((h) => (
                     <th key={h} className="px-4 py-3 text-left">{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {services.map((s) => (
-                  <tr key={s.name} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-mono text-sm font-medium text-gray-900">{s.name}</td>
-                    <td className="px-4 py-3 text-sm text-gray-600 font-mono">{s.image}</td>
+                {SERVICES_STATIC.map((svc) => (
+                  <tr key={svc.name} className="hover:bg-gray-50">
+                    <td className="px-4 py-3 font-mono text-sm font-medium text-blue-700">{svc.name}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600 font-mono">{svc.image}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600 font-mono">{svc.port}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600">{svc.role}</td>
                     <td className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${statusColor[s.status]}`}>
-                        ● {s.status}
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${isHealthy ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                        {isHealthy ? '● running' : '● unknown'}
                       </span>
-                    </td>
-                    <td className="px-4 py-3 font-mono text-xs text-gray-600">{s.port}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700">{s.cpu}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700">{s.memory}</td>
-                    <td className="px-4 py-3 text-sm text-gray-500">{s.uptime}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex gap-1">
-                        <button className="px-2 py-1 text-xs bg-blue-50 text-blue-600 rounded hover:bg-blue-100">Logs</button>
-                        <button className="px-2 py-1 text-xs bg-yellow-50 text-yellow-600 rounded hover:bg-yellow-100">Restart</button>
-                      </div>
                     </td>
                   </tr>
                 ))}
@@ -185,25 +199,44 @@ networks:
 
         {tab === 'compose' && (
           <div className="p-4">
-            <pre className="bg-gray-900 text-green-400 p-4 rounded-lg text-xs overflow-auto max-h-[500px] font-mono">
-              {composeContent}
+            <pre className="bg-gray-900 text-gray-300 rounded-lg p-4 text-xs overflow-auto max-h-[500px] font-mono">
+              {COMPOSE_CONTENT}
             </pre>
           </div>
         )}
 
-        {tab === 'logs' && (
-          <div className="p-4">
-            <div className="bg-gray-900 rounded-lg p-4 max-h-[400px] overflow-auto font-mono text-xs space-y-1">
-              {logs.map((log, i) => (
-                <div key={i} className="flex gap-3">
-                  <span className="text-gray-500 shrink-0">{log.time}</span>
-                  <span className={`shrink-0 font-bold ${log.service === 'backend' ? 'text-blue-400' : log.service === 'frontend' ? 'text-purple-400' : log.service === 'postgres' ? 'text-yellow-400' : log.service === 'redis' ? 'text-red-400' : 'text-green-400'}`}>
-                    [{log.service}]
-                  </span>
-                  <span className={log.level === 'error' ? 'text-red-400' : 'text-gray-300'}>{log.message}</span>
-                </div>
-              ))}
-            </div>
+        {tab === 'health' && (
+          <div className="p-6 space-y-4">
+            {loading ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-3" />
+                <p className="text-gray-500 text-sm">Vérification de la santé des services...</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {[
+                  { name: 'API Backend (NestJS)', url: '/api/v1/stats/dashboard', ok: isHealthy },
+                  { name: 'Base de données (PostgreSQL)', url: 'via Prisma ORM', ok: isHealthy },
+                  { name: 'Cache (Redis)', url: 'via NestJS CacheModule', ok: isHealthy },
+                  { name: 'Frontend (Next.js)', url: 'http://51.210.15.92', ok: true },
+                ].map((check) => (
+                  <div key={check.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-900 text-sm">{check.name}</p>
+                      <p className="text-xs text-gray-500 font-mono">{check.url}</p>
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${check.ok ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                      {check.ok ? '✓ OK' : '✗ Erreur'}
+                    </span>
+                  </div>
+                ))}
+                {error && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-red-600 text-sm">
+                    {error}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
       </div>

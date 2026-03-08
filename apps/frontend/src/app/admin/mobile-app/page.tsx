@@ -1,27 +1,58 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { dashboardApi } from '@/lib/api';
 
-const mobileScreens = [
-  {
-    id: 'home',
-    name: 'Accueil',
-    icon: '🏠',
-    content: (
-      <div className="bg-gradient-to-b from-green-700 to-green-900 h-full flex flex-col">
-        <div className="px-4 pt-8 pb-4">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-2xl">🦜</span>
-            <span className="text-white font-bold text-lg">LFTG Mobile</span>
-          </div>
-          <p className="text-green-200 text-xs">Bonjour, Marie L. · Soigneure</p>
+interface DashboardStats {
+  animals?: { alive: number; species: number; activeBroods: number };
+  stock?: { total: number; lowStock: number };
+  workflows?: { total: number };
+  hr?: { employees: number };
+  formation?: { courses: number };
+}
+
+const SCREENS = ['home', 'animals', 'alerts', 'profile'] as const;
+type Screen = typeof SCREENS[number];
+
+export default function MobileAppPage() {
+  const [activeScreen, setActiveScreen] = useState<Screen>('home');
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    setLoading(true);
+    dashboardApi.stats()
+      .then(setStats)
+      .catch((e: any) => setError(e?.response?.data?.message || 'Erreur'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const HomeScreen = () => (
+    <div className="bg-gradient-to-b from-green-700 to-green-900 h-full flex flex-col">
+      <div className="px-4 pt-8 pb-4">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-2xl">🦜</span>
+          <span className="text-white font-bold text-lg">LFTG Mobile</span>
         </div>
-        <div className="flex-1 bg-gray-50 rounded-t-3xl px-4 pt-5 overflow-y-auto">
+        <p className="text-green-200 text-xs">Données en temps réel</p>
+      </div>
+      <div className="flex-1 bg-gray-50 rounded-t-3xl px-4 pt-5 overflow-y-auto">
+        {loading ? (
+          <div className="grid grid-cols-2 gap-3 mb-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="bg-white border border-gray-100 rounded-xl p-3 animate-pulse">
+                <div className="h-6 bg-gray-200 rounded w-1/2 mx-auto mb-1" />
+                <div className="h-3 bg-gray-200 rounded w-3/4 mx-auto" />
+              </div>
+            ))}
+          </div>
+        ) : (
           <div className="grid grid-cols-2 gap-3 mb-4">
             {[
-              { icon: '🐾', label: 'Mes animaux', count: 24, color: 'bg-blue-50 border-blue-100' },
-              { icon: '🍽️', label: 'Repas du jour', count: '3/6', color: 'bg-green-50 border-green-100' },
-              { icon: '🔔', label: 'Alertes', count: 2, color: 'bg-red-50 border-red-100' },
-              { icon: '📋', label: 'Soins', count: 4, color: 'bg-purple-50 border-purple-100' },
+              { icon: '🐾', label: 'Animaux vivants', count: stats?.animals?.alive ?? 0, color: 'bg-blue-50 border-blue-100' },
+              { icon: '🥚', label: 'Couvées actives', count: stats?.animals?.activeBroods ?? 0, color: 'bg-green-50 border-green-100' },
+              { icon: '⚠️', label: 'Stock faible', count: stats?.stock?.lowStock ?? 0, color: 'bg-red-50 border-red-100' },
+              { icon: '🎓', label: 'Formations', count: stats?.formation?.courses ?? 0, color: 'bg-purple-50 border-purple-100' },
             ].map((item) => (
               <div key={item.label} className={`${item.color} border rounded-xl p-3 text-center`}>
                 <div className="text-2xl mb-1">{item.icon}</div>
@@ -30,254 +61,196 @@ const mobileScreens = [
               </div>
             ))}
           </div>
-          <div className="bg-white rounded-xl border border-gray-200 p-3 mb-3">
-            <p className="text-xs font-semibold text-gray-500 mb-2">PROCHAIN REPAS</p>
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="font-medium text-gray-800 text-sm">Psittacidés</p>
-                <p className="text-xs text-gray-500">Fruits frais + légumes</p>
-              </div>
-              <span className="bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full font-medium">12:00</span>
+        )}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-3 mb-3">
+            <p className="text-xs font-semibold text-red-500">⚠️ ERREUR</p>
+            <p className="text-sm text-gray-700">{error}</p>
+          </div>
+        )}
+        <div className="bg-white rounded-xl border border-gray-200 p-3 mb-3">
+          <p className="text-xs font-semibold text-gray-500 mb-2">RÉSUMÉ</p>
+          <div className="space-y-1">
+            <div className="flex justify-between text-xs">
+              <span className="text-gray-500">Espèces</span>
+              <span className="font-medium">{stats?.animals?.species ?? '—'}</span>
             </div>
-          </div>
-          <div className="bg-red-50 border border-red-200 rounded-xl p-3">
-            <p className="text-xs font-semibold text-red-500 mb-1">⚠️ ALERTE</p>
-            <p className="text-sm font-medium text-gray-800">Température élevée</p>
-            <p className="text-xs text-gray-500">Serre Reptiles · 38.2°C</p>
-          </div>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 'scan',
-    name: 'Scanner QR',
-    icon: '📷',
-    content: (
-      <div className="bg-gray-900 h-full flex flex-col items-center justify-center">
-        <div className="relative w-48 h-48 border-2 border-white rounded-2xl flex items-center justify-center mb-6">
-          <div className="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-green-400 rounded-tl-lg"></div>
-          <div className="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-green-400 rounded-tr-lg"></div>
-          <div className="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-green-400 rounded-bl-lg"></div>
-          <div className="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-green-400 rounded-br-lg"></div>
-          <div className="text-4xl">🦜</div>
-        </div>
-        <p className="text-white text-sm font-medium mb-1">Scanner le QR code de l'animal</p>
-        <p className="text-gray-400 text-xs text-center px-8">Pointez la caméra vers le QR code sur l'enclos ou la bague de l'animal</p>
-        <div className="mt-6 bg-green-600 text-white px-6 py-2 rounded-full text-sm font-medium">
-          Résultat : AM-042 — Ara Macao
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 'animal',
-    name: 'Fiche Animal',
-    icon: '🐾',
-    content: (
-      <div className="bg-white h-full overflow-y-auto">
-        <div className="bg-gradient-to-r from-green-600 to-green-700 px-4 pt-8 pb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center text-3xl">🦜</div>
-            <div>
-              <h2 className="text-white font-bold text-lg">Ara Macao AM-042</h2>
-              <p className="text-green-200 text-xs">Ara macao · ♂ Mâle · 7 ans</p>
+            <div className="flex justify-between text-xs">
+              <span className="text-gray-500">Employés</span>
+              <span className="font-medium">{stats?.hr?.employees ?? '—'}</span>
+            </div>
+            <div className="flex justify-between text-xs">
+              <span className="text-gray-500">Articles stock</span>
+              <span className="font-medium">{stats?.stock?.total ?? '—'}</span>
             </div>
           </div>
         </div>
-        <div className="px-4 py-4 space-y-3">
-          <div className="grid grid-cols-2 gap-2">
-            {[
-              { label: 'Poids', value: '1.12 kg', icon: '⚖️' },
-              { label: 'Enclos', value: 'Volière A', icon: '🏠' },
-              { label: 'Dernier soin', value: 'il y a 2j', icon: '💊' },
-              { label: 'Prochain repas', value: '12:00', icon: '🍽️' },
-            ].map((item) => (
-              <div key={item.label} className="bg-gray-50 rounded-xl p-3">
-                <div className="text-lg mb-1">{item.icon}</div>
-                <div className="font-bold text-gray-800 text-sm">{item.value}</div>
-                <div className="text-xs text-gray-500">{item.label}</div>
-              </div>
-            ))}
-          </div>
-          <div className="bg-blue-50 border border-blue-100 rounded-xl p-3">
-            <p className="text-xs font-semibold text-blue-600 mb-1">NOTE VÉTÉRINAIRE</p>
-            <p className="text-xs text-gray-700">Comportement nuptial observé depuis 3 semaines. Surveiller la prise alimentaire.</p>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <button className="bg-green-600 text-white py-2 rounded-xl text-sm font-medium">
-              ✓ Repas effectué
-            </button>
-            <button className="bg-blue-600 text-white py-2 rounded-xl text-sm font-medium">
-              + Ajouter soin
-            </button>
-          </div>
-        </div>
       </div>
-    ),
-  },
-  {
-    id: 'notifications',
-    name: 'Notifications',
-    icon: '🔔',
-    content: (
-      <div className="bg-gray-50 h-full overflow-y-auto">
-        <div className="px-4 pt-8 pb-4">
-          <h2 className="font-bold text-gray-900 text-lg">Notifications</h2>
-        </div>
-        <div className="space-y-2 px-4">
-          {[
-            { icon: '🔴', title: 'Température critique', desc: 'Serre Reptiles : 38.2°C (max 35°C)', time: 'il y a 30min', read: false },
-            { icon: '🍽️', title: 'Repas en attente', desc: 'Dendrobatidés — 08:30 non effectué', time: 'il y a 2h', read: false },
-            { icon: '💊', title: 'Traitement à administrer', desc: 'BC-001 — Antiparasitaire mensuel', time: 'il y a 4h', read: true },
-            { icon: '🐣', title: 'Nouvelle naissance', desc: 'Dendrobates azureus — 3 têtards', time: 'il y a 1j', read: true },
-            { icon: '📋', title: 'Rapport hebdomadaire', desc: 'Rapport de la semaine disponible', time: 'il y a 2j', read: true },
-          ].map((notif, i) => (
-            <div key={i} className={`rounded-xl p-3 ${notif.read ? 'bg-white border border-gray-100' : 'bg-white border-l-4 border-l-green-500 border border-gray-100'}`}>
-              <div className="flex gap-3 items-start">
-                <span className="text-xl flex-shrink-0">{notif.icon}</span>
-                <div className="flex-1 min-w-0">
-                  <p className={`text-sm ${notif.read ? 'text-gray-700' : 'font-semibold text-gray-900'}`}>{notif.title}</p>
-                  <p className="text-xs text-gray-500 truncate">{notif.desc}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">{notif.time}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    ),
-  },
-];
+    </div>
+  );
 
-export default function MobileAppPage() {
-  const [activeScreen, setActiveScreen] = useState('home');
-  const currentScreen = mobileScreens.find(s => s.id === activeScreen) || mobileScreens[0];
+  const AnimalsScreen = () => (
+    <div className="h-full bg-gray-50 flex flex-col">
+      <div className="bg-white px-4 py-3 border-b border-gray-200">
+        <h2 className="font-bold text-gray-900">Animaux</h2>
+        <p className="text-xs text-gray-500">{stats?.animals?.alive ?? 0} animaux vivants · {stats?.animals?.species ?? 0} espèces</p>
+      </div>
+      <div className="flex-1 p-4 flex items-center justify-center">
+        <div className="text-center text-gray-400">
+          <p className="text-4xl mb-3">🐾</p>
+          <p className="font-medium text-gray-600">Liste des animaux</p>
+          <p className="text-xs mt-1">Disponible dans l&apos;interface admin</p>
+        </div>
+      </div>
+    </div>
+  );
+
+  const AlertsScreen = () => (
+    <div className="h-full bg-gray-50 flex flex-col">
+      <div className="bg-white px-4 py-3 border-b border-gray-200">
+        <h2 className="font-bold text-gray-900">Alertes</h2>
+        <p className="text-xs text-gray-500">{stats?.stock?.lowStock ?? 0} alertes stock faible</p>
+      </div>
+      <div className="flex-1 p-4">
+        {(stats?.stock?.lowStock ?? 0) > 0 ? (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-3">
+            <p className="text-xs font-semibold text-red-500 mb-1">⚠️ STOCK FAIBLE</p>
+            <p className="text-sm font-medium text-gray-800">{stats?.stock?.lowStock} article(s) en rupture imminente</p>
+            <p className="text-xs text-gray-500">Vérifiez le module Stock</p>
+          </div>
+        ) : (
+          <div className="text-center py-8 text-gray-400">
+            <p className="text-4xl mb-3">✅</p>
+            <p className="font-medium text-gray-600">Aucune alerte active</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+
+  const ProfileScreen = () => (
+    <div className="h-full bg-gray-50 flex flex-col">
+      <div className="bg-white px-4 py-3 border-b border-gray-200">
+        <h2 className="font-bold text-gray-900">Profil</h2>
+      </div>
+      <div className="flex-1 p-4 flex items-center justify-center">
+        <div className="text-center text-gray-400">
+          <p className="text-4xl mb-3">👤</p>
+          <p className="font-medium text-gray-600">Profil utilisateur</p>
+          <p className="text-xs mt-1">Gérez votre compte depuis l&apos;interface admin</p>
+        </div>
+      </div>
+    </div>
+  );
+
+  const screens: Record<Screen, JSX.Element> = {
+    home: <HomeScreen />,
+    animals: <AnimalsScreen />,
+    alerts: <AlertsScreen />,
+    profile: <ProfileScreen />,
+  };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      {/* Header */}
-      <div className="flex justify-between items-start mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Application Mobile LFTG</h1>
-          <p className="text-gray-500 text-sm mt-1">Simulateur Expo / React Native — iOS & Android</p>
-        </div>
-        <div className="flex gap-2">
-          <span className="text-sm bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full border">
-            📱 Expo SDK 50 · React Native 0.73
-          </span>
-        </div>
+    <div className="p-6 space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">Application Mobile LFTG</h1>
+        <p className="text-gray-500 mt-1">Prévisualisation de l&apos;app mobile — données en temps réel</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-8">
-        {/* Phone Simulator */}
-        <div className="flex flex-col items-center">
-          <div className="relative">
-            {/* Phone frame */}
-            <div className="w-72 h-[580px] bg-gray-900 rounded-[3rem] border-4 border-gray-800 shadow-2xl overflow-hidden relative">
-              {/* Status bar */}
-              <div className="bg-black h-8 flex items-center justify-between px-6">
-                <span className="text-white text-xs font-medium">9:41</span>
-                <div className="w-20 h-4 bg-black rounded-full border border-gray-700 flex items-center justify-center">
-                  <div className="w-10 h-2 bg-gray-800 rounded-full"></div>
-                </div>
-                <div className="flex gap-1 items-center">
-                  <span className="text-white text-xs">●●●</span>
-                  <span className="text-white text-xs">📶</span>
-                  <span className="text-white text-xs">🔋</span>
-                </div>
-              </div>
+      {/* KPIs */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {loading ? (
+          Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm animate-pulse">
+              <div className="h-3 bg-gray-200 rounded w-2/3 mb-2" />
+              <div className="h-7 bg-gray-200 rounded w-1/2" />
+            </div>
+          ))
+        ) : (
+          [
+            { label: 'Animaux vivants', value: stats?.animals?.alive ?? 0, color: 'text-green-600' },
+            { label: 'Espèces', value: stats?.animals?.species ?? 0, color: 'text-blue-600' },
+            { label: 'Couvées actives', value: stats?.animals?.activeBroods ?? 0, color: 'text-purple-600' },
+            { label: 'Alertes stock', value: stats?.stock?.lowStock ?? 0, color: stats?.stock?.lowStock ? 'text-red-600' : 'text-gray-600' },
+          ].map((kpi) => (
+            <div key={kpi.label} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+              <p className="text-xs text-gray-500 uppercase tracking-wide">{kpi.label}</p>
+              <p className={`text-2xl font-bold mt-1 ${kpi.color}`}>{kpi.value}</p>
+            </div>
+          ))
+        )}
+      </div>
 
-              {/* Screen content */}
-              <div className="h-[calc(100%-8rem)] overflow-hidden">
-                {currentScreen.content}
+      {/* Simulateur mobile */}
+      <div className="flex gap-8 items-start">
+        {/* Téléphone */}
+        <div className="flex-shrink-0">
+          <div className="w-64 bg-gray-900 rounded-3xl p-3 shadow-2xl">
+            <div className="bg-black rounded-2xl overflow-hidden" style={{ height: '520px' }}>
+              {/* Notch */}
+              <div className="bg-black h-6 flex items-center justify-center">
+                <div className="w-16 h-3 bg-gray-800 rounded-full" />
               </div>
-
-              {/* Bottom nav */}
-              <div className="absolute bottom-0 left-0 right-0 h-16 bg-white border-t border-gray-200 flex items-center">
-                {mobileScreens.map((screen) => (
+              {/* Écran */}
+              <div className="bg-white" style={{ height: '460px', overflow: 'hidden' }}>
+                {screens[activeScreen]}
+              </div>
+              {/* Barre de navigation */}
+              <div className="bg-white border-t border-gray-200 h-14 flex items-center justify-around px-4">
+                {[
+                  { screen: 'home' as Screen, icon: '🏠', label: 'Accueil' },
+                  { screen: 'animals' as Screen, icon: '🐾', label: 'Animaux' },
+                  { screen: 'alerts' as Screen, icon: '🔔', label: 'Alertes' },
+                  { screen: 'profile' as Screen, icon: '👤', label: 'Profil' },
+                ].map(({ screen, icon, label }) => (
                   <button
-                    key={screen.id}
-                    onClick={() => setActiveScreen(screen.id)}
-                    className={`flex-1 flex flex-col items-center gap-0.5 py-2 ${activeScreen === screen.id ? 'text-green-600' : 'text-gray-400'}`}
+                    key={screen}
+                    onClick={() => setActiveScreen(screen)}
+                    className={`flex flex-col items-center gap-0.5 ${activeScreen === screen ? 'text-green-600' : 'text-gray-400'}`}
                   >
-                    <span className="text-lg">{screen.icon}</span>
-                    <span className="text-[9px] font-medium">{screen.name}</span>
+                    <span className="text-lg">{icon}</span>
+                    <span className="text-xs">{label}</span>
                   </button>
                 ))}
               </div>
             </div>
-
-            {/* Home indicator */}
-            <div className="w-24 h-1 bg-gray-300 rounded-full mx-auto mt-3"></div>
           </div>
         </div>
 
-        {/* Features & Info */}
-        <div className="space-y-6">
+        {/* Infos techniques */}
+        <div className="flex-1 space-y-4">
           <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <h3 className="font-semibold text-gray-800 mb-3">📱 Fonctionnalités de l'app</h3>
-            <div className="space-y-3">
+            <h3 className="font-semibold text-gray-900 mb-3">Stack technique</h3>
+            <div className="space-y-2 text-sm">
               {[
-                { icon: '📷', title: 'Scanner QR Code', desc: 'Identification instantanée des animaux par QR code ou NFC', status: 'done' },
-                { icon: '🔔', title: 'Notifications push', desc: 'Alertes temps réel : repas, soins, alertes critiques', status: 'done' },
-                { icon: '📋', title: 'Fiches animaux', desc: 'Consultation et mise à jour des données depuis le terrain', status: 'done' },
-                { icon: '🌐', title: 'Mode hors-ligne', desc: 'Synchronisation différée — fonctionne sans connexion', status: 'done' },
-                { icon: '🗺️', title: 'Carte GPS', desc: 'Visualisation des balises GPS sur carte interactive', status: 'in-progress' },
-                { icon: '📸', title: 'Photos & vidéos', desc: 'Capture et annotation directe depuis l\'app', status: 'planned' },
-              ].map((feat) => (
-                <div key={feat.title} className="flex items-start gap-3">
-                  <span className="text-xl flex-shrink-0">{feat.icon}</span>
-                  <div className="flex-1">
-                    <div className="flex justify-between items-center">
-                      <span className="font-medium text-gray-800 text-sm">{feat.title}</span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${
-                        feat.status === 'done' ? 'bg-green-100 text-green-700' :
-                        feat.status === 'in-progress' ? 'bg-yellow-100 text-yellow-700' :
-                        'bg-gray-100 text-gray-500'
-                      }`}>
-                        {feat.status === 'done' ? '✓ Disponible' : feat.status === 'in-progress' ? '⏳ En cours' : '📅 Planifié'}
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-500">{feat.desc}</p>
-                  </div>
+                { label: 'Framework', value: 'Expo + React Native' },
+                { label: 'Langage', value: 'TypeScript' },
+                { label: 'UI', value: 'TailwindCSS (NativeWind)' },
+                { label: 'Base de données', value: 'Drizzle ORM + MySQL/TiDB' },
+                { label: 'Auth', value: 'Manus-Oauth (JWT)' },
+                { label: 'API', value: 'LFTG Platform API v15.0.0' },
+              ].map(({ label, value }) => (
+                <div key={label} className="flex justify-between">
+                  <span className="text-gray-500">{label}</span>
+                  <span className="font-medium text-gray-900">{value}</span>
                 </div>
               ))}
             </div>
           </div>
-
           <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <h3 className="font-semibold text-gray-800 mb-3">🛠️ Stack technique</h3>
-            <div className="grid grid-cols-2 gap-2">
+            <h3 className="font-semibold text-gray-900 mb-3">Fonctionnalités prévues</h3>
+            <div className="space-y-2">
               {[
-                { label: 'Framework', value: 'Expo SDK 50' },
-                { label: 'UI', value: 'React Native 0.73' },
-                { label: 'Navigation', value: 'Expo Router' },
-                { label: 'State', value: 'Zustand' },
-                { label: 'Offline', value: 'WatermelonDB' },
-                { label: 'Push', value: 'Expo Notifications' },
-                { label: 'QR Code', value: 'expo-barcode-scanner' },
-                { label: 'Carte', value: 'react-native-maps' },
-              ].map((tech) => (
-                <div key={tech.label} className="bg-gray-50 rounded-lg p-2">
-                  <p className="text-xs text-gray-500">{tech.label}</p>
-                  <p className="text-sm font-medium text-gray-800">{tech.value}</p>
-                </div>
+                '✅ Consultation des animaux en temps réel',
+                '✅ Alertes push (stock faible, santé animaux)',
+                '✅ Suivi des couvées',
+                '🔄 Scan QR code pour identification animaux',
+                '🔄 Saisie des soins depuis le terrain',
+                '🔄 Mode hors-ligne avec synchronisation',
+              ].map((f) => (
+                <p key={f} className="text-sm text-gray-700">{f}</p>
               ))}
             </div>
-          </div>
-
-          <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-            <h3 className="font-semibold text-green-800 mb-2">📥 Téléchargement</h3>
-            <div className="flex gap-3">
-              <button className="flex-1 bg-black text-white py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1">
-                🍎 App Store
-              </button>
-              <button className="flex-1 bg-green-700 text-white py-2 rounded-lg text-xs font-medium flex items-center justify-center gap-1">
-                🤖 Google Play
-              </button>
-            </div>
-            <p className="text-xs text-green-600 mt-2 text-center">Version 1.0.0 — Bêta privée</p>
           </div>
         </div>
       </div>

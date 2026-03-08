@@ -36,7 +36,12 @@ def analyze_page(path: Path) -> dict:
     # Détecter les données statiques / mock
     has_mock = bool(re.search(r'(isDemoMode|demoData|DEMO_DATA|mockData|hardcoded|placeholder)', content, re.I))
     has_useeffect = 'useEffect' in content or has_usequery
-    has_fetch = bool(re.search(r'(fetch|axios|api\.get|api\.post|api\.put|api\.delete|\.get\(|\.post\()', content))
+    # Détecter les appels API : fetch, axios, api.get, apiObj.method(), .then(, .catch(
+    has_fetch = bool(re.search(r'(fetch|axios|api\.get|api\.post|api\.put|api\.delete|\.get\(|\.post\(|\.patch\(|\.delete\()', content))
+    # Détecter aussi les appels sur des objets API nommés (ex: dashboardApi.stats(), enclosApi.get())
+    has_named_api_call = bool(re.search(r'[a-zA-Z]+Api\.[a-zA-Z]+\(', content))
+    if has_named_api_call:
+        has_fetch = True  # Considérer comme fetch si appel sur un objet API nommé
     has_loading = bool(re.search(r'(loading|isLoading|setLoading|isFetching)', content))
     has_error = bool(re.search(r'(isError|error\.message|setError|catch\s*\(|onError)', content))
     has_form = bool(re.search(r'(onSubmit|handleSubmit|<form|<Form)', content, re.I))
@@ -462,6 +467,25 @@ def main():
              {"name": "Rapports avancés CITES", "status": "done", "page": "/admin/advanced-reports"},
              {"name": "Galerie Photo", "status": "done", "page": "/admin/gallery"},
              {"name": "Fix gallery backend (GET /gallery)", "status": "done", "page": "/admin/gallery"},
+         ]},
+        {"id": "sprint12", "name": "Sprint 12 — Stripe, Webhooks, Workflows, Auto-reports, Security, Import, API v2", "status": "done", "completedAt": "2026-03-08",
+         "tasks": [
+             {"name": "Stripe & Paiements", "status": "done", "page": "/admin/stripe"},
+             {"name": "Webhooks", "status": "done", "page": "/admin/webhooks"},
+             {"name": "Workflows & Automatisation", "status": "done", "page": "/admin/workflows"},
+             {"name": "Rapports automatiques", "status": "done", "page": "/admin/auto-reports"},
+             {"name": "Sécurité & Audit", "status": "done", "page": "/admin/security"},
+             {"name": "Import de données", "status": "done", "page": "/admin/import"},
+             {"name": "API Publique v2", "status": "done", "page": "/admin/api-v2"},
+             {"name": "Fix PDFDocument import (advanced-reports)", "status": "done", "page": "/admin/advanced-reports"},
+         ]},
+        {"id": "sprint13", "name": "Sprint 13 — Contact Messages, Checkout Stripe, Pages Publiques", "status": "done", "completedAt": "2026-03-08",
+         "tasks": [
+             {"name": "Module Contact Messages (backend + DB)", "status": "done", "page": "/admin/contact-messages"},
+             {"name": "Page Contact Messages connectée", "status": "done", "page": "/admin/contact-messages"},
+             {"name": "Checkout Stripe connecté", "status": "done", "page": "/public/checkout"},
+             {"name": "Page publique vitrine mise à jour", "status": "done", "page": "/public"},
+             {"name": "Tables ContactMessage & ContactReply créées", "status": "done", "page": "/admin/contact-messages"},
          ]},
     ]
 
