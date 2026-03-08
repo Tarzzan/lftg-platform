@@ -1,182 +1,159 @@
 'use client';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { api } from '@/lib/api';
 import { useState } from 'react';
 
-const devices = [
-  { id: 'D001', name: 'iPhone 15 — admin@lftg.fr', platform: 'iOS', status: 'active', lastSeen: 'Il y a 2 min' },
-  { id: 'D002', name: 'Pixel 8 — soigneur@lftg.fr', platform: 'Android', status: 'active', lastSeen: 'Il y a 15 min' },
-  { id: 'D003', name: 'iPad Pro — veterinaire@lftg.fr', platform: 'iOS', status: 'active', lastSeen: 'Il y a 1h' },
-  { id: 'D004', name: 'Galaxy S24 — gestionnaire@lftg.fr', platform: 'Android', status: 'inactive', lastSeen: 'Il y a 2j' },
-];
+interface PushSubscription {
+  id: string;
+  endpoint?: string;
+  userAgent?: string;
+  createdAt?: string;
+  userId?: string;
+}
 
-const history = [
-  { time: '12:05', title: 'Alerte critique', body: 'Température anormale — Enclos Reptiles', target: 'Tous', status: 'delivered', count: 4 },
-  { time: '11:30', title: 'Rappel soins', body: 'Nourrissage Python réticulé A042 à 12h00', target: 'soigneur@lftg.fr', status: 'delivered', count: 1 },
-  { time: '10:15', title: 'Nouveau parrainage', body: 'Léa Martin parraine désormais Kaa', target: 'admin@lftg.fr', status: 'delivered', count: 1 },
-  { time: '09:00', title: 'Rapport hebdomadaire', body: 'Votre rapport de la semaine est disponible', target: 'Tous', status: 'delivered', count: 4 },
-];
+export default function PushFCMPage() {
+  const [broadcastForm, setBroadcastForm] = useState({ title: '', body: '', url: '' });
+  const [broadcastResult, setBroadcastResult] = useState<string | null>(null);
 
-const topics = [
-  { name: 'alerts.critical', subscribers: 4, description: 'Alertes critiques (santé, sécurité)' },
-  { name: 'alerts.warning', subscribers: 3, description: 'Alertes d\'avertissement' },
-  { name: 'feeding.reminders', subscribers: 2, description: 'Rappels de nourrissage' },
-  { name: 'reports.weekly', subscribers: 4, description: 'Rapports hebdomadaires' },
-  { name: 'sponsorship.news', subscribers: 1, description: 'Nouvelles des parrainages' },
-];
+  const { data: vapidKey } = useQuery<{ publicKey: string }>({
+    queryKey: ['push-vapid'],
+    queryFn: async () => {
+      const res = await api.get('/push/vapid-public-key');
+      return res.data;
+    },
+  });
 
-export default function PushFcmPage() {
-  const [tab, setTab] = useState<'devices' | 'send' | 'history' | 'topics'>('devices');
-  const [title, setTitle] = useState('');
-  const [body, setBody] = useState('');
-  const [target, setTarget] = useState('all');
+  const { data: subscriptions = [], isLoading } = useQuery<PushSubscription[]>({
+    queryKey: ['push-subscriptions'],
+    queryFn: async () => {
+      const res = await api.get('/push/subscriptions');
+      return Array.isArray(res.data) ? res.data : [];
+    },
+  });
+
+  const broadcastMutation = useMutation({
+    mutationFn: async (data: typeof broadcastForm) => {
+      const res = await api.post('/push/broadcast', data);
+      return res.data;
+    },
+    onSuccess: (data) => {
+      setBroadcastResult(`Notification envoyée à ${data.sent || 0} abonné(s)`);
+      setBroadcastForm({ title: '', body: '', url: '' });
+    },
+    onError: () => {
+      setBroadcastResult('Erreur lors de l\'envoi');
+    },
+  });
+
+  const testMutation = useMutation({
+    mutationFn: async () => {
+      const res = await api.post('/push/test', { title: 'Test LFTG', body: 'Notification de test' });
+      return res.data;
+    },
+    onSuccess: () => {
+      setBroadcastResult('Notification de test envoyée');
+    },
+  });
 
   return (
     <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Notifications Push FCM</h1>
-          <p className="text-gray-500 mt-1">Firebase Cloud Messaging — iOS & Android</p>
+      <div>
+        <h1 className="text-2xl font-bold text-white">Notifications Push & FCM</h1>
+        <p className="text-slate-400 mt-1">Gestion des notifications push Web et Firebase Cloud Messaging</p>
+      </div>
+
+      {/* KPIs */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-slate-800 rounded-xl p-4 border border-slate-700">
+          <p className="text-slate-400 text-sm">Abonnés actifs</p>
+          <p className="text-2xl font-bold text-indigo-400 mt-1">{subscriptions.length}</p>
         </div>
-        <div className="flex gap-2">
-          <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">Firebase v13</span>
-          <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">4 appareils actifs</span>
+        <div className="bg-slate-800 rounded-xl p-4 border border-slate-700">
+          <p className="text-slate-400 text-sm">Clé VAPID</p>
+          <p className={`text-sm font-semibold mt-1 ${vapidKey ? 'text-green-400' : 'text-red-400'}`}>
+            {vapidKey ? '✅ Configurée' : '❌ Non configurée'}
+          </p>
+          {vapidKey && (
+            <p className="text-slate-500 text-xs mt-1 font-mono truncate">{vapidKey.publicKey?.substring(0, 20)}...</p>
+          )}
+        </div>
+        <div className="bg-slate-800 rounded-xl p-4 border border-slate-700">
+          <p className="text-slate-400 text-sm">Test rapide</p>
+          <button
+            onClick={() => testMutation.mutate()}
+            disabled={testMutation.isPending}
+            className="mt-2 bg-purple-600 hover:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors disabled:opacity-50"
+          >
+            {testMutation.isPending ? 'Envoi...' : '🔔 Envoyer test'}
+          </button>
         </div>
       </div>
 
-      {/* Métriques */}
-      <div className="grid grid-cols-4 gap-4">
-        {[
-          { label: 'Appareils enregistrés', value: '4', color: 'text-blue-600' },
-          { label: 'Notifications envoyées (7j)', value: '127', color: 'text-green-600' },
-          { label: 'Taux de livraison', value: '99.2%', color: 'text-purple-600' },
-          { label: 'Topics actifs', value: '5', color: 'text-orange-600' },
-        ].map((m) => (
-          <div key={m.label} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
-            <p className="text-sm text-gray-500">{m.label}</p>
-            <p className={`text-2xl font-bold mt-1 ${m.color}`}>{m.value}</p>
-          </div>
-        ))}
+      {/* Résultat broadcast */}
+      {broadcastResult && (
+        <div className="bg-green-900/30 border border-green-700 rounded-xl p-4">
+          <p className="text-green-400 font-semibold">✅ {broadcastResult}</p>
+          <button onClick={() => setBroadcastResult(null)} className="text-green-300 text-sm mt-1 hover:text-white">Fermer</button>
+        </div>
+      )}
+
+      {/* Formulaire broadcast */}
+      <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+        <h2 className="text-white font-semibold mb-4">📢 Diffuser une notification</h2>
+        <div className="space-y-3">
+          <input
+            type="text"
+            placeholder="Titre de la notification *"
+            value={broadcastForm.title}
+            onChange={(e) => setBroadcastForm({ ...broadcastForm, title: e.target.value })}
+            className="w-full bg-slate-700 text-white rounded-lg px-4 py-2 border border-slate-600 focus:outline-none focus:border-indigo-500"
+          />
+          <textarea
+            placeholder="Corps du message *"
+            value={broadcastForm.body}
+            onChange={(e) => setBroadcastForm({ ...broadcastForm, body: e.target.value })}
+            rows={3}
+            className="w-full bg-slate-700 text-white rounded-lg px-4 py-2 border border-slate-600 focus:outline-none focus:border-indigo-500"
+          />
+          <input
+            type="url"
+            placeholder="URL de redirection (optionnel)"
+            value={broadcastForm.url}
+            onChange={(e) => setBroadcastForm({ ...broadcastForm, url: e.target.value })}
+            className="w-full bg-slate-700 text-white rounded-lg px-4 py-2 border border-slate-600 focus:outline-none focus:border-indigo-500"
+          />
+          <button
+            onClick={() => broadcastMutation.mutate(broadcastForm)}
+            disabled={broadcastMutation.isPending || !broadcastForm.title || !broadcastForm.body}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50"
+          >
+            {broadcastMutation.isPending ? 'Envoi en cours...' : `📤 Envoyer à ${subscriptions.length} abonné(s)`}
+          </button>
+        </div>
       </div>
 
-      {/* Onglets */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="flex border-b border-gray-200">
-          {(['devices', 'send', 'history', 'topics'] as const).map((t) => (
-            <button
-              key={t}
-              onClick={() => setTab(t)}
-              className={`px-6 py-3 text-sm font-medium ${tab === t ? 'border-b-2 border-orange-500 text-orange-600' : 'text-gray-500 hover:text-gray-700'}`}
-            >
-              {t === 'devices' ? 'Appareils' : t === 'send' ? 'Envoyer' : t === 'history' ? 'Historique' : 'Topics'}
-            </button>
-          ))}
-        </div>
-
-        {tab === 'devices' && (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
-                <tr>
-                  {['Appareil', 'Plateforme', 'Statut', 'Dernière activité'].map((h) => (
-                    <th key={h} className="px-4 py-3 text-left">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {devices.map((d) => (
-                  <tr key={d.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm font-medium text-gray-900">{d.name}</td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded text-xs font-medium ${d.platform === 'iOS' ? 'bg-gray-100 text-gray-700' : 'bg-green-100 text-green-700'}`}>
-                        {d.platform}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${d.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
-                        ● {d.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-500">{d.lastSeen}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      {/* Liste des abonnés */}
+      <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+        <h2 className="text-white font-semibold mb-4">Appareils abonnés</h2>
+        {isLoading ? (
+          <div className="flex items-center justify-center h-20">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-500" />
           </div>
-        )}
-
-        {tab === 'send' && (
-          <div className="p-6 space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Destinataire</label>
-              <select value={target} onChange={(e) => setTarget(e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm">
-                <option value="all">Tous les appareils</option>
-                <option value="admin">admin@lftg.fr</option>
-                <option value="soigneur">soigneur@lftg.fr</option>
-                <option value="veterinaire">veterinaire@lftg.fr</option>
-                <option value="topic_alerts">Topic: alerts.critical</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Titre</label>
-              <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Titre de la notification" className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-              <textarea value={body} onChange={(e) => setBody(e.target.value)} rows={3} placeholder="Corps de la notification..." className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-            </div>
-            <button className="px-6 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 text-sm font-medium">
-              ▶ Envoyer la notification
-            </button>
-          </div>
-        )}
-
-        {tab === 'history' && (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
-                <tr>
-                  {['Heure', 'Titre', 'Message', 'Destinataire', 'Appareils', 'Statut'].map((h) => (
-                    <th key={h} className="px-4 py-3 text-left">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {history.map((h, i) => (
-                  <tr key={i} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-mono text-sm text-gray-500">{h.time}</td>
-                    <td className="px-4 py-3 text-sm font-medium text-gray-900">{h.title}</td>
-                    <td className="px-4 py-3 text-sm text-gray-600 max-w-xs truncate">{h.body}</td>
-                    <td className="px-4 py-3 text-sm text-gray-500">{h.target}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700">{h.count}</td>
-                    <td className="px-4 py-3">
-                      <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">✓ {h.status}</span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {tab === 'topics' && (
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
-                <tr>
-                  {['Topic FCM', 'Abonnés', 'Description'].map((h) => (
-                    <th key={h} className="px-4 py-3 text-left">{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {topics.map((t) => (
-                  <tr key={t.name} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-mono text-sm font-medium text-orange-700">{t.name}</td>
-                    <td className="px-4 py-3 text-sm text-gray-700">{t.subscribers}</td>
-                    <td className="px-4 py-3 text-sm text-gray-500">{t.description}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        ) : subscriptions.length === 0 ? (
+          <p className="text-slate-400 text-sm">Aucun appareil abonné aux notifications push</p>
+        ) : (
+          <div className="space-y-2">
+            {subscriptions.map((sub, i) => (
+              <div key={sub.id || i} className="bg-slate-700/50 rounded-lg p-3 flex items-center justify-between">
+                <div>
+                  <p className="text-white text-sm font-medium">{sub.userAgent || 'Appareil inconnu'}</p>
+                  {sub.createdAt && (
+                    <p className="text-slate-400 text-xs">Abonné le {new Date(sub.createdAt).toLocaleDateString('fr-FR')}</p>
+                  )}
+                </div>
+                <span className="text-green-400 text-xs font-semibold">✅ Actif</span>
+              </div>
+            ))}
           </div>
         )}
       </div>

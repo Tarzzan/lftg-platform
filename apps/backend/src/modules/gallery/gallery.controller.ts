@@ -1,14 +1,21 @@
-import { Controller, Post, Body } from '@nestjs/common';
-import { GalleryService } from './gallery.service';
+import { Controller, Post, Get, Body, UseGuards } from "@nestjs/common";
+import { GalleryService } from "./gallery.service";
+import { JwtAuthGuard } from "../../common/guards/jwt-auth.guard";
 
-@Controller('gallery')
+@Controller("gallery")
+@UseGuards(JwtAuthGuard)
 export class GalleryController {
   constructor(private readonly galleryService: GalleryService) {}
 
-  @Post('upload-url')
+  @Get()
+  async getGallery() {
+    return this.galleryService.getGallery();
+  }
+
+  @Post("upload-url")
   async getUploadUrl(
-    @Body('fileName') fileName: string,
-    @Body('contentType') contentType: string,
+    @Body("fileName") fileName: string,
+    @Body("contentType") contentType: string,
   ) {
     const url = await this.galleryService.getPresignedUrl(fileName, contentType);
     return { url };

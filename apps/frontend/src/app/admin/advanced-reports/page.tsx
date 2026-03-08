@@ -1,292 +1,157 @@
 'use client';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/lib/api';
 import { useState } from 'react';
 
-const reports = [
-  {
-    id: 'RPT-CITES-2025',
-    title: 'Rapport CITES Annuel 2025',
-    type: 'cites',
-    date: '2026-01-15',
-    status: 'generated',
-    pages: 24,
-    size: '1.8 MB',
-    desc: 'Déclaration annuelle des animaux CITES Annexe I et II — DREAL Guyane',
-  },
-  {
-    id: 'RPT-ANNUAL-2025',
-    title: 'Bilan Annuel 2025',
-    type: 'annual',
-    date: '2026-01-20',
-    status: 'generated',
-    pages: 48,
-    size: '3.2 MB',
-    desc: 'Rapport complet d\'activité : naissances, décès, soins, finances, visiteurs',
-  },
-  {
-    id: 'RPT-VET-Q4-2025',
-    title: 'Rapport Vétérinaire T4 2025',
-    type: 'veterinary',
-    date: '2026-01-05',
-    status: 'generated',
-    pages: 16,
-    size: '0.9 MB',
-    desc: 'Bilan sanitaire trimestriel — interventions, traitements, mortalité',
-  },
-  {
-    id: 'RPT-CITES-Q1-2026',
-    title: 'Rapport CITES T1 2026',
-    type: 'cites',
-    date: '2026-03-01',
-    status: 'generating',
-    pages: null,
-    size: null,
-    desc: 'En cours de génération — Déclaration trimestrielle',
-  },
-  {
-    id: 'RPT-DRAAF-2025',
-    title: 'Déclaration DRAAF 2025',
-    type: 'regulatory',
-    date: '2026-02-01',
-    status: 'generated',
-    pages: 8,
-    size: '0.4 MB',
-    desc: 'Direction Régionale de l\'Alimentation, de l\'Agriculture et de la Forêt',
-  },
-];
-
-const stats2025 = [
-  { label: 'Naissances', value: 47, trend: '+12%', icon: '🐣', color: 'text-green-600' },
-  { label: 'Décès', value: 8, trend: '-25%', icon: '💔', color: 'text-red-600' },
-  { label: 'Acquisitions', value: 15, trend: '+5%', icon: '📥', color: 'text-blue-600' },
-  { label: 'Cessions', value: 6, trend: '-10%', icon: '📤', color: 'text-orange-600' },
-  { label: 'Soins vétérinaires', value: 234, trend: '+8%', icon: '💊', color: 'text-purple-600' },
-  { label: 'Visiteurs', value: 12847, trend: '+22%', icon: '👥', color: 'text-teal-600' },
-];
-
-const typeConfig: Record<string, { label: string; color: string; icon: string }> = {
-  cites: { label: 'CITES', color: 'bg-green-100 text-green-700', icon: '🌿' },
-  annual: { label: 'Annuel', color: 'bg-blue-100 text-blue-700', icon: '📅' },
-  veterinary: { label: 'Vétérinaire', color: 'bg-red-100 text-red-700', icon: '🏥' },
-  regulatory: { label: 'Réglementaire', color: 'bg-orange-100 text-orange-700', icon: '⚖️' },
-};
-
 export default function AdvancedReportsPage() {
-  const [activeTab, setActiveTab] = useState<'reports' | 'generate' | 'stats'>('reports');
-  const [generating, setGenerating] = useState(false);
-  const [selectedType, setSelectedType] = useState('cites');
-  const [selectedYear, setSelectedYear] = useState('2025');
+  const [downloadingCites, setDownloadingCites] = useState(false);
+  const [downloadingAnnual, setDownloadingAnnual] = useState(false);
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
-  const handleGenerate = () => {
-    setGenerating(true);
-    setTimeout(() => setGenerating(false), 2500);
+  const downloadCitesReport = async () => {
+    setDownloadingCites(true);
+    try {
+      const res = await api.get('/advanced-reports/cites', { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `rapport-cites-${new Date().toISOString().split('T')[0]}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error('Erreur téléchargement rapport CITES', e);
+    } finally {
+      setDownloadingCites(false);
+    }
   };
 
+  const downloadAnnualReport = async () => {
+    setDownloadingAnnual(true);
+    try {
+      const res = await api.get(`/advanced-reports/annual?year=${selectedYear}`, { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `rapport-annuel-${selectedYear}.pdf`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error('Erreur téléchargement rapport annuel', e);
+    } finally {
+      setDownloadingAnnual(false);
+    }
+  };
+
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
+
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="flex justify-between items-start mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Rapports Avancés</h1>
-          <p className="text-gray-500 text-sm mt-1">Rapports CITES, bilans annuels, rapports vétérinaires et déclarations réglementaires</p>
-        </div>
-        <button
-          onClick={() => setActiveTab('generate')}
-          className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700"
-        >
-          + Générer un rapport
-        </button>
+    <div className="p-6 space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-white">Rapports Avancés</h1>
+        <p className="text-slate-400 mt-1">Génération de rapports PDF officiels pour les autorités et la direction</p>
       </div>
 
-      {/* KPIs */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
-        {[
-          { label: 'Rapports générés', value: reports.filter(r => r.status === 'generated').length, icon: '📄', color: 'text-blue-600', bg: 'bg-blue-50' },
-          { label: 'En cours', value: reports.filter(r => r.status === 'generating').length, icon: '⏳', color: 'text-yellow-600', bg: 'bg-yellow-50' },
-          { label: 'Rapports CITES', value: reports.filter(r => r.type === 'cites').length, icon: '🌿', color: 'text-green-600', bg: 'bg-green-50' },
-          { label: 'Déclarations réglementaires', value: reports.filter(r => r.type === 'regulatory').length, icon: '⚖️', color: 'text-orange-600', bg: 'bg-orange-50' },
-        ].map((kpi) => (
-          <div key={kpi.label} className={`${kpi.bg} rounded-xl p-4 border border-gray-100`}>
-            <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
-              <span>{kpi.icon}</span>{kpi.label}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Rapport CITES */}
+        <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-3xl">🌿</span>
+            <div>
+              <h2 className="text-white font-semibold">Rapport CITES</h2>
+              <p className="text-slate-400 text-sm">Inventaire des espèces protégées et permis</p>
             </div>
-            <div className={`text-3xl font-bold ${kpi.color}`}>{kpi.value}</div>
           </div>
-        ))}
-      </div>
-
-      {/* Tabs */}
-      <div className="flex gap-2 mb-6 border-b border-gray-200">
-        {[
-          { key: 'reports', label: '📄 Rapports générés' },
-          { key: 'generate', label: '⚙️ Générer un rapport' },
-          { key: 'stats', label: '📊 Statistiques 2025' },
-        ].map((tab) => (
+          <div className="space-y-3 mb-4">
+            <div className="bg-slate-700/50 rounded-lg p-3">
+              <p className="text-slate-300 text-sm">Ce rapport inclut :</p>
+              <ul className="text-slate-400 text-sm mt-2 space-y-1">
+                <li>• Liste complète des animaux CITES Annexe I, II et III</li>
+                <li>• Statut des permis d'importation/exportation</li>
+                <li>• Historique des acquisitions et transferts</li>
+                <li>• Conformité réglementaire</li>
+              </ul>
+            </div>
+          </div>
           <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key as any)}
-            className={`px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-colors ${
-              activeTab === tab.key
-                ? 'border-green-600 text-green-700 bg-green-50'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
-            }`}
+            onClick={downloadCitesReport}
+            disabled={downloadingCites}
+            className="w-full bg-green-700 hover:bg-green-600 text-white px-4 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            {tab.label}
+            {downloadingCites ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                Génération en cours...
+              </>
+            ) : (
+              <>📥 Télécharger le rapport CITES (PDF)</>
+            )}
           </button>
-        ))}
+        </div>
+
+        {/* Rapport annuel */}
+        <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-3xl">📊</span>
+            <div>
+              <h2 className="text-white font-semibold">Rapport Annuel</h2>
+              <p className="text-slate-400 text-sm">Bilan complet de l'exercice</p>
+            </div>
+          </div>
+          <div className="space-y-3 mb-4">
+            <div className="bg-slate-700/50 rounded-lg p-3">
+              <p className="text-slate-300 text-sm">Ce rapport inclut :</p>
+              <ul className="text-slate-400 text-sm mt-2 space-y-1">
+                <li>• Naissances, décès et acquisitions de l'année</li>
+                <li>• Bilan financier (ventes, dépenses)</li>
+                <li>• Activités de formation et certification</li>
+                <li>• Indicateurs de performance clés</li>
+              </ul>
+            </div>
+            <div>
+              <label className="text-slate-400 text-sm block mb-1">Année du rapport</label>
+              <select
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+                className="w-full bg-slate-700 text-white rounded-lg px-4 py-2 border border-slate-600 focus:outline-none focus:border-indigo-500"
+              >
+                {years.map((y) => (
+                  <option key={y} value={y}>{y}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <button
+            onClick={downloadAnnualReport}
+            disabled={downloadingAnnual}
+            className="w-full bg-indigo-700 hover:bg-indigo-600 text-white px-4 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {downloadingAnnual ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                Génération en cours...
+              </>
+            ) : (
+              <>📥 Télécharger le rapport {selectedYear} (PDF)</>
+            )}
+          </button>
+        </div>
       </div>
 
-      {/* Reports Tab */}
-      {activeTab === 'reports' && (
-        <div className="space-y-3">
-          {reports.map((report) => {
-            const config = typeConfig[report.type];
-            return (
-              <div key={report.id} className="bg-white rounded-xl border border-gray-200 p-4 flex justify-between items-center">
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-xl flex-shrink-0">
-                    {config.icon}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 mb-0.5">
-                      <h3 className="font-semibold text-gray-900">{report.title}</h3>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${config.color}`}>{config.label}</span>
-                      {report.status === 'generating' && (
-                        <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full animate-pulse">⏳ En cours...</span>
-                      )}
-                    </div>
-                    <p className="text-xs text-gray-500">{report.desc}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">
-                      {report.date}
-                      {report.pages && ` · ${report.pages} pages`}
-                      {report.size && ` · ${report.size}`}
-                    </p>
-                  </div>
-                </div>
-                {report.status === 'generated' && (
-                  <div className="flex gap-2">
-                    <button className="text-xs bg-gray-100 text-gray-600 px-3 py-1.5 rounded-lg hover:bg-gray-200">
-                      👁️ Aperçu
-                    </button>
-                    <button className="text-xs bg-green-600 text-white px-3 py-1.5 rounded-lg hover:bg-green-700">
-                      ⬇️ Télécharger PDF
-                    </button>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Generate Tab */}
-      {activeTab === 'generate' && (
-        <div className="max-w-lg">
-          <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
-            <h3 className="font-semibold text-gray-800">Paramètres du rapport</h3>
-
-            <div>
-              <label className="text-sm font-medium text-gray-700 block mb-1">Type de rapport</label>
-              <div className="grid grid-cols-2 gap-2">
-                {Object.entries(typeConfig).map(([key, config]) => (
-                  <button
-                    key={key}
-                    onClick={() => setSelectedType(key)}
-                    className={`p-3 rounded-xl border-2 text-left transition-all ${
-                      selectedType === key ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-gray-300'
-                    }`}
-                  >
-                    <span className="text-lg">{config.icon}</span>
-                    <p className="text-sm font-medium text-gray-800 mt-1">{config.label}</p>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-gray-700 block mb-1">Période</label>
-              <div className="flex gap-2">
-                <select
-                  value={selectedYear}
-                  onChange={e => setSelectedYear(e.target.value)}
-                  className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm"
-                >
-                  {['2026', '2025', '2024', '2023'].map(y => <option key={y}>{y}</option>)}
-                </select>
-                <select className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm">
-                  <option>Annuel</option>
-                  <option>T1</option>
-                  <option>T2</option>
-                  <option>T3</option>
-                  <option>T4</option>
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <label className="text-sm font-medium text-gray-700 block mb-1">Format de sortie</label>
-              <div className="flex gap-2">
-                {['PDF', 'Excel', 'Word'].map(fmt => (
-                  <button key={fmt} className="flex-1 border border-gray-300 rounded-lg py-2 text-sm hover:border-green-500 hover:bg-green-50">
-                    {fmt}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <button
-              onClick={handleGenerate}
-              disabled={generating}
-              className={`w-full py-3 rounded-xl text-sm font-medium transition-all ${
-                generating
-                  ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                  : 'bg-green-600 text-white hover:bg-green-700'
-              }`}
-            >
-              {generating ? '⏳ Génération en cours...' : '⚙️ Générer le rapport'}
-            </button>
+      {/* Informations réglementaires */}
+      <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
+        <h2 className="text-white font-semibold mb-3">ℹ️ Informations réglementaires</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+          <div className="bg-slate-700/50 rounded-lg p-3">
+            <p className="text-yellow-400 font-semibold mb-1">Convention CITES</p>
+            <p className="text-slate-300">La Convention sur le commerce international des espèces de faune et de flore sauvages menacées d'extinction (CITES) réglemente le commerce de plus de 38 000 espèces.</p>
+          </div>
+          <div className="bg-slate-700/50 rounded-lg p-3">
+            <p className="text-blue-400 font-semibold mb-1">Obligations déclaratives</p>
+            <p className="text-slate-300">Les établissements détenant des espèces protégées sont tenus de produire un inventaire annuel et de déclarer tout mouvement d'animaux CITES.</p>
           </div>
         </div>
-      )}
-
-      {/* Stats Tab */}
-      {activeTab === 'stats' && (
-        <div className="space-y-6">
-          <div className="grid grid-cols-3 gap-4">
-            {stats2025.map((stat) => (
-              <div key={stat.label} className="bg-white rounded-xl border border-gray-200 p-4">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <p className="text-gray-500 text-sm">{stat.icon} {stat.label}</p>
-                    <p className={`text-3xl font-bold ${stat.color} mt-1`}>{stat.value.toLocaleString()}</p>
-                  </div>
-                  <span className={`text-xs px-2 py-1 rounded-full font-medium ${
-                    stat.trend.startsWith('+') ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                  }`}>
-                    {stat.trend}
-                  </span>
-                </div>
-                <p className="text-xs text-gray-400 mt-2">vs 2024</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <h3 className="font-semibold text-gray-800 mb-4">📈 Évolution mensuelle 2025 — Naissances</h3>
-            <div className="flex items-end gap-2 h-24">
-              {[3, 5, 4, 6, 8, 7, 5, 4, 3, 4, 6, 5].map((val, i) => (
-                <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                  <div
-                    className="w-full bg-green-400 rounded-t hover:bg-green-500 transition-colors"
-                    style={{ height: `${(val / 8) * 100}%` }}
-                    title={`${val} naissances`}
-                  ></div>
-                  <span className="text-xs text-gray-400">{['J','F','M','A','M','J','J','A','S','O','N','D'][i]}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+      </div>
     </div>
   );
 }

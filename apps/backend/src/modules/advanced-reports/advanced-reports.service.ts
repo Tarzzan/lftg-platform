@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { Injectable } from '@nestjs/common';
-import * as PDFDocument from 'pdfkit';
+import PDFDocument from "pdfkit";
 
 @Injectable()
 export class AdvancedReportsService {
