@@ -1,9 +1,14 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Modal, FormField, Input, Select, Textarea, ModalFooter, BtnPrimary, BtnSecondary } from '../ui/Modal';
+import { Modal, ModalFooter } from '@/components/ui/Modal';
+import { FormField } from '@/components/ui/FormField';
+import { Input } from '@/components/ui/Input';
+import { Select } from '@/components/ui/Select';
+import { Textarea } from '@/components/ui/Textarea';
+import { BtnPrimary, BtnSecondary } from '@/components/ui/Button';
 import { stockApi } from '@/lib/api';
+import { toast } from 'sonner';
 
 interface StockArticleModalProps {
   isOpen: boolean;
@@ -11,17 +16,33 @@ interface StockArticleModalProps {
   article?: any; // null = create, object = edit
 }
 
-const CATEGORIES = ['Alimentation', 'Médicaments', 'Équipement', 'Nettoyage', 'Incubation', 'Autre'];
-const UNITS = ['kg', 'g', 'L', 'mL', 'pièce(s)', 'boîte(s)', 'sachet(s)', 'flacon(s)'];
+// Valeurs en majuscules pour correspondre exactement à la base de données
+export const CATEGORIES: { value: string; label: string; color: string }[] = [
+  { value: 'ALIMENTATION',  label: 'Alimentation',  color: 'bg-green-100 text-green-700' },
+  { value: 'VETERINAIRE',   label: 'Vétérinaire',   color: 'bg-blue-100 text-blue-700' },
+  { value: 'ENTRETIEN',     label: 'Entretien',     color: 'bg-yellow-100 text-yellow-700' },
+  { value: 'MATERIEL',      label: 'Matériel',      color: 'bg-purple-100 text-purple-700' },
+  { value: 'INCUBATION',    label: 'Incubation',    color: 'bg-orange-100 text-orange-700' },
+  { value: 'AUTRE',         label: 'Autre',         color: 'bg-gray-100 text-gray-600' },
+];
+
+export function getCategoryMeta(value: string) {
+  return CATEGORIES.find((c) => c.value === value?.toUpperCase()) ?? {
+    value: value ?? '',
+    label: value ?? '—',
+    color: 'bg-gray-100 text-gray-500',
+  };
+}
+
+const UNITS = ['kg', 'g', 'L', 'mL', 'pièce(s)', 'boîte(s)', 'sachet(s)', 'flacon(s)', 'sac'];
 
 export function StockArticleModal({ isOpen, onClose, article }: StockArticleModalProps) {
   const qc = useQueryClient();
   const isEdit = !!article;
-
   const [form, setForm] = useState({
     name: '',
     description: '',
-    category: 'Alimentation',
+    category: 'ALIMENTATION',
     unit: 'kg',
     quantity: '0',
     lowStockThreshold: '5',
@@ -35,7 +56,8 @@ export function StockArticleModal({ isOpen, onClose, article }: StockArticleModa
       setForm({
         name: article.name ?? '',
         description: article.description ?? '',
-        category: article.category ?? 'Alimentation',
+        // Normaliser en majuscules pour correspondre à nos valeurs
+        category: (article.category ?? 'ALIMENTATION').toUpperCase(),
         unit: article.unit ?? 'kg',
         quantity: String(article.quantity ?? 0),
         lowStockThreshold: String(article.lowStockThreshold ?? 5),
@@ -43,7 +65,16 @@ export function StockArticleModal({ isOpen, onClose, article }: StockArticleModa
         supplier: article.supplier ?? '',
       });
     } else {
-      setForm({ name: '', description: '', category: 'Alimentation', unit: 'kg', quantity: '0', lowStockThreshold: '5', location: '', supplier: '' });
+      setForm({
+        name: '',
+        description: '',
+        category: 'ALIMENTATION',
+        unit: 'kg',
+        quantity: '0',
+        lowStockThreshold: '5',
+        location: '',
+        supplier: '',
+      });
     }
     setErrors({});
   }, [article, isOpen]);
@@ -63,7 +94,11 @@ export function StockArticleModal({ isOpen, onClose, article }: StockArticleModa
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['stock-articles'] });
       qc.invalidateQueries({ queryKey: ['stock-alerts'] });
+      toast.success(isEdit ? 'Article modifié avec succès' : 'Article créé avec succès');
       onClose();
+    },
+    onError: () => {
+      toast.error('Une erreur est survenue. Veuillez réessayer.');
     },
   });
 
@@ -81,7 +116,7 @@ export function StockArticleModal({ isOpen, onClose, article }: StockArticleModa
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={isEdit ? 'Modifier l\'article' : 'Nouvel article de stock'} size="lg">
+    <Modal isOpen={isOpen} onClose={onClose} title={isEdit ? "Modifier l'article" : 'Nouvel article de stock'} size="lg">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <FormField label="Nom *" error={errors.name}>
@@ -89,15 +124,15 @@ export function StockArticleModal({ isOpen, onClose, article }: StockArticleModa
           </FormField>
           <FormField label="Catégorie">
             <Select value={form.category} onChange={set('category')}>
-              {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
+              {CATEGORIES.map((c) => (
+                <option key={c.value} value={c.value}>{c.label}</option>
+              ))}
             </Select>
           </FormField>
         </div>
-
         <FormField label="Description">
           <Textarea value={form.description} onChange={set('description')} placeholder="Description optionnelle..." />
         </FormField>
-
         <div className="grid grid-cols-3 gap-4">
           <FormField label="Quantité *" error={errors.quantity}>
             <Input type="number" min="0" step="0.01" value={form.quantity} onChange={set('quantity')} />
@@ -111,7 +146,6 @@ export function StockArticleModal({ isOpen, onClose, article }: StockArticleModa
             <Input type="number" min="0" step="0.01" value={form.lowStockThreshold} onChange={set('lowStockThreshold')} />
           </FormField>
         </div>
-
         <div className="grid grid-cols-2 gap-4">
           <FormField label="Emplacement">
             <Input value={form.location} onChange={set('location')} placeholder="Ex: Entrepôt A, Étagère 3" />
@@ -120,17 +154,15 @@ export function StockArticleModal({ isOpen, onClose, article }: StockArticleModa
             <Input value={form.supplier} onChange={set('supplier')} placeholder="Ex: AgroTrop Guyane" />
           </FormField>
         </div>
-
         {mutation.isError && (
           <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-lg">
             Une erreur est survenue. Veuillez réessayer.
           </p>
         )}
-
         <ModalFooter>
           <BtnSecondary type="button" onClick={onClose}>Annuler</BtnSecondary>
           <BtnPrimary type="submit" loading={mutation.isPending}>
-            {isEdit ? 'Enregistrer' : 'Créer l\'article'}
+            {isEdit ? 'Enregistrer' : "Créer l'article"}
           </BtnPrimary>
         </ModalFooter>
       </form>

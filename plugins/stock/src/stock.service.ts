@@ -27,6 +27,7 @@ export class StockService {
     const { minQuantity, category, price, ...rest } = data;
     const mapped = {
       ...rest,
+      ...(category !== undefined ? { category } : {}),
       ...(minQuantity !== undefined ? { lowStockThreshold: minQuantity } : {}),
       ...(price !== undefined ? { unitPrice: price } : {}),
     };
@@ -38,6 +39,7 @@ export class StockService {
     const { minQuantity, category, price, ...rest } = data;
     const mapped = {
       ...rest,
+      ...(category !== undefined ? { category } : {}),
       ...(minQuantity !== undefined ? { lowStockThreshold: minQuantity } : {}),
       ...(price !== undefined ? { unitPrice: price } : {}),
     };

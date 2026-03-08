@@ -5,10 +5,9 @@ import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, Search, Filter, Download, Package, AlertTriangle, Edit2, Trash2, ArrowUpDown } from 'lucide-react';
 import { stockApi, exportApi } from '@/lib/api';
-import { StockArticleModal } from '@/components/modals/StockArticleModal';
+import { StockArticleModal, getCategoryMeta, CATEGORIES } from '@/components/modals/StockArticleModal';
 import { StockMovementModal } from '@/components/modals/StockMovementModal';
 
-const CATEGORIES = ['Tous', 'Alimentation', 'Médicaments', 'Équipement', 'Nettoyage', 'Incubation', 'Autre'];
 
 export default function StockArticlesPage() {
   const qc = useQueryClient();
@@ -100,15 +99,15 @@ export default function StockArticlesPage() {
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <Filter className="w-4 h-4 text-muted-foreground" />
-            {CATEGORIES.map((cat) => (
+            {["Tous", ...CATEGORIES.map((c) => c.value)].map((cat) => (
               <button
                 key={cat}
                 onClick={() => setCategory(cat)}
-                className={`px-3 py-1.5 text-xs rounded-full font-medium transition-colors ${
-                  category === cat ? 'bg-forest-600 text-white' : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                  category === cat ? "bg-forest-600 text-white" : "bg-muted text-muted-foreground hover:bg-muted/80"
                 }`}
               >
-                {cat}
+                {cat === "Tous" ? "Tous" : getCategoryMeta(cat).label}
               </button>
             ))}
           </div>
@@ -171,7 +170,10 @@ export default function StockArticlesPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <span className="text-xs bg-muted px-2 py-1 rounded-full text-muted-foreground">{item.category}</span>
+                      {(() => {
+                          const meta = getCategoryMeta(item.category);
+                          return <span className={`text-xs px-2 py-1 rounded-full font-medium ${meta.color}`}>{meta.label}</span>;
+                        })()}
                     </td>
                     <td className="px-4 py-3 text-right">
                       <span className={`text-sm font-semibold ${isAlert ? 'text-red-600' : 'text-foreground'}`}>
