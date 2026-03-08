@@ -1,10 +1,12 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { Controller, Get, Query, UseGuards} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { PrevisionsService } from './previsions.service';
 
 @ApiTags('Prévisions BI')
 @ApiBearerAuth()
-@Controller('previsions')
+@UseGuards(JwtAuthGuard)
+@@Controller('previsions')
 export class PrevisionsController {
   constructor(private readonly previsionsService: PrevisionsService) {}
 

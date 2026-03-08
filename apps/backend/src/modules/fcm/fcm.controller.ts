@@ -1,7 +1,9 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { Controller, Post, Body, UseGuards} from '@nestjs/common';
 import { FcmService } from './fcm.service';
 
-@Controller('fcm')
+@UseGuards(JwtAuthGuard)
+@@Controller('fcm')
 export class FcmController {
   constructor(private readonly fcmService: FcmService) {}
 

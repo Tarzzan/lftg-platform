@@ -1,10 +1,12 @@
+import { Public } from '../../common/decorators/public.decorator';
 import { Controller, Get, Post, Patch, Param, Body } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { PartnersService, CreatePartnerDto } from './partners.service';
 
 @ApiTags('Partenaires API')
 @ApiBearerAuth()
-@Controller('partners')
+@Public()
+@@Controller('partners')
 export class PartnersController {
   constructor(private readonly partnersService: PartnersService) {}
 

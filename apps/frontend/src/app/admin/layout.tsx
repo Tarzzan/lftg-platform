@@ -178,6 +178,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const handleLogout = () => {
     clearAuth();
+    document.cookie = "lftg_session=; path=/; max-age=0";
     router.push('/login');
   };
 

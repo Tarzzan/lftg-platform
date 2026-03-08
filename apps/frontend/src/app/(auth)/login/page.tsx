@@ -31,6 +31,8 @@ export default function LoginPage() {
     try {
       const res = await authApi.login(data.email, data.password);
       setAuth(res.user, res.accessToken ?? res.access_token);
+      // Cookie de session pour le middleware Next.js
+      document.cookie = `lftg_session=1; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Strict`;
       router.push('/admin');
     } catch (e: any) {
       setError(e.response?.data?.message || 'Identifiants invalides');

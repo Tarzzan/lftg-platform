@@ -1,8 +1,10 @@
-import { Controller, Get, Query, Res } from '@nestjs/common';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { Controller, Get, Query, Res, UseGuards} from '@nestjs/common';
 import { AdvancedReportsService } from './advanced-reports.service';
 import { Response } from 'express';
 
-@Controller('advanced-reports')
+@UseGuards(JwtAuthGuard)
+@@Controller('advanced-reports')
 export class AdvancedReportsController {
   constructor(private readonly advancedReportsService: AdvancedReportsService) {}
 

@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { Controller, Get, Post, Body, Param, UseGuards} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { SyncService, SyncPayload } from './sync.service';
 
 @ApiTags('Synchronisation hors-ligne')
 @ApiBearerAuth()
-@Controller('sync')
+@UseGuards(JwtAuthGuard)
+@@Controller('sync')
 export class SyncController {
   constructor(private readonly syncService: SyncService) {}
 

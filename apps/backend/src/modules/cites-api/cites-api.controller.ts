@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Query, Param } from '@nestjs/common';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { Controller, Get, Post, Body, Query, Param, UseGuards} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CitesApiService } from './cites-api.service';
 
 @ApiTags('CITES API Externe')
 @ApiBearerAuth()
-@Controller('cites-api')
+@UseGuards(JwtAuthGuard)
+@@Controller('cites-api')
 export class CitesApiController {
   constructor(private readonly citesApiService: CitesApiService) {}
 

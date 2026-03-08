@@ -1,7 +1,9 @@
+import { Public } from '../../common/decorators/public.decorator';
 import { Controller, Get, Post, Body, Param, Put } from '@nestjs/common';
 import { SitesService } from './sites.service';
 
-@Controller('sites')
+@Public()
+@@Controller('sites')
 export class SitesController {
   constructor(private readonly sitesService: SitesService) {}
 

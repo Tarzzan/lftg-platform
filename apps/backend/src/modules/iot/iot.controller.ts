@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Body, Param } from '@nestjs/common';
+import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { Controller, Get, Post, Body, Param, UseGuards} from '@nestjs/common';
 import { IotService } from './iot.service';
 
-@Controller('iot')
+@UseGuards(JwtAuthGuard)
+@@Controller('iot')
 export class IotController {
   constructor(private readonly iotService: IotService) {}
 
