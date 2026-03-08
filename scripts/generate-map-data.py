@@ -23,39 +23,68 @@ def analyze_page(path: Path) -> dict:
     lines = len(content.splitlines())
 
     # Détecter les imports API réels (deux patterns : import { ...Api } et import { api })
-    api_imports = re.findall(r"import\s*\{([^}]+)\}\s*from\s*['\"]@/lib/api['\"]", content)
+    api_imports = re.findall(r"import\s*\{([^}]+)\}\s*from\s*['\"]@/lib/api['\"]" , content)
     api_calls = []
     for imp in api_imports:
         api_calls.extend([x.strip() for x in imp.split(',') if 'Api' in x or x.strip() == 'api'])
+    # Si import { api } est présent, c'est suffisant
+    if not api_calls and re.search(r"import\s*\{[^}]*\bapi\b[^}]*\}\s*from\s*['\"]@/lib/api['\"]" , content):
+        api_calls = ['api']
 
     # Détecter useQuery / useMutation (react-query) comme indicateur fort de connexion API
     has_usequery = bool(re.search(r'useQuery|useMutation|useInfiniteQuery', content))
     if has_usequery:
         api_calls = api_calls or ['api']  # Considérer comme connecté si useQuery présent
 
+    # Détecter react-hook-form (useForm) comme indicateur de formulaire connecté
+    has_useform = bool(re.search(r'useForm|useController|useFieldArray', content))
+
     # Détecter les données statiques / mock
     has_mock = bool(re.search(r'(isDemoMode|demoData|DEMO_DATA|mockData|hardcoded|placeholder)', content, re.I))
-    has_useeffect = 'useEffect' in content or has_usequery
+    has_useeffect = 'useEffect' in content or has_usequery or 'useRef' in content
     # Détecter les appels API : fetch, axios, api.get, apiObj.method(), .then(, .catch(
     has_fetch = bool(re.search(r'(fetch|axios|api\.get|api\.post|api\.put|api\.delete|\.get\(|\.post\(|\.patch\(|\.delete\()', content))
     # Détecter aussi les appels sur des objets API nommés (ex: dashboardApi.stats(), enclosApi.get())
     has_named_api_call = bool(re.search(r'[a-zA-Z]+Api\.[a-zA-Z]+\(', content))
     if has_named_api_call:
         has_fetch = True  # Considérer comme fetch si appel sur un objet API nommé
-    has_loading = bool(re.search(r'(loading|isLoading|setLoading|isFetching)', content))
-    has_error = bool(re.search(r'(isError|error\.message|setError|catch\s*\(|onError)', content))
-    has_form = bool(re.search(r'(onSubmit|handleSubmit|<form|<Form)', content, re.I))
+    # Détecter les imports dynamiques (ex: import('swagger-ui-react'))
+    has_dynamic_import = bool(re.search(r'import\s*\(', content))
+    if has_dynamic_import and has_useeffect:
+        has_fetch = True  # Import dynamique dans useEffect = page connectée
+    # Détecter fetch natif avec variable API locale (ex: const API = process.env... ou const apiUrl = ...)
+    has_env_api = bool(re.search(r"const\s+(API|apiUrl|BASE_URL|API_URL)\s*=\s*(process\.env|['\"`])", content))
+    if has_env_api and bool(re.search(r'fetch\s*\(', content)):
+        api_calls = api_calls or ['api']  # Fetch natif avec variable API = page connectée
+        has_fetch = True
+    has_loading = bool(re.search(r'(loading|isLoading|setLoading|isFetching|disabled)', content))
+    has_error = bool(re.search(r'(isError|error\.message|setError|catch\s*\(|onError|errors\.)', content))
+    has_form = bool(re.search(r'(onSubmit|handleSubmit|<form|<Form|useForm)', content, re.I))
     has_table = bool(re.search(r'(<table|<Table|\.map\(.*=>\s*<tr)', content, re.I))
     has_search = bool(re.search(r'(search|filter|Search|Filter)', content))
+    # Pages sans useEffect mais avec appels API déclenchés par événements (boutons)
+    has_event_driven_api = api_calls and has_fetch and has_loading and not has_useeffect
+
+    # Cas spéciaux : pages fonctionnelles par nature
+    is_redirect_page = bool(re.search(r'^import.*redirect.*next.*navigation', content, re.M)) and lines < 10
+    is_pwa_offline = bool(re.search(r'(hors ligne|offline|connexion internet)', content, re.I)) and lines < 50
 
     # Déterminer le statut réel
-    if api_calls and has_useeffect and (has_fetch or has_usequery) and has_loading:
-        if has_error:
-            status = 'done'       # Connecté avec gestion d'erreur = terminé
+    if is_redirect_page or is_pwa_offline:
+        status = 'done'           # Pages système fonctionnelles par nature
+    elif api_calls and has_useeffect and (has_fetch or has_usequery) and has_loading:
+        if has_error or has_useform:
+            status = 'done'       # Connecté avec gestion d'erreur ou formulaire validé = terminé
         else:
             status = 'connected'  # Connecté mais sans gestion d'erreur
+    elif has_event_driven_api and has_error:
+        status = 'done'           # Page action (boutons) connectée avec gestion d'erreur
+    elif has_event_driven_api:
+        status = 'connected'      # Page action connectée sans gestion d'erreur
     elif has_useeffect and (has_fetch or has_usequery):
         status = 'connected'      # Connexion partielle
+    elif has_useform and has_fetch and has_error:
+        status = 'done'           # Formulaire connecté avec gestion d'erreur
     elif has_mock and not has_fetch and not has_usequery:
         status = 'stub'           # Données statiques uniquement
     elif lines < 80:
@@ -65,16 +94,20 @@ def analyze_page(path: Path) -> dict:
 
     # Calculer un score de complétude (0-100)
     score = 0
-    if api_calls:       score += 30
-    if has_useeffect:   score += 10
-    if has_fetch:       score += 15
-    if has_loading:     score += 10
-    if has_error:       score += 10
-    if has_form:        score += 10
-    if has_table:       score += 5
-    if has_search:      score += 5
-    if lines > 200:     score += 5
-    score = min(score, 100)
+    if is_redirect_page or is_pwa_offline: score = 100
+    else:
+        if api_calls:           score += 30
+        if has_useeffect:       score += 10
+        if has_fetch:           score += 15
+        if has_loading:         score += 10
+        if has_error:           score += 10
+        if has_form:            score += 10
+        if has_useform:         score += 5
+        if has_table:           score += 5
+        if has_search:          score += 5
+        if lines > 200:         score += 5
+        if has_dynamic_import:  score += 5
+        score = min(score, 100)
 
     return {
         'lines': lines,
