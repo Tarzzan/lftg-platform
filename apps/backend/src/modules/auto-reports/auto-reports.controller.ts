@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { Controller, Get, Post, Body, Param, Delete, UseGuards } from "@nestjs/common";
 import { JwtAuthGuard } from "../../common/guards/jwt-auth.guard";
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 const SCHEDULES = [
   { id: "S001", name: "Rapport mensuel CITES", frequency: "monthly", cronExpr: "0 0 1 * *", recipients: ["admin@lftg.fr", "draaf@guyane.fr"], type: "cites", status: "active", lastRun: null, nextRun: null },
@@ -10,6 +11,8 @@ const SCHEDULES = [
   { id: "S005", name: "Bilan annuel DRAAF", frequency: "yearly", cronExpr: "0 0 1 1 *", recipients: ["admin@lftg.fr", "draaf@guyane.fr"], type: "annual", status: "active", lastRun: null, nextRun: null },
 ];
 
+@ApiTags('auto-reports')
+@ApiBearerAuth()
 @Controller("auto-reports")
 @UseGuards(JwtAuthGuard)
 export class AutoReportsController {

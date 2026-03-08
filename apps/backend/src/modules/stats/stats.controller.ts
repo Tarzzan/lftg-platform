@@ -1,7 +1,10 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { StatsService } from './stats.service';
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
+@ApiTags('stats')
+@ApiBearerAuth()
 @Controller('stats')
 @UseGuards(JwtAuthGuard)
 export class StatsController {

@@ -1,12 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Modal, ModalFooter } from '@/components/ui/Modal';
-import { FormField } from '@/components/ui/FormField';
-import { Input } from '@/components/ui/Input';
-import { Select } from '@/components/ui/Select';
-import { Textarea } from '@/components/ui/Textarea';
-import { BtnPrimary, BtnSecondary } from '@/components/ui/Button';
+import { Modal, FormField, Input, Select, Textarea, ModalFooter, BtnPrimary, BtnSecondary } from '../ui/Modal';
 import { stockApi } from '@/lib/api';
 import { toast } from 'sonner';
 

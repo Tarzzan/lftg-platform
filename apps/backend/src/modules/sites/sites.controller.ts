@@ -1,9 +1,11 @@
 import { Public } from '../../common/decorators/public.decorator';
 import { Controller, Get, Post, Body, Param, Put } from '@nestjs/common';
 import { SitesService } from './sites.service';
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 @Public()
-@@Controller('sites')
+@ApiTags('sites')
+@Controller('sites')
 export class SitesController {
   constructor(private readonly sitesService: SitesService) {}
 

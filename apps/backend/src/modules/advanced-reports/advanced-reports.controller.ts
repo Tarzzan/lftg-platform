@@ -3,8 +3,11 @@ import { ApiTags, ApiBearerAuth, ApiOperation, ApiProduces } from '@nestjs/swagg
 import { Controller, Get, Query, Res, UseGuards} from '@nestjs/common';
 import { AdvancedReportsService } from './advanced-reports.service';
 import { Response } from 'express';
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 @UseGuards(JwtAuthGuard)
+@ApiTags('advanced-reports')
+@ApiBearerAuth()
 @Controller('advanced-reports')
 export class AdvancedReportsController {
   constructor(private readonly advancedReportsService: AdvancedReportsService) {}
