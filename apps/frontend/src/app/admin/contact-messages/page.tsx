@@ -64,8 +64,8 @@ export default function ContactMessagesPage() {
     try {
       setLoading(true);
       const url = filterStatus === 'all'
-        ? `${API}/plugins/contact/messages`
-        : `${API}/plugins/contact/messages?status=${filterStatus}`;
+        ? `${API}/contact-messages`
+        : `${API}/contact-messages?status=${filterStatus}`;
       const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -91,7 +91,7 @@ export default function ContactMessagesPage() {
   }, [fetchMessages]);
 
   const markAsRead = async (id: string) => {
-    await fetch(`${API}/plugins/contact/messages/${id}/status`, {
+    await fetch(`${API}/contact-messages/${id}/status`, {
       method: 'PATCH',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: 'READ' }),
@@ -101,7 +101,7 @@ export default function ContactMessagesPage() {
   };
 
   const archiveMessage = async (id: string) => {
-    await fetch(`${API}/plugins/contact/messages/${id}/status`, {
+    await fetch(`${API}/contact-messages/${id}/status`, {
       method: 'PATCH',
       headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: 'ARCHIVED' }),
@@ -114,7 +114,7 @@ export default function ContactMessagesPage() {
     if (!selectedMessage || !replyText.trim()) return;
     setReplying(true);
     try {
-      const res = await fetch(`${API}/plugins/contact/messages/${selectedMessage.id}/replies`, {
+      const res = await fetch(`${API}/contact-messages/${selectedMessage.id}/reply`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: replyText }),
