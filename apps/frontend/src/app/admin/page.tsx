@@ -36,7 +36,6 @@ const COLORS = ['#166534', '#d97706', '#1d4ed8', '#7c3aed', '#dc2626', '#0891b2'
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
-  if (statsLoading) return (<div className="space-y-6 p-6"><div className="flex items-center justify-between"><div className="space-y-2"><div className="h-7 w-48 animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg" /><div className="h-4 w-64 animate-pulse bg-gray-200 dark:bg-gray-700 rounded" /></div></div><div className="grid grid-cols-2 md:grid-cols-4 gap-4">{[1,2,3,4].map(i => <div key={i} className="lftg-card p-6 space-y-3"><div className="h-4 w-1/3 animate-pulse bg-gray-200 dark:bg-gray-700 rounded" /><div className="h-8 w-1/2 animate-pulse bg-gray-200 dark:bg-gray-700 rounded" /></div>)}</div><div className="lftg-card p-6"><div className="h-48 animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg" /></div></div>);
   return (
     <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg px-3 py-2">
       <p className="text-xs font-medium text-gray-900 dark:text-white mb-1">{label}</p>
@@ -267,6 +266,7 @@ export default function DashboardPage() {
   const activeWidgets = ALL_WIDGETS.filter(w => visibleWidgets.includes(w.id));
   const inactiveWidgets = ALL_WIDGETS.filter(w => !visibleWidgets.includes(w.id));
 
+  if (statsLoading) return (<div className="space-y-6 p-6"><div className="flex items-center justify-between"><div className="space-y-2"><div className="h-7 w-48 animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg" /><div className="h-4 w-64 animate-pulse bg-gray-200 dark:bg-gray-700 rounded" /></div></div><div className="grid grid-cols-2 md:grid-cols-4 gap-4">{[1,2,3,4].map(i => <div key={i} className="lftg-card p-6 space-y-3"><div className="h-4 w-1/3 animate-pulse bg-gray-200 dark:bg-gray-700 rounded" /><div className="h-8 w-1/2 animate-pulse bg-gray-200 dark:bg-gray-700 rounded" /></div>)}</div><div className="lftg-card p-6"><div className="h-48 animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg" /></div></div>);
   return (
     <div className="space-y-6">
       {/* En-tête */}
