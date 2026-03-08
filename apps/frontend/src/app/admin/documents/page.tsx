@@ -22,7 +22,8 @@ interface Document {
   url?: string;
 }
 
-const MOCK_DOCS: Document[] = [
+// Données de démonstration supprimées — données réelles via API
+// const _docs_REMOVED = [
   { id: '1', name: 'Permis_CITES_Amazona_2025.pdf', category: 'CITES', size: 245000, uploadedAt: '2025-01-15', uploadedBy: 'Admin', linkedTo: 'Amazona (E-01)', tags: ['cites', 'permis', 'annexe-ii'] },
   { id: '2', name: 'Certificat_sante_Ara_Bleu.pdf', category: 'MEDICAL', size: 180000, uploadedAt: '2026-01-20', uploadedBy: 'Dr. Rousseau', linkedTo: 'Ara Bleu (E-03)', tags: ['santé', 'vétérinaire'] },
   { id: '3', name: 'Facture_VT-2026-021.pdf', category: 'VENTE', size: 95000, uploadedAt: '2026-02-28', uploadedBy: 'Pierre Leblanc', linkedTo: 'VT-2026-021', tags: ['facture', 'vente'] },
@@ -65,7 +66,7 @@ export default function DocumentsPage() {
   });
 
   // Adapter les docs API au format attendu
-  const MOCK_DOCS = allDocs.map((doc: any) => ({
+  const docs = allDocs.map((doc: any) => ({
     id: doc.id,
     name: doc.name,
     category: doc.entityType?.toUpperCase() || 'AUTRE',
@@ -77,20 +78,20 @@ export default function DocumentsPage() {
     url: doc.url,
   }));
 
-  const filtered = MOCK_DOCS.filter((doc: any) => {
+  const filtered = docs.filter((doc: any) => {
     if (filterCategory !== 'ALL' && doc.category !== filterCategory) return false;
     if (search && !doc.name.toLowerCase().includes(search.toLowerCase())) return false;
     return true;
   });
 
-  const totalSize = MOCK_DOCS.reduce((sum: number, d: any) => sum + d.size, 0);
+  const totalSize = docs.reduce((sum: number, d: any) => sum + d.size, 0);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">📁 Gestion des documents</h1>
-          <p className="text-gray-500 text-sm mt-1">{isLoading ? 'Chargement...' : `${MOCK_DOCS.length} document${MOCK_DOCS.length !== 1 ? 's' : ''} · ${formatSize(totalSize)} au total`}</p>
+          <p className="text-gray-500 text-sm mt-1">{isLoading ? 'Chargement...' : `${docs.length} document${docs.length !== 1 ? 's' : ''} · ${formatSize(totalSize)} au total`}</p>
         </div>
         <button onClick={() => setShowUploadModal(true)} className="px-4 py-2 bg-forest-600 text-white rounded-lg text-sm hover:bg-forest-700 transition-colors">
           + Uploader un document

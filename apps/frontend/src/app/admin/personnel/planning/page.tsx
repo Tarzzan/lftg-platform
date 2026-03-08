@@ -38,7 +38,7 @@ export default function PlanningPage() {
   const [weekOffset, setWeekOffset] = useState(0);
   const [selectedDept, setSelectedDept] = useState('');
 
-  const { data: employees = [], isLoading } = useQuery({
+  const { data: employees = [], isLoading, isError, error } = useQuery({
     queryKey: ['personnel-employees'],
     queryFn: () => api.get('/plugins/personnel/employees').then(r => r.data),
   });

@@ -25,7 +25,7 @@ export default function CongesPage() {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ employeeId: '', type: 'conge_paye', startDate: '', endDate: '', reason: '' });
 
-  const { data: leaves = [], isLoading } = useQuery({
+  const { data: leaves = [], isLoading, isError, error } = useQuery({
     queryKey: ['leaves'],
     queryFn: () => api.get('/plugins/personnel/leaves').then(r => r.data),
   });

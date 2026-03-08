@@ -27,7 +27,7 @@ export default function HistoryPage() {
   const [filterAction, setFilterAction] = useState('ALL');
   const [search, setSearch] = useState('');
 
-  const { data: historyData = [], isLoading } = useQuery({
+  const { data: historyData = [], isLoading, isError, error } = useQuery({
     queryKey: ['history-recent'],
     queryFn: () => api.get('/history/recent?limit=200').then(r => r.data),
     refetchInterval: 30000,

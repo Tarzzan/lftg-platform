@@ -45,7 +45,8 @@ export default function GenealogyPage() {
   const [activeTab, setActiveTab] = useState<'tree' | 'inbreeding' | 'list'>('list');
   const [selectedAnimalId, setSelectedAnimalId] = useState<string | null>(null);
 
-  const { data: animals = [], isLoading: loadingAnimals } = useQuery({
+  const { data: animals = [], isLoading: loadingAnimals, isError }
+  = useQuery({
     queryKey: ['genealogy-animals'],
     queryFn: () => api.get('/genealogy').then(r => r.data),
   });

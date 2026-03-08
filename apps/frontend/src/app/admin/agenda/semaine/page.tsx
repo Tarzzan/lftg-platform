@@ -40,7 +40,7 @@ export default function AgendaSemainePage() {
   const startDate = weekDays[0].toISOString().split('T')[0];
   const endDate = weekDays[6].toISOString().split('T')[0];
 
-  const { data: events = [], isLoading } = useQuery({
+  const { data: events = [], isLoading, isError, error } = useQuery({
     queryKey: ['agenda-week', startDate, endDate],
     queryFn: () => api.get(`/agenda?startDate=${startDate}&endDate=${endDate}`).then(r => r.data),
   });

@@ -94,7 +94,8 @@ function CertificateCard({ cert }: { cert: any }) {
 
 // ─── Page principale ──────────────────────────────────────────────────────────
 export default function RecompensesPage() {
-  const { data: certificates = [], isLoading: loadingCerts } = useQuery({
+  const { data: certificates = [], isLoading: loadingCerts, isError }
+  = useQuery({
     queryKey: ['my-certificates'],
     queryFn: () => formationApi.getMyCertificates(),
   });

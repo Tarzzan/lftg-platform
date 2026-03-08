@@ -49,7 +49,7 @@ export default function EnclosPage() {
   const [selectedEnclos, setSelectedEnclos] = useState<Enclos | null>(null);
   const [form, setForm] = useState({ name: '', type: 'TERRARIUM', capacity: 1, location: '', notes: '' });
 
-  const { data: enclosList = [], isLoading } = useQuery<Enclos[]>({
+  const { data: enclosList = [], isLoading, isError, error } = useQuery<Enclos[]>({
     queryKey: ['enclos'],
     queryFn: async () => {
       const res = await api.get('/enclos');

@@ -238,7 +238,7 @@ function WelcomeBanner({ enrollments }: { enrollments: any[] }) {
 }
 
 export default function MonParcoursPage() {
-  const { data: enrollments = [], isLoading } = useQuery({
+  const { data: enrollments = [], isLoading, isError, error } = useQuery({
     queryKey: ['my-enrollments'],
     queryFn: () => formationApi.myEnrollments(),
   });

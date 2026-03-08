@@ -29,7 +29,8 @@ const statusConfig: Record<string, { label: string; color: string; bg: string; b
 };
 
 export default function VentesStatsPage() {
-  const { data: stats, isLoading: loadingStats } = useQuery<VentesStats>({
+  const { data: stats, isLoading: loadingStats, isError }
+  = useQuery<VentesStats>({
     queryKey: ['ventes-stats'],
     queryFn: async () => {
       const res = await api.get('/ventes/stats');

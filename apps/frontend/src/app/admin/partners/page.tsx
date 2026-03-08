@@ -39,7 +39,7 @@ export default function PartnersPage() {
   const [filterType, setFilterType] = useState('ALL');
   const [search, setSearch] = useState('');
 
-  const { data: partners = [], isLoading } = useQuery<Partner[]>({
+  const { data: partners = [], isLoading, isError, error } = useQuery<Partner[]>({
     queryKey: ['partners'],
     queryFn: async () => {
       const res = await api.get('/partners');

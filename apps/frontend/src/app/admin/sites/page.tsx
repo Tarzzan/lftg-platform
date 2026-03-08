@@ -37,7 +37,7 @@ export default function SitesPage() {
     description: '',
   });
 
-  const { data: sites = [], isLoading } = useQuery<Site[]>({
+  const { data: sites = [], isLoading, isError, error } = useQuery<Site[]>({
     queryKey: ['sites'],
     queryFn: async () => {
       const res = await api.get('/sites');

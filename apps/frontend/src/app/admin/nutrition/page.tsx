@@ -43,7 +43,7 @@ export default function NutritionPage() {
   const [activeTab, setActiveTab] = useState<'plans' | 'schedule' | 'stats'>('schedule');
   const [selectedPlan, setSelectedPlan] = useState<NutritionPlan | null>(null);
 
-  const { data: plans = [], isLoading: plansLoading } = useQuery<NutritionPlan[]>({
+  const { data: plans = [], isLoading: plansLoading , isError } = useQuery<NutritionPlan[]>({
     queryKey: ['nutrition-plans'],
     queryFn: () => api.get('/nutrition/plans').then(r => r.data),
   });

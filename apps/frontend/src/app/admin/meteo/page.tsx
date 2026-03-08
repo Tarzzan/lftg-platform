@@ -54,7 +54,8 @@ const getWeatherIcon = (desc?: string, icon?: string): string => {
 };
 
 export default function MeteoPage() {
-  const { data: current, isLoading: loadingCurrent } = useQuery<MeteoCurrentData>({
+  const { data: current, isLoading: loadingCurrent, isError }
+  = useQuery<MeteoCurrentData>({
     queryKey: ['meteo-current'],
     queryFn: async () => {
       const res = await api.get('/meteo/current');

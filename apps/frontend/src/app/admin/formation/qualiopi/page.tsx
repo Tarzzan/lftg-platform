@@ -361,7 +361,7 @@ export default function QualiopiPage() {
     queryFn: () => formationApi.cohorts(),
   });
 
-  const { data: dashboard, isLoading } = useQuery({
+  const { data: dashboard, isLoading, isError, error } = useQuery({
     queryKey: ['qualiopi', selectedCohort],
     queryFn: () => formationApi.getQualiopi(selectedCohort),
     enabled: !!selectedCohort,

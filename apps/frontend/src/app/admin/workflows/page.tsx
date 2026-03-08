@@ -16,7 +16,7 @@ const stateColors: Record<string, string> = {
 };
 
 export default function WorkflowsPage() {
-  const { data: instances, isLoading } = useQuery({
+  const { data: instances, isLoading , isError } = useQuery({
     queryKey: ['workflow-instances'],
     queryFn: () => workflowsApi.instances(),
   });

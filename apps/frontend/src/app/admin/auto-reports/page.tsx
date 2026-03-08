@@ -27,7 +27,7 @@ export default function AutoReportsPage() {
   const [form, setForm] = useState({ name: '', type: 'health', frequency: 'weekly', recipients: '' });
   const [runningId, setRunningId] = useState<string | null>(null);
 
-  const { data: schedules, isLoading } = useQuery({
+  const { data: schedules, isLoading, isError, error } = useQuery({
     queryKey: ['auto-reports-schedules'],
     queryFn: () => api.get('/auto-reports/schedules').then(r => r.data),
   });

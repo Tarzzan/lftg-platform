@@ -43,7 +43,7 @@ export default function CouveesPage() {
     notes: '',
   });
 
-  const { data: broods, isLoading } = useQuery({
+  const { data: broods, isLoading, isError, error } = useQuery({
     queryKey: ['broods'],
     queryFn: () => api.get('/plugins/animaux/broods').then(r => r.data),
   });

@@ -23,7 +23,7 @@ export default function EspecesPage() {
   const [editSpecies, setEditSpecies] = useState<Species | null>(null);
   const [form, setForm] = useState({ name: '', scientificName: '', category: 'OISEAU', description: '' });
 
-  const { data: species = [], isLoading } = useQuery<Species[]>({
+  const { data: species = [], isLoading, isError, error } = useQuery<Species[]>({
     queryKey: ['species'],
     queryFn: () => api.get('/plugins/animaux/species').then(r => r.data),
   });

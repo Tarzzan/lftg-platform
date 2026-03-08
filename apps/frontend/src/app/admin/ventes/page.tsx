@@ -58,7 +58,7 @@ export default function VentesPage() {
     items: [{ description: '', quantity: 1, unitPrice: 0, taxRate: 20 }],
   });
 
-  const { data: sales, isLoading } = useQuery({
+  const { data: sales, isLoading, isError, error } = useQuery({
     queryKey: ['sales', filterStatus, filterType, search],
     queryFn: () => api.get('/ventes', {
       params: { status: filterStatus || undefined, type: filterType || undefined, search: search || undefined },

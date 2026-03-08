@@ -94,7 +94,7 @@ export default function EmargementPage() {
   const [newSheet, setNewSheet] = useState({ title: '', sessionDate: '', duration: '7', expectedCount: '10' });
 
   const { data: cohorts = [] } = useQuery({ queryKey: ['cohorts'], queryFn: () => formationApi.cohorts() });
-  const { data: sheets = [], isLoading } = useQuery({
+  const { data: sheets = [], isLoading, isError, error } = useQuery({
     queryKey: ['attendance', selectedCohort],
     queryFn: () => formationApi.getAttendanceSheets(selectedCohort),
     enabled: !!selectedCohort,

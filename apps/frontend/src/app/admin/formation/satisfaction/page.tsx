@@ -282,7 +282,7 @@ export default function SatisfactionPage() {
   const [selectedCohort, setSelectedCohort] = useState<string>('');
   const [submitted, setSubmitted] = useState(false);
 
-  const { data: cohorts = [] } = useQuery({
+  const { data: cohorts = [] , isError } = useQuery({
     queryKey: ['cohorts'],
     queryFn: formationApi.cohorts,
   });

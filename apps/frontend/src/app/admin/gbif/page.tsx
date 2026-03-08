@@ -40,7 +40,7 @@ export default function GBIFPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSearch, setActiveSearch] = useState('');
 
-  const { data: species, isLoading } = useQuery<GBIFSearchResult>({
+  const { data: species, isLoading, isError, error } = useQuery<GBIFSearchResult>({
     queryKey: ['gbif-species', activeSearch],
     queryFn: async () => {
       const res = await api.get(`/gbif/species${activeSearch ? `?q=${encodeURIComponent(activeSearch)}` : ''}`);

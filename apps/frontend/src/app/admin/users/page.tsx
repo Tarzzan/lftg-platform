@@ -12,7 +12,7 @@ export default function UsersPage() {
   const [search, setSearch] = useState('');
   const [userModal, setUserModal] = useState<{ open: boolean; user?: any }>({ open: false });
 
-  const { data: users, isLoading } = useQuery({ queryKey: ['users'], queryFn: usersApi.list });
+  const { data: users, isLoading, isError, error } = useQuery({ queryKey: ['users'], queryFn: usersApi.list });
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => usersApi.delete(id),

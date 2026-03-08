@@ -75,7 +75,7 @@ export default function AgendaPage() {
   const monthStart = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-01`;
   const monthEnd = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${new Date(currentYear, currentMonth + 1, 0).getDate()}`;
 
-  const { data: events = [], isLoading } = useQuery<AgendaEvent[]>({
+  const { data: events = [], isLoading, isError, error } = useQuery<AgendaEvent[]>({
     queryKey: ['agenda-events', currentYear, currentMonth, filterType],
     queryFn: () => {
       const params = new URLSearchParams({ startDate: monthStart, endDate: monthEnd });

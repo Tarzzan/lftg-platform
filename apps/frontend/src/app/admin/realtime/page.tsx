@@ -36,7 +36,8 @@ interface EnvironmentData {
 export default function RealtimePage() {
   const [activeTab, setActiveTab] = useState<'metrics' | 'events' | 'environment'>('metrics');
 
-  const { data: metrics = [], isLoading: loadingMetrics } = useQuery<RealtimeMetric[]>({
+  const { data: metrics = [], isLoading: loadingMetrics, isError }
+  = useQuery<RealtimeMetric[]>({
     queryKey: ['realtime-metrics'],
     queryFn: async () => {
       const res = await api.get('/realtime/metrics');

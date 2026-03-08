@@ -63,7 +63,7 @@ export default function AnimauxListePage() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [modal, setModal] = useState<{ open: boolean; animal?: any }>({ open: false });
 
-  const { data: animals = [], isLoading } = useQuery({
+  const { data: animals = [], isLoading, isError, error } = useQuery({
     queryKey: ['animals'],
     queryFn: animauxApi.animals,
   });

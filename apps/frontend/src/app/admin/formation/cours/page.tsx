@@ -178,7 +178,7 @@ export default function FormationCoursPage() {
   const [publishedFilter, setPublishedFilter] = useState<'all' | 'published' | 'draft'>('all');
   const [modal, setModal] = useState<{ open: boolean; course?: any }>({ open: false });
 
-  const { data: courses = [], isLoading } = useQuery({
+  const { data: courses = [], isLoading, isError, error } = useQuery({
     queryKey: ['courses'],
     queryFn: () => formationApi.courses(),
   });

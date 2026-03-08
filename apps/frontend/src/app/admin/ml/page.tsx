@@ -29,7 +29,8 @@ interface NutritionRecommendation {
 }
 
 export default function MLPage() {
-  const { data: breedingPredictions = [], isLoading: loadingBreeding } = useQuery<BreedingPrediction[]>({
+  const { data: breedingPredictions = [], isLoading: loadingBreeding, isError }
+  = useQuery<BreedingPrediction[]>({
     queryKey: ['ml-breeding'],
     queryFn: async () => {
       const res = await api.get('/ml/breeding-predictions');

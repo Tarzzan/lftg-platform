@@ -20,7 +20,7 @@ export default function WorkflowsEditorPage() {
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ name: '', description: '', trigger: 'manual' });
 
-  const { data: definitions, isLoading: loadingDefs } = useQuery({
+  const { data: definitions, isLoading: loadingDefs , isError } = useQuery({
     queryKey: ['workflow-definitions'],
     queryFn: () => api.get('/workflows/definitions').then(r => r.data),
   });

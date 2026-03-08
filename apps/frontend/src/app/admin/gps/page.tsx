@@ -148,7 +148,8 @@ export default function GpsPage() {
     return () => { document.head.removeChild(link); };
   }, []);
 
-  const { data: trackers = [], isLoading, refetch } = useQuery({
+  const { data: trackers = [], isLoading, isError, refetch }
+  = useQuery({
     queryKey: ['gps-trackers'],
     queryFn: () => api.get('/gps/trackers').then(r => r.data),
     refetchInterval: 30000, // Rafraîchissement toutes les 30s
