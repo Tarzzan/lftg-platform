@@ -1,8 +1,14 @@
-import { Controller, Get, Query, Res, UseGuards } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
-import { Response } from 'express';
+import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { AccountingService } from './accounting.service';
+
+class CreateTransactionDto {
+  amount: number;
+  type: string;
+  description?: string;
+  date?: string;
+}
 
 @ApiTags('Comptabilité')
 @ApiBearerAuth()
@@ -11,25 +17,38 @@ import { AccountingService } from './accounting.service';
 export class AccountingController {
   constructor(private readonly accountingService: AccountingService) {}
 
-  @Get('fec')
-  @ApiOperation({ summary: 'Exporter le FEC (Fichier des Écritures Comptables)' })
-  async generateFEC(
-    @Query('year') year: number,
-    @Query('month') month?: number,
-    @Res() res?: Response,
-  ) {
-    const result = await this.accountingService.generateFEC(+year || new Date().getFullYear(), month ? +month : undefined);
-    if (res) {
-      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-      res.setHeader('Content-Disposition', `attachment; filename="${result.filename}"`);
-      return res.send(result.content);
-    }
-    return result;
-  }
-
   @Get('summary')
   @ApiOperation({ summary: 'Résumé comptable annuel' })
-  getSummary(@Query('year') year: number) {
+  @ApiResponse({ status: 200, description: 'Résumé comptable' })
+  getSummary(@Query('year') year?: string) {
     return this.accountingService.getAccountingSummary(+year || new Date().getFullYear());
+  }
+
+  @Get('transactions')
+  @ApiOperation({ summary: 'Liste des transactions' })
+  getTransactions(
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+    @Query('type') type?: string,
+  ) {
+    return this.accountingService.getTransactions?.({ from, to, type }) ?? [];
+  }
+
+  @Get('transactions/:id')
+  @ApiOperation({ summary: 'Détail d'une transaction' })
+  getTransaction(@Param('id') id: string) {
+    return this.accountingService.getTransaction?.(id) ?? { id };
+  }
+
+  @Post('transactions')
+  @ApiOperation({ summary: 'Créer une transaction' })
+  createTransaction(@Body() dto: CreateTransactionDto) {
+    return this.accountingService.createTransaction?.(dto) ?? dto;
+  }
+
+  @Get('balance')
+  @ApiOperation({ summary: 'Solde comptable actuel' })
+  getBalance() {
+    return this.accountingService.getBalance?.() ?? { balance: 0 };
   }
 }
