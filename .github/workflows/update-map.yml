@@ -18,8 +18,9 @@ jobs:
 
       - name: Générer le data.js
         run: |
-          python3 scripts/generate-map-data.py > /tmp/map_data.js
-          echo "✅ data.js généré ($(wc -c < /tmp/map_data.js) bytes)"
+          python3 scripts/generate-map-data.py > data.js
+          echo "✅ data.js généré ($(wc -c < data.js) bytes)"
+          head -1 data.js
 
       - name: Déployer le data.js sur le VPS via SSH
         uses: appleboy/scp-action@v0.1.7
@@ -27,17 +28,5 @@ jobs:
           host: 51.210.15.92
           username: ubuntu
           password: ${{ secrets.VPS_PASSWORD }}
-          source: /tmp/map_data.js
+          source: data.js
           target: /home/ubuntu/lftg-map/
-          strip_components: 2
-
-      - name: Renommer le fichier sur le VPS
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: 51.210.15.92
-          username: ubuntu
-          password: ${{ secrets.VPS_PASSWORD }}
-          script: |
-            mv /home/ubuntu/lftg-map/map_data.js /home/ubuntu/lftg-map/data.js
-            echo "✅ data.js mis à jour sur le VPS"
-            ls -la /home/ubuntu/lftg-map/data.js
