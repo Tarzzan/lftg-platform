@@ -59,8 +59,9 @@ export default function WebSocketPage() {
           data: e.data,
           source: data.source ?? 'Backend',
         }, ...prev].slice(0, 50));
-      } catch {
+      } catch (parseError) {
         // ignore parse errors
+        console.warn('SSE parse error:', parseError);
       }
     };
 

@@ -341,7 +341,7 @@ function NotesPanel({ enrollmentId, lessonId }: { enrollmentId: string; lessonId
   const [newNote, setNewNote] = useState('');
   const [saving, setSaving] = useState(false);
 
-  const { data: notes = [] } = useQuery({
+  const { data: notes = [] }, isError = useQuery({
     queryKey: ['notes', enrollmentId, lessonId],
     queryFn: () => formationApi.getNotes(enrollmentId, true),
   });

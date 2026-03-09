@@ -229,8 +229,8 @@ export default function DashboardPage() {
     return ['kpis', 'revenue', 'animals', 'stockEvolution', 'workflows', 'broods', 'medical', 'sales'];
   });
 
-  const { data: stats, isLoading: statsLoading } = useQuery({ queryKey: ['dashboard-stats'], queryFn: statsApi.dashboard, refetchInterval: 30000 });
-  const { data: animalsBySpecies = [] } = useQuery({ queryKey: ['animals-by-species'], queryFn: statsApi.animalsBySpecies });
+  const { data: stats, isLoading: statsLoading, isError: statsError, error: statsErrorMsg } = useQuery({ queryKey: ['dashboard-stats'], queryFn: statsApi.dashboard, refetchInterval: 30000 });
+  const { data: animalsBySpecies = [], isError: speciesError } = useQuery({ queryKey: ['animals-by-species'], queryFn: statsApi.animalsBySpecies });
   const { data: stockEvolution = [] } = useQuery({ queryKey: ['stock-evolution'], queryFn: () => statsApi.stockEvolution(14) });
   const { data: workflowsByState = [] } = useQuery({ queryKey: ['workflows-by-state'], queryFn: statsApi.workflowsByState });
 

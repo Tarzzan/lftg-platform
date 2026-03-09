@@ -17,7 +17,7 @@ const ACTION_COLORS: Record<string, string> = {
 export default function SecurityPage() {
   const [activeTab, setActiveTab] = useState<'audit' | 'users' | 'roles'>('audit');
 
-  const { data: auditLogs, isLoading: loadingAudit, refetch } = useQuery({
+  const { data: auditLogs, isLoading: loadingAudit, refetch }, isError = useQuery({
     queryKey: ['security-audit'],
     queryFn: () => api.get('/audit?limit=50').then(r => r.data),
     refetchInterval: 30000,

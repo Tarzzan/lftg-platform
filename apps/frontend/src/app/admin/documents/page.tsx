@@ -55,7 +55,7 @@ export default function DocumentsPage() {
   const [isDragging, setIsDragging] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
 
-  const { data: allDocs = [], isLoading } = useQuery({
+  const { data: allDocs = [], isLoading }, isError = useQuery({
     queryKey: ['documents'],
     queryFn: () => documentsApi.list(),
   });

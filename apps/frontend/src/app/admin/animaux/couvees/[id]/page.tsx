@@ -41,7 +41,7 @@ export default function BroodDetailPage() {
   const [showAddEvent, setShowAddEvent] = useState(false);
   const [newEvent, setNewEvent] = useState({ type: 'NOTE', notes: '', temperature: '', humidity: '' });
 
-  const { data: brood, isLoading } = useQuery({
+  const { data: brood, isLoading }, isError = useQuery({
     queryKey: ['brood', id],
     queryFn: () => api.get(`/plugins/animaux/broods/${id}`).then(r => r.data),
   });

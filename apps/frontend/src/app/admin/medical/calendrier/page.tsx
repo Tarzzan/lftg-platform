@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
+import { useForm } from 'react-hook-form';
 
 interface CalendarEvent {
   id: string;
@@ -38,6 +39,7 @@ const EVENT_ICONS: Record<string, React.ReactNode> = {
 };
 
 export default function CalendrierPage() {
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const today = new Date();
   const [currentDate, setCurrentDate] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
   const [selectedDay, setSelectedDay] = useState<number | null>(today.getDate());

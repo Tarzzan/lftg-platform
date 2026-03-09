@@ -35,7 +35,7 @@ export default function SaleDetailPage() {
   const queryClient = useQueryClient();
   const id = params.id as string;
 
-  const { data: sale, isLoading } = useQuery({
+  const { data: sale, isLoading }, isError = useQuery({
     queryKey: ['sale', id],
     queryFn: () => api.get(`/ventes/${id}`).then(r => r.data),
   });

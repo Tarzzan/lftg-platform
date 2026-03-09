@@ -81,12 +81,12 @@ export default function AnimalDetailPage() {
 
   // ─── Données ────────────────────────────────────────────────────────────────
 
-  const { data: animal, isLoading: animalLoading } = useQuery<Animal>({
+  const { data: animal, isLoading: animalLoading, isError: animalError } = useQuery<Animal>({
     queryKey: ['animal', id],
     queryFn: () => api.get(`/plugins/animaux/animals/${id}`).then(r => r.data),
   });
 
-  const { data: medicalHistory, isLoading: medicalLoading } = useQuery<{ visits: MedicalVisit[]; totalVisits: number }>({
+  const { data: medicalHistory, isLoading: medicalLoading, isError: medicalError } = useQuery<{ visits: MedicalVisit[]; totalVisits: number }>({
     queryKey: ['animal-medical', id],
     queryFn: () => api.get(`/medical/animals/${id}/history`).then(r => r.data),
   });

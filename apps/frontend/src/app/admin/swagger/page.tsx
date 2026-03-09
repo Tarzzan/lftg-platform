@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
+import { useForm } from 'react-hook-form';
 
 interface Endpoint {
   method: string;
@@ -91,6 +92,7 @@ const STATIC_ENDPOINTS: Endpoint[] = [
 const ALL_TAGS = ['Tous', ...Array.from(new Set(STATIC_ENDPOINTS.map((e) => e.tag)))];
 
 export default function SwaggerPage() {
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const [selectedTag, setSelectedTag] = useState('Tous');
   const [expandedEndpoint, setExpandedEndpoint] = useState<string | null>(null);
   const [search, setSearch] = useState('');

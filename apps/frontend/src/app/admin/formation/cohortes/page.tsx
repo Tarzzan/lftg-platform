@@ -93,7 +93,7 @@ export default function CohortesPage() {
   const [search, setSearch] = useState('');
   const [modal, setModal] = useState<{ open: boolean; cohort?: any }>({ open: false });
 
-  const { data: cohorts = [], isLoading } = useQuery({
+  const { data: cohorts = [], isLoading }, isError = useQuery({
     queryKey: ['cohorts'],
     queryFn: () => formationApi.cohorts(),
   });

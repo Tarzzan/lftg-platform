@@ -68,7 +68,7 @@ export default function WorkflowDetailPage() {
   const qc = useQueryClient();
   const [selectedTransition, setSelectedTransition] = useState<{ key: string; label: string; to: string } | null>(null);
 
-  const { data: instance, isLoading, error } = useQuery({
+  const { data: instance, isLoading, error, isError } = useQuery({
     queryKey: ['workflow-instance', id],
     queryFn: () => workflowsApi.getInstance(id),
   });
@@ -96,6 +96,7 @@ export default function WorkflowDetailPage() {
     return (
       <div className="text-center py-16">
         <p className="text-muted-foreground">Instance de workflow introuvable.</p>
+        {error && <p className="text-sm text-red-500 mt-1">{(error as any)?.message ?? 'Erreur de chargement'}</p>}
         <button onClick={() => router.back()} className="mt-4 text-sm text-forest-600 hover:underline">
           ← Retour
         </button>
