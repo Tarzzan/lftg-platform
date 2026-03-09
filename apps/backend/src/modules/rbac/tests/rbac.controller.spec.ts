@@ -59,4 +59,27 @@ describe('RbacController', () => {
     const result = await controller.getUserPermissions('user-1');
     expect(Array.isArray(result)).toBe(true);
   });
+
+  it('deleteRole() should call service.deleteRole', async () => {
+    const result = await controller.deleteRole('1');
+    expect(mockService.deleteRole).toHaveBeenCalledWith('1');
+    expect(result.id).toBe('1');
+  });
+
+  it('createPermission() should call service.createPermission', async () => {
+    const dto = { action: 'write', subject: 'Animal' };
+    const result = await controller.createPermission(dto);
+    expect(mockService.createPermission).toHaveBeenCalledWith(dto);
+    expect(result.action).toBe('write');
+  });
+
+  it('findAllRoles() should call service.findAllRoles', async () => {
+    await controller.findAllRoles();
+    expect(mockService.findAllRoles).toHaveBeenCalled();
+  });
+
+  it('findAllPermissions() should call service.findAllPermissions', async () => {
+    await controller.findAllPermissions();
+    expect(mockService.findAllPermissions).toHaveBeenCalled();
+  });
 });

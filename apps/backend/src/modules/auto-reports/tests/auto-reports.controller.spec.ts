@@ -45,9 +45,30 @@ describe('AutoReportsController', () => {
     expect(result.status).toBe('active');
   });
 
+  it('getSchedules() should include S001 schedule', () => {
+    const schedules = controller.getSchedules();
+    const s001 = schedules.find((s: any) => s.id === 'S001');
+    expect(s001).toBeDefined();
+    expect(s001?.name).toContain('CITES');
+  });
+
+  it('createSchedule() should generate a unique id', () => {
+    const dto = { name: 'Test2', frequency: 'weekly', cronExpr: '0 8 * * 1', recipients: [], type: 'health' };
+    const result = controller.createSchedule(dto);
+    expect(result.id).toBeDefined();
+    expect(result.id).toMatch(/^S\d+/);
+  });
+
+  it('deleteSchedule() should return deleted=true', () => {
+    const result = controller.deleteSchedule('S002');
+    expect(result.deleted).toBe(true);
+    expect(result.id).toBe('S002');
+  });
+
   it('runNow() should return triggered=true', () => {
     const result = controller.runNow('S001');
     expect(result.triggered).toBe(true);
     expect(result.id).toBe('S001');
+    expect(result.runAt).toBeDefined();
   });
 });

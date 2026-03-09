@@ -49,4 +49,42 @@ describe('RbacService', () => {
     expect(Array.isArray(result)).toBe(true);
     expect(result.length).toBe(0);
   });
+
+  it('findRoleById() should return null for unknown id', async () => {
+    const result = await service.findRoleById('unknown');
+    expect(result).toBeNull();
+  });
+
+  it('createRole() should call prisma.role.create', async () => {
+    const dto = { name: 'VETERINAIRE', description: 'Vétérinaire' };
+    const result = await service.createRole(dto);
+    expect(mockPrisma.role.create).toHaveBeenCalled();
+    expect(result.name).toBe('TEST');
+  });
+
+  it('deleteRole() should call prisma.role.delete', async () => {
+    const result = await service.deleteRole('1');
+    expect(mockPrisma.role.delete).toHaveBeenCalledWith({ where: { id: '1' } });
+    expect(result.id).toBe('1');
+  });
+
+  it('createPermission() should call prisma.permission.create', async () => {
+    const dto = { action: 'read', subject: 'Animal', description: 'Lire les animaux' };
+    const result = await service.createPermission(dto);
+    expect(mockPrisma.permission.create).toHaveBeenCalled();
+    expect(result.action).toBe('read');
+  });
+
+  it('getUserPermissions() should return deduplicated permissions for user with roles', async () => {
+    mockPrisma.user.findUnique.mockResolvedValueOnce({
+      id: 'u1',
+      roles: [
+        { permissions: [{ id: 'p1', action: 'read', subject: 'Animal' }] },
+        { permissions: [{ id: 'p1', action: 'read', subject: 'Animal' }] },
+      ],
+    });
+    const result = await service.getUserPermissions('u1');
+    expect(Array.isArray(result)).toBe(true);
+    expect(result.length).toBe(1);
+  });
 });

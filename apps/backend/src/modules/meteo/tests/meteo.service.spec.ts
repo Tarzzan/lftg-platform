@@ -31,4 +31,28 @@ describe('MeteoService', () => {
     const result = await service.getAlerts();
     expect(Array.isArray(result)).toBe(true);
   });
+
+  it('getCurrentWeather() should have required fields', async () => {
+    const result = await service.getCurrentWeather();
+    expect(result).toHaveProperty('location');
+    expect(result).toHaveProperty('temperature');
+    expect(result).toHaveProperty('humidity');
+    expect(result).toHaveProperty('description');
+  });
+
+  it('getForecast() should return array with correct length', async () => {
+    const result = await service.getForecast(7);
+    expect(Array.isArray(result)).toBe(true);
+    expect(result.length).toBeLessThanOrEqual(7);
+  });
+
+  it('getAnimalImpact() should return an array', async () => {
+    const result = await service.getAnimalImpact();
+    expect(Array.isArray(result)).toBe(true);
+  });
+
+  it('getHistory() should return an array', async () => {
+    const result = await service.getHistory(30);
+    expect(Array.isArray(result)).toBe(true);
+  });
 });

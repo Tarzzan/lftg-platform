@@ -15,10 +15,29 @@ describe('RealtimeService', () => {
     expect(service).toBeDefined();
   });
 
-  it('getMetrics() should return metrics object', () => {
+  it('getMetrics() should return an array of metrics', () => {
     const result = service.getMetrics();
-    expect(result).toBeDefined();
-    expect(typeof result.animauxActifs).toBe('number');
+    expect(Array.isArray(result)).toBe(true);
+    expect(result.length).toBeGreaterThan(0);
+  });
+
+  it('getMetrics() each metric should have required fields', () => {
+    const metrics = service.getMetrics();
+    metrics.forEach((m) => {
+      expect(m).toHaveProperty('key');
+      expect(m).toHaveProperty('label');
+      expect(m).toHaveProperty('value');
+      expect(m).toHaveProperty('unit');
+      expect(m).toHaveProperty('trend');
+      expect(m).toHaveProperty('category');
+    });
+  });
+
+  it('getMetrics() should include animals_total metric', () => {
+    const metrics = service.getMetrics();
+    const animalsTotal = metrics.find((m) => m.key === 'animals_total');
+    expect(animalsTotal).toBeDefined();
+    expect(typeof animalsTotal?.value).toBe('number');
   });
 
   it('getLiveEvents() should return an array', () => {
@@ -26,8 +45,31 @@ describe('RealtimeService', () => {
     expect(Array.isArray(result)).toBe(true);
   });
 
+  it('getLiveEvents() each event should have required fields', () => {
+    const events = service.getLiveEvents();
+    if (events.length > 0) {
+      events.forEach((e) => {
+        expect(e).toHaveProperty('id');
+        expect(e).toHaveProperty('type');
+        expect(e).toHaveProperty('title');
+        expect(e).toHaveProperty('severity');
+      });
+    }
+  });
+
   it('getEnvironmentData() should return an array', () => {
     const result = service.getEnvironmentData();
     expect(Array.isArray(result)).toBe(true);
+  });
+
+  it('getEnvironmentData() each zone should have required fields', () => {
+    const zones = service.getEnvironmentData();
+    if (zones.length > 0) {
+      zones.forEach((z) => {
+        expect(z).toHaveProperty('zone');
+        expect(z).toHaveProperty('temperature');
+        expect(z).toHaveProperty('humidity');
+      });
+    }
   });
 });

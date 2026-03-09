@@ -53,4 +53,28 @@ describe('MeteoController', () => {
     const result = await controller.getAlerts();
     expect(Array.isArray(result)).toBe(true);
   });
+
+  it('getForecast() should call service.getForecast', async () => {
+    const result = await controller.getForecast('7');
+    expect(mockService.getForecast).toHaveBeenCalledWith(7);
+    expect(Array.isArray(result)).toBe(true);
+  });
+
+  it('getAnimalImpact() should call service.getAnimalImpact', async () => {
+    const result = await controller.getAnimalImpact();
+    expect(mockService.getAnimalImpact).toHaveBeenCalled();
+    expect(Array.isArray(result)).toBe(true);
+  });
+
+  it('getHistory() should call service.getHistory', async () => {
+    const result = await controller.getHistory('30');
+    expect(mockService.getHistory).toHaveBeenCalledWith(30);
+    expect(Array.isArray(result)).toBe(true);
+  });
+
+  it('getPublicWeather() should return weather data', async () => {
+    const result = await controller.getPublicWeather();
+    expect(result).toBeDefined();
+    expect(result.location).toBe('Cayenne, Guyane');
+  });
 });
