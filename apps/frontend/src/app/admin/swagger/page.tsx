@@ -97,9 +97,15 @@ export default function SwaggerPage() {
   const [expandedEndpoint, setExpandedEndpoint] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [apiVersion, setApiVersion] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    api.get('/health').then((r) => setApiVersion(r.data?.version ?? 'v1')).catch(() => {});
+    setIsLoading(true);
+    fetch('/api/v1/health')
+      .then((r) => r.json())
+      .then((data) => setApiVersion(data?.version ?? 'v1'))
+      .catch(() => setApiVersion('v1'))
+      .finally(() => setIsLoading(false));
   }, []);
 
   const filtered = STATIC_ENDPOINTS.filter((e) => {

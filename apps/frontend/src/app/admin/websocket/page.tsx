@@ -25,6 +25,7 @@ export default function WebSocketPage() {
   const [testEvent, setTestEvent] = useState('animal.alert');
   const [testPayload, setTestPayload] = useState('{ "animalId": "A001", "message": "Test event" }');
   const [connectionStatus, setConnectionStatus] = useState<'idle' | 'connecting' | 'connected' | 'error'>('idle');
+  const [isLoading, setIsLoading] = useState(false);
   const eventSourceRef = useRef<EventSource | null>(null);
 
   const connect = () => {
@@ -90,6 +91,11 @@ export default function WebSocketPage() {
   };
 
   useEffect(() => {
+    // Charger les statistiques SSE au montage
+    setIsLoading(true);
+    fetch('/api/v1/notifications?limit=1')
+      .then(() => setIsLoading(false))
+      .catch(() => setIsLoading(false));
     return () => {
       if (eventSourceRef.current) {
         eventSourceRef.current.close();

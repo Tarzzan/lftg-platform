@@ -51,7 +51,7 @@ export default function CalendrierPage() {
   const dateFrom = new Date(year, month, 1).toISOString().split('T')[0];
   const dateTo = new Date(year, month + 1, 0).toISOString().split('T')[0];
 
-  const { data: visits = [] , isError } = useQuery({
+  const { data: visits = [], isLoading, isError } = useQuery({
     queryKey: ['calendar-visits', dateFrom, dateTo],
     queryFn: () => api.get(`/medical/visits?dateFrom=${dateFrom}&dateTo=${dateTo}`).then(r => r.data),
   });
