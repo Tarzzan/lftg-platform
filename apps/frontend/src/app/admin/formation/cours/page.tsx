@@ -54,8 +54,8 @@ function CourseCard({ course, onEdit, onDelete }: { course: any; onEdit: () => v
         className={`relative h-36 bg-gradient-to-br ${gradient} cursor-pointer overflow-hidden`}
         onClick={() => router.push(`/admin/formation/cours/${course.id}`)}
       >
-        {course.thumbnailUrl ? (
-          <img src={course.thumbnailUrl} alt={course.title} className="w-full h-full object-cover" />
+        {(course.coverImage || course.thumbnailUrl) ? (
+          <img src={course.coverImage || course.thumbnailUrl} alt={course.title} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center gap-2">
             <span className="text-4xl filter drop-shadow-sm">{emoji}</span>

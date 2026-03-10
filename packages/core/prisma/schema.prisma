@@ -403,6 +403,8 @@ model Course {
   imageUrl    String?
   language    String?   @default("fr")
   isPublished Boolean   @default(false)
+  isPublic    Boolean   @default(false)
+  coverImage  String?
   chapters      Chapter[]
   cohorts       Cohort[]
   documents     FormationDocument[]
