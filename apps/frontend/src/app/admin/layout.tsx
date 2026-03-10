@@ -265,9 +265,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: currentPalette.sidebarBg !== '#041209'
-              ? `linear-gradient(180deg, ${currentPalette.sidebarBg}dd 0%, ${currentPalette.sidebarBg}cc 40%, ${currentPalette.sidebarBg}ee 100%)`
-              : 'linear-gradient(180deg, rgba(4,18,9,0.85) 0%, rgba(8,30,15,0.78) 40%, rgba(4,18,9,0.90) 100%)',
+            background: `linear-gradient(180deg, ${currentPalette.sidebarBg}dd 0%, ${currentPalette.sidebarBg}cc 40%, ${currentPalette.sidebarBg}ee 100%)`,
           }}
         />
 
