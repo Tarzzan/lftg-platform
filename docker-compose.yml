@@ -74,6 +74,7 @@ services:
       - "3001:3001"
     volumes:
       - ./packages/core/prisma:/app/packages/core/prisma
+      - ./uploads:/app/uploads
     networks:
       lftg-network:
         aliases:
