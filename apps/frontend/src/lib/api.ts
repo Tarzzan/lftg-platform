@@ -267,3 +267,10 @@ export const contactMessagesApi = {
   submit: (data: { name: string; email: string; subject?: string; message: string }) =>
     api.post('/contact-messages/public', data).then((r) => r.data),
 };
+
+// ─── Platform Config (Settings IA, Plateforme, Notifications) ─────────────
+export const platformConfigApi = {
+  getAll: () => api.get('/platform-config').then((r) => r.data),
+  update: (data: Record<string, any>) => api.patch('/platform-config', data).then((r) => r.data),
+  getAiConfig: () => api.get('/platform-config/ai').then((r) => r.data),
+};

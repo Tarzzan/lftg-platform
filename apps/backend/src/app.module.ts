@@ -72,6 +72,7 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { GalleryModule } from './modules/gallery/gallery.module';
 import { AutoReportsModule } from './modules/auto-reports/auto-reports.module';
 import { DemoModule } from './modules/demo/demo.module';
+import { PlatformConfigModule } from './modules/platform-config/platform-config.module';
 import { ContactMessagesModule } from './modules/contact-messages/contact-messages.module';
 
 @Module({
@@ -166,6 +167,7 @@ import { ContactMessagesModule } from './modules/contact-messages/contact-messag
     GalleryModule,
     AutoReportsModule,
     DemoModule,
+    PlatformConfigModule,
     ContactMessagesModule,
   ],
 })
