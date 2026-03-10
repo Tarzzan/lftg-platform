@@ -94,11 +94,11 @@ function CourseProgressCard({ enrollment }: { enrollment: any }) {
       <div
         className={`relative h-28 bg-gradient-to-br ${colors.bg} overflow-hidden`}
       >
-        {enrollment.course?.coverImage && (
+        {(enrollment.cohort?.course?.imageUrl || enrollment.cohort?.course?.coverImage) && (
           <img
-            src={enrollment.course.coverImage}
-            alt={enrollment.course.title}
-            className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:opacity-50 transition-opacity"
+            src={enrollment.cohort?.course?.imageUrl || enrollment.cohort?.course?.coverImage}
+            alt={enrollment.cohort?.course?.title}
+            className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-90 transition-opacity"
           />
         )}
         {/* Overlay motif */}
@@ -136,7 +136,7 @@ function CourseProgressCard({ enrollment }: { enrollment: any }) {
       {/* Contenu */}
       <div className="p-4">
         <h3 className="font-semibold text-sm text-gray-800 line-clamp-2 mb-2 group-hover:text-forest-700 transition-colors">
-          {enrollment.course?.title || 'Formation'}
+          {enrollment.cohort?.course?.title || 'Formation'}
         </h3>
 
         {/* Progression */}
@@ -156,16 +156,16 @@ function CourseProgressCard({ enrollment }: { enrollment: any }) {
         {/* Infos */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3 text-[10px] text-gray-400">
-            {enrollment.course?.duration && (
+            {enrollment.cohort?.course?.duration && (
               <span className="flex items-center gap-1">
                 <Clock className="w-3 h-3" />
-                {enrollment.course.duration}h
+                {enrollment.cohort?.course?.duration}h
               </span>
             )}
-            {enrollment.course?.level && (
+            {enrollment.cohort?.course?.level && (
               <span className="flex items-center gap-1">
                 <Target className="w-3 h-3" />
-                {enrollment.course.level}
+                {enrollment.cohort?.course?.level}
               </span>
             )}
           </div>
@@ -221,7 +221,7 @@ export default function MonParcoursPage() {
   const completed = enrollments.filter((e: any) => (e.progress ?? 0) >= 100).length;
   const inProgress = enrollments.filter((e: any) => (e.progress ?? 0) > 0 && (e.progress ?? 0) < 100).length;
   const notStarted = enrollments.filter((e: any) => (e.progress ?? 0) === 0).length;
-  const totalHours = enrollments.reduce((acc: number, e: any) => acc + (e.course?.duration ?? 0), 0);
+  const totalHours = enrollments.reduce((acc: number, e: any) => acc + (e.cohort?.course?.duration ?? 0), 0);
 
   const filtered = enrollments.filter((e: any) => {
     const p = e.progress ?? 0;
