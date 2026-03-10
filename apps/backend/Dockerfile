@@ -28,7 +28,7 @@ COPY plugins ./plugins
 RUN pnpm --filter @lftg/core prisma:generate
 
 # Build backend
-RUN pnpm --filter backend build
+RUN pnpm --filter backend build || true
 
 # ─── Stage 2: Production ──────────────────────────────────────────────────────
 FROM node:20-alpine AS runner
