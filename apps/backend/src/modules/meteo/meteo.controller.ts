@@ -21,7 +21,7 @@ export class MeteoController {
 
   @Get('forecast')
   @ApiOperation({ summary: "Prévisions sur N jours (défaut: 7)" })
-  @ApiQuery({ name: "days", required: false, type: Number, description: "Nombre de jours (1-14)" })
+  @ApiQuery({ name: 'days', required: false, type: Number, description: "Nombre de jours (1-14)" })
   @ApiResponse({ status: 200, description: "Prévisions météo" })
   getForecast(@Query('days') days: string) {
     return this.meteoService.getForecast(parseInt(days) || 7);
@@ -43,9 +43,9 @@ export class MeteoController {
 
   @Get('history')
   @ApiOperation({ summary: "Historique météo des N derniers jours (défaut: 30)" })
-  @ApiQuery({ name: "days", required: false, type: Number, description: "Nombre de jours d'historique" })
+  @ApiQuery({ name: 'days', required: false, type: Number, description: "Nombre de jours d'historique" })
   @ApiResponse({ status: 200, description: "Historique météo" })
-  getHistory(@Query("days") days: string) {
+  getHistory(@Query('days') days: string) {
     return this.meteoService.getHistory(parseInt(days) || 30);
   }
 

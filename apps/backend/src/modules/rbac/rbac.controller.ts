@@ -35,7 +35,7 @@ export class RbacController {
 
   @Delete("roles/:id")
   @ApiOperation({ summary: "Supprimer un rôle" })
-  deleteRole(@Param("id") id: string) {
+  deleteRole(@Param('id') id: string) {
     return this.rbacService.deleteRole(id);
   }
 
@@ -46,7 +46,7 @@ export class RbacController {
     return this.rbacService.findAllPermissions();
   }
 
-  @Post("permissions")
+  @Post('permissions')
   @ApiOperation({ summary: "Créer une nouvelle permission" })
   @ApiResponse({ status: 201, type: PermissionResponseDto })
   createPermission(@Body() dto: CreatePermissionDto) {

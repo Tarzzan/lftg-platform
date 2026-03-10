@@ -15,7 +15,7 @@ export class TicketsController {
   @Get()
   @ApiOperation({ summary: "Lister les tickets" })
   findAll(
-    @Query("status") status?: TicketStatus,
+    @Query('status') status?: TicketStatus,
     @Query('priority') priority?: TicketPriority,
     @Query('category') category?: TicketCategory,
   ) {
@@ -36,7 +36,7 @@ export class TicketsController {
 
   @Patch(":id")
   @ApiOperation({ summary: "Mettre à jour un ticket" })
-  update(@Param("id") id: string, @Body() data: any) {
+  update(@Param('id') id: string, @Body() data: any) {
     return this.ticketsService.update(id, data);
   }
 
@@ -48,7 +48,7 @@ export class TicketsController {
 
   @Delete(':id')
   @ApiOperation({ summary: "Supprimer un ticket" })
-  delete(@Param("id") id: string) {
+  delete(@Param('id') id: string) {
     return this.ticketsService.delete(id);
   }
 

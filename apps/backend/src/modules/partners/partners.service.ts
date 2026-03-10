@@ -74,7 +74,7 @@ export class PartnersService {
       phone: '+594 594 789 012',
       website: 'https://clinique-amazonie.fr',
       description: "Accès aux dossiers médicaux pour consultations externes",
-      apiKey: "lftg_pk_clinique_amazonie_2026",
+      apiKey: 'lftg_pk_clinique_amazonie_2026',
       secretKey: 'lftg_sk_' + crypto.randomBytes(16).toString('hex'),
       permissions: ['animals:read', 'medical:read', 'medical:write'],
       status: 'active',

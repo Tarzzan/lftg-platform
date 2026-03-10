@@ -15,22 +15,22 @@ export class StripeController {
     return this.stripeService.createPaymentIntent(dto);
   }
 
-  @Post("checkout")
+  @Post('checkout')
   @ApiOperation({ summary: "Créer une session Checkout" })
   createCheckoutSession(@Body() dto: CreateCheckoutSessionDto) {
     return this.stripeService.createCheckoutSession(dto);
   }
 
-  @Get("stats")
+  @Get('stats')
   @ApiOperation({ summary: "Statistiques de paiement" })
-  getPaymentStats(@Query("period") period: 'day' | 'week' | 'month' | 'year') {
+  getPaymentStats(@Query('period') period: 'day' | 'week' | 'month' | 'year') {
     return this.stripeService.getPaymentStats(period || 'month');
   }
 
   @Get('transactions')
   @ApiOperation({ summary: "Lister les transactions" })
   listTransactions(
-    @Query("limit") limit: string,
+    @Query('limit') limit: string,
     @Query('offset') offset: string,
   ) {
     return this.stripeService.listTransactions(

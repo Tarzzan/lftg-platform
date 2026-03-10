@@ -16,7 +16,7 @@ export class SmsController {
     return this.smsService.sendAlert(alert);
   }
 
-  @Post("bulk")
+  @Post('bulk')
   @ApiOperation({ summary: "Envoyer des alertes SMS en masse" })
   sendBulk(@Body() alerts: SmsAlert[]) {
     return this.smsService.sendBulk(alerts);

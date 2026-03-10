@@ -122,8 +122,8 @@ export class ParrainageService {
   async getAvailableAnimals() {
     return [
       { id: 'anim-003', name: 'Ara Chloroptère AC-003', species: 'Ara chloropterus', photo: '🦜', monthlyMin: 20, description: "Magnifique ara rouge de 4 ans, très sociable." },
-      { id: "anim-007", name: 'Amazone AZ-007', species: 'Amazona amazonica', photo: '🦜', monthlyMin: 15, description: "Amazone à front bleu de 2 ans, en pleine croissance." },
-      { id: "anim-015", name: 'Boa BC-015', species: 'Boa constrictor', photo: '🐍', monthlyMin: 10, description: "Boa constricteur de 3 ans, calme et en bonne santé." },
+      { id: 'anim-007', name: 'Amazone AZ-007', species: 'Amazona amazonica', photo: '🦜', monthlyMin: 15, description: "Amazone à front bleu de 2 ans, en pleine croissance." },
+      { id: 'anim-015', name: 'Boa BC-015', species: 'Boa constrictor', photo: '🐍', monthlyMin: 10, description: "Boa constricteur de 3 ans, calme et en bonne santé." },
     ];
   }
 

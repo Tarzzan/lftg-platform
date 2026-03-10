@@ -4,7 +4,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 export class DemoQueryDto {
   @ApiPropertyOptional({
     description: "Scénario de démonstration",
-    example: "zoo",
+    example: 'zoo',
     enum: ['zoo', 'reptiles', 'oiseaux', 'mammiferes'],
   })
   @IsOptional()

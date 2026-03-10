@@ -19,20 +19,20 @@ export class BiController {
 
   @Get('dashboard')
   @ApiOperation({ summary: "Tableau de bord BI complet" })
-  @ApiQuery({ name: "period", required: false, enum: ['week', 'month', 'quarter', 'year'] })
+  @ApiQuery({ name: 'period', required: false, enum: ['week', 'month', 'quarter', 'year'] })
   getDashboard(@Query('period') period: 'week' | 'month' | 'quarter' | 'year' = 'month') {
     return this.biService.getDashboard(period);
   }
 
   @Get('forecast')
   @ApiOperation({ summary: "Prévisions de revenus" })
-  getRevenueForecast(@Query("months") months = 6) {
+  getRevenueForecast(@Query('months') months = 6) {
     return this.biService.getRevenueForecast(+months);
   }
 
   @Get('animal-health-trend')
   @ApiOperation({ summary: "Tendance de santé des animaux" })
-  getAnimalHealthTrend(@Query("days") days = 30) {
+  getAnimalHealthTrend(@Query('days') days = 30) {
     return this.biService.getAnimalHealthTrend(+days);
   }
 

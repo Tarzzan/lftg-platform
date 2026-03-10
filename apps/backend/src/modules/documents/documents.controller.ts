@@ -14,7 +14,7 @@ export class DocumentsController {
   @Get()
   @ApiOperation({ summary: "Lister ou rechercher des documents" })
   async getAll(
-    @Query("q") q?: string,
+    @Query('q') q?: string,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
   ) {

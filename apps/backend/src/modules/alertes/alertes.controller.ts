@@ -14,7 +14,7 @@ export class AlertesController {
   @Get()
   @ApiOperation({ summary: "Lister les alertes avec filtres" })
   getAlerts(
-    @Query("severity") severity?: string,
+    @Query('severity') severity?: string,
     @Query('type') type?: string,
     @Query('acknowledged') acknowledged?: string,
     @Query('resolved') resolved?: string,
@@ -33,7 +33,7 @@ export class AlertesController {
     return this.alertesService.getAlertStats();
   }
 
-  @Get("rules")
+  @Get('rules')
   @ApiOperation({ summary: "Règles d'alerte configurées" })
   getRules() {
     return this.alertesService.getRules();
@@ -47,7 +47,7 @@ export class AlertesController {
 
   @Patch(":id/acknowledge")
   @ApiOperation({ summary: "Acquitter une alerte" })
-  acknowledge(@Param("id") id: string, @Body() body: { userId: string }) {
+  acknowledge(@Param('id') id: string, @Body() body: { userId: string }) {
     return this.alertesService.acknowledgeAlert(id, body.userId || 'admin@lftg.fr');
   }
 

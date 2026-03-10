@@ -45,7 +45,7 @@ export class WorkflowsController {
   @Get('instances')
   @ApiOperation({ summary: "Liste les instances de workflow" })
   findAllInstances(
-    @Query("state") state?: string,
+    @Query('state') state?: string,
     @Query('assigneeId') assigneeId?: string,
     @Query('definitionId') definitionId?: string,
   ) {

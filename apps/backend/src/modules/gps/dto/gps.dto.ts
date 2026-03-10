@@ -2,7 +2,7 @@ import { IsString, IsOptional, IsNumber } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateGpsDto {
-  @ApiProperty({ description: "Identifiant unique", example: "item-001" })
+  @ApiProperty({ description: "Identifiant unique", example: 'item-001' })
   @IsString()
   name: string;
 

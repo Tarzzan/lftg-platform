@@ -13,7 +13,7 @@ export class CitesApiController {
 
   @Get('search')
   @ApiOperation({ summary: "Rechercher une espèce dans la base CITES" })
-  searchSpecies(@Query("q") query: string) {
+  searchSpecies(@Query('q') query: string) {
     return this.citesApiService.searchSpecies(query || '');
   }
 

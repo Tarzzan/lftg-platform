@@ -30,9 +30,9 @@ export class AnalyticsController {
     return this.analyticsService.getSpeciesDistribution();
   }
 
-  @Get("health-trends")
+  @Get('health-trends')
   @ApiOperation({ summary: "Tendances de santé" })
-  getHealthTrends(@Query("days") days?: string) {
+  getHealthTrends(@Query('days') days?: string) {
     return this.analyticsService.getHealthTrends?.(+days || 30) ?? [];
   }
 

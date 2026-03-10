@@ -14,7 +14,7 @@ export class PdfNativeController {
 
   @Get('monthly')
   @ApiOperation({ summary: "Rapport mensuel complet (PDF)" })
-  @ApiQuery({ name: "year", required: false, example: 2026 })
+  @ApiQuery({ name: 'year', required: false, example: 2026 })
   @ApiQuery({ name: 'month', required: false, example: 3 })
   @ApiResponse({ status: 200, description: "Fichier PDF du rapport mensuel", content: { 'application/pdf': {} } })
   async getMonthlyReport(
@@ -56,7 +56,7 @@ export class PdfNativeController {
 
   @Get('sales')
   @ApiOperation({ summary: "Rapport des ventes sur une période (PDF)" })
-  @ApiQuery({ name: "dateFrom", required: true, example: '2026-01-01' })
+  @ApiQuery({ name: 'dateFrom', required: true, example: '2026-01-01' })
   @ApiQuery({ name: 'dateTo', required: true, example: '2026-03-31' })
   @ApiResponse({ status: 200, description: "Rapport PDF des ventes", content: { 'application/pdf': {} } })
   async getSalesReport(

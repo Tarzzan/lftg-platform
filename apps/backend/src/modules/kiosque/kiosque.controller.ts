@@ -12,13 +12,13 @@ export class KiosqueController {
 
   @Get('tasks')
   @ApiOperation({ summary: "Tâches du jour pour le soigneur" })
-  getTodayTasks(@Query("userId") userId?: string) {
+  getTodayTasks(@Query('userId') userId?: string) {
     return this.kiosqueService.getTodayTasks(userId);
   }
 
   @Put('tasks/:id/complete')
   @ApiOperation({ summary: "Marquer une tâche comme terminée" })
-  completeTask(@Param("id") id: string, @Body() body: any) {
+  completeTask(@Param('id') id: string, @Body() body: any) {
     return this.kiosqueService.completeTask(id, body);
   }
 
@@ -28,7 +28,7 @@ export class KiosqueController {
     return this.kiosqueService.quickScan(body.qrCode);
   }
 
-  @Post("notes")
+  @Post('notes')
   @ApiOperation({ summary: "Ajouter une note rapide sur un animal" })
   quickNote(@Body() body: { animalId: string; note: string; type: string }) {
     return this.kiosqueService.quickNote(body.animalId, body.note, body.type);

@@ -121,7 +121,7 @@ export class ImportService {
       try {
         if (!row.name) {
           result.errors++;
-          result.details.push({ row: rowNum, status: 'error', message: "Colonne "name" obligatoire" });
+          result.details.push({ row: rowNum, status: 'error', message: "Colonne 'name' obligatoire" });
           continue;
         }
 
@@ -172,7 +172,7 @@ export class ImportService {
       try {
         if (!row.email) {
           result.errors++;
-          result.details.push({ row: rowNum, status: 'error', message: "Colonne "email" obligatoire" });
+          result.details.push({ row: rowNum, status: 'error', message: "Colonne 'email' obligatoire" });
           continue;
         }
 

@@ -75,7 +75,7 @@ dans l'en-tête \`Authorization: Bearer <token>\` pour toutes les requêtes prot
         bearerFormat: 'JWT',
         name: 'JWT',
         description: "Token JWT obtenu via /api/v1/auth/login",
-        in: "header",
+        in: 'header',
       },
       'JWT-auth',
     )
@@ -122,7 +122,7 @@ dans l'en-tête \`Authorization: Bearer <token>\` pour toutes les requêtes prot
   // ─── Health check ──────────────────────────────────────────────────────────
   app.getHttpAdapter().get("/health", (_req: any, res: any) => {
     res.json({
-      status: "ok",
+      status: 'ok',
       version: "15.0.0",
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),

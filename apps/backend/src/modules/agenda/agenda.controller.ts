@@ -40,7 +40,7 @@ export class AgendaController {
 
   @Get('reminders')
   @ApiOperation({ summary: "Récupérer les rappels à venir" })
-  async getReminders(@Query("minutesAhead") minutesAhead?: string) {
+  async getReminders(@Query('minutesAhead') minutesAhead?: string) {
     return this.agendaService.getUpcomingReminders(minutesAhead ? parseInt(minutesAhead) : 60);
   }
 
@@ -58,13 +58,13 @@ export class AgendaController {
 
   @Put(":id")
   @ApiOperation({ summary: "Modifier un événement" })
-  async updateEvent(@Param("id") id: string, @Body() dto: Partial<AgendaEventDto>) {
+  async updateEvent(@Param('id') id: string, @Body() dto: Partial<AgendaEventDto>) {
     return this.agendaService.updateEvent(id, dto);
   }
 
   @Patch(':id/complete')
   @ApiOperation({ summary: "Marquer un événement comme complété" })
-  async completeEvent(@Param("id") id: string, @Body('notes') notes?: string) {
+  async completeEvent(@Param('id') id: string, @Body('notes') notes?: string) {
     return this.agendaService.completeEvent(id, notes);
   }
 

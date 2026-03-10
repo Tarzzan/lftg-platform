@@ -25,13 +25,13 @@ export class CitesController {
 
   @Get('permits')
   @ApiOperation({ summary: "Lister tous les permis CITES" })
-  async getAllPermits(@Query("status") status?: string, @Query('type') type?: string) {
+  async getAllPermits(@Query('status') status?: string, @Query('type') type?: string) {
     return this.citesService.getAllPermits({ status, type });
   }
 
   @Get('permits/expiring')
   @ApiOperation({ summary: "Permis expirant bientôt" })
-  async getExpiringPermits(@Query("daysAhead") daysAhead?: string) {
+  async getExpiringPermits(@Query('daysAhead') daysAhead?: string) {
     return this.citesService.getExpiringPermits(daysAhead ? parseInt(daysAhead) : 30);
   }
 
@@ -47,13 +47,13 @@ export class CitesController {
     return this.citesService.generateComplianceReport();
   }
 
-  @Get("compliance-report")
+  @Get('compliance-report')
   @ApiOperation({ summary: "Rapport de conformité CITES (alias)" })
   async getComplianceReportAlias() {
     return this.citesService.generateComplianceReport();
   }
 
-  @Post("permits")
+  @Post('permits')
   @ApiOperation({ summary: "Créer un permis CITES" })
   async createPermit(@Body() dto: CitesPermitDto, @Request() req: any) {
     return this.citesService.createPermit(dto, req.user.id);

@@ -13,7 +13,7 @@ export class EnclosController {
 
   @Get()
   @ApiOperation({ summary: "Lister tous les enclos" })
-  @ApiQuery({ name: "type", required: false })
+  @ApiQuery({ name: 'type', required: false })
   @ApiQuery({ name: 'status', required: false })
   @ApiQuery({ name: 'search', required: false })
   findAll(
@@ -30,7 +30,7 @@ export class EnclosController {
     return this.enclosService.getStats();
   }
 
-  @Get("geojson")
+  @Get('geojson')
   @ApiOperation({ summary: "Données GeoJSON pour la carte Leaflet" })
   getGeoJson() {
     return this.enclosService.getGeoJson();
@@ -50,7 +50,7 @@ export class EnclosController {
 
   @Put(":id")
   @ApiOperation({ summary: "Modifier un enclos" })
-  update(@Param("id") id: string, @Body() dto: UpdateEnclosDto, @Request() req: any) {
+  update(@Param('id') id: string, @Body() dto: UpdateEnclosDto, @Request() req: any) {
     return this.enclosService.update(id, dto, req.user.id);
   }
 

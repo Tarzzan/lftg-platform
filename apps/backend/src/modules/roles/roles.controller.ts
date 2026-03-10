@@ -28,7 +28,7 @@ export class RolesController {
 
   @Delete(':id')
   @ApiOperation({ summary: "Supprime un rôle" })
-  remove(@Param("id") id: string) { return this.service.delete(id); }
+  remove(@Param('id') id: string) { return this.service.delete(id); }
 
   @Post(':id/permissions')
   @ApiOperation({ summary: "Ajoute des permissions à un rôle" })

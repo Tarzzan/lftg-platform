@@ -186,7 +186,7 @@ export class MedicalService {
       this.notifications.broadcast({
         type: 'medical',
         title: "Rappel de vaccination",
-        message: `Rappel vaccin ${dto.vaccine} prévu le ${new Date(dto.nextDueDate).toLocaleDateString("fr-FR")}`,
+        message: `Rappel vaccin ${dto.vaccine} prévu le ${new Date(dto.nextDueDate).toLocaleDateString('fr-FR')}`,
         severity: 'warning',
       });
     }

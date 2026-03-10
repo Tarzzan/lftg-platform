@@ -159,7 +159,7 @@ export class EmailService implements OnModuleInit {
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset='UTF-8'>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title}</title>
   <style>
@@ -182,13 +182,13 @@ export class EmailService implements OnModuleInit {
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <span class="emoji">🦜</span>
+  <div class='container'>
+    <div class='header'>
+      <span class='emoji'>🦜</span>
       <h1>LFTG Platform</h1>
     </div>
-    <div class="body">${content}</div>
-    <div class="footer">
+    <div class='body'>${content}</div>
+    <div class='footer'>
       <p>La Ferme Tropicale de Guyane — Système de gestion automatisé</p>
       <p>© 2026 LFTG Platform. Tous droits réservés.</p>
     </div>
@@ -216,7 +216,7 @@ export class EmailService implements OnModuleInit {
     return this.buildBaseTemplate(`
       <p>Bonjour <strong>${data.recipientName}</strong>,</p>
       <p>Un rappel de visite médicale a été programmé :</p>
-      <div class="alert-box">
+      <div class='alert-box'>
         <table>
           <tr><th>Animal</th><td><strong>${data.animalName}</strong></td></tr>
           <tr><th>Type de visite</th><td>${data.visitType}</td></tr>
@@ -235,7 +235,7 @@ export class EmailService implements OnModuleInit {
         <p><strong>Workflow :</strong> ${data.workflowName}</p>
         <p><strong>Description :</strong> ${data.description}</p>
       </div>
-      <a href="${data.appUrl}/admin/workflows/${data.instanceId}" class="btn">Voir la demande</a>
+      <a href="${data.appUrl}/admin/workflows/${data.instanceId}" class='btn'>Voir la demande</a>
     `, `Approbation requise — ${data.workflowName}`);
   }
 
@@ -247,7 +247,7 @@ export class EmailService implements OnModuleInit {
         <p>Votre compte a été créé avec succès.</p>
         ${data.temporaryPassword ? `<p><strong>Mot de passe temporaire :</strong> <code>${data.temporaryPassword}</code></p><p>Veuillez le changer dès votre première connexion.</p>` : ''}
       </div>
-      <a href="${data.appUrl}/login" class="btn">Accéder à la plateforme</a>
+      <a href="${data.appUrl}/login" class='btn'>Accéder à la plateforme</a>
     `, 'Bienvenue sur LFTG Platform');
   }
 
@@ -291,7 +291,7 @@ export class EmailService implements OnModuleInit {
       </div>
       <p><strong>Message :</strong></p>
       <p style="background:#f9fafb;padding:16px;border-radius:8px;border-left:4px solid #166534;">${data.message.replace(/\n/g, '<br>')}</p>
-      <a href="mailto:${data.senderEmail}" class="btn">Répondre à ${data.senderName}</a>
+      <a href="mailto:${data.senderEmail}" class='btn'>Répondre à ${data.senderName}</a>
     `, `Nouveau contact — ${data.subject}`);
   }
 

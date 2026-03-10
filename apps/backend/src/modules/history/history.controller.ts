@@ -13,7 +13,7 @@ export class HistoryController {
 
   @Get('recent')
   @ApiOperation({ summary: "Activité récente globale" })
-  async getRecent(@Query("limit") limit?: string) {
+  async getRecent(@Query('limit') limit?: string) {
     return this.historyService.getRecentActivity(limit ? parseInt(limit) : 100);
   }
 

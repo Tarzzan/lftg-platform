@@ -40,9 +40,9 @@ export class QuizService {
       title: "Quiz — Soins aux perroquets",
       questions: [
         {
-          id: "q-1",
+          id: 'q-1',
           text: "Quelle est la fréquence de nourrissage recommandée pour un Ara adulte ?",
-          type: "SINGLE_CHOICE",
+          type: 'SINGLE_CHOICE',
           options: ['1 fois par jour', '2 fois par jour', '3 fois par jour', 'En libre service'],
           correctAnswer: 1,
           explanation: 'Les Aras adultes doivent être nourris 2 fois par jour, matin et soir.',
@@ -51,7 +51,7 @@ export class QuizService {
         {
           id: 'q-2',
           text: "Quels fruits sont toxiques pour les perroquets ?",
-          type: "MULTIPLE_CHOICE",
+          type: 'MULTIPLE_CHOICE',
           options: ['Avocat', 'Mangue', 'Raisin', 'Cerise (noyau)'],
           correctAnswers: [0, 3],
           explanation: 'L'avocat et les noyaux de cerise sont toxiques pour les perroquets.',
@@ -60,7 +60,7 @@ export class QuizService {
         {
           id: 'q-3',
           text: "La température idéale pour un perroquet tropical est de :",
-          type: "SINGLE_CHOICE",
+          type: 'SINGLE_CHOICE',
           options: ['15-18°C', '20-25°C', '28-32°C', '35-40°C'],
           correctAnswer: 1,
           explanation: "Les perroquets tropicaux sont à l'aise entre 20 et 25°C.",

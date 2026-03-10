@@ -18,7 +18,7 @@ export class MessagingController {
     return this.messagingService.getConversations(user.id);
   }
 
-  @Post("conversations")
+  @Post('conversations')
   @ApiOperation({ summary: "Créer une conversation" })
   createConversation(@CurrentUser() user: any, @Body() dto: CreateConversationDto) {
     return this.messagingService.createConversation(user.id, dto);

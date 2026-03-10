@@ -17,7 +17,7 @@ export class PushController {
     return { publicKey: this.pushService.getVapidPublicKey() };
   }
 
-  @Post("subscribe")
+  @Post('subscribe')
   @ApiOperation({ summary: "S'abonner aux notifications push" })
   async subscribe(@Body() dto: PushSubscriptionDto, @Request() req: any) {
     return this.pushService.subscribe({ ...dto, userId: req.user.id });
@@ -25,7 +25,7 @@ export class PushController {
 
   @Delete('unsubscribe')
   @ApiOperation({ summary: "Se désabonner des notifications push" })
-  async unsubscribe(@Body("endpoint") endpoint: string) {
+  async unsubscribe(@Body('endpoint') endpoint: string) {
     return this.pushService.unsubscribe(endpoint);
   }
 
@@ -35,7 +35,7 @@ export class PushController {
     return this.pushService.getUserSubscriptions(req.user.id);
   }
 
-  @Post("test")
+  @Post('test')
   @ApiOperation({ summary: "Envoyer une notification push de test" })
   async sendTest(@Request() req: any) {
     return this.pushService.sendToUser(req.user.id, {

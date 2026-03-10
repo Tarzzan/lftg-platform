@@ -12,7 +12,7 @@ export class GbifController {
 
   @Get('species')
   @ApiOperation({ summary: "Rechercher une espèce dans GBIF" })
-  searchSpecies(@Query("q") query: string, @Query('limit') limit: string) {
+  searchSpecies(@Query('q') query: string, @Query('limit') limit: string) {
     return this.gbifService.searchSpecies(query || '', parseInt(limit) || 10);
   }
 
@@ -20,7 +20,7 @@ export class GbifController {
   @ApiOperation({ summary: "Toutes les espèces LFTG enrichies GBIF" })
   getAllSpecies() { return this.gbifService.getAllSpecies(); }
 
-  @Get("stats")
+  @Get('stats')
   @ApiOperation({ summary: "Statistiques de biodiversité" })
   getBiodiversityStats() { return this.gbifService.getBiodiversityStats(); }
 
@@ -32,7 +32,7 @@ export class GbifController {
 
   @Get('species/:name/occurrences')
   @ApiOperation({ summary: "Occurrences en Guyane" })
-  getOccurrences(@Param("name") name: string) {
+  getOccurrences(@Param('name') name: string) {
     return this.gbifService.getOccurrencesInGuyane(name);
   }
 

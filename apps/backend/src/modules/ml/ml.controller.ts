@@ -23,7 +23,7 @@ export class MlController {
     return this.mlService.getBreedingPredictions();
   }
 
-  @Get("behavioral-anomalies")
+  @Get('behavioral-anomalies')
   @ApiOperation({ summary: "Détection d'anomalies comportementales" })
   getBehavioralAnomalies() {
     return this.mlService.getBehavioralAnomalies();
@@ -31,7 +31,7 @@ export class MlController {
 
   @Get('nutrition-recommendations')
   @ApiOperation({ summary: "Recommandations nutritionnelles" })
-  getNutritionRecommendations(@Query("animalId") animalId: string) {
+  getNutritionRecommendations(@Query('animalId') animalId: string) {
     return this.mlService.getNutritionRecommendations(animalId);
   }
 

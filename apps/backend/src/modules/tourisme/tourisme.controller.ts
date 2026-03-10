@@ -13,7 +13,7 @@ export class TourismeController {
 
   @Get('visites')
   @ApiOperation({ summary: "Liste des visites guidées" })
-  getVisites(@Query("status") status?: string) {
+  getVisites(@Query('status') status?: string) {
     return this.tourismeService.getVisites({ status });
   }
 
@@ -23,9 +23,9 @@ export class TourismeController {
     return this.tourismeService.createVisite(body);
   }
 
-  @Get("reservations")
+  @Get('reservations')
   @ApiOperation({ summary: "Liste des réservations" })
-  getReservations(@Query("status") status?: string) {
+  getReservations(@Query('status') status?: string) {
     return this.tourismeService.getReservations({ status });
   }
 
@@ -47,7 +47,7 @@ export class TourismeController {
     return this.tourismeService.getStats();
   }
 
-  @Get("calendar")
+  @Get('calendar')
   @ApiOperation({ summary: "Calendrier des visites" })
   getCalendar(@Query("year") year: string, @Query('month') month: string) {
     return this.tourismeService.getCalendar(parseInt(year) || 2026, parseInt(month) || 3);

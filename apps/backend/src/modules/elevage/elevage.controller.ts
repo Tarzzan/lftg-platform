@@ -17,7 +17,7 @@ export class ElevageController {
     return this.elevageService.getGeneticStats();
   }
 
-  @Get("breeding-pairs")
+  @Get('breeding-pairs')
   @ApiOperation({ summary: "Lister les couples reproducteurs" })
   getBreedingPairs() {
     return this.elevageService.getBreedingPairs();

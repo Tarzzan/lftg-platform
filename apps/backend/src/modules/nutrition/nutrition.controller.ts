@@ -25,7 +25,7 @@ export class NutritionController {
 
   @Get('records')
   @ApiOperation({ summary: "Historique des repas" })
-  getRecords(@Query("date") date?: string) {
+  getRecords(@Query('date') date?: string) {
     return this.nutritionService.getFeedingRecords(date);
   }
 

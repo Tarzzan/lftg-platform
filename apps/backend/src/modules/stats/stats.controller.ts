@@ -27,7 +27,7 @@ export class StatsController {
 
   @Get('stock/evolution')
   @ApiOperation({ summary: "Evolution des mouvements de stock sur N jours" })
-  @ApiQuery({ name: "days", required: false, description: "Nombre de jours (défaut: 30)" })
+  @ApiQuery({ name: 'days', required: false, description: "Nombre de jours (défaut: 30)" })
   @ApiResponse({ status: 200, description: "Entrées et sorties de stock par jour" })
   getStockEvolution(@Query('days') days?: string) {
     return this.statsService.getStockEvolution(days ? parseInt(days) : 30);

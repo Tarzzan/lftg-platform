@@ -13,7 +13,7 @@ export class PersonnelController {
   @Get('employees')
   @ApiOperation({ summary: "Lister les employés avec filtres" })
   getEmployees(
-    @Query("departement") departement?: string,
+    @Query('departement') departement?: string,
     @Query('typeContrat') typeContrat?: string,
     @Query('search') search?: string,
   ) {
@@ -22,7 +22,7 @@ export class PersonnelController {
 
   @Get('employees/:id')
   @ApiOperation({ summary: "Obtenir un employé par ID" })
-  getEmployee(@Param("id") id: string) {
+  getEmployee(@Param('id') id: string) {
     return this.personnelService.getEmployee(id);
   }
 
@@ -34,14 +34,14 @@ export class PersonnelController {
 
   @Put("employees/:id")
   @ApiOperation({ summary: "Mettre à jour un employé" })
-  updateEmployee(@Param("id") id: string, @Body() data: any) {
+  updateEmployee(@Param('id') id: string, @Body() data: any) {
     return this.personnelService.updateEmployee(id, data);
   }
 
   @Get('planning')
   @ApiOperation({ summary: "Planning des gardes du mois" })
   getGuardSchedule(
-    @Query("month") month: string = String(new Date().getMonth() + 1),
+    @Query('month') month: string = String(new Date().getMonth() + 1),
     @Query('year') year: string = String(new Date().getFullYear()),
   ) {
     return this.personnelService.getGuardSchedule(parseInt(month), parseInt(year));
@@ -53,10 +53,10 @@ export class PersonnelController {
     return this.personnelService.createGuardShift(data);
   }
 
-  @Get("conges")
+  @Get('conges')
   @ApiOperation({ summary: "Lister les demandes de congés" })
   getLeaveRequests(
-    @Query("employeeId") employeeId?: string,
+    @Query('employeeId') employeeId?: string,
     @Query('statut') statut?: string,
   ) {
     return this.personnelService.getLeaveRequests({ employeeId, statut });
@@ -70,7 +70,7 @@ export class PersonnelController {
 
   @Put("conges/:id/approve")
   @ApiOperation({ summary: "Approuver une demande de congé" })
-  approveLeave(@Param("id") id: string, @Body() body: { approbateurId: string }) {
+  approveLeave(@Param('id') id: string, @Body() body: { approbateurId: string }) {
     return this.personnelService.approveLeaveRequest(id, body.approbateurId);
   }
 

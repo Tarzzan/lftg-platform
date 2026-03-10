@@ -14,7 +14,7 @@ export class VentesController {
 
   @Get()
   @ApiOperation({ summary: "Lister toutes les ventes avec filtres et pagination" })
-  @ApiQuery({ name: "status", required: false, enum: ['PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED', 'REFUNDED'] })
+  @ApiQuery({ name: 'status', required: false, enum: ['PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED', 'REFUNDED'] })
   @ApiQuery({ name: 'type', required: false, enum: ['ANIMAL', 'PRODUCT', 'SERVICE', 'FORMATION'] })
   @ApiQuery({ name: 'search', required: false })
   @ApiQuery({ name: 'dateFrom', required: false })
@@ -39,7 +39,7 @@ export class VentesController {
 
   @Get('stats')
   @ApiOperation({ summary: "Statistiques des ventes par période" })
-  @ApiQuery({ name: "period", required: false, enum: ['week', 'month', 'year'] })
+  @ApiQuery({ name: 'period', required: false, enum: ['week', 'month', 'year'] })
   getStats(@Query('period') period?: 'week' | 'month' | 'year') {
     return this.ventesService.getStats(period);
   }

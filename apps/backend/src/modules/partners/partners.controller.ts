@@ -15,7 +15,7 @@ export class PartnersController {
   @ApiOperation({ summary: "Lister tous les partenaires" })
   findAll() { return this.partnersService.findAll(); }
 
-  @Get("stats")
+  @Get('stats')
   @ApiOperation({ summary: "Statistiques des partenaires" })
   getStats() { return this.partnersService.getStats(); }
 
@@ -29,11 +29,11 @@ export class PartnersController {
 
   @Patch(":id/suspend")
   @ApiOperation({ summary: "Suspendre un partenaire" })
-  suspend(@Param("id") id: string) { return this.partnersService.suspend(id); }
+  suspend(@Param('id') id: string) { return this.partnersService.suspend(id); }
 
   @Patch(':id/activate')
   @ApiOperation({ summary: "Activer un partenaire" })
-  activate(@Param("id") id: string) { return this.partnersService.activate(id); }
+  activate(@Param('id') id: string) { return this.partnersService.activate(id); }
 
   @Post(':id/rotate-key')
   @ApiOperation({ summary: "Renouveler les clés API d'un partenaire" })

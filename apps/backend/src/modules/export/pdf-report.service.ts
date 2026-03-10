@@ -99,7 +99,7 @@ export class PdfReportService {
     return `<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
+  <meta charset='UTF-8'>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title}</title>
   <style>
@@ -136,7 +136,7 @@ export class PdfReportService {
   </style>
 </head>
 <body>
-  <div class="page">
+  <div class='page'>
     ${content}
     <div class="footer">
       <p>🦜 LFTG Platform v3.0.0 — La Ferme Tropicale de Guyane — Généré le ${new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
@@ -148,41 +148,41 @@ export class PdfReportService {
 
   private buildMonthlyReportHTML(data: any): string {
     const content = `
-      <div class="header">
+      <div class='header'>
         <div style="display:flex;align-items:center;gap:12px">
-          <div class="header-logo">🦜</div>
-          <div class="header-title">
+          <div class='header-logo'>🦜</div>
+          <div class='header-title'>
             <h1>Rapport mensuel — ${data.monthName} ${data.year}</h1>
             <p>La Ferme Tropicale de Guyane · LFTG Platform</p>
           </div>
         </div>
-        <div class="header-meta">
+        <div class='header-meta'>
           <p>Généré le ${new Date().toLocaleDateString('fr-FR')}</p>
           <p>Période : 01/${String(data.month).padStart(2,'0')}/${data.year} — ${new Date(data.year, data.month, 0).getDate()}/${String(data.month).padStart(2,'0')}/${data.year}</p>
         </div>
       </div>
 
-      <div class="stats-grid">
-        <div class="stat-card">
+      <div class='stats-grid'>
+        <div class='stat-card'>
           <div class="value">${data.animals.length}</div>
-          <div class="label">Nouveaux animaux</div>
+          <div class='label'>Nouveaux animaux</div>
         </div>
-        <div class="stat-card">
-          <div class="value">${data.medicalVisits.length}</div>
-          <div class="label">Visites médicales</div>
+        <div class='stat-card'>
+          <div class='value'>${data.medicalVisits.length}</div>
+          <div class='label'>Visites médicales</div>
         </div>
-        <div class="stat-card">
+        <div class='stat-card'>
           <div class="value">${data.stockMovements.length}</div>
-          <div class="label">Mouvements stock</div>
+          <div class='label'>Mouvements stock</div>
         </div>
-        <div class="stat-card">
-          <div class="value">${data.workflowInstances.length}</div>
-          <div class="label">Workflows lancés</div>
+        <div class='stat-card'>
+          <div class='value'>${data.workflowInstances.length}</div>
+          <div class='label'>Workflows lancés</div>
         </div>
       </div>
 
       ${data.medicalVisits.length > 0 ? `
-      <div class="section">
+      <div class='section'>
         <div class="section-title">Visites médicales</div>
         <table>
           <thead>
@@ -204,7 +204,7 @@ export class PdfReportService {
       </div>` : ''}
 
       ${data.stockMovements.length > 0 ? `
-      <div class="section">
+      <div class='section'>
         <div class="section-title">Mouvements de stock</div>
         <table>
           <thead>
@@ -229,22 +229,22 @@ export class PdfReportService {
 
   private buildAnimalMedicalReportHTML(animal: any): string {
     const content = `
-      <div class="header">
+      <div class='header'>
         <div style="display:flex;align-items:center;gap:12px">
-          <div class="header-logo">🦜</div>
+          <div class='header-logo'>🦜</div>
           <div class="header-title">
             <h1>Dossier médical — ${animal.name}</h1>
             <p>${animal.species?.name}${animal.species?.scientificName ? ` (${animal.species.scientificName})` : ''}</p>
           </div>
         </div>
-        <div class="header-meta">
+        <div class='header-meta'>
           <p>ID : ${animal.identifier || animal.id.slice(0, 8)}</p>
           <p>Statut : <span class="badge badge-green">${animal.status}</span></p>
         </div>
       </div>
 
-      <div class="section">
-        <div class="section-title">Informations générales</div>
+      <div class='section'>
+        <div class='section-title'>Informations générales</div>
         <table>
           <tr><th>Nom</th><td>${animal.name}</td><th>Sexe</th><td>${animal.sex}</td></tr>
           <tr><th>Espèce</th><td>${animal.species?.name}</td><th>Naissance</th><td>${animal.birthDate ? new Date(animal.birthDate).toLocaleDateString('fr-FR') : '—'}</td></tr>
@@ -253,8 +253,8 @@ export class PdfReportService {
       </div>
 
       ${animal.medicalVisits?.length > 0 ? `
-      <div class="section">
-        <div class="section-title">Historique des visites (${animal.medicalVisits.length})</div>
+      <div class='section'>
+        <div class='section-title'>Historique des visites (${animal.medicalVisits.length})</div>
         ${animal.medicalVisits.map((v: any) => `
           <div style="border:1px solid #e5e7eb;border-radius:6px;padding:10px;margin-bottom:8px;">
             <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
@@ -291,15 +291,15 @@ export class PdfReportService {
     }, {});
 
     const content = `
-      <div class="header">
+      <div class='header'>
         <div style="display:flex;align-items:center;gap:12px">
-          <div class="header-logo">📦</div>
+          <div class='header-logo'>📦</div>
           <div class="header-title">
             <h1>Inventaire du stock</h1>
             <p>La Ferme Tropicale de Guyane · LFTG Platform</p>
           </div>
         </div>
-        <div class="header-meta">
+        <div class='header-meta'>
           <p>Date : ${new Date().toLocaleDateString('fr-FR')}</p>
           <p>${data.articles.length} articles · ${data.lowStock.length} en alerte</p>
         </div>
@@ -312,7 +312,7 @@ export class PdfReportService {
       </div>` : ''}
 
       ${Object.entries(byCategory).map(([category, articles]: [string, any]) => `
-      <div class="section">
+      <div class='section'>
         <div class="section-title">${category} (${(articles as any[]).length})</div>
         <table>
           <thead>

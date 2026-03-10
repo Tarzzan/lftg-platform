@@ -28,7 +28,7 @@ export class AccountingController {
   @Get('transactions')
   @ApiOperation({ summary: "Liste des transactions" })
   getTransactions(
-    @Query("from") from?: string,
+    @Query('from') from?: string,
     @Query('to') to?: string,
     @Query('type') type?: string,
   ) {

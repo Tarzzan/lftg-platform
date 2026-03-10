@@ -35,7 +35,7 @@ export class PluginsController {
 
   @Get(':id')
   @ApiOperation({ summary: "Récupère un plugin par son identifiant" })
-  @ApiParam({ name: "id", description: "Identifiant unique du plugin" })
+  @ApiParam({ name: 'id', description: "Identifiant unique du plugin" })
   @ApiResponse({ status: 200, description: "Détails du plugin" })
   @ApiResponse({ status: 404, description: "Plugin non trouvé" })
   findOne(@Param("id") id: string) {

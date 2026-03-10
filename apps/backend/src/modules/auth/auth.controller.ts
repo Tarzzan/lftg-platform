@@ -20,7 +20,7 @@ export class AuthController {
   @ApiOperation({ summary: "Connexion utilisateur" })
   async login(@Request() req: any, @Body() _dto: LoginDto, @Res({ passthrough: true }) res: Response) {
     const tokens = await this.authService.login(req.user);
-    res.cookie("refresh_token", tokens.refreshToken, { httpOnly: true, sameSite: 'strict' });
+    res.cookie('refresh_token', tokens.refreshToken, { httpOnly: true, sameSite: 'strict' });
     return { accessToken: tokens.accessToken, user: tokens.user };
   }
 
@@ -32,7 +32,7 @@ export class AuthController {
   }
 
   @Public() // Should be protected by a refresh token guard
-  @Post("refresh")
+  @Post('refresh')
   @ApiOperation({ summary: "Rafraîchir le token d'accès" })
   async refreshToken(@Request() req: Request, @Res({ passthrough: true }) res: Response) {
     // This assumes the refresh token is sent in the request cookies
@@ -46,13 +46,13 @@ export class AuthController {
   @Post('logout')
   @ApiBearerAuth()
   @ApiOperation({ summary: "Déconnexion utilisateur" })
-  async logout(@CurrentUser("id") userId: string, @Res({ passthrough: true }) res: Response) {
+  async logout(@CurrentUser('id') userId: string, @Res({ passthrough: true }) res: Response) {
     await this.authService.logout(userId);
     res.clearCookie('refresh_token');
     return { message: "Déconnexion réussie" };
   }
 
-  @Get("me")
+  @Get('me')
   @ApiBearerAuth()
   @ApiOperation({ summary: "Profil de l'utilisateur connecté" })
   async getProfile(@CurrentUser('id') userId: string) {
@@ -62,7 +62,7 @@ export class AuthController {
   @Post('2fa/generate')
   @ApiBearerAuth()
   @ApiOperation({ summary: "Générer un secret 2FA" })
-  async generateTwoFactorSecret(@CurrentUser("id") userId: string) {
+  async generateTwoFactorSecret(@CurrentUser('id') userId: string) {
     const qrCodeDataUrl = await this.authService.generateTwoFactorSecret(userId);
     return { qrCodeDataUrl };
   }

@@ -3,7 +3,7 @@ import { IsString, IsOptional, IsArray } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateRoleDto {
-  @ApiProperty({ description: "Nom unique du rôle", example: "VETERINAIRE" })
+  @ApiProperty({ description: "Nom unique du rôle", example: 'VETERINAIRE' })
   @IsString()
   name: string;
 
@@ -20,11 +20,11 @@ export class CreateRoleDto {
 }
 
 export class CreatePermissionDto {
-  @ApiProperty({ description: "Action autorisée", example: "read" })
+  @ApiProperty({ description: "Action autorisée", example: 'read' })
   @IsString()
   action: string;
 
-  @ApiProperty({ description: "Ressource concernée", example: "Animal" })
+  @ApiProperty({ description: "Ressource concernée", example: 'Animal' })
   @IsString()
   subject: string;
 

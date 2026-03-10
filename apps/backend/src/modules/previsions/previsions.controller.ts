@@ -12,7 +12,7 @@ export class PrevisionsController {
 
   @Get('revenue')
   @ApiOperation({ summary: "Prévisions de revenus (régression linéaire)" })
-  getRevenueForecast(@Query("months") months?: string) {
+  getRevenueForecast(@Query('months') months?: string) {
     return this.previsionsService.getRevenueForecast(parseInt(months || '6'));
   }
 
@@ -22,7 +22,7 @@ export class PrevisionsController {
     return this.previsionsService.getAnimalPopulationForecast();
   }
 
-  @Get("stock")
+  @Get('stock')
   @ApiOperation({ summary: "Prévisions de rupture de stock" })
   getStockForecast() {
     return this.previsionsService.getStockForecast();
