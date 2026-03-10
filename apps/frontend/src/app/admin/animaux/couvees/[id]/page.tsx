@@ -126,7 +126,7 @@ export default function BroodDetailPage() {
             <div className="flex items-center gap-3">
               <span className="text-3xl">🥚</span>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground dark:text-white">
                   Couvée {brood.reference || `#${id.slice(-6)}`}
                 </h1>
                 <p className="text-gray-500">{brood.species?.name} — {brood.eggCount} œufs</p>
@@ -171,19 +171,19 @@ export default function BroodDetailPage() {
           { label: 'Éclos', value: brood.hatchedCount ?? 0, icon: '🐣', color: 'green' },
           { label: 'Taux de réussite', value: `${successRate}%`, icon: '📊', color: 'amber' },
         ].map(kpi => (
-          <div key={kpi.label} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 text-center">
+          <div key={kpi.label} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-4 text-center">
             <div className="text-2xl mb-1">{kpi.icon}</div>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white">{kpi.value}</div>
-            <div className="text-xs text-gray-500 mt-1">{kpi.label}</div>
+            <div className="text-2xl font-bold text-gray-900 dark:text-foreground dark:text-white">{kpi.value}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{kpi.label}</div>
           </div>
         ))}
       </div>
 
       {/* Barre de progression */}
       {brood.status === 'INCUBATION' && (
-        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
+        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-4">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300">
               Progression de l'incubation — Jour {daysIncubating}
             </span>
             <span className="text-sm font-bold text-forest-600">{progressPercent}%</span>
@@ -202,7 +202,7 @@ export default function BroodDetailPage() {
       )}
 
       {/* Onglets */}
-      <div className="border-b border-gray-200 dark:border-gray-700">
+      <div className="border-b border-gray-200 dark:border-border dark:border-gray-700">
         <nav className="flex gap-1">
           {(['overview', 'events', 'stats'] as const).map(tab => (
             <button
@@ -211,7 +211,7 @@ export default function BroodDetailPage() {
               className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${
                 activeTab === tab
                   ? 'bg-white dark:bg-gray-800 border border-b-white dark:border-gray-700 dark:border-b-gray-800 text-forest-600 -mb-px'
-                  : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-300'
               }`}
             >
               {tab === 'overview' ? '📋 Fiche' : tab === 'events' ? '📅 Événements' : '📊 Statistiques'}
@@ -223,8 +223,8 @@ export default function BroodDetailPage() {
       {/* Contenu des onglets */}
       {activeTab === 'overview' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Informations générales</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-5">
+            <h3 className="font-semibold text-gray-900 dark:text-foreground dark:text-white mb-4">Informations générales</h3>
             <dl className="space-y-3">
               {[
                 { label: 'Espèce', value: brood.species?.name },
@@ -238,14 +238,14 @@ export default function BroodDetailPage() {
               ].map(item => (
                 <div key={item.label} className="flex justify-between">
                   <dt className="text-sm text-gray-500">{item.label}</dt>
-                  <dd className="text-sm font-medium text-gray-900 dark:text-white">{item.value || '—'}</dd>
+                  <dd className="text-sm font-medium text-gray-900 dark:text-foreground dark:text-white">{item.value || '—'}</dd>
                 </div>
               ))}
             </dl>
           </div>
 
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Répartition des œufs</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-5">
+            <h3 className="font-semibold text-gray-900 dark:text-foreground dark:text-white mb-4">Répartition des œufs</h3>
             {eggData.length > 0 ? (
               <ResponsiveContainer width="100%" height={200}>
                 <PieChart>
@@ -285,7 +285,7 @@ export default function BroodDetailPage() {
       {activeTab === 'events' && (
         <div className="space-y-4">
           <div className="flex justify-between items-center">
-            <h3 className="font-semibold text-gray-900 dark:text-white">
+            <h3 className="font-semibold text-gray-900 dark:text-foreground dark:text-white">
               Historique des événements ({brood.events?.length || 0})
             </h3>
             <button
@@ -297,15 +297,15 @@ export default function BroodDetailPage() {
           </div>
 
           {showAddEvent && (
-            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-              <h4 className="font-medium text-gray-900 dark:text-white mb-4">Nouvel événement</h4>
+            <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-5">
+              <h4 className="font-medium text-gray-900 dark:text-foreground dark:text-white mb-4">Nouvel événement</h4>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Type</label>
                   <select
                     value={newEvent.type}
                     onChange={e => setNewEvent(p => ({ ...p, type: e.target.value }))}
-                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"
                   >
                     {Object.entries(EVENT_ICONS).map(([key, icon]) => (
                       <option key={key} value={key}>{icon} {key}</option>
@@ -315,36 +315,36 @@ export default function BroodDetailPage() {
                 {(newEvent.type === 'TEMPERATURE_CHECK') && (
                   <>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Température (°C)</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Température (°C)</label>
                       <input
                         type="number"
                         step="0.1"
                         value={newEvent.temperature}
                         onChange={e => setNewEvent(p => ({ ...p, temperature: e.target.value }))}
-                        className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"
                         placeholder="37.5"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Humidité (%)</label>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Humidité (%)</label>
                       <input
                         type="number"
                         step="1"
                         value={newEvent.humidity}
                         onChange={e => setNewEvent(p => ({ ...p, humidity: e.target.value }))}
-                        className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"
                         placeholder="60"
                       />
                     </div>
                   </>
                 )}
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Notes</label>
                   <textarea
                     value={newEvent.notes}
                     onChange={e => setNewEvent(p => ({ ...p, notes: e.target.value }))}
                     rows={2}
-                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"
                     placeholder="Observations..."
                   />
                 </div>
@@ -366,7 +366,7 @@ export default function BroodDetailPage() {
                 </button>
                 <button
                   onClick={() => setShowAddEvent(false)}
-                  className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                  className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 dark:text-gray-300 hover:bg-gray-50 dark:bg-muted/20 dark:hover:bg-gray-700 transition-colors"
                 >
                   Annuler
                 </button>
@@ -389,14 +389,14 @@ export default function BroodDetailPage() {
                     <div className="absolute left-3.5 w-5 h-5 rounded-full bg-white dark:bg-gray-800 border-2 border-forest-500 flex items-center justify-center text-xs">
                       {EVENT_ICONS[event.type] || '📌'}
                     </div>
-                    <div className="flex-1 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
+                    <div className="flex-1 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-4">
                       <div className="flex justify-between items-start">
                         <div>
-                          <span className="text-sm font-semibold text-gray-900 dark:text-white">
+                          <span className="text-sm font-semibold text-gray-900 dark:text-foreground dark:text-white">
                             {EVENT_ICONS[event.type]} {event.type}
                           </span>
                           {event.notes && (
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{event.notes}</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 dark:text-gray-400 mt-1">{event.notes}</p>
                           )}
                           {event.data?.temperature && (
                             <div className="flex gap-4 mt-2 text-xs text-gray-500">
@@ -423,8 +423,8 @@ export default function BroodDetailPage() {
       {activeTab === 'stats' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Graphique température */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Évolution température & humidité</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-5">
+            <h3 className="font-semibold text-gray-900 dark:text-foreground dark:text-white mb-4">Évolution température & humidité</h3>
             {tempData.length > 0 ? (
               <ResponsiveContainer width="100%" height={220}>
                 <LineChart data={tempData}>
@@ -446,8 +446,8 @@ export default function BroodDetailPage() {
           </div>
 
           {/* Graphique résultats */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Résultats de la couvée</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-5">
+            <h3 className="font-semibold text-gray-900 dark:text-foreground dark:text-white mb-4">Résultats de la couvée</h3>
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={[
                 { name: 'Œufs', total: brood.eggCount, fertilisés: brood.fertilizedCount || 0, éclos: brood.hatchedCount || 0, morts: brood.deadCount || 0 },
@@ -466,8 +466,8 @@ export default function BroodDetailPage() {
           </div>
 
           {/* Statistiques textuelles */}
-          <div className="md:col-span-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Indicateurs de performance</h3>
+          <div className="md:col-span-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-5">
+            <h3 className="font-semibold text-gray-900 dark:text-foreground dark:text-white mb-4">Indicateurs de performance</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
                 {
@@ -497,7 +497,7 @@ export default function BroodDetailPage() {
               ].map(stat => (
                 <div key={stat.label} className={`p-4 rounded-lg bg-${stat.color}-50 dark:bg-${stat.color}-900/20 border border-${stat.color}-200 dark:border-${stat.color}-700`}>
                   <div className={`text-2xl font-bold text-${stat.color}-700 dark:text-${stat.color}-400`}>{stat.value}</div>
-                  <div className="text-xs text-gray-500 mt-1">{stat.label}</div>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{stat.label}</div>
                 </div>
               ))}
             </div>

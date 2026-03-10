@@ -27,7 +27,7 @@ const TYPE_CONFIG = {
   CLEANING:   { emoji: '🧹', color: 'bg-blue-100 text-blue-700 border-blue-200',    label: 'Nettoyage' },
   TRAINING:   { emoji: '📚', color: 'bg-purple-100 text-purple-700 border-purple-200', label: 'Formation' },
   INSPECTION: { emoji: '🔍', color: 'bg-orange-100 text-orange-700 border-orange-200', label: 'Inspection' },
-  OTHER:      { emoji: '📌', color: 'bg-gray-100 text-gray-700 border-gray-200',    label: 'Autre' },
+  OTHER:      { emoji: '📌', color: 'bg-gray-100 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-border',    label: 'Autre' },
 };
 
 const PRIORITY_CONFIG = {
@@ -137,12 +137,12 @@ export default function AgendaPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">📅 Agenda des soins</h1>
-          <p className="text-gray-500 text-sm mt-1">Planning des soins, visites et événements</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Planning des soins, visites et événements</p>
         </div>
         <div className="flex gap-2">
           <a
             href={`/api/v1/agenda/export/ical?startDate=${monthStart}&endDate=${monthEnd}`}
-            className="px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition-colors flex items-center gap-2"
+            className="px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 dark:bg-muted/20 transition-colors flex items-center gap-2"
           >
             <span>📥</span> Export iCal
           </a>
@@ -162,7 +162,7 @@ export default function AgendaPage() {
             <button
               key={v}
               onClick={() => setView(v)}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${view === v ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 hover:text-gray-700'}`}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${view === v ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}
             >
               {v === 'month' ? 'Mois' : 'Liste'}
             </button>
@@ -171,7 +171,7 @@ export default function AgendaPage() {
         <div className="flex gap-2 flex-wrap">
           <button
             onClick={() => setFilterType('ALL')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${filterType === 'ALL' ? 'bg-gray-800 text-white border-gray-800' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'}`}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${filterType === 'ALL' ? 'bg-gray-800 text-white border-gray-800' : 'bg-white text-gray-600 dark:text-gray-400 border-gray-200 dark:border-border hover:bg-gray-50'}`}
           >
             Tous {events.length > 0 && `(${events.length})`}
           </button>
@@ -181,7 +181,7 @@ export default function AgendaPage() {
               <button
                 key={type}
                 onClick={() => setFilterType(type)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${filterType === type ? config.color + ' border-current' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'}`}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${filterType === type ? config.color + ' border-current' : 'bg-white text-gray-600 dark:text-gray-400 border-gray-200 dark:border-border hover:bg-gray-50'}`}
               >
                 {config.emoji} {config.label} {count > 0 && `(${count})`}
               </button>
@@ -199,7 +199,7 @@ export default function AgendaPage() {
       {!isLoading && view === 'month' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Calendrier mensuel */}
-          <div className="lg:col-span-2 bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="lg:col-span-2 bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border overflow-hidden">
             <div className="flex items-center justify-between p-4 border-b border-gray-100">
               <button onClick={prevMonth} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -215,7 +215,7 @@ export default function AgendaPage() {
             </div>
             <div className="grid grid-cols-7 border-b border-gray-100">
               {DAYS_OF_WEEK.map(day => (
-                <div key={day} className="p-2 text-center text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                <div key={day} className="p-2 text-center text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                   {day}
                 </div>
               ))}
@@ -262,12 +262,12 @@ export default function AgendaPage() {
           </div>
 
           {/* Panneau latéral — événements du jour */}
-          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border overflow-hidden">
             <div className="p-4 border-b border-gray-100">
               <h3 className="font-semibold text-gray-900">
                 {selectedDay ? `${selectedDay} ${MONTHS[currentMonth]} ${currentYear}` : 'Sélectionner un jour'}
               </h3>
-              <p className="text-xs text-gray-500 mt-0.5">{selectedDayEvents.length} événement(s)</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{selectedDayEvents.length} événement(s)</p>
             </div>
             <div className="p-4 space-y-3 max-h-[500px] overflow-y-auto">
               {selectedDayEvents.length === 0 ? (
@@ -280,7 +280,7 @@ export default function AgendaPage() {
                 </div>
               ) : (
                 selectedDayEvents.map(event => (
-                  <div key={event.id} className={`p-3 rounded-xl border ${TYPE_CONFIG[event.type]?.color || 'bg-gray-100 border-gray-200'}`}>
+                  <div key={event.id} className={`p-3 rounded-xl border ${TYPE_CONFIG[event.type]?.color || 'bg-gray-100 border-gray-200 dark:border-border'}`}>
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-2">
                         <span className="text-lg">{TYPE_CONFIG[event.type]?.emoji}</span>
@@ -332,7 +332,7 @@ export default function AgendaPage() {
       )}
 
       {!isLoading && view === 'list' && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border overflow-hidden">
           <div className="p-4 border-b border-gray-100">
             <h3 className="font-semibold text-gray-900">Tous les événements — {MONTHS[currentMonth]} {currentYear}</h3>
           </div>
@@ -344,12 +344,12 @@ export default function AgendaPage() {
           ) : (
             <div className="divide-y divide-gray-100">
               {[...events].sort((a, b) => a.startDate.localeCompare(b.startDate)).map(event => (
-                <div key={event.id} className="flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg border ${TYPE_CONFIG[event.type]?.color || 'bg-gray-100 border-gray-200'}`}>
+                <div key={event.id} className="flex items-center gap-4 p-4 hover:bg-gray-50 dark:bg-muted/20 transition-colors">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg border ${TYPE_CONFIG[event.type]?.color || 'bg-gray-100 border-gray-200 dark:border-border'}`}>
                     {TYPE_CONFIG[event.type]?.emoji}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-sm text-gray-900 truncate">{event.title}</div>
+                    <div className="font-medium text-sm text-gray-900 dark:text-foreground truncate">{event.title}</div>
                     <div className="text-xs text-gray-500">
                       {new Date(event.startDate).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })}
                       {' à '}
@@ -375,8 +375,8 @@ export default function AgendaPage() {
 
       {/* Événements urgents */}
       {urgentEvents.length > 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h3 className="font-semibold text-gray-900 mb-4">⚠️ Événements urgents à venir</h3>
+        <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-6">
+          <h3 className="font-semibold text-gray-900 dark:text-foreground mb-4">⚠️ Événements urgents à venir</h3>
           <div className="space-y-3">
             {urgentEvents.slice(0, 5).map(event => (
               <div key={event.id} className="flex items-center justify-between p-3 bg-red-50 rounded-xl border border-red-100">
@@ -404,14 +404,14 @@ export default function AgendaPage() {
       {/* Modal création événement */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl">
+          <div className="bg-white dark:bg-card rounded-2xl w-full max-w-lg shadow-2xl">
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
               <h2 className="text-lg font-semibold">Nouvel événement</h2>
               <button onClick={() => setShowModal(false)} className="p-2 hover:bg-gray-100 rounded-lg">✕</button>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Titre <span className="text-red-500">*</span></label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Titre <span className="text-red-500">*</span></label>
                 <input
                   type="text"
                   value={form.title}
@@ -422,7 +422,7 @@ export default function AgendaPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
                   <select
                     value={form.type}
                     onChange={e => setForm(f => ({ ...f, type: e.target.value as AgendaEvent['type'] }))}
@@ -434,7 +434,7 @@ export default function AgendaPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Priorité</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Priorité</label>
                   <select
                     value={form.priority}
                     onChange={e => setForm(f => ({ ...f, priority: e.target.value as AgendaEvent['priority'] }))}
@@ -448,7 +448,7 @@ export default function AgendaPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Date <span className="text-red-500">*</span></label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date <span className="text-red-500">*</span></label>
                   <input
                     type="date"
                     value={form.startDate}
@@ -457,7 +457,7 @@ export default function AgendaPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Heure</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Heure</label>
                   <input
                     type="time"
                     value={form.startTime}
@@ -467,7 +467,7 @@ export default function AgendaPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Récurrence</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Récurrence</label>
                 <select
                   value={form.recurrence}
                   onChange={e => setForm(f => ({ ...f, recurrence: e.target.value }))}
@@ -480,7 +480,7 @@ export default function AgendaPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
                 <textarea
                   value={form.description}
                   onChange={e => setForm(f => ({ ...f, description: e.target.value }))}

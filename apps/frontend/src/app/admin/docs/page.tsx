@@ -51,8 +51,8 @@ export default function ApiDocsPage() {
       {/* En-tête */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Documentation API</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground dark:text-white">Documentation API</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             LFTG Platform {apiVersion} — OpenAPI / Swagger
             {loading && <span className="ml-2 text-xs text-blue-500 animate-pulse">● Chargement...</span>}
             {!loading && !error && <span className="ml-2 text-xs text-green-600">● API connectée</span>}
@@ -64,7 +64,7 @@ export default function ApiDocsPage() {
             href={`${apiUrl}/api-json`}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-600 dark:text-gray-400 dark:text-gray-400 hover:bg-gray-50 dark:bg-muted/20 dark:hover:bg-gray-700 transition-colors"
           >
             📥 JSON Spec
           </a>
@@ -86,11 +86,11 @@ export default function ApiDocsPage() {
           { label: 'Modules API', value: MODULES.length, icon: '📦' },
           { label: 'Version API', value: apiVersion, icon: '🏷️' },
         ].map((m) => (
-          <div key={m.label} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 flex items-center gap-3">
+          <div key={m.label} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-4 flex items-center gap-3">
             <span className="text-2xl">{m.icon}</span>
             <div>
               <p className="text-xs text-gray-500">{m.label}</p>
-              <p className="text-lg font-bold text-gray-900 dark:text-white">{m.value}</p>
+              <p className="text-lg font-bold text-gray-900 dark:text-foreground dark:text-white">{m.value}</p>
             </div>
           </div>
         ))}
@@ -101,12 +101,12 @@ export default function ApiDocsPage() {
         {MODULES.map((m) => (
           <div
             key={m.module}
-            className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-3 flex items-center gap-3 hover:border-blue-300 transition-colors cursor-pointer"
+            className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-3 flex items-center gap-3 hover:border-blue-300 transition-colors cursor-pointer"
             onClick={() => window.open(`${apiUrl}/api#/${m.module}`, '_blank')}
           >
             <span className="text-xl">{m.icon}</span>
             <div>
-              <p className="text-sm font-semibold text-gray-900 dark:text-white">{m.module}</p>
+              <p className="text-sm font-semibold text-gray-900 dark:text-foreground dark:text-white">{m.module}</p>
               <p className="text-xs text-gray-400">{m.endpoints} endpoints</p>
             </div>
           </div>
@@ -115,7 +115,7 @@ export default function ApiDocsPage() {
 
       {/* Iframe Swagger UI */}
       <div
-        className="flex-1 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden relative"
+        className="flex-1 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 overflow-hidden relative"
         style={{ minHeight: '600px' }}
       >
         {loading && (
@@ -130,7 +130,7 @@ export default function ApiDocsPage() {
           <div className="flex items-center justify-center h-full">
             <div className="text-center p-8">
               <p className="text-4xl mb-4">⚠️</p>
-              <p className="text-gray-700 dark:text-gray-300 font-medium">{error}</p>
+              <p className="text-gray-700 dark:text-gray-300 dark:text-gray-300 font-medium">{error}</p>
               <a
                 href={`${apiUrl}/api`}
                 target="_blank"

@@ -70,12 +70,12 @@ export default function AgendaSemainePage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">📅 Vue semaine</h1>
-          <p className="text-gray-500 text-sm mt-1">{formatWeekRange()}</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{formatWeekRange()}</p>
         </div>
         <div className="flex gap-2">
           <button
             onClick={() => setWeekOffset(w => w - 1)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition-colors"
+            className="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 dark:bg-muted/20 transition-colors"
           >
             ← Semaine précédente
           </button>
@@ -87,7 +87,7 @@ export default function AgendaSemainePage() {
           </button>
           <button
             onClick={() => setWeekOffset(w => w + 1)}
-            className="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 transition-colors"
+            className="px-3 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 dark:bg-muted/20 transition-colors"
           >
             Semaine suivante →
           </button>
@@ -99,9 +99,9 @@ export default function AgendaSemainePage() {
           <div className="animate-spin w-8 h-8 border-4 border-forest-600 border-t-transparent rounded-full" />
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-auto">
+        <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border overflow-auto">
           {/* En-têtes des jours */}
-          <div className="grid border-b border-gray-200" style={{ gridTemplateColumns: '60px repeat(7, 1fr)' }}>
+          <div className="grid border-b border-gray-200 dark:border-border" style={{ gridTemplateColumns: '60px repeat(7, 1fr)' }}>
             <div className="p-2 text-xs text-gray-400 border-r border-gray-100" />
             {weekDays.map((day, i) => {
               const isToday = day.toDateString() === new Date().toDateString();

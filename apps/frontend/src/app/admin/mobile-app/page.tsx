@@ -36,11 +36,11 @@ export default function MobileAppPage() {
         </div>
         <p className="text-green-200 text-xs">Données en temps réel</p>
       </div>
-      <div className="flex-1 bg-gray-50 rounded-t-3xl px-4 pt-5 overflow-y-auto">
+      <div className="flex-1 bg-gray-50 dark:bg-muted/20 rounded-t-3xl px-4 pt-5 overflow-y-auto">
         {loading ? (
           <div className="grid grid-cols-2 gap-3 mb-4">
             {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="bg-white border border-gray-100 rounded-xl p-3 animate-pulse">
+              <div key={i} className="bg-white dark:bg-card border border-gray-100 rounded-xl p-3 animate-pulse">
                 <div className="h-6 bg-gray-200 rounded w-1/2 mx-auto mb-1" />
                 <div className="h-3 bg-gray-200 rounded w-3/4 mx-auto" />
               </div>
@@ -68,8 +68,8 @@ export default function MobileAppPage() {
             <p className="text-sm text-gray-700">{error}</p>
           </div>
         )}
-        <div className="bg-white rounded-xl border border-gray-200 p-3 mb-3">
-          <p className="text-xs font-semibold text-gray-500 mb-2">RÉSUMÉ</p>
+        <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-3 mb-3">
+          <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">RÉSUMÉ</p>
           <div className="space-y-1">
             <div className="flex justify-between text-xs">
               <span className="text-gray-500">Espèces</span>
@@ -90,8 +90,8 @@ export default function MobileAppPage() {
   );
 
   const AnimalsScreen = () => (
-    <div className="h-full bg-gray-50 flex flex-col">
-      <div className="bg-white px-4 py-3 border-b border-gray-200">
+    <div className="h-full bg-gray-50 dark:bg-muted/20 flex flex-col">
+      <div className="bg-white px-4 py-3 border-b border-gray-200 dark:border-border">
         <h2 className="font-bold text-gray-900">Animaux</h2>
         <p className="text-xs text-gray-500">{stats?.animals?.alive ?? 0} animaux vivants · {stats?.animals?.species ?? 0} espèces</p>
       </div>
@@ -106,8 +106,8 @@ export default function MobileAppPage() {
   );
 
   const AlertsScreen = () => (
-    <div className="h-full bg-gray-50 flex flex-col">
-      <div className="bg-white px-4 py-3 border-b border-gray-200">
+    <div className="h-full bg-gray-50 dark:bg-muted/20 flex flex-col">
+      <div className="bg-white px-4 py-3 border-b border-gray-200 dark:border-border">
         <h2 className="font-bold text-gray-900">Alertes</h2>
         <p className="text-xs text-gray-500">{stats?.stock?.lowStock ?? 0} alertes stock faible</p>
       </div>
@@ -129,8 +129,8 @@ export default function MobileAppPage() {
   );
 
   const ProfileScreen = () => (
-    <div className="h-full bg-gray-50 flex flex-col">
-      <div className="bg-white px-4 py-3 border-b border-gray-200">
+    <div className="h-full bg-gray-50 dark:bg-muted/20 flex flex-col">
+      <div className="bg-white px-4 py-3 border-b border-gray-200 dark:border-border">
         <h2 className="font-bold text-gray-900">Profil</h2>
       </div>
       <div className="flex-1 p-4 flex items-center justify-center">
@@ -154,14 +154,14 @@ export default function MobileAppPage() {
     <div className="p-6 space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Application Mobile LFTG</h1>
-        <p className="text-gray-500 mt-1">Prévisualisation de l&apos;app mobile — données en temps réel</p>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">Prévisualisation de l&apos;app mobile — données en temps réel</p>
       </div>
 
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {loading ? (
           Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm animate-pulse">
+            <div key={i} className="bg-white dark:bg-card rounded-xl p-4 border border-gray-200 dark:border-border shadow-sm animate-pulse">
               <div className="h-3 bg-gray-200 rounded w-2/3 mb-2" />
               <div className="h-7 bg-gray-200 rounded w-1/2" />
             </div>
@@ -173,8 +173,8 @@ export default function MobileAppPage() {
             { label: 'Couvées actives', value: stats?.animals?.activeBroods ?? 0, color: 'text-purple-600' },
             { label: 'Alertes stock', value: stats?.stock?.lowStock ?? 0, color: stats?.stock?.lowStock ? 'text-red-600' : 'text-gray-600' },
           ].map((kpi) => (
-            <div key={kpi.label} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
-              <p className="text-xs text-gray-500 uppercase tracking-wide">{kpi.label}</p>
+            <div key={kpi.label} className="bg-white dark:bg-card rounded-xl p-4 border border-gray-200 dark:border-border shadow-sm">
+              <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">{kpi.label}</p>
               <p className={`text-2xl font-bold mt-1 ${kpi.color}`}>{kpi.value}</p>
             </div>
           ))
@@ -192,11 +192,11 @@ export default function MobileAppPage() {
                 <div className="w-16 h-3 bg-gray-800 rounded-full" />
               </div>
               {/* Écran */}
-              <div className="bg-white" style={{ height: '460px', overflow: 'hidden' }}>
+              <div className="bg-white dark:bg-card" style={{ height: '460px', overflow: 'hidden' }}>
                 {screens[activeScreen]}
               </div>
               {/* Barre de navigation */}
-              <div className="bg-white border-t border-gray-200 h-14 flex items-center justify-around px-4">
+              <div className="bg-white dark:bg-card border-t border-gray-200 dark:border-border h-14 flex items-center justify-around px-4">
                 {[
                   { screen: 'home' as Screen, icon: '🏠', label: 'Accueil' },
                   { screen: 'animals' as Screen, icon: '🐾', label: 'Animaux' },
@@ -219,8 +219,8 @@ export default function MobileAppPage() {
 
         {/* Infos techniques */}
         <div className="flex-1 space-y-4">
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <h3 className="font-semibold text-gray-900 mb-3">Stack technique</h3>
+          <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-5">
+            <h3 className="font-semibold text-gray-900 dark:text-foreground mb-3">Stack technique</h3>
             <div className="space-y-2 text-sm">
               {[
                 { label: 'Framework', value: 'Expo + React Native' },
@@ -237,8 +237,8 @@ export default function MobileAppPage() {
               ))}
             </div>
           </div>
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <h3 className="font-semibold text-gray-900 mb-3">Fonctionnalités prévues</h3>
+          <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-5">
+            <h3 className="font-semibold text-gray-900 dark:text-foreground mb-3">Fonctionnalités prévues</h3>
             <div className="space-y-2">
               {[
                 '✅ Consultation des animaux en temps réel',

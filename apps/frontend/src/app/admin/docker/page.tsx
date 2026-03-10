@@ -122,7 +122,7 @@ export default function DockerPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Infrastructure Docker</h1>
-          <p className="text-gray-500 mt-1">Gestion des conteneurs et de la configuration</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Gestion des conteneurs et de la configuration</p>
         </div>
         <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium ${isHealthy ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
           <span className={`w-2 h-2 rounded-full ${isHealthy ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
@@ -134,7 +134,7 @@ export default function DockerPage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {loading ? (
           Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm animate-pulse">
+            <div key={i} className="bg-white dark:bg-card rounded-xl p-4 border border-gray-200 dark:border-border shadow-sm animate-pulse">
               <div className="h-3 bg-gray-200 rounded w-2/3 mb-2" />
               <div className="h-7 bg-gray-200 rounded w-1/2" />
             </div>
@@ -146,7 +146,7 @@ export default function DockerPage() {
             { label: 'Employés', value: stats?.hr?.employees ?? 0, color: 'text-purple-600' },
             { label: 'Formations', value: stats?.formation?.courses ?? 0, color: 'text-orange-600' },
           ].map((m) => (
-            <div key={m.label} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+            <div key={m.label} className="bg-white dark:bg-card rounded-xl p-4 border border-gray-200 dark:border-border shadow-sm">
               <p className="text-sm text-gray-500">{m.label}</p>
               <p className={`text-2xl font-bold mt-1 ${m.color}`}>{m.value}</p>
             </div>
@@ -155,13 +155,13 @@ export default function DockerPage() {
       </div>
 
       {/* Onglets */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="flex border-b border-gray-200">
+      <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border shadow-sm overflow-hidden">
+        <div className="flex border-b border-gray-200 dark:border-border">
           {(['services', 'compose', 'health'] as const).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`px-6 py-3 text-sm font-medium ${tab === t ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+              className={`px-6 py-3 text-sm font-medium ${tab === t ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}
             >
               {t === 'services' ? 'Conteneurs' : t === 'compose' ? 'docker-compose.yml' : 'Health Check'}
             </button>
@@ -171,7 +171,7 @@ export default function DockerPage() {
         {tab === 'services' && (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
+              <thead className="bg-gray-50 dark:bg-muted/20 text-xs text-gray-500 dark:text-gray-400 uppercase">
                 <tr>
                   {['Conteneur', 'Image', 'Port', 'Rôle', 'Statut'].map((h) => (
                     <th key={h} className="px-4 py-3 text-left">{h}</th>
@@ -182,8 +182,8 @@ export default function DockerPage() {
                 {SERVICES_STATIC.map((svc) => (
                   <tr key={svc.name} className="hover:bg-gray-50">
                     <td className="px-4 py-3 font-mono text-sm font-medium text-blue-700">{svc.name}</td>
-                    <td className="px-4 py-3 text-sm text-gray-600 font-mono">{svc.image}</td>
-                    <td className="px-4 py-3 text-sm text-gray-600 font-mono">{svc.port}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 font-mono">{svc.image}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 font-mono">{svc.port}</td>
                     <td className="px-4 py-3 text-sm text-gray-600">{svc.role}</td>
                     <td className="px-4 py-3">
                       <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${isHealthy ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
@@ -210,7 +210,7 @@ export default function DockerPage() {
             {loading ? (
               <div className="text-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-3" />
-                <p className="text-gray-500 text-sm">Vérification de la santé des services...</p>
+                <p className="text-gray-500 dark:text-gray-400 text-sm">Vérification de la santé des services...</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -220,10 +220,10 @@ export default function DockerPage() {
                   { name: 'Cache (Redis)', url: 'via NestJS CacheModule', ok: isHealthy },
                   { name: 'Frontend (Next.js)', url: 'http://51.210.15.92', ok: true },
                 ].map((check) => (
-                  <div key={check.name} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <div key={check.name} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-muted/20 rounded-lg">
                     <div>
-                      <p className="font-medium text-gray-900 text-sm">{check.name}</p>
-                      <p className="text-xs text-gray-500 font-mono">{check.url}</p>
+                      <p className="font-medium text-gray-900 dark:text-foreground text-sm">{check.name}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 font-mono">{check.url}</p>
                     </div>
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${check.ok ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
                       {check.ok ? '✓ OK' : '✗ Erreur'}

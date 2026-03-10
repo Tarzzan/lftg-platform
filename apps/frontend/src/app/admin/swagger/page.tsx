@@ -125,7 +125,7 @@ export default function SwaggerPage() {
       <div className="flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Documentation API</h1>
-          <p className="text-gray-500 mt-1">
+          <p className="text-gray-500 dark:text-gray-400 mt-1">
             LFTG Platform API — {STATIC_ENDPOINTS.length} endpoints documentés
             {apiVersion && <span className="ml-2 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">● API connectée</span>}
           </p>
@@ -148,7 +148,7 @@ export default function SwaggerPage() {
           { label: 'Endpoints publics', value: STATIC_ENDPOINTS.filter((e) => !e.auth).length, color: 'text-purple-600' },
           { label: 'Endpoints protégés', value: STATIC_ENDPOINTS.filter((e) => e.auth).length, color: 'text-orange-600' },
         ].map((m) => (
-          <div key={m.label} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+          <div key={m.label} className="bg-white dark:bg-card rounded-xl p-4 border border-gray-200 dark:border-border shadow-sm">
             <p className="text-sm text-gray-500">{m.label}</p>
             <p className={`text-2xl font-bold mt-1 ${m.color}`}>{m.value}</p>
           </div>
@@ -156,13 +156,13 @@ export default function SwaggerPage() {
       </div>
 
       {/* Filtres */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
+      <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border shadow-sm p-4">
         <div className="flex flex-wrap gap-2 mb-4">
           {ALL_TAGS.map((tag) => (
             <button
               key={tag}
               onClick={() => setSelectedTag(tag)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${selectedTag === tag ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${selectedTag === tag ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 dark:text-gray-400 hover:bg-gray-200'}`}
             >
               {tag} <span className="opacity-70">({tagCounts[tag]})</span>
             </button>
@@ -177,8 +177,8 @@ export default function SwaggerPage() {
       </div>
 
       {/* Liste des endpoints */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
+      <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border shadow-sm overflow-hidden">
+        <div className="bg-gray-50 dark:bg-muted/20 px-4 py-3 border-b border-gray-200 dark:border-border">
           <p className="text-sm font-medium text-gray-700">
             {filtered.length} endpoint{filtered.length > 1 ? 's' : ''} affiché{filtered.length > 1 ? 's' : ''}
           </p>
@@ -191,22 +191,22 @@ export default function SwaggerPage() {
               <div key={key}>
                 <button
                   onClick={() => setExpandedEndpoint(isExpanded ? null : key)}
-                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 text-left"
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:bg-muted/20 text-left"
                 >
-                  <span className={`px-2 py-0.5 rounded text-xs font-bold border ${METHOD_COLORS[endpoint.method] ?? 'bg-gray-100 text-gray-800 border-gray-200'} min-w-[56px] text-center`}>
+                  <span className={`px-2 py-0.5 rounded text-xs font-bold border ${METHOD_COLORS[endpoint.method] ?? 'bg-gray-100 text-gray-800 border-gray-200 dark:border-border'} min-w-[56px] text-center`}>
                     {endpoint.method}
                   </span>
                   <span className="font-mono text-sm text-gray-800 flex-1">{endpoint.path}</span>
-                  <span className="text-xs text-gray-500 hidden md:block">{endpoint.summary}</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 hidden md:block">{endpoint.summary}</span>
                   {endpoint.auth ? (
                     <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">🔒 Auth</span>
                   ) : (
-                    <span className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">Public</span>
+                    <span className="text-xs bg-gray-100 text-gray-500 dark:text-gray-400 px-2 py-0.5 rounded-full">Public</span>
                   )}
                   <span className="text-gray-400 text-xs">{isExpanded ? '▲' : '▼'}</span>
                 </button>
                 {isExpanded && (
-                  <div className="px-4 pb-4 bg-gray-50 border-t border-gray-100">
+                  <div className="px-4 pb-4 bg-gray-50 dark:bg-muted/20 border-t border-gray-100">
                     <div className="mt-3 space-y-2">
                       <div className="flex gap-4 text-sm">
                         <span className="text-gray-500">Module :</span>

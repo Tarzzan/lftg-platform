@@ -129,7 +129,7 @@ function IndicatorCard({ indicator, data }: { indicator: typeof QUALIOPI_INDICAT
         </div>
       </div>
 
-      <p className="text-xs text-gray-500 mb-3">{indicator.description}</p>
+      <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">{indicator.description}</p>
 
       {!isRisk && (
         <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden mb-2">
@@ -226,7 +226,7 @@ function LearnerRow({ stat }: { stat: any }) {
           <div className="mt-3 space-y-3">
             {/* Barre de progression */}
             <div>
-              <div className="flex justify-between text-xs text-gray-500 mb-1">
+              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
                 <span>Progression des leçons</span>
                 <span className="font-medium">{stat.completedLessons || 0}/{stat.totalLessons || 0} leçons</span>
               </div>
@@ -242,14 +242,14 @@ function LearnerRow({ stat }: { stat: any }) {
 
             {/* Détails */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-100">
+              <div className="flex items-center gap-2 p-2 bg-white dark:bg-card rounded-lg border border-gray-100">
                 <PenLine className="w-3.5 h-3.5 text-blue-500 flex-shrink-0" />
                 <div>
                   <p className="text-xs font-bold text-gray-700">{stat.signaturesCount || 0}</p>
                   <p className="text-xs text-gray-400">Émargements</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-100">
+              <div className="flex items-center gap-2 p-2 bg-white dark:bg-card rounded-lg border border-gray-100">
                 <Target className="w-3.5 h-3.5 text-gold-500 flex-shrink-0" />
                 <div>
                   <p className="text-xs font-bold text-gray-700">
@@ -258,14 +258,14 @@ function LearnerRow({ stat }: { stat: any }) {
                   <p className="text-xs text-gray-400">Score quiz</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-100">
+              <div className="flex items-center gap-2 p-2 bg-white dark:bg-card rounded-lg border border-gray-100">
                 <Star className="w-3.5 h-3.5 text-amber-500 flex-shrink-0" />
                 <div>
                   <p className="text-xs font-bold text-gray-700">{stat.notesCount || 0}</p>
                   <p className="text-xs text-gray-400">Notes formateur</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 p-2 bg-white rounded-lg border border-gray-100">
+              <div className="flex items-center gap-2 p-2 bg-white dark:bg-card rounded-lg border border-gray-100">
                 <Clock className="w-3.5 h-3.5 text-purple-500 flex-shrink-0" />
                 <div>
                   <p className="text-xs font-bold text-gray-700">
@@ -338,7 +338,7 @@ function GlobalQualiopiScore({ data }: { data: any }) {
       <div className="relative z-10 mt-4">
         <div className="h-2 bg-white/20 rounded-full overflow-hidden">
           <div
-            className="h-full bg-white rounded-full transition-all duration-1000"
+            className="h-full bg-white dark:bg-card rounded-full transition-all duration-1000"
             style={{ width: `${globalScore}%` }}
           />
         </div>
@@ -407,14 +407,14 @@ export default function QualiopiPage() {
 
       {/* Sélecteur de cohorte */}
       <div className="lftg-card p-5">
-        <label className="text-sm font-semibold text-gray-700 mb-2 block flex items-center gap-2">
+        <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 block flex items-center gap-2">
           <GraduationCap className="w-4 h-4 text-forest-600" />
           Sélectionner une cohorte à analyser
         </label>
         <select
           value={selectedCohort}
           onChange={(e) => setSelectedCohort(e.target.value)}
-          className="w-full max-w-lg px-3 py-2.5 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+          className="w-full max-w-lg px-3 py-2.5 border border-gray-200 dark:border-border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
         >
           <option value="">— Choisir une cohorte —</option>
           {(cohorts as any[]).map((c: any) => (
@@ -430,7 +430,7 @@ export default function QualiopiPage() {
             <Shield className="w-10 h-10 text-blue-500" />
           </div>
           <h3 className="font-bold text-gray-800 text-lg">Sélectionnez une cohorte</h3>
-          <p className="text-sm text-gray-500 mt-2 max-w-sm mx-auto">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-sm mx-auto">
             Choisissez une cohorte pour afficher le tableau de bord de conformité Qualiopi avec les 6 indicateurs clés.
           </p>
         </div>
@@ -534,7 +534,7 @@ export default function QualiopiPage() {
               {(!dashboard.enrollmentStats || dashboard.enrollmentStats.length === 0) && (
                 <div className="text-center py-12">
                   <Users className="w-10 h-10 text-gray-200 mx-auto mb-3" />
-                  <p className="text-gray-500 font-medium">Aucun apprenant inscrit à cette cohorte</p>
+                  <p className="text-gray-500 dark:text-gray-400 font-medium">Aucun apprenant inscrit à cette cohorte</p>
                 </div>
               )}
             </div>

@@ -59,8 +59,8 @@ export default function EmployesPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Employés</h1>
-          <p className="text-sm text-gray-500 mt-1">{(employees as any[]).length} membre{(employees as any[]).length !== 1 ? 's' : ''} du personnel</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground dark:text-gray-100">Employés</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{(employees as any[]).length} membre{(employees as any[]).length !== 1 ? 's' : ''} du personnel</p>
         </div>
         <button
           onClick={() => { setEditEmployee(null); setShowModal(true); }}
@@ -71,7 +71,7 @@ export default function EmployesPage() {
       </div>
 
       {/* Filtres */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-4">
         <div className="flex flex-wrap gap-3">
           <div className="relative flex-1 min-w-[200px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -80,13 +80,13 @@ export default function EmployesPage() {
               placeholder="Rechercher un employé..."
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-forest-500 bg-white dark:bg-gray-700"
+              className="w-full pl-9 pr-4 py-2 border border-gray-200 dark:border-border dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-forest-500 bg-white dark:bg-gray-700"
             />
           </div>
           <select
             value={filterDept}
             onChange={e => setFilterDept(e.target.value)}
-            className="px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-forest-500 bg-white dark:bg-gray-700"
+            className="px-3 py-2 border border-gray-200 dark:border-border dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-forest-500 bg-white dark:bg-gray-700"
           >
             <option value="">Tous les départements</option>
             {depts.map(d => <option key={d} value={d}>{d}</option>)}
@@ -95,16 +95,16 @@ export default function EmployesPage() {
       </div>
 
       {/* Liste */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Employé</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Poste</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Département</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Email</th>
-              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">Date embauche</th>
-              <th className="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wide">Actions</th>
+            <tr className="border-b border-gray-200 dark:border-border dark:border-gray-700 bg-gray-50 dark:bg-muted/20 dark:bg-gray-800/50">
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Employé</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Poste</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Département</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Email</th>
+              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Date embauche</th>
+              <th className="px-4 py-3 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -118,18 +118,18 @@ export default function EmployesPage() {
                 </td>
               </tr>
             ) : filtered.map((emp: any) => (
-              <tr key={emp.id} className="border-b border-gray-100 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
+              <tr key={emp.id} className="border-b border-gray-100 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:bg-muted/20 dark:hover:bg-gray-700/30 transition-colors">
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-forest-100 dark:bg-forest-900 rounded-full flex items-center justify-center text-sm font-semibold text-forest-700 dark:text-forest-300">
                       {(emp.firstName?.[0] ?? '').toUpperCase()}{(emp.lastName?.[0] ?? '').toUpperCase()}
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{emp.firstName} {emp.lastName}</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-foreground dark:text-gray-100">{emp.firstName} {emp.lastName}</p>
                     </div>
                   </div>
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-300">{emp.jobTitle ?? '—'}</td>
+                <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-300">{emp.jobTitle ?? '—'}</td>
                 <td className="px-4 py-3">
                   {emp.department ? (
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${DEPT_COLORS[emp.department] ?? 'bg-gray-100 text-gray-800'}`}>
@@ -151,7 +151,7 @@ export default function EmployesPage() {
                     </a>
                     <button
                       onClick={() => { setEditEmployee(emp); setShowModal(true); }}
-                      className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+                      className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 dark:text-gray-400 hover:bg-gray-100 transition-colors"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
@@ -235,19 +235,19 @@ function EmployeeModal({ employee, users, onClose, onSuccess }: { employee: any;
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg p-6">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-foreground dark:text-gray-100">
             {isEdit ? 'Modifier l\'employé' : 'Nouvel employé'}
           </h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">&times;</button>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 text-2xl leading-none">&times;</button>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isEdit && (
             <div>
-              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Utilisateur lié (optionnel)</label>
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Utilisateur lié (optionnel)</label>
               <select
                 value={form.userId}
                 onChange={set('userId')}
-                className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700"
+                className="w-full px-3 py-2 border border-gray-200 dark:border-border dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700"
               >
                 <option value="">— Aucun utilisateur —</option>
                 {(users as any[]).map((u: any) => (
@@ -258,32 +258,32 @@ function EmployeeModal({ employee, users, onClose, onSuccess }: { employee: any;
           )}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Prénom *</label>
-              <input value={form.firstName} onChange={set('firstName')} className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700" placeholder="Prénom" />
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Prénom *</label>
+              <input value={form.firstName} onChange={set('firstName')} className="w-full px-3 py-2 border border-gray-200 dark:border-border dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700" placeholder="Prénom" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Nom *</label>
-              <input value={form.lastName} onChange={set('lastName')} className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700" placeholder="Nom" />
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Nom *</label>
+              <input value={form.lastName} onChange={set('lastName')} className="w-full px-3 py-2 border border-gray-200 dark:border-border dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700" placeholder="Nom" />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
-              <input type="email" value={form.email} onChange={set('email')} className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700" placeholder="email@lftg.fr" />
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Email</label>
+              <input type="email" value={form.email} onChange={set('email')} className="w-full px-3 py-2 border border-gray-200 dark:border-border dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700" placeholder="email@lftg.fr" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Téléphone</label>
-              <input value={form.phone} onChange={set('phone')} className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700" placeholder="0694..." />
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Téléphone</label>
+              <input value={form.phone} onChange={set('phone')} className="w-full px-3 py-2 border border-gray-200 dark:border-border dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700" placeholder="0694..." />
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Poste</label>
-            <input value={form.jobTitle} onChange={set('jobTitle')} className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700" placeholder="Intitulé du poste" />
+            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Poste</label>
+            <input value={form.jobTitle} onChange={set('jobTitle')} className="w-full px-3 py-2 border border-gray-200 dark:border-border dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700" placeholder="Intitulé du poste" />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Département</label>
-              <select value={form.department} onChange={set('department')} className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700">
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Département</label>
+              <select value={form.department} onChange={set('department')} className="w-full px-3 py-2 border border-gray-200 dark:border-border dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700">
                 <option value="">— Sélectionner —</option>
                 <option>Direction</option>
                 <option>Soins</option>
@@ -294,8 +294,8 @@ function EmployeeModal({ employee, users, onClose, onSuccess }: { employee: any;
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Date d&apos;embauche</label>
-              <input type="date" value={form.hireDate} onChange={set('hireDate')} className="w-full px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700" />
+              <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Date d&apos;embauche</label>
+              <input type="date" value={form.hireDate} onChange={set('hireDate')} className="w-full px-3 py-2 border border-gray-200 dark:border-border dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700" />
             </div>
           </div>
 
@@ -304,7 +304,7 @@ function EmployeeModal({ employee, users, onClose, onSuccess }: { employee: any;
           )}
 
           <div className="flex gap-3 mt-6">
-            <button type="button" onClick={onClose} className="flex-1 px-4 py-2 border border-gray-200 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50">
+            <button type="button" onClick={onClose} className="flex-1 px-4 py-2 border border-gray-200 dark:border-border text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50">
               Annuler
             </button>
             <button type="submit" disabled={loading} className="flex-1 px-4 py-2 bg-forest-600 text-white rounded-lg text-sm font-medium hover:bg-forest-700 disabled:opacity-50">

@@ -52,11 +52,11 @@ export default function WebhooksPage() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground flex items-center gap-2">
             <Webhook className="w-7 h-7 text-indigo-600" />
             Webhooks
           </h1>
-          <p className="text-gray-500 mt-1">Notifications HTTP vers des systèmes externes</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Notifications HTTP vers des systèmes externes</p>
         </div>
         <button onClick={() => setShowForm(true)} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
           <Plus className="w-4 h-4" />
@@ -66,28 +66,28 @@ export default function WebhooksPage() {
 
       {/* Formulaire ajout */}
       {showForm && (
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-          <h3 className="font-semibold text-gray-900 mb-4">Nouveau webhook</h3>
+        <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-5 shadow-sm">
+          <h3 className="font-semibold text-gray-900 dark:text-foreground mb-4">Nouveau webhook</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom</label>
               <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full border border-gray-200 dark:border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 placeholder="Ex: Système partenaire" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">URL</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">URL</label>
               <input value={form.url} onChange={e => setForm(f => ({ ...f, url: e.target.value }))}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full border border-gray-200 dark:border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 placeholder="https://..." />
             </div>
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Événements déclencheurs</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Événements déclencheurs</label>
             <div className="flex flex-wrap gap-2">
               {WEBHOOK_EVENTS.map(event => (
                 <button key={event} onClick={() => handleToggleEvent(event)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${form.events.includes(event) ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300'}`}>
+                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${form.events.includes(event) ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-600 dark:text-gray-400 border-gray-200 dark:border-border hover:border-indigo-300'}`}>
                   {event}
                 </button>
               ))}
@@ -95,7 +95,7 @@ export default function WebhooksPage() {
           </div>
           <div className="flex gap-2">
             <button onClick={handleAddWebhook} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm">Ajouter</button>
-            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm">Annuler</button>
+            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-100 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 text-sm">Annuler</button>
           </div>
         </div>
       )}
@@ -103,12 +103,12 @@ export default function WebhooksPage() {
       {/* Liste webhooks */}
       <div className="space-y-3">
         {webhooks.map(wh => (
-          <div key={wh.id} className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm flex items-center justify-between gap-4">
+          <div key={wh.id} className="bg-white dark:bg-card rounded-xl border border-gray-100 p-4 shadow-sm flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0">
               <div className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${wh.status === 'active' ? 'bg-green-500' : 'bg-gray-300'}`} />
               <div className="min-w-0">
                 <p className="font-medium text-gray-900">{wh.name}</p>
-                <p className="text-xs text-gray-500 truncate flex items-center gap-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400 truncate flex items-center gap-1">
                   <Globe className="w-3 h-3" />
                   {wh.url}
                 </p>
@@ -134,14 +134,14 @@ export default function WebhooksPage() {
       </div>
 
       {/* Test manuel */}
-      <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-        <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+      <div className="bg-white dark:bg-card rounded-xl border border-gray-100 p-5 shadow-sm">
+        <h3 className="font-semibold text-gray-900 dark:text-foreground mb-3 flex items-center gap-2">
           <Send className="w-4 h-4 text-indigo-600" />
           Test manuel
         </h3>
         <div className="flex gap-3">
           <input value={testUrl} onChange={e => setTestUrl(e.target.value)}
-            className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="flex-1 border border-gray-200 dark:border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             placeholder="URL du webhook à tester..." />
           <button onClick={handleTest} disabled={sendMutation.isPending || !testUrl}
             className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 text-sm transition-colors">

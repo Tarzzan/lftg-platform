@@ -107,7 +107,7 @@ export default function AnimalDetailPage() {
     ACTIVE: { label: 'Actif', color: 'text-green-700 bg-green-50 border-green-200', icon: <CheckCircle className="w-3 h-3" /> },
     SICK: { label: 'Malade', color: 'text-red-700 bg-red-50 border-red-200', icon: <AlertCircle className="w-3 h-3" /> },
     QUARANTINE: { label: 'Quarantaine', color: 'text-orange-700 bg-orange-50 border-orange-200', icon: <AlertCircle className="w-3 h-3" /> },
-    DECEASED: { label: 'Décédé', color: 'text-gray-700 bg-gray-50 border-gray-200', icon: <Clock className="w-3 h-3" /> },
+    DECEASED: { label: 'Décédé', color: 'text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-muted/20 border-gray-200 dark:border-border', icon: <Clock className="w-3 h-3" /> },
     TRANSFERRED: { label: 'Transféré', color: 'text-blue-700 bg-blue-50 border-blue-200', icon: <MapPin className="w-3 h-3" /> },
   };
 

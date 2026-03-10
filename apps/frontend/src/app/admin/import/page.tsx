@@ -69,11 +69,11 @@ export default function ImportPage() {
   return (
     <div className="p-6 space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground flex items-center gap-2">
           <Upload className="w-7 h-7 text-indigo-600" />
           Import de données
         </h1>
-        <p className="text-gray-500 mt-1">Importer des données en masse depuis des fichiers CSV</p>
+        <p className="text-gray-500 dark:text-gray-400 mt-1">Importer des données en masse depuis des fichiers CSV</p>
       </div>
 
       {/* Sélection du type */}
@@ -83,17 +83,17 @@ export default function ImportPage() {
             className={`p-4 rounded-xl border text-left transition-all ${selectedType.key === t.key ? 'border-indigo-500 bg-indigo-50' : 'border-gray-100 bg-white hover:border-indigo-200'}`}>
             <FileText className={`w-5 h-5 mb-2 ${selectedType.key === t.key ? 'text-indigo-600' : 'text-gray-400'}`} />
             <p className={`font-medium text-sm ${selectedType.key === t.key ? 'text-indigo-900' : 'text-gray-900'}`}>{t.label}</p>
-            <p className="text-xs text-gray-500 mt-0.5">{t.description}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t.description}</p>
           </button>
         ))}
       </div>
 
       {/* Zone d'import */}
-      <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm space-y-5">
+      <div className="bg-white dark:bg-card rounded-xl border border-gray-100 p-6 shadow-sm space-y-5">
         <div className="flex items-center justify-between">
           <h2 className="font-semibold text-gray-900">Import : {selectedType.label}</h2>
           <button onClick={handleDownloadTemplate}
-            className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm transition-colors">
+            className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 text-sm transition-colors">
             <Download className="w-4 h-4" />
             Télécharger le modèle CSV
           </button>
@@ -102,7 +102,7 @@ export default function ImportPage() {
         {/* Drag & drop zone */}
         <div
           onClick={() => fileRef.current?.click()}
-          className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${file ? 'border-indigo-400 bg-indigo-50' : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50'}`}>
+          className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-colors ${file ? 'border-indigo-400 bg-indigo-50' : 'border-gray-200 dark:border-border hover:border-indigo-300 hover:bg-gray-50'}`}>
           <input ref={fileRef} type="file" accept=".csv,.xlsx" onChange={handleFileChange} className="hidden" />
           {file ? (
             <div>

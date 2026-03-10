@@ -41,13 +41,13 @@ export default function SecurityPage() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground flex items-center gap-2">
             <Shield className="w-7 h-7 text-indigo-600" />
             Sécurité & Audit
           </h1>
-          <p className="text-gray-500 mt-1">Gestion des accès, rôles et journal d'audit</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Gestion des accès, rôles et journal d'audit</p>
         </div>
-        <button onClick={() => refetch()} className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 text-sm">
+        <button onClick={() => refetch()} className="flex items-center gap-2 px-3 py-2 bg-white dark:bg-card border border-gray-200 dark:border-border rounded-lg hover:bg-gray-50 dark:bg-muted/20 text-sm">
           <RefreshCw className="w-4 h-4 text-gray-500" />
           Actualiser
         </button>
@@ -61,7 +61,7 @@ export default function SecurityPage() {
           { label: 'Événements audit (50)', value: logs.length, icon: Activity, color: 'text-green-600', bg: 'bg-green-50' },
           { label: 'Actions critiques', value: logs.filter(l => l.action === 'DELETE' || l.action === 'EXPORT').length, icon: AlertTriangle, color: 'text-red-600', bg: 'bg-red-50' },
         ].map(kpi => (
-          <div key={kpi.label} className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+          <div key={kpi.label} className="bg-white dark:bg-card rounded-xl border border-gray-100 p-4 shadow-sm">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-gray-500">{kpi.label}</span>
               <div className={`p-2 rounded-lg ${kpi.bg}`}>
@@ -77,7 +77,7 @@ export default function SecurityPage() {
       <div className="flex gap-1 bg-gray-100 rounded-lg p-1 w-fit">
         {(['audit', 'users', 'roles'] as const).map(tab => (
           <button key={tab} onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === tab ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === tab ? 'bg-white text-gray-900 dark:text-foreground shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}>
             {tab === 'audit' ? 'Journal d\'audit' : tab === 'users' ? 'Utilisateurs' : 'Rôles'}
           </button>
         ))}
@@ -85,7 +85,7 @@ export default function SecurityPage() {
 
       {/* Audit */}
       {activeTab === 'audit' && (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-card rounded-xl border border-gray-100 shadow-sm overflow-hidden">
           {loadingAudit ? (
             <div className="p-8 text-center text-gray-400"><RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2" />Chargement...</div>
           ) : logs.length === 0 ? (
@@ -95,11 +95,11 @@ export default function SecurityPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-gray-50">
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Action</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ressource</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Utilisateur</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">IP</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Action</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Ressource</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Utilisateur</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">IP</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Date</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
@@ -112,8 +112,8 @@ export default function SecurityPage() {
                       </td>
                       <td className="px-4 py-3 text-gray-600">{log.resource ?? log.entity ?? '—'}{log.resourceId ? ` #${log.resourceId}` : ''}</td>
                       <td className="px-4 py-3 text-gray-600">{log.user?.name ?? log.user?.email ?? log.userId ?? '—'}</td>
-                      <td className="px-4 py-3 text-gray-500 font-mono text-xs">{log.ipAddress ?? log.ip ?? '—'}</td>
-                      <td className="px-4 py-3 text-gray-500 text-xs">
+                      <td className="px-4 py-3 text-gray-500 dark:text-gray-400 font-mono text-xs">{log.ipAddress ?? log.ip ?? '—'}</td>
+                      <td className="px-4 py-3 text-gray-500 dark:text-gray-400 text-xs">
                         {log.createdAt ? new Date(log.createdAt).toLocaleString('fr-FR') : '—'}
                       </td>
                     </tr>
@@ -127,7 +127,7 @@ export default function SecurityPage() {
 
       {/* Users */}
       {activeTab === 'users' && (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="bg-white dark:bg-card rounded-xl border border-gray-100 shadow-sm overflow-hidden">
           {loadingUsers ? (
             <div className="p-8 text-center text-gray-400"><RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2" />Chargement...</div>
           ) : (
@@ -135,11 +135,11 @@ export default function SecurityPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-gray-50">
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nom</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Rôle</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Statut</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Créé le</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Nom</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Email</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Rôle</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Statut</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Créé le</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
@@ -155,7 +155,7 @@ export default function SecurityPage() {
                           {u.isActive !== false ? 'Actif' : 'Inactif'}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-gray-500 text-xs">
+                      <td className="px-4 py-3 text-gray-500 dark:text-gray-400 text-xs">
                         {u.createdAt ? new Date(u.createdAt).toLocaleDateString('fr-FR') : '—'}
                       </td>
                     </tr>
@@ -175,12 +175,12 @@ export default function SecurityPage() {
           ) : roleList.length === 0 ? (
             <div className="col-span-3 text-center py-8 text-gray-400"><Lock className="w-10 h-10 mx-auto mb-2 opacity-30" /><p>Aucun rôle défini</p></div>
           ) : roleList.map((role: any) => (
-            <div key={role.id} className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+            <div key={role.id} className="bg-white dark:bg-card rounded-xl border border-gray-100 p-4 shadow-sm">
               <div className="flex items-center gap-2 mb-2">
                 <Lock className="w-4 h-4 text-indigo-600" />
                 <p className="font-medium text-gray-900">{role.name}</p>
               </div>
-              {role.description && <p className="text-sm text-gray-500 mb-2">{role.description}</p>}
+              {role.description && <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">{role.description}</p>}
               {role.permissions && (
                 <div className="flex flex-wrap gap-1">
                   {(Array.isArray(role.permissions) ? role.permissions : []).slice(0, 5).map((p: string) => (

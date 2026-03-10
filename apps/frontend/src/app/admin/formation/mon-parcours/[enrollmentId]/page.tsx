@@ -59,8 +59,8 @@ function DocumentViewer({ doc }: { doc: any }) {
 
   if (doc.type === 'PDF' || doc.type === 'PPT') {
     return (
-      <div className={`rounded-xl overflow-hidden border border-gray-200 shadow-sm ${fullscreen ? 'fixed inset-4 z-50 bg-white' : ''}`}>
-        <div className="flex items-center justify-between px-3 py-2 bg-gray-50 border-b border-gray-200">
+      <div className={`rounded-xl overflow-hidden border border-gray-200 dark:border-border shadow-sm ${fullscreen ? 'fixed inset-4 z-50 bg-white' : ''}`}>
+        <div className="flex items-center justify-between px-3 py-2 bg-gray-50 dark:bg-muted/20 border-b border-gray-200 dark:border-border">
           <div className="flex items-center gap-2">
             <TypeIcon className={`w-4 h-4 ${typeConf.color}`} />
             <span className="text-xs font-medium text-gray-700">{doc.title}</span>
@@ -75,7 +75,7 @@ function DocumentViewer({ doc }: { doc: any }) {
           </div>
         </div>
         {!loaded && (
-          <div className="flex flex-col items-center justify-center h-48 bg-gray-50 gap-2">
+          <div className="flex flex-col items-center justify-center h-48 bg-gray-50 dark:bg-muted/20 gap-2">
             <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
             <p className="text-xs text-gray-400">Chargement du document...</p>
           </div>
@@ -92,7 +92,7 @@ function DocumentViewer({ doc }: { doc: any }) {
 
   if (doc.type === 'HTML') {
     return (
-      <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
+      <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-border shadow-sm">
         <div className="flex items-center justify-between px-3 py-2 bg-purple-50 border-b border-purple-100">
           <div className="flex items-center gap-2">
             <ExternalLink className="w-4 h-4 text-purple-500" />
@@ -109,14 +109,14 @@ function DocumentViewer({ doc }: { doc: any }) {
 
   return (
     <a href={url} download
-      className="flex items-center gap-3 p-4 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors group"
+      className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-muted/20 border border-gray-200 dark:border-border rounded-xl hover:bg-gray-100 transition-colors group"
     >
       <div className="w-10 h-10 rounded-lg bg-gray-200 flex items-center justify-center flex-shrink-0">
         <Archive className="w-5 h-5 text-gray-500" />
       </div>
       <div className="flex-1">
         <p className="font-semibold text-gray-800">{doc.title}</p>
-        <p className="text-xs text-gray-500 mt-0.5">Cliquer pour télécharger</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Cliquer pour télécharger</p>
       </div>
       <Download className="w-4 h-4 text-gray-400 group-hover:text-gray-600" />
     </a>
@@ -190,7 +190,7 @@ function SignaturePad({ onSign, onCancel }: { onSign: (data: string) => void; on
   }, [onSign]);
 
   return (
-    <div className="bg-white border-2 border-forest-200 rounded-2xl overflow-hidden shadow-sm">
+    <div className="bg-white dark:bg-card border-2 border-forest-200 rounded-2xl overflow-hidden shadow-sm">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 bg-forest-50 border-b border-forest-100">
         <div className="flex items-center gap-2">
@@ -204,7 +204,7 @@ function SignaturePad({ onSign, onCancel }: { onSign: (data: string) => void; on
         </div>
         <button
           onClick={clear}
-          className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors px-2 py-1 rounded-lg hover:bg-gray-100"
+          className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors px-2 py-1 rounded-lg hover:bg-gray-100"
         >
           <RefreshCw className="w-3 h-3" /> Effacer
         </button>
@@ -213,7 +213,7 @@ function SignaturePad({ onSign, onCancel }: { onSign: (data: string) => void; on
       {/* Canvas */}
       <div className="p-4">
         <div className={`relative border-2 rounded-xl overflow-hidden transition-colors ${
-          hasSignature ? 'border-forest-300 bg-white' : 'border-dashed border-gray-200 bg-gray-50'
+          hasSignature ? 'border-forest-300 bg-white' : 'border-dashed border-gray-200 dark:border-border bg-gray-50'
         }`}>
           <canvas
             ref={canvasRef}
@@ -248,7 +248,7 @@ function SignaturePad({ onSign, onCancel }: { onSign: (data: string) => void; on
       <div className="flex gap-2 px-4 pb-4">
         <button
           onClick={onCancel}
-          className="flex-1 py-2.5 text-sm font-medium text-gray-600 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+          className="flex-1 py-2.5 text-sm font-medium text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-border rounded-xl hover:bg-gray-50 dark:bg-muted/20 transition-colors"
         >
           Annuler
         </button>
@@ -299,7 +299,7 @@ function QuizBlock({ quiz, enrollmentId }: { quiz: any; enrollmentId: string }) 
                 isCorrectOpt ? 'bg-forest-50 border-forest-400 text-forest-800 font-medium' :
                 isWrongOpt   ? 'bg-red-50 border-red-400 text-red-800' :
                 isSelected   ? 'bg-gold-50 border-gold-400 text-gold-800' :
-                               'bg-white border-gray-200 text-gray-700 hover:border-gray-300 hover:bg-gray-50'
+                               'bg-white dark:bg-card border-gray-200 dark:border-border text-gray-700 dark:text-gray-300 hover:border-gray-300 hover:bg-gray-50'
               } ${submitted ? 'cursor-default' : 'cursor-pointer'}`}
             >
               <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${
@@ -377,7 +377,7 @@ function NotesPanel({ enrollmentId, lessonId }: { enrollmentId: string; lessonId
           onChange={e => setNewNote(e.target.value)}
           rows={2}
           placeholder="Ajoutez une note personnelle..."
-          className="flex-1 text-sm bg-white border border-amber-200 rounded-xl px-3 py-2 text-gray-700 placeholder-amber-300 focus:outline-none focus:border-amber-400 resize-none"
+          className="flex-1 text-sm bg-white dark:bg-card border border-amber-200 rounded-xl px-3 py-2 text-gray-700 dark:text-gray-300 placeholder-amber-300 focus:outline-none focus:border-amber-400 resize-none"
         />
         <button onClick={addNote} disabled={!newNote.trim() || saving}
           className="px-3 py-2 bg-amber-500 text-white rounded-xl hover:bg-amber-600 disabled:opacity-40 transition-colors flex-shrink-0">
@@ -387,8 +387,8 @@ function NotesPanel({ enrollmentId, lessonId }: { enrollmentId: string; lessonId
       {lessonNotes.length > 0 && (
         <div className="space-y-2 max-h-40 overflow-y-auto">
           {lessonNotes.map((note: any) => (
-            <div key={note.id} className="flex items-start gap-2 bg-white rounded-xl p-3 border border-amber-100 group">
-              <p className="flex-1 text-xs text-gray-700 leading-relaxed">{note.content}</p>
+            <div key={note.id} className="flex items-start gap-2 bg-white dark:bg-card rounded-xl p-3 border border-amber-100 group">
+              <p className="flex-1 text-xs text-gray-700 dark:text-gray-300 leading-relaxed">{note.content}</p>
               <button onClick={() => deleteNote(note.id)}
                 className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-400 transition-all flex-shrink-0">
                 <X className="w-3.5 h-3.5" />
@@ -425,7 +425,7 @@ function LessonFeedback({ enrollmentId, lessonId, onSubmit }: { enrollmentId: st
   );
 
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-5 space-y-4 shadow-sm">
+    <div className="bg-white dark:bg-card border border-gray-200 dark:border-border rounded-2xl p-5 space-y-4 shadow-sm">
       <div className="flex items-center gap-2">
         <MessageSquare className="w-4 h-4 text-maroni-500" />
         <h4 className="text-sm font-semibold text-gray-800">Évaluez cette leçon</h4>
@@ -433,7 +433,7 @@ function LessonFeedback({ enrollmentId, lessonId, onSubmit }: { enrollmentId: st
       </div>
       {/* Étoiles */}
       <div>
-        <p className="text-xs text-gray-500 mb-2">Note globale</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Note globale</p>
         <div className="flex gap-1">
           {[1,2,3,4,5].map(s => (
             <button key={s} onClick={() => setRating(s)}
@@ -445,7 +445,7 @@ function LessonFeedback({ enrollmentId, lessonId, onSubmit }: { enrollmentId: st
       </div>
       {/* Difficulté */}
       <div>
-        <p className="text-xs text-gray-500 mb-2">Niveau de difficulté ressenti</p>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">Niveau de difficulté ressenti</p>
         <div className="flex gap-2">
           {[
             { val: 'EASY', label: 'Facile', icon: Smile, color: 'text-forest-500 bg-forest-50 border-forest-200' },
@@ -454,7 +454,7 @@ function LessonFeedback({ enrollmentId, lessonId, onSubmit }: { enrollmentId: st
           ].map(({ val, label, icon: Icon, color }) => (
             <button key={val} onClick={() => setDifficulty(val as any)}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border-2 transition-all
-                ${difficulty === val ? color : 'bg-white border-gray-200 text-gray-500 hover:border-gray-300'}`}>
+                ${difficulty === val ? color : 'bg-white dark:bg-card border-gray-200 dark:border-border text-gray-500 dark:text-gray-400 hover:border-gray-300'}`}>
               <Icon className="w-4 h-4" /> {label}
             </button>
           ))}
@@ -463,9 +463,9 @@ function LessonFeedback({ enrollmentId, lessonId, onSubmit }: { enrollmentId: st
       {/* Commentaire */}
       <textarea value={comment} onChange={e => setComment(e.target.value)} rows={2}
         placeholder="Un commentaire ? (optionnel)"
-        className="w-full text-sm bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-gray-700 placeholder-gray-400 focus:outline-none focus:border-maroni-400 resize-none" />
+        className="w-full text-sm bg-gray-50 dark:bg-muted/20 border border-gray-200 dark:border-border rounded-xl px-3 py-2 text-gray-700 dark:text-gray-300 placeholder-gray-400 focus:outline-none focus:border-maroni-400 resize-none" />
       <div className="flex gap-2">
-        <button onClick={onSubmit} className="flex-1 py-2 text-sm text-gray-500 border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors">
+        <button onClick={onSubmit} className="flex-1 py-2 text-sm text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-border rounded-xl hover:bg-gray-50 dark:bg-muted/20 transition-colors">
           Passer
         </button>
         <button onClick={submitFeedback} disabled={!rating}
@@ -519,7 +519,7 @@ function LessonViewer({ lesson, enrollmentId, isCompleted, onComplete }: {
           <div>
             <h2 className="text-2xl font-display font-bold text-gray-900">{lesson.title}</h2>
             {lesson.duration && (
-              <p className="flex items-center gap-1.5 text-sm text-gray-500 mt-1.5">
+              <p className="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 mt-1.5">
                 <Clock className="w-4 h-4" />
                 Durée estimée : <strong>{lesson.duration} minutes</strong>
               </p>
@@ -533,7 +533,7 @@ function LessonViewer({ lesson, enrollmentId, isCompleted, onComplete }: {
             )}
             <button onClick={() => setShowNotes(!showNotes)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all border
-                ${showNotes ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-white text-gray-500 border-gray-200 hover:border-amber-300 hover:text-amber-600'}`}>
+                ${showNotes ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-white text-gray-500 dark:text-gray-400 border-gray-200 dark:border-border hover:border-amber-300 hover:text-amber-600'}`}>
               <StickyNote className="w-3.5 h-3.5" /> Notes
             </button>
           </div>
@@ -548,14 +548,14 @@ function LessonViewer({ lesson, enrollmentId, isCompleted, onComplete }: {
       {/* Contenu textuel */}
       {lesson.content && (
         <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 border border-gray-100">
-          <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-sm">{lesson.content}</p>
+          <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap text-sm">{lesson.content}</p>
         </div>
       )}
 
       {/* Documents */}
       {lesson.documents?.length > 0 && (
         <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
             <Layers className="w-4 h-4 text-maroni-500" />
             Supports de cours ({lesson.documents.length})
           </h3>
@@ -669,7 +669,7 @@ export default function EnrollmentDetailPage() {
         <div className="p-4 border-b border-gray-100">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 mb-3 transition-colors"
+            className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 dark:text-gray-400 mb-3 transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" /> Retour au parcours
           </button>
@@ -710,13 +710,13 @@ export default function EnrollmentDetailPage() {
                     if (next.has(chapter.id)) next.delete(chapter.id); else next.add(chapter.id);
                     setExpandedChapters(next);
                   }}
-                  className="flex items-center gap-2 w-full p-2.5 rounded-lg hover:bg-gray-50 transition-colors text-left"
+                  className="flex items-center gap-2 w-full p-2.5 rounded-lg hover:bg-gray-50 dark:bg-muted/20 transition-colors text-left"
                 >
                   <span className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0 text-xs font-bold bg-gray-100 text-gray-500">
                     {chIdx + 1}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-gray-700 truncate">{chapter.title}</p>
+                    <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 truncate">{chapter.title}</p>
                     <p className="text-xs text-gray-400">{chCompleted}/{chLessons.length}</p>
                   </div>
                   {chDone
@@ -739,7 +739,7 @@ export default function EnrollmentDetailPage() {
                           className={`flex items-center gap-2.5 w-full px-3 py-2 rounded-lg text-left transition-all ${
                             isActive
                               ? 'bg-forest-50 border border-forest-200'
-                              : 'hover:bg-gray-50 border border-transparent'
+                              : 'hover:bg-gray-50 dark:bg-muted/20 border border-transparent'
                           }`}
                         >
                           <div className="flex-shrink-0 w-4 h-4 flex items-center justify-center">
@@ -802,11 +802,11 @@ export default function EnrollmentDetailPage() {
               }}
             />
             {/* Navigation entre leçons */}
-            <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-200 max-w-3xl mx-auto">
+            <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-200 dark:border-border max-w-3xl mx-auto">
               <button
                 onClick={() => activeIdx > 0 && setActiveLesson(allLessons[activeIdx - 1])}
                 disabled={activeIdx === 0}
-                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-xl hover:bg-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-border rounded-xl hover:bg-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" /> Précédente
               </button>
@@ -814,7 +814,7 @@ export default function EnrollmentDetailPage() {
               <button
                 onClick={() => hasNext && setActiveLesson(allLessons[activeIdx + 1])}
                 disabled={!hasNext}
-                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 border border-gray-200 rounded-xl hover:bg-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-border rounded-xl hover:bg-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
                 Suivante <SkipForward className="w-4 h-4" />
               </button>
@@ -822,7 +822,7 @@ export default function EnrollmentDetailPage() {
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center h-full gap-4 text-gray-400">
-            <div className="w-20 h-20 rounded-2xl bg-white border border-gray-100 flex items-center justify-center shadow-sm">
+            <div className="w-20 h-20 rounded-2xl bg-white dark:bg-card border border-gray-100 flex items-center justify-center shadow-sm">
               <BookOpen className="w-10 h-10 opacity-30" />
             </div>
             <p className="font-medium text-gray-500">Sélectionnez une leçon dans le plan de cours</p>

@@ -49,11 +49,11 @@ export default function HistoryPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">📜 Historique des modifications</h1>
-        <p className="text-gray-500 text-sm mt-1">Traçabilité complète de toutes les modifications</p>
+        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Traçabilité complète de toutes les modifications</p>
       </div>
 
       {/* Filtres */}
-      <div className="bg-white rounded-xl border border-gray-200 p-4">
+      <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-4">
         <div className="flex flex-wrap gap-3">
           <input
             type="text"
@@ -82,7 +82,7 @@ export default function HistoryPage() {
               <option key={action} value={action}>{config.icon} {config.label}</option>
             ))}
           </select>
-          <div className="ml-auto text-sm text-gray-500 self-center">
+          <div className="ml-auto text-sm text-gray-500 dark:text-gray-400 self-center">
             {filtered.length} entrée(s)
           </div>
         </div>
@@ -94,7 +94,7 @@ export default function HistoryPage() {
           <span className="ml-3 text-wood-500">Chargement de l'historique...</span>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+        <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-12 text-center">
           <p className="text-4xl mb-3">📜</p>
           <p className="text-gray-500">Aucune entrée dans l'historique pour le moment.</p>
           <p className="text-sm text-gray-400 mt-1">Les modifications apparaîtront ici au fur et à mesure.</p>
@@ -112,7 +112,7 @@ export default function HistoryPage() {
                 <div
                   key={entry.id}
                   onClick={() => setSelectedEntry(isSelected ? null : entry)}
-                  className={`bg-white rounded-xl border p-4 cursor-pointer transition-all ${isSelected ? 'border-forest-400 shadow-md' : 'border-gray-200 hover:border-gray-300 hover:shadow-sm'}`}
+                  className={`bg-white dark:bg-card rounded-xl border p-4 cursor-pointer transition-all ${isSelected ? 'border-forest-400 shadow-md' : 'border-gray-200 dark:border-border hover:border-gray-300 hover:shadow-sm'}`}
                 >
                   <div className="flex items-start gap-3">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0 ${entityConf.color}`}>
@@ -142,10 +142,10 @@ export default function HistoryPage() {
 
                   {isSelected && entry.changes && (
                     <div className="mt-3 pt-3 border-t border-gray-100">
-                      <p className="text-xs font-semibold text-gray-500 mb-2">Modifications :</p>
+                      <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">Modifications :</p>
                       <div className="space-y-1">
                         {Object.entries(entry.changes as Record<string, any>).map(([key, val]: [string, any]) => (
-                          <div key={key} className="text-xs bg-gray-50 rounded p-2">
+                          <div key={key} className="text-xs bg-gray-50 dark:bg-muted/20 rounded p-2">
                             <span className="font-medium text-gray-700">{key}</span>
                             {val?.before !== undefined && (
                               <span className="ml-2 text-red-500 line-through">{String(val.before)}</span>
@@ -165,8 +165,8 @@ export default function HistoryPage() {
 
           {/* Stats */}
           <div className="space-y-4">
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
-              <h3 className="font-semibold text-gray-700 mb-3">Par type d'entité</h3>
+            <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-4">
+              <h3 className="font-semibold text-gray-700 dark:text-gray-300 mb-3">Par type d'entité</h3>
               <div className="space-y-2">
                 {Object.entries(ENTITY_CONFIG).map(([type, conf]) => {
                   const count = historyData.filter((e: any) => e.entityType === type).length;
@@ -181,8 +181,8 @@ export default function HistoryPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-xl border border-gray-200 p-4">
-              <h3 className="font-semibold text-gray-700 mb-3">Par action</h3>
+            <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-4">
+              <h3 className="font-semibold text-gray-700 dark:text-gray-300 mb-3">Par action</h3>
               <div className="space-y-2">
                 {Object.entries(ACTION_CONFIG).map(([action, conf]) => {
                   const count = historyData.filter((e: any) => e.action === action).length;

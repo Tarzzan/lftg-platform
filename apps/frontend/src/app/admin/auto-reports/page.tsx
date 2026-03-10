@@ -54,11 +54,11 @@ export default function AutoReportsPage() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground flex items-center gap-2">
             <Clock className="w-7 h-7 text-indigo-600" />
             Rapports automatiques
           </h1>
-          <p className="text-gray-500 mt-1">Planification et envoi automatique de rapports</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Planification et envoi automatique de rapports</p>
         </div>
         <button onClick={() => setShowForm(true)} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
           <Plus className="w-4 h-4" />
@@ -68,33 +68,33 @@ export default function AutoReportsPage() {
 
       {/* Formulaire */}
       {showForm && (
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-          <h3 className="font-semibold text-gray-900 mb-4">Nouveau rapport planifié</h3>
+        <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-5 shadow-sm">
+          <h3 className="font-semibold text-gray-900 dark:text-foreground mb-4">Nouveau rapport planifié</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom</label>
               <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full border border-gray-200 dark:border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 placeholder="Ex: Bilan mensuel CITES" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Type de rapport</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type de rapport</label>
               <select value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value }))}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                className="w-full border border-gray-200 dark:border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 {Object.entries(TYPE_LABELS).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Fréquence</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Fréquence</label>
               <select value={form.frequency} onChange={e => setForm(f => ({ ...f, frequency: e.target.value }))}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                className="w-full border border-gray-200 dark:border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 {Object.entries(FREQ_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Destinataires (séparés par virgule)</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Destinataires (séparés par virgule)</label>
               <input value={form.recipients} onChange={e => setForm(f => ({ ...f, recipients: e.target.value }))}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full border border-gray-200 dark:border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 placeholder="admin@lftg.fr, draaf@guyane.fr" />
             </div>
           </div>
@@ -104,7 +104,7 @@ export default function AutoReportsPage() {
               className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 text-sm">
               {createMutation.isPending ? 'Création...' : 'Planifier'}
             </button>
-            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm">Annuler</button>
+            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-100 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 text-sm">Annuler</button>
           </div>
         </div>
       )}
@@ -122,7 +122,7 @@ export default function AutoReportsPage() {
           {list.map((s: any) => {
             const typeInfo = TYPE_LABELS[s.type] ?? { label: s.type, color: 'bg-gray-100 text-gray-700' };
             return (
-              <div key={s.id} className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+              <div key={s.id} className="bg-white dark:bg-card rounded-xl border border-gray-100 p-4 shadow-sm">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="p-2 bg-indigo-50 rounded-lg">

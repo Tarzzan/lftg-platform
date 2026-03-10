@@ -50,11 +50,11 @@ export default function WorkflowsEditorPage() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground flex items-center gap-2">
             <GitBranch className="w-7 h-7 text-indigo-600" />
             Workflows
           </h1>
-          <p className="text-gray-500 mt-1">Automatisation des processus métier</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Automatisation des processus métier</p>
         </div>
         <button onClick={() => setShowForm(true)} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
           <Plus className="w-4 h-4" />
@@ -66,7 +66,7 @@ export default function WorkflowsEditorPage() {
       <div className="flex gap-1 bg-gray-100 rounded-lg p-1 w-fit">
         {(['definitions', 'instances'] as const).map(tab => (
           <button key={tab} onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === tab ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === tab ? 'bg-white text-gray-900 dark:text-foreground shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}>
             {tab === 'definitions' ? `Définitions (${defs.length})` : `Instances (${insts.length})`}
           </button>
         ))}
@@ -74,19 +74,19 @@ export default function WorkflowsEditorPage() {
 
       {/* Formulaire création */}
       {showForm && (
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-          <h3 className="font-semibold text-gray-900 mb-4">Nouveau workflow</h3>
+        <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-5 shadow-sm">
+          <h3 className="font-semibold text-gray-900 dark:text-foreground mb-4">Nouveau workflow</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom</label>
               <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full border border-gray-200 dark:border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 placeholder="Ex: Notification naissance animal" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Déclencheur</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Déclencheur</label>
               <select value={form.trigger} onChange={e => setForm(f => ({ ...f, trigger: e.target.value }))}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                className="w-full border border-gray-200 dark:border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 <option value="manual">Manuel</option>
                 <option value="animal.born">Naissance animal</option>
                 <option value="medical.created">Visite médicale</option>
@@ -96,9 +96,9 @@ export default function WorkflowsEditorPage() {
             </div>
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
             <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full border border-gray-200 dark:border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
               rows={2} placeholder="Description du workflow..." />
           </div>
           <div className="flex gap-2">
@@ -106,7 +106,7 @@ export default function WorkflowsEditorPage() {
               className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 text-sm">
               {createMutation.isPending ? 'Création...' : 'Créer'}
             </button>
-            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm">Annuler</button>
+            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-100 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 text-sm">Annuler</button>
           </div>
         </div>
       )}
@@ -123,7 +123,7 @@ export default function WorkflowsEditorPage() {
               <p className="text-sm mt-1">Créez votre premier workflow pour automatiser vos processus</p>
             </div>
           ) : defs.map((def: any) => (
-            <div key={def.id} className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+            <div key={def.id} className="bg-white dark:bg-card rounded-xl border border-gray-100 p-4 shadow-sm">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-indigo-50 rounded-lg">
@@ -164,7 +164,7 @@ export default function WorkflowsEditorPage() {
               <p className="font-medium">Aucune instance en cours</p>
             </div>
           ) : insts.map((inst: any) => (
-            <div key={inst.id} className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm flex items-center justify-between">
+            <div key={inst.id} className="bg-white dark:bg-card rounded-xl border border-gray-100 p-4 shadow-sm flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className={`p-2 rounded-lg ${inst.status === 'completed' ? 'bg-green-50' : inst.status === 'failed' ? 'bg-red-50' : 'bg-blue-50'}`}>
                   {inst.status === 'completed' ? <CheckCircle className="w-4 h-4 text-green-600" /> :

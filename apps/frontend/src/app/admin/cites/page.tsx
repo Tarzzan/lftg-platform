@@ -74,7 +74,7 @@ export default function CitesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">📜 Module CITES</h1>
-          <p className="text-gray-500 text-sm mt-1">Gestion des permis et conformité réglementaire</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Gestion des permis et conformité réglementaire</p>
         </div>
         <button onClick={() => setShowModal(true)} className="px-4 py-2 bg-forest-600 text-white rounded-lg text-sm hover:bg-forest-700 transition-colors">
           + Nouveau permis
@@ -89,19 +89,19 @@ export default function CitesPage() {
           { label: 'Animaux Annexe I', value: compliance?.appendixI || 0, color: 'text-red-700', icon: '🔴' },
           { label: 'Expirent < 30j', value: expiringSoon, color: 'text-orange-600', icon: '⏰' },
         ].map(kpi => (
-          <div key={kpi.label} className="bg-white rounded-xl border border-gray-200 p-4">
+          <div key={kpi.label} className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-4">
             <div className={`text-3xl font-bold ${kpi.color}`}>{kpi.value}</div>
-            <div className="text-xs text-gray-500 mt-1">{kpi.label}</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{kpi.label}</div>
           </div>
         ))}
       </div>
 
       {/* Onglets */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        <div className="flex border-b border-gray-200">
+      <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border overflow-hidden">
+        <div className="flex border-b border-gray-200 dark:border-border">
           {(['permits', 'check', 'compliance'] as const).map(tab => (
             <button key={tab} onClick={() => setActiveTab(tab)}
-              className={`px-6 py-3 text-sm font-medium transition-colors ${activeTab === tab ? 'border-b-2 border-forest-600 text-forest-600 bg-forest-50' : 'text-gray-500 hover:text-gray-700'}`}>
+              className={`px-6 py-3 text-sm font-medium transition-colors ${activeTab === tab ? 'border-b-2 border-forest-600 text-forest-600 bg-forest-50' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}>
               {tab === 'permits' ? '📋 Permis' : tab === 'check' ? '🔍 Vérifier espèce' : '📊 Conformité'}
             </button>
           ))}
@@ -114,7 +114,7 @@ export default function CitesPage() {
               <div className="flex gap-2 mb-4">
                 {['ALL', 'ACTIVE', 'EXPIRED', 'PENDING', 'REVOKED'].map(s => (
                   <button key={s} onClick={() => setFilterStatus(s)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${filterStatus === s ? 'bg-forest-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${filterStatus === s ? 'bg-forest-600 text-white' : 'bg-gray-100 text-gray-600 dark:text-gray-400 hover:bg-gray-200'}`}>
                     {s === 'ALL' ? 'Tous' : STATUS_CONFIG[s]?.label || s}
                   </button>
                 ))}
@@ -136,7 +136,7 @@ export default function CitesPage() {
                     const days = daysUntilExpiry(permit.expiresAt);
                     const appendix = permit.animal?.species?.citesAppendix;
                     return (
-                      <div key={permit.id} className="border border-gray-200 rounded-xl p-4 hover:border-forest-300 transition-colors">
+                      <div key={permit.id} className="border border-gray-200 dark:border-border rounded-xl p-4 hover:border-forest-300 transition-colors">
                         <div className="flex items-start justify-between">
                           <div className="flex items-start gap-3">
                             <div className="text-2xl">🦜</div>
@@ -150,8 +150,8 @@ export default function CitesPage() {
                                   </span>
                                 )}
                               </div>
-                              {permit.species && <div className="text-xs text-gray-500 mt-0.5"><em>{permit.species}</em></div>}
-                              <div className="text-xs text-gray-600 mt-1">
+                              {permit.species && <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5"><em>{permit.species}</em></div>}
+                              <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                                 N° <strong>{permit.permitNumber}</strong>
                                 {permit.issuedBy && ` · Délivré par ${permit.issuedBy}`}
                                 {permit.type && ` · ${permit.type}`}
@@ -186,7 +186,7 @@ export default function CitesPage() {
           {/* Vérification espèce */}
           {activeTab === 'check' && (
             <div className="max-w-xl">
-              <h3 className="font-semibold text-gray-900 mb-4">Vérifier le statut CITES d'une espèce</h3>
+              <h3 className="font-semibold text-gray-900 dark:text-foreground mb-4">Vérifier le statut CITES d'une espèce</h3>
               <div className="flex gap-3 mb-6">
                 <input
                   type="text"
@@ -206,7 +206,7 @@ export default function CitesPage() {
               </div>
 
               {checkResult && (
-                <div className={`rounded-xl border-2 p-5 ${checkResult.appendix === 'I' ? 'border-red-300 bg-red-50' : checkResult.appendix === 'II' ? 'border-orange-300 bg-orange-50' : 'border-gray-200 bg-gray-50'}`}>
+                <div className={`rounded-xl border-2 p-5 ${checkResult.appendix === 'I' ? 'border-red-300 bg-red-50' : checkResult.appendix === 'II' ? 'border-orange-300 bg-orange-50' : 'border-gray-200 dark:border-border bg-gray-50'}`}>
                   <div className="flex items-center gap-3 mb-4">
                     <div className="text-3xl">{checkResult.appendix === 'NON_LISTE' ? '✅' : checkResult.appendix === 'I' ? '🔴' : '🟡'}</div>
                     <div>
@@ -225,7 +225,7 @@ export default function CitesPage() {
 
                   {checkResult.restrictions?.length > 0 && (
                     <div>
-                      <div className="font-medium text-sm text-gray-700 mb-2">Restrictions applicables :</div>
+                      <div className="font-medium text-sm text-gray-700 dark:text-gray-300 mb-2">Restrictions applicables :</div>
                       <ul className="space-y-1">
                         {checkResult.restrictions.map((r: string, i: number) => (
                           <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
@@ -255,10 +255,10 @@ export default function CitesPage() {
                       { label: 'Permis actifs', value: compliance.activePermits, icon: '✓' },
                       { label: 'Sans permis', value: compliance.missingPermits, icon: '⚠️' },
                     ].map(stat => (
-                      <div key={stat.label} className="bg-gray-50 rounded-xl p-4 text-center">
+                      <div key={stat.label} className="bg-gray-50 dark:bg-muted/20 rounded-xl p-4 text-center">
                         <div className="text-2xl mb-1">{stat.icon}</div>
                         <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
-                        <div className="text-xs text-gray-500 mt-1">{stat.label}</div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{stat.label}</div>
                       </div>
                     ))}
                   </div>
@@ -297,19 +297,19 @@ export default function CitesPage() {
       {/* Modal nouveau permis */}
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl">
+          <div className="bg-white dark:bg-card rounded-2xl w-full max-w-lg shadow-2xl">
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
               <h2 className="text-lg font-semibold">Nouveau permis CITES</h2>
               <button onClick={() => setShowModal(false)} className="p-2 hover:bg-gray-100 rounded-lg">✕</button>
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Numéro de permis *</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Numéro de permis *</label>
                 <input type="text" placeholder="FR-CITES-2026-XXX" value={form.permitNumber} onChange={e => setForm(f => ({ ...f, permitNumber: e.target.value }))} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-forest-500" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
                   <select value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value }))} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
                     <option value="IMPORT">IMPORT</option>
                     <option value="EXPORT">EXPORT</option>
@@ -318,7 +318,7 @@ export default function CitesPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Statut</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Statut</label>
                   <select value={form.status} onChange={e => setForm(f => ({ ...f, status: e.target.value }))} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
                     <option value="ACTIVE">ACTIVE</option>
                     <option value="PENDING">PENDING</option>
@@ -327,30 +327,30 @@ export default function CitesPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Espèce</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Espèce</label>
                 <input type="text" placeholder="Amazona amazonica" value={form.species} onChange={e => setForm(f => ({ ...f, species: e.target.value }))} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Délivré par</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Délivré par</label>
                 <input type="text" placeholder="DREAL Guyane" value={form.issuedBy} onChange={e => setForm(f => ({ ...f, issuedBy: e.target.value }))} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Date d'émission</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date d'émission</label>
                   <input type="date" value={form.issuedAt} onChange={e => setForm(f => ({ ...f, issuedAt: e.target.value }))} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Date d'expiration</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date d'expiration</label>
                   <input type="date" value={form.expiresAt} onChange={e => setForm(f => ({ ...f, expiresAt: e.target.value }))} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes</label>
                 <textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={2} className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" />
               </div>
             </div>
             <div className="flex gap-3 p-6 border-t border-gray-100">
-              <button onClick={() => setShowModal(false)} className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm hover:bg-gray-50">Annuler</button>
+              <button onClick={() => setShowModal(false)} className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 dark:text-gray-300 rounded-lg text-sm hover:bg-gray-50">Annuler</button>
               <button
                 onClick={() => createMutation.mutate(form)}
                 disabled={!form.permitNumber || createMutation.isPending}

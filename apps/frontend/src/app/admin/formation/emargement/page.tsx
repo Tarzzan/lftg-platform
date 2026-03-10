@@ -23,7 +23,7 @@ function AttendanceSheetCard({ sheet, cohortId }: { sheet: any; cohortId: string
   return (
     <div className="lftg-card overflow-hidden">
       <div
-        className="flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+        className="flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50 dark:bg-muted/20 transition-colors"
         onClick={() => setExpanded(!expanded)}
       >
         <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
@@ -66,11 +66,11 @@ function AttendanceSheetCard({ sheet, cohortId }: { sheet: any; cohortId: string
               <div key={sig.id} className="flex items-center gap-3 p-3 bg-green-50 border border-green-100 rounded-lg">
                 <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-700 truncate">{sig.user?.name}</p>
+                  <p className="text-sm font-medium text-gray-700 dark:text-gray-300 truncate">{sig.user?.name}</p>
                   <p className="text-xs text-gray-400">{new Date(sig.signedAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</p>
                 </div>
                 {sig.signatureData && (
-                  <img src={sig.signatureData} alt="signature" className="w-16 h-8 object-contain border border-gray-200 rounded bg-white" />
+                  <img src={sig.signatureData} alt="signature" className="w-16 h-8 object-contain border border-gray-200 dark:border-border rounded bg-white" />
                 )}
               </div>
             ))}
@@ -150,7 +150,7 @@ export default function EmargementPage() {
 
       {/* Sélecteur de cohorte */}
       <div className="lftg-card p-4">
-        <label className="text-sm font-medium text-gray-700 mb-2 block">Sélectionner une cohorte</label>
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">Sélectionner une cohorte</label>
         <select
           value={selectedCohort}
           onChange={(e) => setSelectedCohort(e.target.value)}
@@ -192,7 +192,7 @@ export default function EmargementPage() {
           <h3 className="font-semibold text-gray-800 mb-4">Nouvelle feuille d'émargement</h3>
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2">
-              <label className="text-xs font-medium text-gray-600 mb-1 block">Titre de la séance</label>
+              <label className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1 block">Titre de la séance</label>
               <input
                 value={newSheet.title}
                 onChange={(e) => setNewSheet((f) => ({ ...f, title: e.target.value }))}
@@ -201,7 +201,7 @@ export default function EmargementPage() {
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-gray-600 mb-1 block">Date de la séance</label>
+              <label className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1 block">Date de la séance</label>
               <input
                 type="datetime-local"
                 value={newSheet.sessionDate}
@@ -210,7 +210,7 @@ export default function EmargementPage() {
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-gray-600 mb-1 block">Durée (heures)</label>
+              <label className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1 block">Durée (heures)</label>
               <input
                 type="number"
                 step="0.5"
@@ -220,7 +220,7 @@ export default function EmargementPage() {
               />
             </div>
             <div>
-              <label className="text-xs font-medium text-gray-600 mb-1 block">Nombre d'apprenants attendus</label>
+              <label className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1 block">Nombre d'apprenants attendus</label>
               <input
                 type="number"
                 value={newSheet.expectedCount}
@@ -230,7 +230,7 @@ export default function EmargementPage() {
             </div>
           </div>
           <div className="flex justify-end gap-2 mt-4">
-            <button onClick={() => setShowCreate(false)} className="px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 rounded-lg">Annuler</button>
+            <button onClick={() => setShowCreate(false)} className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 rounded-lg">Annuler</button>
             <button
               onClick={() => createMutation.mutate()}
               disabled={!newSheet.sessionDate || createMutation.isPending}

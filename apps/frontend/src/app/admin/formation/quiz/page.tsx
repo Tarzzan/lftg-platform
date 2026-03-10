@@ -170,10 +170,10 @@ export default function QuizPage() {
         <>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground dark:text-white flex items-center gap-2">
                 <Trophy className="w-7 h-7 text-amber-500" /> Quiz & Évaluations
               </h1>
-              <p className="text-gray-500 dark:text-gray-400 mt-1">Testez vos connaissances sur le référentiel RNCP Soigneur Animalier</p>
+              <p className="text-gray-500 dark:text-gray-400 dark:text-gray-400 mt-1">Testez vos connaissances sur le référentiel RNCP Soigneur Animalier</p>
             </div>
           </div>
 
@@ -188,7 +188,7 @@ export default function QuizPage() {
                   <div key={ub.id} className="flex items-center gap-2 bg-white dark:bg-gray-800 rounded-lg px-3 py-2 shadow-sm border border-amber-100">
                     <span className="text-xl">{ub.badge?.icon || '🏅'}</span>
                     <div>
-                      <div className="text-xs font-semibold text-gray-900 dark:text-white">{ub.badge?.name}</div>
+                      <div className="text-xs font-semibold text-gray-900 dark:text-foreground dark:text-white">{ub.badge?.name}</div>
                       <div className="text-xs text-gray-400">{new Date(ub.earnedAt).toLocaleDateString('fr-FR')}</div>
                     </div>
                   </div>
@@ -207,7 +207,7 @@ export default function QuizPage() {
                 {certificates.map((cert: any) => (
                   <div key={cert.id} className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm flex items-center justify-between">
                     <div>
-                      <div className="font-medium text-gray-900 dark:text-white text-sm">{cert.course?.title}</div>
+                      <div className="font-medium text-gray-900 dark:text-foreground dark:text-white text-sm">{cert.course?.title}</div>
                       <div className="text-xs text-gray-400">N° {cert.number} · {new Date(cert.issuedAt).toLocaleDateString('fr-FR')}</div>
                     </div>
                     {cert.pdfUrl && (
@@ -224,7 +224,7 @@ export default function QuizPage() {
 
           {/* Leçons avec quiz */}
           <div>
-            <h2 className="font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
+            <h2 className="font-semibold text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-3 flex items-center gap-2">
               <BookOpen className="w-5 h-5" /> Quiz disponibles par leçon
             </h2>
             {lessonsWithQuiz.length === 0 ? (
@@ -238,7 +238,7 @@ export default function QuizPage() {
                   <div key={lesson.id}
                     className="bg-white dark:bg-gray-800 rounded-xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow flex items-center justify-between">
                     <div>
-                      <div className="font-semibold text-gray-900 dark:text-white text-sm">{lesson.title}</div>
+                      <div className="font-semibold text-gray-900 dark:text-foreground dark:text-white text-sm">{lesson.title}</div>
                       <div className="text-xs text-gray-400 mt-1">
                         <span className="text-emerald-600 font-medium">{lesson.courseTitle}</span>
                         {' · '}{lesson.chapterTitle}
@@ -262,24 +262,24 @@ export default function QuizPage() {
         <div className="max-w-lg mx-auto">
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700 text-center">
             <div className="text-6xl mb-4">🎓</div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{selectedLesson.title}</h2>
-            <p className="text-gray-500 dark:text-gray-400 mb-6">{selectedLesson.courseTitle}</p>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-foreground dark:text-white mb-2">{selectedLesson.title}</h2>
+            <p className="text-gray-500 dark:text-gray-400 dark:text-gray-400 mb-6">{selectedLesson.courseTitle}</p>
             <div className="grid grid-cols-3 gap-4 mb-8">
               {[
                 { label: 'Questions', value: questions.length, icon: '❓' },
                 { label: 'Durée', value: `${Math.ceil(questions.length)} min`, icon: '⏱️' },
                 { label: 'Seuil', value: '70%', icon: '🎯' },
               ].map((item) => (
-                <div key={item.label} className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-3">
+                <div key={item.label} className="bg-gray-50 dark:bg-muted/20 dark:bg-gray-700/50 rounded-xl p-3">
                   <div className="text-2xl mb-1">{item.icon}</div>
-                  <div className="font-bold text-gray-900 dark:text-white">{item.value}</div>
+                  <div className="font-bold text-gray-900 dark:text-foreground dark:text-white">{item.value}</div>
                   <div className="text-xs text-gray-400">{item.label}</div>
                 </div>
               ))}
             </div>
             <div className="flex space-x-3">
               <button onClick={() => setState('LIST')}
-                className="flex-1 py-3 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 rounded-xl hover:bg-gray-50 transition-colors">
+                className="flex-1 py-3 border border-gray-200 dark:border-border dark:border-gray-600 text-gray-600 dark:text-gray-400 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:bg-muted/20 transition-colors">
                 Annuler
               </button>
               <button onClick={beginQuiz}
@@ -295,7 +295,7 @@ export default function QuizPage() {
       {state === 'QUIZ' && q && (
         <div className="max-w-2xl mx-auto space-y-6">
           <div className="flex items-center justify-between">
-            <div className="text-sm text-gray-500 dark:text-gray-400">
+            <div className="text-sm text-gray-500 dark:text-gray-400 dark:text-gray-400">
               Question {currentQuestion + 1}/{questions.length}
             </div>
             <div className={`font-mono font-bold text-lg flex items-center gap-1 ${timeLeft < 60 ? 'text-red-600 animate-pulse' : 'text-emerald-600'}`}>
@@ -312,17 +312,17 @@ export default function QuizPage() {
               <span className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold flex-shrink-0">
                 {currentQuestion + 1}
               </span>
-              <h3 className="text-lg font-medium text-gray-900 dark:text-white leading-relaxed">{q.question}</h3>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-foreground dark:text-white leading-relaxed">{q.question}</h3>
             </div>
 
             <div className="space-y-3">
               {q.options.map((option, i) => {
                 const letter = ['A', 'B', 'C', 'D'][i];
-                let cls = 'border-gray-200 dark:border-gray-600 hover:border-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 cursor-pointer';
+                let cls = 'border-gray-200 dark:border-border dark:border-gray-600 hover:border-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 cursor-pointer';
                 if (showExplanation) {
                   if (option === q.answer) cls = 'border-green-500 bg-green-50 dark:bg-green-900/20';
                   else if (option === selectedAnswer) cls = 'border-red-400 bg-red-50 dark:bg-red-900/20';
-                  else cls = 'border-gray-200 dark:border-gray-600 opacity-50';
+                  else cls = 'border-gray-200 dark:border-border dark:border-gray-600 opacity-50';
                 } else if (selectedAnswer === option) {
                   cls = 'border-emerald-500 bg-emerald-50 dark:bg-emerald-900/20';
                 }
@@ -336,11 +336,11 @@ export default function QuizPage() {
                     <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold flex-shrink-0 ${
                       showExplanation && option === q.answer ? 'bg-green-500 text-white' :
                       showExplanation && option === selectedAnswer ? 'bg-red-400 text-white' :
-                      selectedAnswer === option ? 'bg-emerald-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
+                      selectedAnswer === option ? 'bg-emerald-500 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 dark:text-gray-300'
                     }`}>
                       {letter}
                     </span>
-                    <span className="text-sm text-gray-700 dark:text-gray-200">{option}</span>
+                    <span className="text-sm text-gray-700 dark:text-gray-300 dark:text-gray-200">{option}</span>
                     {showExplanation && option === q.answer && <CheckCircle className="w-5 h-5 text-green-500 ml-auto flex-shrink-0" />}
                     {showExplanation && option === selectedAnswer && option !== q.answer && <XCircle className="w-5 h-5 text-red-400 ml-auto flex-shrink-0" />}
                   </button>
@@ -379,10 +379,10 @@ export default function QuizPage() {
         <div className="max-w-lg mx-auto">
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700 text-center">
             <div className="text-6xl mb-4">{score >= 70 ? '🎉' : '📚'}</div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-foreground dark:text-white mb-2">
               {score >= 70 ? 'Félicitations !' : 'Continuez vos efforts !'}
             </h2>
-            <p className="text-gray-500 dark:text-gray-400 mb-6">{selectedLesson?.title}</p>
+            <p className="text-gray-500 dark:text-gray-400 dark:text-gray-400 mb-6">{selectedLesson?.title}</p>
 
             <div className={`text-6xl font-bold mb-2 ${score >= 70 ? 'text-emerald-600' : 'text-amber-500'}`}>
               {score}%
@@ -401,7 +401,7 @@ export default function QuizPage() {
 
             <div className="flex space-x-3">
               <button onClick={() => setState('LIST')}
-                className="flex-1 py-3 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 rounded-xl hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+                className="flex-1 py-3 border border-gray-200 dark:border-border dark:border-gray-600 text-gray-600 dark:text-gray-400 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:bg-muted/20 transition-colors flex items-center justify-center gap-2">
                 <BookOpen className="w-4 h-4" /> Retour aux quiz
               </button>
               {score < 70 && (

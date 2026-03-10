@@ -7,6 +7,10 @@ import {
 } from 'lucide-react';
 import { formationApi } from '@/lib/api';
 
+// ─── Assets CDN ───────────────────────────────────────────────────────────────
+const CAPI_TROPHY = 'https://files.manuscdn.com/user_upload_by_module/session_file/92503813/lodkjTwEpwhgToTR.webp';
+const CAPI_NO_DATA = 'https://files.manuscdn.com/user_upload_by_module/session_file/92503813/RiSvBtFhRRUospoU.webp';
+
 // ─── Configuration des badges ─────────────────────────────────────────────────
 const BADGE_CONFIG: Record<string, { icon: any; color: string; bg: string; border: string; label: string; desc: string }> = {
   FIRST_LESSON:    { icon: BookOpen,      color: 'text-blue-600',   bg: 'bg-blue-50',    border: 'border-blue-200',   label: 'Premier Pas',       desc: 'Première leçon complétée' },
@@ -17,7 +21,7 @@ const BADGE_CONFIG: Record<string, { icon: any; color: string; bg: string; borde
   SPEED_LEARNER:   { icon: Zap,           color: 'text-yellow-600', bg: 'bg-yellow-50',  border: 'border-yellow-200', label: 'Apprenant Rapide',  desc: 'Cours terminé en moins de 2h' },
   BIODIVERSITY:    { icon: Leaf,          color: 'text-emerald-600',bg: 'bg-emerald-50', border: 'border-emerald-200',label: 'Biodiversité',      desc: 'Module faune tropicale terminé' },
   WELFARE:         { icon: Heart,         color: 'text-red-600',    bg: 'bg-red-50',     border: 'border-red-200',    label: 'Bien-être Animal',  desc: 'Module bien-être terminé' },
-  SAFETY:          { icon: Shield,        color: 'text-gray-600',   bg: 'bg-gray-50',    border: 'border-gray-200',   label: 'Sécurité',          desc: 'Module sécurité terminé' },
+  SAFETY:          { icon: Shield,        color: 'text-gray-600',   bg: 'bg-gray-50',    border: 'border-gray-200 dark:border-border',   label: 'Sécurité',          desc: 'Module sécurité terminé' },
   TOP_LEARNER:     { icon: Trophy,        color: 'text-gold-600',   bg: 'bg-gold-50',    border: 'border-gold-200',   label: 'Top Apprenant',     desc: 'Classé dans le top 3' },
 };
 
@@ -30,7 +34,7 @@ function BadgeCard({ badge, unlocked }: { badge: any; unlocked: boolean }) {
     <div className={`relative flex flex-col items-center p-4 rounded-2xl border-2 transition-all ${
       unlocked
         ? `${conf.bg} ${conf.border} shadow-sm hover:shadow-md`
-        : 'bg-gray-50 border-gray-100 opacity-50 grayscale'
+        : 'bg-gray-50 dark:bg-muted/20 border-gray-100 opacity-50 grayscale'
     }`}>
       {unlocked && (
         <div className="absolute -top-2 -right-2 w-5 h-5 bg-forest-500 rounded-full flex items-center justify-center shadow-sm">
@@ -64,13 +68,13 @@ function CertificateCard({ cert }: { cert: any }) {
           <div className="w-12 h-12 rounded-xl bg-gold-100 flex items-center justify-center flex-shrink-0">
             <Award className="w-6 h-6 text-gold-600" />
           </div>
-          <button className="opacity-0 group-hover:opacity-100 flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gold-200 rounded-xl text-xs font-medium text-gold-700 hover:bg-gold-50 transition-all">
+          <button className="opacity-0 group-hover:opacity-100 flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-card border border-gold-200 rounded-xl text-xs font-medium text-gold-700 hover:bg-gold-50 transition-all">
             <Download className="w-3.5 h-3.5" /> Télécharger
           </button>
         </div>
 
         <h3 className="font-bold text-gray-800 text-sm leading-tight mb-1">{cert.course?.title || 'Formation LFTG'}</h3>
-        <p className="text-xs text-gray-500 mb-3">
+        <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
           Délivré le {new Date(cert.issuedAt || cert.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
         </p>
 
@@ -146,10 +150,13 @@ export default function RecompensesPage() {
             </p>
           </div>
           <div className="flex-shrink-0 text-center">
-            <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center border border-white/30">
-              <Crown className="w-10 h-10 text-white" />
-            </div>
-            <p className="text-xs text-white/70 mt-2">Niveau Expert</p>
+            <img
+              src={CAPI_TROPHY}
+              alt="Capi avec trophée"
+              className="w-24 h-24 object-contain drop-shadow-xl"
+              style={{ animation: 'mascotFloat 3s ease-in-out infinite', filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.2))' }}
+            />
+            <p className="text-xs text-white/70 mt-1">Niveau Expert</p>
           </div>
         </div>
 
@@ -172,17 +179,17 @@ export default function RecompensesPage() {
       {/* ── Certificats ── */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-display font-bold text-gray-900 flex items-center gap-2">
+          <h2 className="text-lg font-display font-bold text-gray-900 dark:text-foreground flex items-center gap-2">
             <Award className="w-5 h-5 text-gold-500" />
             Mes Certificats
           </h2>
           <span className="text-sm text-gray-400">{certificates.length} obtenu{certificates.length !== 1 ? 's' : ''}</span>
         </div>
         {certificates.length === 0 ? (
-          <div className="text-center py-10 bg-gray-50 rounded-2xl border border-gray-100">
-            <Award className="w-10 h-10 text-gray-200 mx-auto mb-3" />
-            <p className="text-sm text-gray-400 font-medium">Aucun certificat pour le moment</p>
-            <p className="text-xs text-gray-300 mt-1">Terminez une formation pour obtenir votre premier certificat</p>
+          <div className="flex flex-col items-center py-10 rounded-2xl bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-100">
+            <img src={CAPI_NO_DATA} alt="Capi" className="w-24 h-24 object-contain mb-3" style={{ animation: 'mascotFloat 3s ease-in-out infinite' }} />
+            <p className="text-sm font-semibold text-amber-700">Aucun certificat pour le moment</p>
+            <p className="text-xs text-amber-500 mt-1">Terminez une formation pour obtenir votre premier certificat 🎓</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -196,7 +203,7 @@ export default function RecompensesPage() {
       {/* ── Badges ── */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-display font-bold text-gray-900 flex items-center gap-2">
+          <h2 className="text-lg font-display font-bold text-gray-900 dark:text-foreground flex items-center gap-2">
             <Medal className="w-5 h-5 text-maroni-500" />
             Collection de Badges
           </h2>
@@ -227,12 +234,12 @@ export default function RecompensesPage() {
       {/* ── Classement ── */}
       <section>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-display font-bold text-gray-900 flex items-center gap-2">
+          <h2 className="text-lg font-display font-bold text-gray-900 dark:text-foreground flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-purple-500" />
             Classement de la Promotion
           </h2>
         </div>
-        <div className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+        <div className="bg-white dark:bg-card border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
           {leaderboard.length === 0 ? (
             <div className="text-center py-8">
               <Trophy className="w-8 h-8 text-gray-200 mx-auto mb-2" />
@@ -241,7 +248,7 @@ export default function RecompensesPage() {
           ) : (
             <div className="divide-y divide-gray-50">
               {leaderboard.slice(0, 10).map((entry: any, idx: number) => (
-                <div key={entry.userId} className={`flex items-center gap-4 px-5 py-3 transition-colors hover:bg-gray-50 ${
+                <div key={entry.userId} className={`flex items-center gap-4 px-5 py-3 transition-colors hover:bg-gray-50 dark:bg-muted/20 ${
                   idx === 0 ? 'bg-gold-50/50' : idx === 1 ? 'bg-gray-50/50' : ''
                 }`}>
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm ${

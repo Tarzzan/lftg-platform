@@ -78,7 +78,7 @@ export default function PlanningPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Planning des gardes</h1>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
             Semaine du {weekDates[0].toLocaleDateString('fr-FR', { day: '2-digit', month: 'long' })} au {weekDates[6].toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
           </p>
         </div>
@@ -115,19 +115,19 @@ export default function PlanningPage() {
           <span className="ml-3 text-gray-500">Chargement du planning...</span>
         </div>
       ) : filteredEmployees.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+        <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-12 text-center">
           <p className="text-4xl mb-3">👥</p>
           <p className="text-gray-500">Aucun employé trouvé.</p>
         </div>
       ) : view === 'semaine' ? (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-gray-50 border-b border-gray-200">
-                  <th className="text-left py-3 px-4 text-gray-600 font-medium w-48">Employé</th>
+                <tr className="bg-gray-50 dark:bg-muted/20 border-b border-gray-200 dark:border-border">
+                  <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium w-48">Employé</th>
                   {weekDates.map((date, i) => (
-                    <th key={i} className={`text-center py-3 px-2 text-gray-600 font-medium min-w-24 ${isWeekend(date) ? 'bg-gray-100' : ''}`}>
+                    <th key={i} className={`text-center py-3 px-2 text-gray-600 dark:text-gray-400 font-medium min-w-24 ${isWeekend(date) ? 'bg-gray-100' : ''}`}>
                       <div className="font-medium">{DAYS[i]}</div>
                       <div className="text-xs text-gray-400">{date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })}</div>
                     </th>
@@ -143,7 +143,7 @@ export default function PlanningPage() {
                           {(emp.firstName || emp.lastName || '?')[0].toUpperCase()}
                         </div>
                         <div>
-                          <div className="font-medium text-gray-900 text-xs">{emp.firstName} {emp.lastName}</div>
+                          <div className="font-medium text-gray-900 dark:text-foreground text-xs">{emp.firstName} {emp.lastName}</div>
                           <span className={`text-xs px-1.5 py-0.5 rounded ${DEPT_COLORS[emp.department] || 'bg-gray-100 text-gray-600'}`}>
                             {emp.department || 'N/A'}
                           </span>
@@ -180,7 +180,7 @@ export default function PlanningPage() {
           {filteredEmployees.map((emp: any) => {
             const empLeaves = (leaves as any[]).filter((l: any) => l.employeeId === emp.id);
             return (
-              <div key={emp.id} className="bg-white rounded-xl border border-gray-200 p-4">
+              <div key={emp.id} className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-4">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-9 h-9 rounded-full bg-forest-100 flex items-center justify-center text-sm font-bold text-forest-700">
                     {(emp.firstName || '?')[0].toUpperCase()}
@@ -216,11 +216,11 @@ export default function PlanningPage() {
       )}
 
       {/* Légende */}
-      <div className="flex items-center gap-4 text-xs text-gray-500 flex-wrap">
+      <div className="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-400 flex-wrap">
         <span className="font-medium">Légende :</span>
         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-green-100 border border-green-200 inline-block"></span> Présent</span>
         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-amber-100 border border-amber-200 inline-block"></span> Congé</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-gray-100 border border-gray-200 inline-block"></span> Weekend</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-gray-100 border border-gray-200 dark:border-border inline-block"></span> Weekend</span>
       </div>
     </div>
   );

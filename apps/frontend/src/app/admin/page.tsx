@@ -8,6 +8,10 @@ import {
 } from 'recharts';
 import { statsApi, exportApi, api } from '@/lib/api';
 
+// ─── Assets CDN ───────────────────────────────────────────────────────────────
+const DASHBOARD_BG = 'https://files.manuscdn.com/user_upload_by_module/session_file/92503813/dtXQDxZrjcLkaVkq.webp';
+const CAPI_WELCOME = 'https://files.manuscdn.com/user_upload_by_module/session_file/92503813/CQYNgMGdtFUmmTQU.webp';
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type WidgetId = 'kpis' | 'revenue' | 'animals' | 'stock' | 'workflows' | 'broods' | 'medical' | 'sales' | 'stockEvolution';
@@ -37,8 +41,8 @@ const COLORS = ['#166534', '#d97706', '#1d4ed8', '#7c3aed', '#dc2626', '#0891b2'
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg px-3 py-2">
-      <p className="text-xs font-medium text-gray-900 dark:text-white mb-1">{label}</p>
+    <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-border dark:border-border dark:border-gray-700 rounded-xl shadow-lg px-3 py-2">
+      <p className="text-xs font-medium text-gray-900 dark:text-foreground dark:text-foreground dark:text-white mb-1">{label}</p>
       {payload.map((p: any) => (
         <p key={p.name} className="text-xs" style={{ color: p.color }}>
           {p.name}: <strong>{typeof p.value === 'number' ? p.value.toFixed(0) : p.value}</strong>
@@ -59,13 +63,26 @@ function KpisWidget({ stats, lowStockCount, pendingWorkflows }: any) {
         { label: 'Alertes stock', value: lowStockCount, sub: 'Articles en rupture', icon: '📦', color: lowStockCount > 0 ? 'red' : 'forest', urgent: lowStockCount > 0 },
         { label: 'Workflows actifs', value: stats?.workflows?.total ?? '—', sub: `${pendingWorkflows} en attente`, icon: '⚙️', color: 'blue' },
       ].map(kpi => (
-        <div key={kpi.label} className={`p-4 rounded-xl border ${kpi.urgent ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-700' : 'bg-forest-50 dark:bg-forest-900/20 border-forest-200 dark:border-forest-700'}`}>
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-xl">{kpi.icon}</span>
+        <div
+          key={kpi.label}
+          className="relative overflow-hidden rounded-2xl p-4 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 cursor-default"
+          style={{
+            background: kpi.urgent
+              ? 'linear-gradient(135deg, #fef2f2, #fee2e2)'
+              : 'linear-gradient(135deg, #f0fdf4, #dcfce7)',
+            border: kpi.urgent ? '1px solid #fca5a5' : '1px solid #86efac',
+          }}
+        >
+          <div className="absolute top-0 right-0 w-16 h-16 rounded-full opacity-20"
+            style={{ background: kpi.urgent ? '#ef4444' : '#16a34a', transform: 'translate(25%, -25%)' }}
+          />
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-2xl">{kpi.icon}</span>
+            {kpi.urgent && <span className="text-xs font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-full">Urgent</span>}
           </div>
-          <div className={`text-2xl font-bold ${kpi.urgent ? 'text-red-700 dark:text-red-400' : 'text-forest-700 dark:text-forest-400'}`}>{kpi.value}</div>
-          <div className="text-xs font-medium text-gray-700 dark:text-gray-300 mt-0.5">{kpi.label}</div>
-          <div className="text-xs text-gray-400">{kpi.sub}</div>
+          <div className={`text-3xl font-black ${kpi.urgent ? 'text-red-700' : 'text-forest-800'}`} style={{ fontFamily: 'Sora, sans-serif' }}>{kpi.value}</div>
+          <div className="text-xs font-semibold text-gray-700 dark:text-gray-300 dark:text-gray-300 mt-1">{kpi.label}</div>
+          <div className="text-xs text-gray-400 mt-0.5">{kpi.sub}</div>
         </div>
       ))}
     </div>
@@ -112,8 +129,8 @@ function AnimalsWidget({ animalsBySpecies }: any) {
         {animalsBySpecies.slice(0, 5).map((item: any, i: number) => (
           <div key={item.speciesId || i} className="flex items-center gap-2">
             <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: COLORS[i % COLORS.length] }} />
-            <span className="text-xs text-gray-700 dark:text-gray-300 flex-1 truncate">{item.name}</span>
-            <span className="text-xs font-bold text-gray-900 dark:text-white">{item.count}</span>
+            <span className="text-xs text-gray-700 dark:text-gray-300 dark:text-gray-300 dark:text-gray-300 flex-1 truncate">{item.name}</span>
+            <span className="text-xs font-bold text-gray-900 dark:text-foreground dark:text-foreground dark:text-white">{item.count}</span>
           </div>
         ))}
       </div>
@@ -165,7 +182,7 @@ function BroodsWidget({ stats }: any) {
         return (
           <div key={brood.id} className="flex items-center justify-between p-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
             <div>
-              <p className="text-sm font-medium text-gray-900 dark:text-white">{brood.species?.name}</p>
+              <p className="text-sm font-medium text-gray-900 dark:text-foreground dark:text-foreground dark:text-white">{brood.species?.name}</p>
               <p className="text-xs text-gray-400">{brood.eggCount} œufs — Jour {days}</p>
             </div>
             <span className="text-xs px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full">{brood.status}</span>
@@ -185,7 +202,7 @@ function MedicalWidget({ stats }: any) {
         <div key={event.id} className="flex items-center gap-3 p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
           <span className="text-lg">🏥</span>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{event.animal?.name || event.animal?.identifier || '—'}</p>
+            <p className="text-sm font-medium text-gray-900 dark:text-foreground dark:text-foreground dark:text-white truncate">{event.animal?.name || event.animal?.identifier || '—'}</p>
             <p className="text-xs text-gray-400">{event.notes || event.type}</p>
           </div>
           <span className="text-xs text-gray-400 whitespace-nowrap">
@@ -205,7 +222,7 @@ function SalesWidget({ stats }: any) {
       {sales.slice(0, 4).map((sale: any) => (
         <div key={sale.id} className="flex items-center justify-between p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
           <div>
-            <p className="text-sm font-medium text-gray-900 dark:text-white font-mono">{sale.reference}</p>
+            <p className="text-sm font-medium text-gray-900 dark:text-foreground dark:text-foreground dark:text-white font-mono">{sale.reference}</p>
             <p className="text-xs text-gray-400">{sale.buyerName}</p>
           </div>
           <span className="text-sm font-bold text-green-700 dark:text-green-400">{sale.total?.toFixed(0)} €</span>
@@ -269,14 +286,39 @@ export default function DashboardPage() {
   if (statsLoading) return (<div className="space-y-6 p-6"><div className="flex items-center justify-between"><div className="space-y-2"><div className="h-7 w-48 animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg" /><div className="h-4 w-64 animate-pulse bg-gray-200 dark:bg-gray-700 rounded" /></div></div><div className="grid grid-cols-2 md:grid-cols-4 gap-4">{[1,2,3,4].map(i => <div key={i} className="lftg-card p-6 space-y-3"><div className="h-4 w-1/3 animate-pulse bg-gray-200 dark:bg-gray-700 rounded" /><div className="h-8 w-1/2 animate-pulse bg-gray-200 dark:bg-gray-700 rounded" /></div>)}</div><div className="lftg-card p-6"><div className="h-48 animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg" /></div></div>);
   return (
     <div className="space-y-6">
-      {/* En-tête */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">🦜 Tableau de bord</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-          </p>
-        </div>
+      <style>{`
+        @keyframes mascotFloat {
+          0%, 100% { transform: translateY(0px) rotate(-1deg); }
+          50% { transform: translateY(-8px) rotate(1deg); }
+        }
+      `}</style>
+      {/* Hero Dashboard */}
+      <div
+        className="relative rounded-2xl overflow-hidden mb-2"
+        style={{
+          background: `url(${DASHBOARD_BG}) center/cover no-repeat`,
+          minHeight: '140px',
+        }}
+      >
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(13,43,26,0.85) 0%, rgba(26,71,49,0.75) 50%, rgba(45,125,125,0.6) 100%)' }} />
+        <div className="relative z-10 flex items-center justify-between p-6 flex-wrap gap-4">
+          <div className="flex items-center gap-4">
+            <img
+              src={CAPI_WELCOME}
+              alt="Capi"
+              className="w-20 h-20 object-contain drop-shadow-xl"
+              style={{ animation: 'mascotFloat 3s ease-in-out infinite', filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))' }}
+            />
+            <div>
+              <h1 className="text-2xl font-bold text-white" style={{ fontFamily: 'Playfair Display, Georgia, serif', textShadow: '0 2px 8px rgba(0,0,0,0.4)' }}>
+                Tableau de bord
+              </h1>
+              <p className="text-sm text-white/80 mt-1 capitalize">
+                {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+              </p>
+              <p className="text-xs text-white/60 mt-0.5">La Ferme Tropicale de Guyane</p>
+            </div>
+          </div>
         <div className="flex items-center gap-3 flex-wrap">
           {editMode && inactiveWidgets.length > 0 && (
             <div className="flex gap-2 flex-wrap">
@@ -284,7 +326,7 @@ export default function DashboardPage() {
                 <button
                   key={w.id}
                   onClick={() => toggleWidget(w.id)}
-                  className="px-3 py-1.5 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-500 hover:border-forest-400 hover:text-forest-600 transition-colors"
+                  className="px-3 py-1.5 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-500 dark:text-gray-400 dark:text-gray-400 hover:border-forest-400 hover:text-forest-600 transition-colors"
                 >
                   + {w.icon} {w.title}
                 </button>
@@ -296,7 +338,7 @@ export default function DashboardPage() {
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               editMode
                 ? 'bg-forest-600 text-white hover:bg-forest-700'
-                : 'border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
+                : 'border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 dark:text-gray-400 dark:text-gray-400 hover:bg-gray-50 dark:bg-muted/20 dark:bg-muted/20 dark:hover:bg-gray-700'
             }`}
           >
             {editMode ? '✓ Terminer' : '⚙️ Personnaliser'}
@@ -323,13 +365,13 @@ export default function DashboardPage() {
         {activeWidgets.map(widget => (
           <div
             key={widget.id}
-            className={`bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 relative group ${
+            className={`bg-white dark:bg-gray-800 rounded-2xl border border-forest-100 dark:border-gray-700 p-5 relative group shadow-sm hover:shadow-md transition-all ${
               widget.cols === 3 ? 'lg:col-span-3 md:col-span-2' :
               widget.cols === 2 ? 'md:col-span-2' : ''
             }`}
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-gray-900 dark:text-white text-sm flex items-center gap-2">
+              <h3 className="font-semibold text-gray-900 dark:text-foreground dark:text-foreground dark:text-white text-sm flex items-center gap-2">
                 <span>{widget.icon}</span>
                 {widget.title}
               </h3>
@@ -349,8 +391,8 @@ export default function DashboardPage() {
       </div>
 
       {/* Actions rapides */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5">
-        <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-3">⚡ Actions rapides</h3>
+      <div className="rounded-2xl border border-forest-100 dark:border-gray-700 p-5 shadow-sm" style={{ background: 'linear-gradient(135deg, #f0fdf4, #fafaf9)' }}>
+        <h3 className="font-bold text-forest-800 dark:text-white text-sm mb-3 flex items-center gap-2"><span>⚡</span> Actions rapides</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
             { label: 'Export stock CSV', onClick: () => handleExport(exportApi.stockCsv(), 'stock.csv') },
@@ -361,7 +403,7 @@ export default function DashboardPage() {
             <button
               key={action.label}
               onClick={action.onClick}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 transition-colors"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 dark:bg-muted/20 dark:bg-muted/20 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 dark:text-gray-300 dark:text-gray-300 transition-colors"
             >
               <span>📥</span>
               {action.label}

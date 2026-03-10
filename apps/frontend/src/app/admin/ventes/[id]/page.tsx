@@ -88,10 +88,10 @@ export default function SaleDetailPage() {
             ←
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white font-mono">
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground dark:text-white font-mono">
               {sale.reference}
             </h1>
-            <p className="text-gray-500 text-sm">
+            <p className="text-gray-500 dark:text-gray-400 text-sm">
               Créée le {new Date(sale.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
           </div>
@@ -102,7 +102,7 @@ export default function SaleDetailPage() {
           </span>
           <button
             onClick={handleDownloadPdf}
-            className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+            className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-600 dark:text-gray-400 dark:text-gray-400 hover:bg-gray-50 dark:bg-muted/20 dark:hover:bg-gray-700 transition-colors"
           >
             📄 PDF
           </button>
@@ -125,22 +125,22 @@ export default function SaleDetailPage() {
       </div>
 
       {/* Facture */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8">
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-8">
         {/* En-tête facture */}
         <div className="flex justify-between items-start mb-8">
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="text-3xl">🦜</span>
               <div>
-                <p className="font-bold text-gray-900 dark:text-white text-lg">La Ferme Tropicale de Guyane</p>
+                <p className="font-bold text-gray-900 dark:text-foreground dark:text-white text-lg">La Ferme Tropicale de Guyane</p>
                 <p className="text-xs text-gray-500">LFTG Platform v4.0.0</p>
               </div>
             </div>
             <p className="text-sm text-gray-500">Guyane Française</p>
           </div>
           <div className="text-right">
-            <p className="text-2xl font-bold text-gray-900 dark:text-white font-mono">{sale.reference}</p>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-2xl font-bold text-gray-900 dark:text-foreground dark:text-white font-mono">{sale.reference}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
               {new Date(sale.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
             {sale.dueDate && (
@@ -153,27 +153,27 @@ export default function SaleDetailPage() {
 
         {/* Acheteur */}
         <div className="grid grid-cols-2 gap-8 mb-8">
-          <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Acheteur</p>
-            <p className="font-semibold text-gray-900 dark:text-white">{sale.buyerName}</p>
+          <div className="p-4 bg-gray-50 dark:bg-muted/20 dark:bg-gray-700/50 rounded-lg">
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Acheteur</p>
+            <p className="font-semibold text-gray-900 dark:text-foreground dark:text-white">{sale.buyerName}</p>
             {sale.buyerEmail && <p className="text-sm text-gray-500">{sale.buyerEmail}</p>}
             {sale.buyerPhone && <p className="text-sm text-gray-500">{sale.buyerPhone}</p>}
-            {sale.buyerAddress && <p className="text-sm text-gray-500 mt-1">{sale.buyerAddress}</p>}
+            {sale.buyerAddress && <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{sale.buyerAddress}</p>}
           </div>
-          <div className="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-            <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Détails</p>
+          <div className="p-4 bg-gray-50 dark:bg-muted/20 dark:bg-gray-700/50 rounded-lg">
+            <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Détails</p>
             <div className="space-y-1 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-500">Type</span>
-                <span className="font-medium text-gray-900 dark:text-white">{sale.type}</span>
+                <span className="font-medium text-gray-900 dark:text-foreground dark:text-white">{sale.type}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Paiement</span>
-                <span className="font-medium text-gray-900 dark:text-white">{sale.paymentMethod || '—'}</span>
+                <span className="font-medium text-gray-900 dark:text-foreground dark:text-white">{sale.paymentMethod || '—'}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Créé par</span>
-                <span className="font-medium text-gray-900 dark:text-white">{sale.createdBy?.name || '—'}</span>
+                <span className="font-medium text-gray-900 dark:text-foreground dark:text-white">{sale.createdBy?.name || '—'}</span>
               </div>
             </div>
           </div>
@@ -182,31 +182,31 @@ export default function SaleDetailPage() {
         {/* Lignes */}
         <table className="w-full mb-6">
           <thead>
-            <tr className="border-b-2 border-gray-200 dark:border-gray-600">
-              <th className="text-left py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Description</th>
-              <th className="text-center py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Qté</th>
-              <th className="text-right py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Prix HT</th>
-              <th className="text-right py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">TVA</th>
-              <th className="text-right py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Total TTC</th>
+            <tr className="border-b-2 border-gray-200 dark:border-border dark:border-gray-600">
+              <th className="text-left py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</th>
+              <th className="text-center py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Qté</th>
+              <th className="text-right py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Prix HT</th>
+              <th className="text-right py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">TVA</th>
+              <th className="text-right py-2 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total TTC</th>
             </tr>
           </thead>
           <tbody>
             {(sale.items || []).map((item: any, i: number) => (
               <tr key={i} className="border-b border-gray-100 dark:border-gray-700">
-                <td className="py-3 text-sm text-gray-900 dark:text-white">
+                <td className="py-3 text-sm text-gray-900 dark:text-foreground dark:text-white">
                   {item.description}
                   {item.animal && (
                     <span className="text-xs text-gray-400 ml-2">({item.animal.identifier})</span>
                   )}
                 </td>
-                <td className="py-3 text-sm text-center text-gray-600 dark:text-gray-400">{item.quantity}</td>
-                <td className="py-3 text-sm text-right text-gray-600 dark:text-gray-400">
+                <td className="py-3 text-sm text-center text-gray-600 dark:text-gray-400 dark:text-gray-400">{item.quantity}</td>
+                <td className="py-3 text-sm text-right text-gray-600 dark:text-gray-400 dark:text-gray-400">
                   {item.unitPrice.toFixed(2)} €
                 </td>
-                <td className="py-3 text-sm text-right text-gray-600 dark:text-gray-400">
+                <td className="py-3 text-sm text-right text-gray-600 dark:text-gray-400 dark:text-gray-400">
                   {item.taxRate}%
                 </td>
-                <td className="py-3 text-sm text-right font-medium text-gray-900 dark:text-white">
+                <td className="py-3 text-sm text-right font-medium text-gray-900 dark:text-foreground dark:text-white">
                   {item.total.toFixed(2)} €
                 </td>
               </tr>
@@ -225,7 +225,7 @@ export default function SaleDetailPage() {
               <span>TVA</span>
               <span>{sale.taxAmount.toFixed(2)} €</span>
             </div>
-            <div className="flex justify-between font-bold text-lg text-gray-900 dark:text-white border-t border-gray-200 dark:border-gray-600 pt-2">
+            <div className="flex justify-between font-bold text-lg text-gray-900 dark:text-foreground dark:text-white border-t border-gray-200 dark:border-border dark:border-gray-600 pt-2">
               <span>Total TTC</span>
               <span>{sale.total.toFixed(2)} €</span>
             </div>

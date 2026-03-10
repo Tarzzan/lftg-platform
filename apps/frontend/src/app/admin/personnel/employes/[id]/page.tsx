@@ -107,7 +107,7 @@ export default function EmployeeDetailPage() {
   if (error || !employee) {
     return (
       <div className="p-6">
-        <Link href="/admin/personnel/employes" className="text-gray-400 hover:text-gray-600 text-sm mb-4 inline-block">
+        <Link href="/admin/personnel/employes" className="text-gray-400 hover:text-gray-600 dark:text-gray-400 text-sm mb-4 inline-block">
           ← Retour aux employés
         </Link>
         <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
@@ -132,7 +132,7 @@ export default function EmployeeDetailPage() {
       <div className="flex items-center gap-2 text-sm text-gray-500">
         <Link href="/admin/personnel/employes" className="hover:text-gray-700">Employés</Link>
         <span>/</span>
-        <span className="text-gray-900 font-medium">{fullName}</span>
+        <span className="text-gray-900 dark:text-foreground font-medium">{fullName}</span>
       </div>
 
       {saveSuccess && (
@@ -142,7 +142,7 @@ export default function EmployeeDetailPage() {
       )}
 
       {/* Carte employé */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+      <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border shadow-sm p-6">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-blue-700 font-bold text-xl">
@@ -163,7 +163,7 @@ export default function EmployeeDetailPage() {
         </div>
 
         {editing && (
-          <div className="mt-6 pt-6 border-t border-gray-200 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-border grid grid-cols-1 md:grid-cols-2 gap-4">
             {saveError && (
               <div className="col-span-2 bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm">
                 {saveError}
@@ -178,7 +178,7 @@ export default function EmployeeDetailPage() {
               { key: 'department', label: 'Département' },
             ].map(({ key, label }) => (
               <div key={key}>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{label}</label>
                 <input
                   value={(editData as any)[key] ?? ''}
                   onChange={(e) => setEditData((d) => ({ ...d, [key]: e.target.value }))}
@@ -200,13 +200,13 @@ export default function EmployeeDetailPage() {
       </div>
 
       {/* Onglets */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="flex border-b border-gray-200">
+      <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border shadow-sm overflow-hidden">
+        <div className="flex border-b border-gray-200 dark:border-border">
           {TABS.map((tab, i) => (
             <button
               key={tab}
               onClick={() => setActiveTab(i)}
-              className={`px-6 py-3 text-sm font-medium ${activeTab === i ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+              className={`px-6 py-3 text-sm font-medium ${activeTab === i ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}
             >
               {tab}
             </button>
@@ -276,7 +276,7 @@ export default function EmployeeDetailPage() {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
-                  <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
+                  <thead className="bg-gray-50 dark:bg-muted/20 text-xs text-gray-500 dark:text-gray-400 uppercase">
                     <tr>
                       {['Type', 'Début', 'Fin', 'Statut'].map((h) => (
                         <th key={h} className="px-4 py-3 text-left">{h}</th>
@@ -286,7 +286,7 @@ export default function EmployeeDetailPage() {
                   <tbody className="divide-y divide-gray-100">
                     {employee.leaves.map((leave) => (
                       <tr key={leave.id} className="hover:bg-gray-50">
-                        <td className="px-4 py-3 font-medium text-gray-900 capitalize">{leave.type}</td>
+                        <td className="px-4 py-3 font-medium text-gray-900 dark:text-foreground capitalize">{leave.type}</td>
                         <td className="px-4 py-3 text-gray-600">
                           {new Date(leave.startDate).toLocaleDateString('fr-FR')}
                         </td>

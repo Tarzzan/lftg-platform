@@ -52,7 +52,7 @@ export default function DatabasePage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Base de données Prisma</h1>
-          <p className="text-gray-500 mt-1">PostgreSQL 15 — Schéma complet avec {DB_MODELS.length}+ modèles</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">PostgreSQL 15 — Schéma complet avec {DB_MODELS.length}+ modèles</p>
         </div>
         <div className="flex gap-2">
           <a
@@ -70,7 +70,7 @@ export default function DatabasePage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {loading ? (
           Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm animate-pulse">
+            <div key={i} className="bg-white dark:bg-card rounded-xl p-4 border border-gray-200 dark:border-border shadow-sm animate-pulse">
               <div className="h-3 bg-gray-200 rounded w-2/3 mb-2" />
               <div className="h-7 bg-gray-200 rounded w-1/2" />
             </div>
@@ -86,7 +86,7 @@ export default function DatabasePage() {
             { label: 'Articles en stock', value: stats?.stock?.total ?? 0, color: 'text-purple-600' },
             { label: 'Migrations', value: MIGRATIONS.length, color: 'text-orange-600' },
           ].map((m) => (
-            <div key={m.label} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+            <div key={m.label} className="bg-white dark:bg-card rounded-xl p-4 border border-gray-200 dark:border-border shadow-sm">
               <p className="text-sm text-gray-500">{m.label}</p>
               <p className={`text-2xl font-bold mt-1 ${m.color}`}>{m.value}</p>
             </div>
@@ -104,7 +104,7 @@ export default function DatabasePage() {
             { label: 'Employés', value: stats.hr?.employees ?? 0, icon: '👥' },
             { label: 'Formations', value: stats.formation?.courses ?? 0, icon: '🎓' },
           ].map((s) => (
-            <div key={s.label} className="bg-white rounded-xl p-3 border border-gray-200 text-center">
+            <div key={s.label} className="bg-white dark:bg-card rounded-xl p-3 border border-gray-200 dark:border-border text-center">
               <div className="text-2xl mb-1">{s.icon}</div>
               <p className="text-xl font-bold text-gray-900">{s.value}</p>
               <p className="text-xs text-gray-500">{s.label}</p>
@@ -114,13 +114,13 @@ export default function DatabasePage() {
       )}
 
       {/* Onglets */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="flex border-b border-gray-200">
+      <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border shadow-sm overflow-hidden">
+        <div className="flex border-b border-gray-200 dark:border-border">
           {(['tables', 'seed', 'migrations'] as const).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`px-6 py-3 text-sm font-medium ${tab === t ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+              className={`px-6 py-3 text-sm font-medium ${tab === t ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}
             >
               {t === 'tables' ? 'Modèles Prisma' : t === 'seed' ? 'Seed de démo' : 'Migrations'}
             </button>
@@ -130,7 +130,7 @@ export default function DatabasePage() {
         {tab === 'tables' && (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
+              <thead className="bg-gray-50 dark:bg-muted/20 text-xs text-gray-500 dark:text-gray-400 uppercase">
                 <tr>
                   {['Modèle Prisma', 'Statut'].map((h) => (
                     <th key={h} className="px-4 py-3 text-left">{h}</th>
@@ -171,7 +171,7 @@ export default function DatabasePage() {
               ].map((log, i) => (
                 <div key={i} className="flex justify-between">
                   <span className="text-gray-300">{log.step}</span>
-                  <div className="flex gap-4 text-gray-500 text-xs">
+                  <div className="flex gap-4 text-gray-500 dark:text-gray-400 text-xs">
                     <span>{log.count} enr.</span>
                     <span>{log.time}</span>
                   </div>
@@ -188,7 +188,7 @@ export default function DatabasePage() {
           <div className="p-6">
             <div className="space-y-2">
               {MIGRATIONS.map((m) => (
-                <div key={m.name} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <div key={m.name} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-muted/20 rounded-lg">
                   <span className="text-green-500 font-bold">✓</span>
                   <span className="font-mono text-sm text-gray-700">{m.name}</span>
                   <span className="ml-auto text-xs text-gray-400">{m.date}</span>

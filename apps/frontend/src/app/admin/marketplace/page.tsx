@@ -56,7 +56,7 @@ export default function MarketplacePage() {
       <div className="flex justify-between items-start">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Marketplace Éleveurs</h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">
             Plateforme d&apos;échange entre éleveurs agréés — Animaux CITES uniquement
           </p>
         </div>
@@ -73,7 +73,7 @@ export default function MarketplacePage() {
           { label: 'Annonces actives', value: '0', color: 'text-purple-600' },
           { label: 'Messages non lus', value: '0', color: 'text-orange-600' },
         ].map((kpi) => (
-          <div key={kpi.label} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+          <div key={kpi.label} className="bg-white dark:bg-card rounded-xl p-4 border border-gray-200 dark:border-border shadow-sm">
             <p className="text-sm text-gray-500">{kpi.label}</p>
             <p className={`text-2xl font-bold mt-1 ${kpi.color}`}>{kpi.value}</p>
           </div>
@@ -81,7 +81,7 @@ export default function MarketplacePage() {
       </div>
 
       {/* Onglets */}
-      <div className="flex border-b border-gray-200 gap-1">
+      <div className="flex border-b border-gray-200 dark:border-border gap-1">
         {[
           { key: 'listings', label: 'Annonces' },
           { key: 'messages', label: 'Messages' },
@@ -90,7 +90,7 @@ export default function MarketplacePage() {
           <button
             key={key}
             onClick={() => setActiveTab(key as any)}
-            className={`px-5 py-2.5 text-sm font-medium rounded-t-lg ${activeTab === key ? 'bg-white border border-b-white border-gray-200 text-green-600' : 'text-gray-500 hover:text-gray-700'}`}
+            className={`px-5 py-2.5 text-sm font-medium rounded-t-lg ${activeTab === key ? 'bg-white dark:bg-card border border-b-white border-gray-200 dark:border-border text-green-600' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}
           >
             {label}
           </button>
@@ -112,7 +112,7 @@ export default function MarketplacePage() {
               <button
                 key={f.key}
                 onClick={() => setFilterType(f.key)}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${filterType === f.key ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${filterType === f.key ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-600 dark:text-gray-400 hover:bg-gray-200'}`}
               >
                 {f.label}
               </button>
@@ -122,7 +122,7 @@ export default function MarketplacePage() {
           {loading ? (
             <div className="grid grid-cols-2 gap-4">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="bg-white rounded-xl border-2 border-gray-200 p-4 animate-pulse">
+                <div key={i} className="bg-white dark:bg-card rounded-xl border-2 border-gray-200 dark:border-border p-4 animate-pulse">
                   <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />
                   <div className="h-3 bg-gray-200 rounded w-1/2" />
                 </div>
@@ -138,24 +138,24 @@ export default function MarketplacePage() {
           ) : (
             <div className="grid grid-cols-2 gap-4">
               {filteredAnimals.map((animal) => (
-                <div key={animal.id} className="bg-white rounded-xl border-2 border-gray-200 hover:border-green-300 p-4 transition-all">
+                <div key={animal.id} className="bg-white dark:bg-card rounded-xl border-2 border-gray-200 dark:border-border hover:border-green-300 p-4 transition-all">
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex items-center gap-3">
                       <span className="text-3xl">🦜</span>
                       <div>
                         <h3 className="font-semibold text-gray-900">{animal.name}</h3>
-                        <p className="text-xs text-gray-500 italic">
+                        <p className="text-xs text-gray-500 dark:text-gray-400 italic">
                           {animal.species?.scientificName ?? 'Espèce inconnue'}
                         </p>
                       </div>
                     </div>
                     {animal.species?.citesCategory && (
-                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
+                      <span className="text-xs bg-gray-100 text-gray-600 dark:text-gray-400 px-2 py-0.5 rounded">
                         CITES {animal.species.citesCategory}
                       </span>
                     )}
                   </div>
-                  <div className="flex justify-between items-center text-xs text-gray-500 mb-3">
+                  <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400 mb-3">
                     <span>📍 {animal.enclosure?.name ?? 'Enclos non assigné'}</span>
                     <span>{animal.sex === 'M' ? '♂ Mâle' : animal.sex === 'F' ? '♀ Femelle' : '— Sexe inconnu'}</span>
                   </div>
@@ -176,7 +176,7 @@ export default function MarketplacePage() {
 
       {/* Messages Tab */}
       {activeTab === 'messages' && (
-        <div className="bg-white rounded-xl border border-gray-200 p-8 text-center text-gray-400">
+        <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-8 text-center text-gray-400">
           <p className="text-4xl mb-3">💬</p>
           <p className="font-medium text-gray-600">Aucun message</p>
           <p className="text-sm mt-1">Vos échanges avec d&apos;autres éleveurs apparaîtront ici</p>
@@ -187,7 +187,7 @@ export default function MarketplacePage() {
       {activeTab === 'my-listings' && (
         <div className="text-center py-12 text-gray-400">
           <div className="text-5xl mb-4">📌</div>
-          <h3 className="text-lg font-medium text-gray-600 mb-2">Aucune annonce publiée</h3>
+          <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400 mb-2">Aucune annonce publiée</h3>
           <p className="text-sm mb-4">Publiez votre première annonce pour vendre ou échanger des animaux</p>
           <button className="bg-green-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-green-700">
             + Publier une annonce

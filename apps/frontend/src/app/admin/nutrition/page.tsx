@@ -66,36 +66,36 @@ export default function NutritionPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">🌿 Nutrition & Alimentation</h1>
-          <p className="text-gray-500 text-sm mt-1">Plans nutritionnels et suivi des repas</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Plans nutritionnels et suivi des repas</p>
         </div>
       </div>
 
       {/* Stats */}
       {stats && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl border border-gray-200 p-4">
+          <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-4">
             <div className="text-2xl font-bold text-forest-700">{stats.totalPlans}</div>
-            <div className="text-sm text-gray-500 mt-1">Plans nutritionnels</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">Plans nutritionnels</div>
           </div>
-          <div className="bg-white rounded-xl border border-gray-200 p-4">
+          <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-4">
             <div className="text-2xl font-bold text-blue-700">{stats.speciesCovered}</div>
-            <div className="text-sm text-gray-500 mt-1">Espèces couvertes</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">Espèces couvertes</div>
           </div>
-          <div className="bg-white rounded-xl border border-gray-200 p-4">
+          <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-4">
             <div className="text-2xl font-bold text-amber-700">{stats.feedingsDone}/{stats.feedingsToday}</div>
-            <div className="text-sm text-gray-500 mt-1">Repas du jour</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">Repas du jour</div>
           </div>
-          <div className="bg-white rounded-xl border border-gray-200 p-4">
+          <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-4">
             <div className={`text-2xl font-bold ${stats.avgConsumptionRate >= 80 ? 'text-green-700' : 'text-red-700'}`}>
               {stats.avgConsumptionRate}%
             </div>
-            <div className="text-sm text-gray-500 mt-1">Taux de consommation</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">Taux de consommation</div>
           </div>
         </div>
       )}
 
       {/* Onglets */}
-      <div className="flex border-b border-gray-200">
+      <div className="flex border-b border-gray-200 dark:border-border">
         {[
           { key: 'schedule', label: '📋 Planning du jour' },
           { key: 'plans', label: '📖 Plans nutritionnels' },
@@ -107,7 +107,7 @@ export default function NutritionPage() {
             className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
               activeTab === tab.key
                 ? 'border-forest-600 text-forest-700'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700'
             }`}
           >
             {tab.label}
@@ -123,7 +123,7 @@ export default function NutritionPage() {
 
       {/* Planning du jour */}
       {!isLoading && activeTab === 'schedule' && (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border overflow-hidden">
           <div className="p-4 border-b border-gray-100">
             <h3 className="font-semibold text-gray-900">Planning des repas — {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</h3>
           </div>
@@ -145,7 +145,7 @@ export default function NutritionPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="font-medium text-sm text-gray-900">{item.mealName}</div>
-                    <div className="text-xs text-gray-500 mt-0.5">🦎 {item.speciesName}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">🦎 {item.speciesName}</div>
                     <div className="mt-2 flex flex-wrap gap-1">
                       {item.items.map((food, fi) => (
                         <span key={fi} className="text-xs bg-green-50 text-green-700 border border-green-200 rounded-full px-2 py-0.5">
@@ -170,7 +170,7 @@ export default function NutritionPage() {
       {!isLoading && activeTab === 'plans' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {plans.length === 0 ? (
-            <div className="col-span-2 text-center py-12 text-gray-400 bg-white rounded-xl border border-gray-200">
+            <div className="col-span-2 text-center py-12 text-gray-400 bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border">
               <div className="text-4xl mb-3">📖</div>
               <p>Aucun plan nutritionnel créé</p>
             </div>
@@ -178,14 +178,14 @@ export default function NutritionPage() {
             plans.map(plan => (
               <div
                 key={plan.id}
-                className="bg-white rounded-xl border border-gray-200 overflow-hidden cursor-pointer hover:border-forest-300 transition-colors"
+                className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border overflow-hidden cursor-pointer hover:border-forest-300 transition-colors"
                 onClick={() => setSelectedPlan(selectedPlan?.id === plan.id ? null : plan)}
               >
                 <div className="p-4">
                   <div className="flex items-start justify-between">
                     <div>
                       <h3 className="font-semibold text-gray-900">{plan.name}</h3>
-                      <p className="text-sm text-gray-500 mt-0.5">
+                      <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
                         🦎 {plan.species.name}
                         {plan.species.scientificName && (
                           <span className="italic ml-1">({plan.species.scientificName})</span>
@@ -206,12 +206,12 @@ export default function NutritionPage() {
 
                 {selectedPlan?.id === plan.id && (
                   <div className="border-t border-gray-100 p-4 bg-gray-50">
-                    <h4 className="text-sm font-semibold text-gray-700 mb-3">Détail des repas</h4>
+                    <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Détail des repas</h4>
                     <div className="space-y-3">
                       {plan.meals.map(meal => (
-                        <div key={meal.id} className="bg-white rounded-lg border border-gray-200 p-3">
+                        <div key={meal.id} className="bg-white dark:bg-card rounded-lg border border-gray-200 dark:border-border p-3">
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="text-xs font-bold text-gray-900 bg-gray-100 px-2 py-0.5 rounded">{meal.time}</span>
+                            <span className="text-xs font-bold text-gray-900 dark:text-foreground bg-gray-100 px-2 py-0.5 rounded">{meal.time}</span>
                             <span className="text-sm font-medium text-gray-800">{meal.name}</span>
                           </div>
                           <div className="space-y-1">
@@ -235,11 +235,11 @@ export default function NutritionPage() {
 
       {/* Statistiques */}
       {!isLoading && activeTab === 'stats' && stats && (
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h3 className="font-semibold text-gray-900 mb-6">Statistiques nutritionnelles</h3>
+        <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-6">
+          <h3 className="font-semibold text-gray-900 dark:text-foreground mb-6">Statistiques nutritionnelles</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h4 className="text-sm font-medium text-gray-700 mb-3">Repas du jour</h4>
+              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Repas du jour</h4>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Repas planifiés</span>
@@ -256,7 +256,7 @@ export default function NutritionPage() {
               </div>
               {stats.feedingsToday > 0 && (
                 <div className="mt-3">
-                  <div className="flex justify-between text-xs text-gray-500 mb-1">
+                  <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
                     <span>Progression</span>
                     <span>{Math.round((stats.feedingsDone / stats.feedingsToday) * 100)}%</span>
                   </div>
@@ -270,7 +270,7 @@ export default function NutritionPage() {
               )}
             </div>
             <div>
-              <h4 className="text-sm font-medium text-gray-700 mb-3">Plans nutritionnels</h4>
+              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Plans nutritionnels</h4>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Plans actifs</span>

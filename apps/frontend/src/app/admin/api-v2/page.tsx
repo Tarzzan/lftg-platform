@@ -52,11 +52,11 @@ export default function ApiV2Page() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground flex items-center gap-2">
             <Key className="w-7 h-7 text-indigo-600" />
             API v2 — Clés d'accès
           </h1>
-          <p className="text-gray-500 mt-1">Gestion des clés API pour l'accès programmatique</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Gestion des clés API pour l'accès programmatique</p>
         </div>
         <button onClick={() => setShowForm(true)} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
           <Plus className="w-4 h-4" />
@@ -71,7 +71,7 @@ export default function ApiV2Page() {
             <CheckCircle className="w-5 h-5 text-green-600" />
             <p className="font-medium text-green-900">Clé API créée — Copiez-la maintenant, elle ne sera plus visible</p>
           </div>
-          <div className="flex items-center gap-2 bg-white rounded-lg border border-green-200 px-3 py-2">
+          <div className="flex items-center gap-2 bg-white dark:bg-card rounded-lg border border-green-200 px-3 py-2">
             <code className="flex-1 text-sm font-mono text-gray-800 break-all">{newKey}</code>
             <button onClick={() => handleCopy(newKey, 'new')} className="flex-shrink-0 p-1.5 text-green-600 hover:bg-green-100 rounded">
               {copiedId === 'new' ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
@@ -83,19 +83,19 @@ export default function ApiV2Page() {
 
       {/* Formulaire création */}
       {showForm && (
-        <div className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-          <h3 className="font-semibold text-gray-900 mb-4">Nouvelle clé API</h3>
+        <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-5 shadow-sm">
+          <h3 className="font-semibold text-gray-900 dark:text-foreground mb-4">Nouvelle clé API</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nom de la clé</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom de la clé</label>
               <input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full border border-gray-200 dark:border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 placeholder="Ex: Application mobile, Intégration GBIF" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Expiration (jours)</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Expiration (jours)</label>
               <select value={form.expiresIn} onChange={e => setForm(f => ({ ...f, expiresIn: e.target.value }))}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                className="w-full border border-gray-200 dark:border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 <option value="30">30 jours</option>
                 <option value="90">90 jours</option>
                 <option value="365">1 an</option>
@@ -104,11 +104,11 @@ export default function ApiV2Page() {
             </div>
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Permissions (scopes)</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Permissions (scopes)</label>
             <div className="flex flex-wrap gap-2">
               {SCOPES.map(scope => (
                 <button key={scope} onClick={() => toggleScope(scope)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${form.scopes.includes(scope) ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-600 border-gray-200 hover:border-indigo-300'}`}>
+                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${form.scopes.includes(scope) ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-600 dark:text-gray-400 border-gray-200 dark:border-border hover:border-indigo-300'}`}>
                   {scope}
                 </button>
               ))}
@@ -119,7 +119,7 @@ export default function ApiV2Page() {
               className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 text-sm">
               {createMutation.isPending ? 'Génération...' : 'Générer la clé'}
             </button>
-            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm">Annuler</button>
+            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-100 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 text-sm">Annuler</button>
           </div>
         </div>
       )}
@@ -136,7 +136,7 @@ export default function ApiV2Page() {
       ) : (
         <div className="space-y-3">
           {keyList.map((k: any) => (
-            <div key={k.id} className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+            <div key={k.id} className="bg-white dark:bg-card rounded-xl border border-gray-100 p-4 shadow-sm">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="p-2 bg-indigo-50 rounded-lg flex-shrink-0">

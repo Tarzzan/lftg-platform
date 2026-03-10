@@ -23,7 +23,7 @@ const FILE_ICONS: Record<string, any> = {
 const FILE_COLORS: Record<string, string> = {
   PDF: 'text-red-500 bg-red-50', VIDEO: 'text-purple-500 bg-purple-50',
   ZIP: 'text-yellow-500 bg-yellow-50', HTML: 'text-blue-500 bg-blue-50',
-  PPT: 'text-orange-500 bg-orange-50', TEXT: 'text-gray-500 bg-gray-50', FILE: 'text-gray-500 bg-gray-50',
+  PPT: 'text-orange-500 bg-orange-50', TEXT: 'text-gray-500 dark:text-gray-400 bg-gray-50', FILE: 'text-gray-500 dark:text-gray-400 bg-gray-50',
 };
 
 function DocumentUploader({ courseId, lessonId, onSuccess }: { courseId?: string; lessonId?: string; onSuccess: () => void }) {
@@ -57,7 +57,7 @@ function DocumentUploader({ courseId, lessonId, onSuccess }: { courseId?: string
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
               displayMode === m.value
                 ? 'bg-forest-600 text-white border-forest-600'
-                : 'bg-white text-gray-600 border-gray-200 hover:border-forest-400'
+                : 'bg-white text-gray-600 dark:text-gray-400 border-gray-200 dark:border-border hover:border-forest-400'
             }`}
           >
             <m.icon className="w-3.5 h-3.5" />
@@ -71,7 +71,7 @@ function DocumentUploader({ courseId, lessonId, onSuccess }: { courseId?: string
         onDrop={(e) => { e.preventDefault(); setDragging(false); const f = e.dataTransfer.files[0]; if (f) handleFile(f); }}
         onClick={() => fileRef.current?.click()}
         className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
-          dragging ? 'border-forest-500 bg-forest-50' : 'border-gray-200 hover:border-forest-400 hover:bg-gray-50'
+          dragging ? 'border-forest-500 bg-forest-50' : 'border-gray-200 dark:border-border hover:border-forest-400 hover:bg-gray-50'
         }`}
       >
         <input ref={fileRef} type="file" className="hidden" accept=".pdf,.ppt,.pptx,.mp4,.mkv,.avi,.zip,.html,.txt,.md" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
@@ -101,7 +101,7 @@ function DocumentCard({ doc, onDelete, onUpdateMode }: { doc: any; onDelete: () 
   const handleSave = () => { onUpdateMode(mode); setEditMode(false); };
 
   return (
-    <div className="flex items-center gap-3 p-3 bg-white rounded-lg border border-gray-100 hover:border-gray-200 transition-all group">
+    <div className="flex items-center gap-3 p-3 bg-white dark:bg-card rounded-lg border border-gray-100 hover:border-gray-200 dark:border-border transition-all group">
       <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${colorClass}`}>
         <Icon className="w-4 h-4" />
       </div>
@@ -119,12 +119,12 @@ function DocumentCard({ doc, onDelete, onUpdateMode }: { doc: any; onDelete: () 
             {DISPLAY_MODES.map((m) => <option key={m.value} value={m.value}>{m.label}</option>)}
           </select>
           <button onClick={handleSave} className="p-1 text-green-600 hover:bg-green-50 rounded"><Check className="w-3.5 h-3.5" /></button>
-          <button onClick={() => setEditMode(false)} className="p-1 text-gray-400 hover:bg-gray-50 rounded"><X className="w-3.5 h-3.5" /></button>
+          <button onClick={() => setEditMode(false)} className="p-1 text-gray-400 hover:bg-gray-50 dark:bg-muted/20 rounded"><X className="w-3.5 h-3.5" /></button>
         </div>
       ) : (
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <span className="text-xs text-gray-400 mr-1">{DISPLAY_MODES.find((m) => m.value === doc.displayMode)?.label || 'Embarqué'}</span>
-          <button onClick={() => setEditMode(true)} className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded"><Edit2 className="w-3.5 h-3.5" /></button>
+          <button onClick={() => setEditMode(true)} className="p-1 text-gray-400 hover:text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:bg-muted/20 rounded"><Edit2 className="w-3.5 h-3.5" /></button>
           <button onClick={onDelete} className="p-1 text-red-400 hover:text-red-600 hover:bg-red-50 rounded"><Trash2 className="w-3.5 h-3.5" /></button>
         </div>
       )}
@@ -163,16 +163,16 @@ function LessonEditor({ lesson, onClose }: { lesson: any; onClose: () => void })
       </div>
       <div className="grid grid-cols-3 gap-3">
         <div className="col-span-2">
-          <label className="text-xs font-medium text-gray-600 mb-1 block">Titre</label>
+          <label className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1 block">Titre</label>
           <input value={title} onChange={(e) => setTitle(e.target.value)} className="w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-forest-500 focus:border-transparent" />
         </div>
         <div>
-          <label className="text-xs font-medium text-gray-600 mb-1 block">Durée (min)</label>
+          <label className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1 block">Durée (min)</label>
           <input type="number" value={duration} onChange={(e) => setDuration(e.target.value)} className="w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-forest-500 focus:border-transparent" />
         </div>
       </div>
       <div>
-        <label className="text-xs font-medium text-gray-600 mb-1 block">Contenu pédagogique</label>
+        <label className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-1 block">Contenu pédagogique</label>
         <textarea value={content} onChange={(e) => setContent(e.target.value)} rows={4} className="w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-forest-500 focus:border-transparent resize-none" />
       </div>
 
@@ -205,7 +205,7 @@ function LessonEditor({ lesson, onClose }: { lesson: any; onClose: () => void })
       </div>
 
       <div className="flex justify-end gap-2">
-        <button onClick={onClose} className="px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-lg">Annuler</button>
+        <button onClick={onClose} className="px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 rounded-lg">Annuler</button>
         <button onClick={() => updateMutation.mutate()} disabled={updateMutation.isPending} className="flex items-center gap-1.5 px-4 py-1.5 text-sm bg-forest-600 text-white rounded-lg hover:bg-forest-700 disabled:opacity-50">
           <Save className="w-3.5 h-3.5" /> Enregistrer
         </button>
@@ -244,7 +244,7 @@ function ChapterSection({ chapter, courseId }: { chapter: any; courseId: string 
         {expanded ? <ChevronDown className="w-4 h-4 text-forest-600" /> : <ChevronRight className="w-4 h-4 text-gray-400" />}
         <div className="flex-1">
           <h3 className="font-semibold text-gray-800">{chapter.title}</h3>
-          <p className="text-xs text-gray-500 mt-0.5">{chapter.lessons?.length || 0} leçon{chapter.lessons?.length !== 1 ? 's' : ''}</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{chapter.lessons?.length || 0} leçon{chapter.lessons?.length !== 1 ? 's' : ''}</p>
         </div>
         <button onClick={(e) => { e.stopPropagation(); if (confirm('Supprimer ce chapitre et toutes ses leçons ?')) deleteChapterMutation.mutate(); }} className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
           <Trash2 className="w-4 h-4" />
@@ -258,7 +258,7 @@ function ChapterSection({ chapter, courseId }: { chapter: any; courseId: string 
               {editingLesson === lesson.id ? (
                 <LessonEditor lesson={lesson} onClose={() => setEditingLesson(null)} />
               ) : (
-                <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 group transition-colors">
+                <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 dark:bg-muted/20 group transition-colors">
                   <GripVertical className="w-4 h-4 text-gray-200" />
                   <div className="w-6 h-6 rounded-full bg-forest-100 text-forest-700 text-xs font-bold flex items-center justify-center flex-shrink-0">{lesson.order}</div>
                   <div className="flex-1 min-w-0">
@@ -305,7 +305,7 @@ function ChapterSection({ chapter, courseId }: { chapter: any; courseId: string 
               <button onClick={() => { if (newLessonTitle.trim()) addLessonMutation.mutate(); }} disabled={!newLessonTitle.trim()} className="px-3 py-2 text-sm bg-forest-600 text-white rounded-lg hover:bg-forest-700 disabled:opacity-50">
                 <Check className="w-4 h-4" />
               </button>
-              <button onClick={() => setAddingLesson(false)} className="px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 rounded-lg">
+              <button onClick={() => setAddingLesson(false)} className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400 hover:bg-gray-100 rounded-lg">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -366,7 +366,7 @@ export default function CourseDetailPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <button onClick={() => router.back()} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
+        <button onClick={() => router.back()} className="p-2 text-gray-400 hover:text-gray-600 dark:text-gray-400 hover:bg-gray-100 rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div className="flex-1">
@@ -387,7 +387,7 @@ export default function CourseDetailPage() {
             onClick={() => togglePublishMutation.mutate()}
             className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
               course.isPublished
-                ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-gray-100 text-gray-700 dark:text-gray-300 hover:bg-gray-200'
                 : 'bg-forest-600 text-white hover:bg-forest-700'
             }`}
           >
@@ -422,7 +422,7 @@ export default function CourseDetailPage() {
                 <button onClick={() => { if (newChapterTitle.trim()) addChapterMutation.mutate(); }} disabled={!newChapterTitle.trim()} className="px-4 py-2 text-sm bg-forest-600 text-white rounded-lg hover:bg-forest-700 disabled:opacity-50">
                   Ajouter
                 </button>
-                <button onClick={() => setAddingChapter(false)} className="px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 rounded-lg">
+                <button onClick={() => setAddingChapter(false)} className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400 hover:bg-gray-100 rounded-lg">
                   <X className="w-4 h-4" />
                 </button>
               </div>

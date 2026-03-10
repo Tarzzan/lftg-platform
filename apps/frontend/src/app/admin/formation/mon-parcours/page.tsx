@@ -194,7 +194,7 @@ function StatBubble({ icon: Icon, value, label, color }: { icon: any; value: str
         <Icon className="w-6 h-6" style={{ color }} />
       </div>
       <span className="text-2xl font-black" style={{ color }}>{value}</span>
-      <span className="text-[10px] text-gray-500 text-center font-medium">{label}</span>
+      <span className="text-[10px] text-gray-500 dark:text-gray-400 text-center font-medium">{label}</span>
     </div>
   );
 }

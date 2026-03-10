@@ -83,14 +83,14 @@ function SatisfactionForm({ cohortId, enrollmentId, onSuccess }: { cohortId: str
           <Star className="w-8 h-8 text-amber-500" />
         </div>
         <h2 className="text-xl font-bold text-gray-800">Questionnaire de satisfaction</h2>
-        <p className="text-sm text-gray-500 mt-2 max-w-md mx-auto">
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-md mx-auto">
           Votre avis est précieux pour améliorer nos formations. Ce questionnaire est anonyme et prend moins de 3 minutes.
         </p>
       </div>
 
       {/* Notes par critère */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-5">
-        <h3 className="font-semibold text-gray-700 text-sm uppercase tracking-wide">Évaluations</h3>
+      <div className="bg-white dark:bg-card rounded-2xl border border-gray-100 p-6 space-y-5">
+        <h3 className="font-semibold text-gray-700 dark:text-gray-300 text-sm uppercase tracking-wide">Évaluations</h3>
         {ratingFields.map(({ key, label, desc }) => (
           <div key={key} className="flex items-center justify-between gap-4">
             <div className="flex-1">
@@ -108,8 +108,8 @@ function SatisfactionForm({ cohortId, enrollmentId, onSuccess }: { cohortId: str
       </div>
 
       {/* Recommandation */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-6">
-        <h3 className="font-semibold text-gray-700 text-sm uppercase tracking-wide mb-4">
+      <div className="bg-white dark:bg-card rounded-2xl border border-gray-100 p-6">
+        <h3 className="font-semibold text-gray-700 dark:text-gray-300 text-sm uppercase tracking-wide mb-4">
           Recommanderiez-vous cette formation ?
         </h3>
         <div className="flex items-center gap-3">
@@ -134,10 +134,10 @@ function SatisfactionForm({ cohortId, enrollmentId, onSuccess }: { cohortId: str
       </div>
 
       {/* Commentaires */}
-      <div className="bg-white rounded-2xl border border-gray-100 p-6 space-y-4">
-        <h3 className="font-semibold text-gray-700 text-sm uppercase tracking-wide">Commentaires libres</h3>
+      <div className="bg-white dark:bg-card rounded-2xl border border-gray-100 p-6 space-y-4">
+        <h3 className="font-semibold text-gray-700 dark:text-gray-300 text-sm uppercase tracking-wide">Commentaires libres</h3>
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-2">
+          <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
             Ce que vous avez apprécié
           </label>
           <textarea
@@ -145,11 +145,11 @@ function SatisfactionForm({ cohortId, enrollmentId, onSuccess }: { cohortId: str
             onChange={(e) => setComment(e.target.value)}
             placeholder="Points forts de la formation..."
             rows={3}
-            className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-forest-300 resize-none"
+            className="w-full px-3 py-2.5 text-sm border border-gray-200 dark:border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-forest-300 resize-none"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-2">
+          <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
             Axes d'amélioration
           </label>
           <textarea
@@ -157,7 +157,7 @@ function SatisfactionForm({ cohortId, enrollmentId, onSuccess }: { cohortId: str
             onChange={(e) => setImprovements(e.target.value)}
             placeholder="Suggestions pour améliorer la formation..."
             rows={3}
-            className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-forest-300 resize-none"
+            className="w-full px-3 py-2.5 text-sm border border-gray-200 dark:border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-forest-300 resize-none"
           />
         </div>
       </div>
@@ -191,7 +191,7 @@ function FeedbackResults({ feedbacks }: { feedbacks: any[] }) {
   if (feedbacks.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-16 text-center">
-        <div className="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center mb-4">
+        <div className="w-16 h-16 rounded-2xl bg-gray-50 dark:bg-muted/20 flex items-center justify-center mb-4">
           <MessageSquare className="w-8 h-8 text-gray-300" />
         </div>
         <p className="font-medium text-gray-500">Aucune évaluation reçue</p>
@@ -224,9 +224,9 @@ function FeedbackResults({ feedbacks }: { feedbacks: any[] }) {
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         {metrics.map(({ label, key, icon: Icon }) => (
-          <div key={key} className="bg-white rounded-xl border border-gray-100 p-4 text-center">
+          <div key={key} className="bg-white dark:bg-card rounded-xl border border-gray-100 p-4 text-center">
             <p className="text-2xl font-bold text-gray-800">{avg(key)}</p>
-            <p className="text-xs text-gray-500 mt-1">{label}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{label}</p>
             <div className="flex justify-center mt-2">
               <StarRating value={Math.round(parseFloat(avg(key)) || 0)} readonly />
             </div>
@@ -235,8 +235,8 @@ function FeedbackResults({ feedbacks }: { feedbacks: any[] }) {
       </div>
 
       {/* Recommandation */}
-      <div className="bg-white rounded-xl border border-gray-100 p-5">
-        <h3 className="font-semibold text-gray-700 mb-4 flex items-center gap-2">
+      <div className="bg-white dark:bg-card rounded-xl border border-gray-100 p-5">
+        <h3 className="font-semibold text-gray-700 dark:text-gray-300 mb-4 flex items-center gap-2">
           <ThumbsUp className="w-4 h-4 text-green-600" /> Recommandation
         </h3>
         <div className="flex items-center gap-4">
@@ -245,7 +245,7 @@ function FeedbackResults({ feedbacks }: { feedbacks: any[] }) {
             <div className="bg-amber-400 h-full transition-all" style={{ width: `${(recommend.maybe / feedbacks.length) * 100}%` }} />
             <div className="bg-red-400 h-full transition-all" style={{ width: `${(recommend.no / feedbacks.length) * 100}%` }} />
           </div>
-          <div className="flex items-center gap-3 text-xs text-gray-500 flex-shrink-0">
+          <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">
             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-green-500 inline-block" />{recommend.yes} oui</span>
             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-400 inline-block" />{recommend.maybe} peut-être</span>
             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-red-400 inline-block" />{recommend.no} non</span>
@@ -255,11 +255,11 @@ function FeedbackResults({ feedbacks }: { feedbacks: any[] }) {
 
       {/* Commentaires */}
       <div className="space-y-3">
-        <h3 className="font-semibold text-gray-700 flex items-center gap-2">
+        <h3 className="font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
           <MessageSquare className="w-4 h-4 text-gray-500" /> Commentaires ({feedbacks.filter(f => f.comment).length})
         </h3>
         {feedbacks.filter(f => f.comment).map((f, i) => (
-          <div key={i} className="bg-white rounded-xl border border-gray-100 p-4">
+          <div key={i} className="bg-white dark:bg-card rounded-xl border border-gray-100 p-4">
             <div className="flex items-center gap-2 mb-2">
               <StarRating value={f.overallRating} readonly />
               <span className="text-xs text-gray-400">{new Date(f.createdAt).toLocaleDateString('fr-FR')}</span>
@@ -308,7 +308,7 @@ export default function SatisfactionPage() {
           <CheckCircle className="w-10 h-10 text-green-500" />
         </div>
         <h2 className="text-2xl font-bold text-gray-800 mb-2">Merci pour votre retour !</h2>
-        <p className="text-gray-500 max-w-md">
+        <p className="text-gray-500 dark:text-gray-400 max-w-md">
           Votre évaluation a bien été enregistrée. Elle contribue à améliorer la qualité de nos formations.
         </p>
       </div>
@@ -318,20 +318,20 @@ export default function SatisfactionPage() {
   return (
     <div className="p-6 space-y-6 max-w-4xl mx-auto">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground flex items-center gap-2">
           <Star className="w-6 h-6 text-amber-500" />
           Satisfaction & Évaluations
         </h1>
-        <p className="text-sm text-gray-500 mt-1">Questionnaires de satisfaction — Indicateur 30 Qualiopi</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Questionnaires de satisfaction — Indicateur 30 Qualiopi</p>
       </div>
 
       {/* Sélecteur de cohorte */}
-      <div className="bg-white rounded-xl border border-gray-100 p-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Sélectionner une cohorte</label>
+      <div className="bg-white dark:bg-card rounded-xl border border-gray-100 p-4">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sélectionner une cohorte</label>
         <select
           value={selectedCohort}
           onChange={(e) => setSelectedCohort(e.target.value)}
-          className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-forest-300"
+          className="w-full px-3 py-2.5 text-sm border border-gray-200 dark:border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-forest-300"
         >
           <option value="">— Choisir une cohorte —</option>
           {cohorts.map((c: any) => (

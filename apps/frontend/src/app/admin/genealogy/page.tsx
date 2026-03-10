@@ -78,7 +78,7 @@ export default function GenealogyPage() {
       <div className="flex justify-between items-start mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Généalogie Avancée</h1>
-          <p className="text-gray-500 text-sm mt-1">Arbre généalogique, calcul de consanguinité et gestion des relations parentales</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Arbre généalogique, calcul de consanguinité et gestion des relations parentales</p>
         </div>
         <div className="flex items-center gap-3">
           <span className="text-sm text-gray-500">{animals.length} animaux · {animalsWithGenealogy.length} avec généalogie</span>
@@ -86,7 +86,7 @@ export default function GenealogyPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-6 border-b border-gray-200">
+      <div className="flex gap-2 mb-6 border-b border-gray-200 dark:border-border">
         {[
           { key: 'list', label: '📋 Liste des animaux' },
           { key: 'tree', label: '🌳 Arbre généalogique' },
@@ -98,7 +98,7 @@ export default function GenealogyPage() {
             className={`px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-colors ${
               activeTab === tab.key
                 ? 'border-green-600 text-green-700 bg-green-50'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
+                : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700'
             }`}
           >
             {tab.label}
@@ -114,18 +114,18 @@ export default function GenealogyPage() {
       ) : (
         <>
           {activeTab === 'list' && (
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="text-left py-3 px-4 text-gray-600 font-medium">Identifiant</th>
-                    <th className="text-left py-3 px-4 text-gray-600 font-medium">Nom</th>
-                    <th className="text-left py-3 px-4 text-gray-600 font-medium">Espèce</th>
-                    <th className="text-left py-3 px-4 text-gray-600 font-medium">Sexe</th>
-                    <th className="text-left py-3 px-4 text-gray-600 font-medium">Naissance</th>
-                    <th className="text-left py-3 px-4 text-gray-600 font-medium">Consanguinité</th>
-                    <th className="text-left py-3 px-4 text-gray-600 font-medium">Généalogie</th>
-                    <th className="text-left py-3 px-4 text-gray-600 font-medium">Actions</th>
+                  <tr className="bg-gray-50 dark:bg-muted/20 border-b border-gray-200 dark:border-border">
+                    <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Identifiant</th>
+                    <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Nom</th>
+                    <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Espèce</th>
+                    <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Sexe</th>
+                    <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Naissance</th>
+                    <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Consanguinité</th>
+                    <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Généalogie</th>
+                    <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -149,7 +149,7 @@ export default function GenealogyPage() {
                         {animal.hasGenealogy ? (
                           <span className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded font-medium">Renseignée</span>
                         ) : (
-                          <span className="bg-gray-100 text-gray-500 text-xs px-2 py-0.5 rounded">Non renseignée</span>
+                          <span className="bg-gray-100 text-gray-500 dark:text-gray-400 text-xs px-2 py-0.5 rounded">Non renseignée</span>
                         )}
                       </td>
                       <td className="py-3 px-4">
@@ -186,7 +186,7 @@ export default function GenealogyPage() {
               </div>
 
               {!selectedAnimalId ? (
-                <div className="bg-gray-50 rounded-xl p-12 text-center">
+                <div className="bg-gray-50 dark:bg-muted/20 rounded-xl p-12 text-center">
                   <p className="text-4xl mb-3">🌳</p>
                   <p className="text-gray-500">Sélectionnez un animal pour afficher son arbre généalogique</p>
                 </div>
@@ -195,13 +195,13 @@ export default function GenealogyPage() {
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600" />
                 </div>
               ) : treeData ? (
-                <div className="bg-white rounded-xl border border-gray-200 p-8 overflow-x-auto">
+                <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-8 overflow-x-auto">
                   <div className="flex justify-center min-w-max">
                     <TreeNode node={treeData} />
                   </div>
                 </div>
               ) : (
-                <div className="bg-gray-50 rounded-xl p-12 text-center">
+                <div className="bg-gray-50 dark:bg-muted/20 rounded-xl p-12 text-center">
                   <p className="text-gray-500">Aucune donnée généalogique disponible pour cet animal.</p>
                 </div>
               )}
@@ -209,14 +209,14 @@ export default function GenealogyPage() {
           )}
 
           {activeTab === 'inbreeding' && (
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="text-left py-3 px-4 text-gray-600 font-medium">Animal</th>
-                    <th className="text-left py-3 px-4 text-gray-600 font-medium">Espèce</th>
-                    <th className="text-left py-3 px-4 text-gray-600 font-medium">Coefficient F</th>
-                    <th className="text-left py-3 px-4 text-gray-600 font-medium">Niveau</th>
+                  <tr className="bg-gray-50 dark:bg-muted/20 border-b border-gray-200 dark:border-border">
+                    <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Animal</th>
+                    <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Espèce</th>
+                    <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Coefficient F</th>
+                    <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Niveau</th>
                   </tr>
                 </thead>
                 <tbody>

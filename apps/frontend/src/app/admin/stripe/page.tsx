@@ -38,20 +38,20 @@ export default function StripePage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground flex items-center gap-2">
             <CreditCard className="w-7 h-7 text-indigo-600" />
             Paiements Stripe
           </h1>
-          <p className="text-gray-500 mt-1">Tableau de bord des paiements et transactions</p>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Tableau de bord des paiements et transactions</p>
         </div>
         <div className="flex gap-2">
           {(['week', 'month', 'year'] as const).map(p => (
             <button key={p} onClick={() => setPeriod(p)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${period === p ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}>
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${period === p ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-border hover:bg-gray-50'}`}>
               {p === 'week' ? 'Semaine' : p === 'month' ? 'Mois' : 'Année'}
             </button>
           ))}
-          <button onClick={() => refetchStats()} className="p-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-50">
+          <button onClick={() => refetchStats()} className="p-2 rounded-lg bg-white dark:bg-card border border-gray-200 dark:border-border hover:bg-gray-50">
             <RefreshCw className="w-4 h-4 text-gray-500" />
           </button>
         </div>
@@ -60,7 +60,7 @@ export default function StripePage() {
       {/* KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {kpis.map(kpi => (
-          <div key={kpi.label} className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+          <div key={kpi.label} className="bg-white dark:bg-card rounded-xl border border-gray-100 p-4 shadow-sm">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm text-gray-500">{kpi.label}</span>
               <div className={`p-2 rounded-lg ${kpi.bg}`}>
@@ -83,7 +83,7 @@ export default function StripePage() {
       </div>
 
       {/* Transactions */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm">
+      <div className="bg-white dark:bg-card rounded-xl border border-gray-100 shadow-sm">
         <div className="p-4 border-b border-gray-100 flex items-center justify-between">
           <h2 className="font-semibold text-gray-900">Transactions récentes</h2>
           <span className="text-sm text-gray-500">{txList.length} transaction{txList.length !== 1 ? 's' : ''}</span>
@@ -102,18 +102,18 @@ export default function StripePage() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="bg-gray-50 text-left">
-                  <th className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">ID</th>
-                  <th className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Montant</th>
-                  <th className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Statut</th>
-                  <th className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Description</th>
-                  <th className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Date</th>
-                  <th className="px-4 py-3 text-xs font-medium text-gray-500 uppercase">Actions</th>
+                <tr className="bg-gray-50 dark:bg-muted/20 text-left">
+                  <th className="px-4 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">ID</th>
+                  <th className="px-4 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Montant</th>
+                  <th className="px-4 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Statut</th>
+                  <th className="px-4 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Description</th>
+                  <th className="px-4 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Date</th>
+                  <th className="px-4 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
                 {txList.map((tx: any) => (
-                  <tr key={tx.id} className="hover:bg-gray-50 transition-colors">
+                  <tr key={tx.id} className="hover:bg-gray-50 dark:bg-muted/20 transition-colors">
                     <td className="px-4 py-3 font-mono text-xs text-gray-500">{tx.id?.slice(0, 12)}...</td>
                     <td className="px-4 py-3 font-semibold text-gray-900">
                       {tx.amount != null ? `${(tx.amount / 100).toFixed(2)} ${(tx.currency ?? 'eur').toUpperCase()}` : '—'}
@@ -123,7 +123,7 @@ export default function StripePage() {
                         {tx.status ?? 'unknown'}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-gray-600 max-w-xs truncate">{tx.description ?? tx.metadata?.description ?? '—'}</td>
+                    <td className="px-4 py-3 text-gray-600 dark:text-gray-400 max-w-xs truncate">{tx.description ?? tx.metadata?.description ?? '—'}</td>
                     <td className="px-4 py-3 text-gray-500">
                       {tx.created ? new Date(tx.created * 1000).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'}
                     </td>

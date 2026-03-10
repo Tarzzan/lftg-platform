@@ -82,7 +82,7 @@ export default function DocumentsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">📁 Gestion des documents</h1>
-          <p className="text-gray-500 text-sm mt-1">{isLoading ? 'Chargement...' : `${docs.length} document${docs.length !== 1 ? 's' : ''} · ${formatSize(totalSize)} au total`}</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{isLoading ? 'Chargement...' : `${docs.length} document${docs.length !== 1 ? 's' : ''} · ${formatSize(totalSize)} au total`}</p>
         </div>
         <button onClick={() => setShowUploadModal(true)} className="px-4 py-2 bg-forest-600 text-white rounded-lg text-sm hover:bg-forest-700 transition-colors">
           + Uploader un document
@@ -100,7 +100,7 @@ export default function DocumentsPage() {
         onClick={() => setShowUploadModal(true)}
       >
         <div className="text-4xl mb-2">📤</div>
-        <p className="text-gray-600 font-medium">Glissez-déposez vos fichiers ici</p>
+        <p className="text-gray-600 dark:text-gray-400 font-medium">Glissez-déposez vos fichiers ici</p>
         <p className="text-sm text-gray-400 mt-1">PDF, images, Word, Excel — max 10 Mo par fichier</p>
       </div>
 
@@ -115,12 +115,12 @@ export default function DocumentsPage() {
         />
         <div className="flex gap-2 flex-wrap">
           <button onClick={() => setFilterCategory('ALL')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${filterCategory === 'ALL' ? 'bg-gray-800 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}`}>
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${filterCategory === 'ALL' ? 'bg-gray-800 text-white' : 'bg-white text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-border hover:bg-gray-50'}`}>
             Tous
           </button>
           {Object.entries(CATEGORY_CONFIG).map(([cat, conf]) => (
             <button key={cat} onClick={() => setFilterCategory(cat)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${filterCategory === cat ? conf.color + ' border-current' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'}`}>
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${filterCategory === cat ? conf.color + ' border-current' : 'bg-white text-gray-600 dark:text-gray-400 border-gray-200 dark:border-border hover:bg-gray-50'}`}>
               {conf.emoji} {conf.label}
             </button>
           ))}
@@ -141,27 +141,27 @@ export default function DocumentsPage() {
           {filtered.map(doc => {
             const catConf = CATEGORY_CONFIG[doc.category] || { emoji: '📄', color: 'bg-gray-100 text-gray-700', label: doc.category };
             return (
-              <div key={doc.id} className="bg-white rounded-xl border border-gray-200 p-4 hover:border-forest-300 hover:shadow-sm transition-all cursor-pointer group">
+              <div key={doc.id} className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-4 hover:border-forest-300 hover:shadow-sm transition-all cursor-pointer group">
                 <div className="text-4xl mb-3 text-center">{catConf.emoji}</div>
-                <div className="text-sm font-medium text-gray-900 truncate text-center" title={doc.name}>{doc.name}</div>
+                <div className="text-sm font-medium text-gray-900 dark:text-foreground truncate text-center" title={doc.name}>{doc.name}</div>
                 <div className={`mt-2 text-xs px-2 py-0.5 rounded-full text-center ${catConf.color}`}>{catConf.label}</div>
                 <div className="mt-2 text-xs text-gray-400 text-center">{formatSize(doc.size)}</div>
                 {doc.linkedTo && <div className="mt-1 text-xs text-forest-600 text-center truncate">{doc.linkedTo}</div>}
                 <div className="mt-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button className="flex-1 text-xs py-1 bg-forest-50 text-forest-700 rounded hover:bg-forest-100 transition-colors">Voir</button>
-                  <button className="flex-1 text-xs py-1 bg-gray-50 text-gray-600 rounded hover:bg-gray-100 transition-colors">⬇</button>
+                  <button className="flex-1 text-xs py-1 bg-gray-50 dark:bg-muted/20 text-gray-600 dark:text-gray-400 rounded hover:bg-gray-100 transition-colors">⬇</button>
                 </div>
               </div>
             );
           })}
         </div>
       ) : (
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border overflow-hidden">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-gray-50 dark:bg-muted/20 border-b border-gray-200 dark:border-border">
               <tr>
                 {['Nom', 'Catégorie', 'Lié à', 'Taille', 'Date', 'Uploadé par', 'Actions'].map(h => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
+                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">{h}</th>
                 ))}
               </tr>
             </thead>
@@ -169,11 +169,11 @@ export default function DocumentsPage() {
               {filtered.map(doc => {
                 const catConf = CATEGORY_CONFIG[doc.category] || { emoji: '📄', color: 'bg-gray-100 text-gray-700', label: doc.category };
                 return (
-                  <tr key={doc.id} className="hover:bg-gray-50 transition-colors">
+                  <tr key={doc.id} className="hover:bg-gray-50 dark:bg-muted/20 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <span>{catConf.emoji}</span>
-                        <span className="text-sm font-medium text-gray-900 truncate max-w-[200px]">{doc.name}</span>
+                        <span className="text-sm font-medium text-gray-900 dark:text-foreground truncate max-w-[200px]">{doc.name}</span>
                       </div>
                     </td>
                     <td className="px-4 py-3">
@@ -186,7 +186,7 @@ export default function DocumentsPage() {
                     <td className="px-4 py-3">
                       <div className="flex gap-2">
                         <button className="text-xs px-2 py-1 bg-forest-50 text-forest-700 rounded hover:bg-forest-100">Voir</button>
-                        <button className="text-xs px-2 py-1 bg-gray-50 text-gray-600 rounded hover:bg-gray-100">⬇</button>
+                        <button className="text-xs px-2 py-1 bg-gray-50 dark:bg-muted/20 text-gray-600 dark:text-gray-400 rounded hover:bg-gray-100">⬇</button>
                         <button className="text-xs px-2 py-1 bg-red-50 text-red-600 rounded hover:bg-red-100">✕</button>
                       </div>
                     </td>
@@ -201,7 +201,7 @@ export default function DocumentsPage() {
       {/* Modal upload */}
       {showUploadModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl">
+          <div className="bg-white dark:bg-card rounded-2xl w-full max-w-md shadow-2xl">
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
               <h2 className="text-lg font-semibold">Uploader un document</h2>
               <button onClick={() => setShowUploadModal(false)} className="p-2 hover:bg-gray-100 rounded-lg">✕</button>
@@ -213,7 +213,7 @@ export default function DocumentsPage() {
                 <input type="file" className="hidden" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Catégorie</label>
                 <select className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-forest-500">
                   {Object.entries(CATEGORY_CONFIG).map(([cat, conf]) => (
                     <option key={cat} value={cat}>{conf.emoji} {conf.label}</option>
@@ -221,11 +221,11 @@ export default function DocumentsPage() {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Lié à (optionnel)</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Lié à (optionnel)</label>
                 <input type="text" placeholder="Animal, vente, enclos..." className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-forest-500" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Tags (séparés par des virgules)</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tags (séparés par des virgules)</label>
                 <input type="text" placeholder="cites, permis, annexe-ii" className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-forest-500" />
               </div>
             </div>

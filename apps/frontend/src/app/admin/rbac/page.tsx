@@ -43,8 +43,8 @@ export default function RbacPage() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Contrôle d'accès RBAC</h1>
-          <p className="text-gray-500 dark:text-gray-400 mt-1">Gestion des rôles et permissions granulaires</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground dark:text-white">Contrôle d'accès RBAC</h1>
+          <p className="text-gray-500 dark:text-gray-400 dark:text-gray-400 mt-1">Gestion des rôles et permissions granulaires</p>
         </div>
         <div className="flex items-center gap-3">
           <span className="px-3 py-1 bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400 rounded-full text-sm font-medium">
@@ -69,12 +69,12 @@ export default function RbacPage() {
           {roles.slice(0, 4).map((role: any) => {
             const roleUsers = users.filter((u: any) => u.roles?.some((r: any) => r.id === role.id));
             return (
-              <div key={role.id} className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-gray-700 shadow-sm">
+              <div key={role.id} className="bg-white dark:bg-gray-800 rounded-xl p-4 border border-gray-200 dark:border-border dark:border-gray-700 shadow-sm">
                 <span className="px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400">
                   {role.name}
                 </span>
-                <p className="text-2xl font-bold mt-2 text-gray-900 dark:text-white">{roleUsers.length}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">utilisateur{roleUsers.length !== 1 ? 's' : ''}</p>
+                <p className="text-2xl font-bold mt-2 text-gray-900 dark:text-foreground dark:text-white">{roleUsers.length}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-400">utilisateur{roleUsers.length !== 1 ? 's' : ''}</p>
               </div>
             );
           })}
@@ -82,8 +82,8 @@ export default function RbacPage() {
       )}
 
       {/* Onglets */}
-      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
-        <div className="flex border-b border-gray-200 dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 shadow-sm overflow-hidden">
+        <div className="flex border-b border-gray-200 dark:border-border dark:border-gray-700">
           {(['matrix', 'users', 'roles'] as const).map((t) => (
             <button
               key={t}
@@ -91,7 +91,7 @@ export default function RbacPage() {
               className={`px-6 py-3 text-sm font-medium transition-colors ${
                 tab === t
                   ? 'border-b-2 border-purple-500 text-purple-600 dark:text-purple-400'
-                  : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 dark:text-gray-400 dark:hover:text-gray-200'
               }`}
             >
               {t === 'matrix' ? 'Matrice des permissions' : t === 'users' ? 'Utilisateurs' : 'Rôles'}
@@ -108,15 +108,15 @@ export default function RbacPage() {
               ) : (
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="border-b border-gray-200 dark:border-gray-700">
-                      <th className="text-left py-2 px-3 text-gray-600 dark:text-gray-400 font-medium">Ressource / Action</th>
+                    <tr className="border-b border-gray-200 dark:border-border dark:border-gray-700">
+                      <th className="text-left py-2 px-3 text-gray-600 dark:text-gray-400 dark:text-gray-400 font-medium">Ressource / Action</th>
                       {roles.map((role: any) => (
-                        <th key={role.id} colSpan={ACTIONS.length} className="text-center py-2 px-2 text-gray-600 dark:text-gray-400 font-medium border-l border-gray-100 dark:border-gray-700">
+                        <th key={role.id} colSpan={ACTIONS.length} className="text-center py-2 px-2 text-gray-600 dark:text-gray-400 dark:text-gray-400 font-medium border-l border-gray-100 dark:border-gray-700">
                           {role.name}
                         </th>
                       ))}
                     </tr>
-                    <tr className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+                    <tr className="border-b border-gray-200 dark:border-border dark:border-gray-700 bg-gray-50 dark:bg-muted/20 dark:bg-gray-900/50">
                       <th className="py-1 px-3"></th>
                       {roles.map((role: any) =>
                         ACTIONS.map(action => (
@@ -129,8 +129,8 @@ export default function RbacPage() {
                   </thead>
                   <tbody>
                     {PERMISSION_RESOURCES.map((resource) => (
-                      <tr key={resource} className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900/30">
-                        <td className="py-2 px-3 font-medium text-gray-700 dark:text-gray-300 capitalize">{resource}</td>
+                      <tr key={resource} className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:bg-muted/20 dark:hover:bg-gray-900/30">
+                        <td className="py-2 px-3 font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 capitalize">{resource}</td>
                         {roles.map((role: any) => {
                           const rolePerms = getRolePermissions(role);
                           return ACTIONS.map(action => {
@@ -156,17 +156,17 @@ export default function RbacPage() {
               {usersLoading ? (
                 <div className="h-40 bg-gray-100 dark:bg-gray-700 rounded-lg animate-pulse" />
               ) : users.length === 0 ? (
-                <p className="text-gray-500 text-center py-8">Aucun utilisateur</p>
+                <p className="text-gray-500 dark:text-gray-400 text-center py-8">Aucun utilisateur</p>
               ) : (
                 users.map((user: any) => (
-                  <div key={user.id} className="flex items-center justify-between p-3 rounded-lg border border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900/30">
+                  <div key={user.id} className="flex items-center justify-between p-3 rounded-lg border border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:bg-muted/20 dark:hover:bg-gray-900/30">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-sm font-bold text-purple-700 dark:text-purple-400">
                         {user.name?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase() || '?'}
                       </div>
                       <div>
-                        <p className="font-medium text-gray-900 dark:text-white text-sm">{user.name || user.email}</p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">{user.email}</p>
+                        <p className="font-medium text-gray-900 dark:text-foreground dark:text-white text-sm">{user.name || user.email}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-400">{user.email}</p>
                       </div>
                     </div>
                     <div className="flex gap-1 flex-wrap justify-end">
@@ -176,7 +176,7 @@ export default function RbacPage() {
                         </span>
                       ))}
                       {(!user.roles || user.roles.length === 0) && (
-                        <span className="px-2 py-0.5 bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400 rounded-full text-xs">Aucun rôle</span>
+                        <span className="px-2 py-0.5 bg-gray-100 text-gray-500 dark:text-gray-400 dark:bg-gray-700 dark:text-gray-400 rounded-full text-xs">Aucun rôle</span>
                       )}
                     </div>
                   </div>
@@ -191,29 +191,29 @@ export default function RbacPage() {
               {rolesLoading ? (
                 <div className="h-40 bg-gray-100 dark:bg-gray-700 rounded-lg animate-pulse" />
               ) : roles.length === 0 ? (
-                <p className="text-gray-500 text-center py-8">Aucun rôle configuré</p>
+                <p className="text-gray-500 dark:text-gray-400 text-center py-8">Aucun rôle configuré</p>
               ) : (
                 roles.map((role: any) => {
                   const roleUsers = users.filter((u: any) => u.roles?.some((r: any) => r.id === role.id));
                   const perms = role.permissions || [];
                   return (
-                    <div key={role.id} className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/30">
+                    <div key={role.id} className="p-4 rounded-lg border border-gray-200 dark:border-border dark:border-gray-700 bg-gray-50 dark:bg-muted/20 dark:bg-gray-900/30">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <span className="px-2 py-1 bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400 rounded-full text-xs font-medium">
                             {role.name}
                           </span>
-                          <span className="text-xs text-gray-500 dark:text-gray-400">{roleUsers.length} utilisateur{roleUsers.length !== 1 ? 's' : ''}</span>
+                          <span className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-400">{roleUsers.length} utilisateur{roleUsers.length !== 1 ? 's' : ''}</span>
                         </div>
                         <span className="text-xs text-gray-400">{perms.length} permission{perms.length !== 1 ? 's' : ''}</span>
                       </div>
                       {role.description && (
-                        <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">{role.description}</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 dark:text-gray-400 mb-2">{role.description}</p>
                       )}
                       {perms.length > 0 && (
                         <div className="flex flex-wrap gap-1">
                           {perms.slice(0, 8).map((p: any, i: number) => (
-                            <span key={i} className="px-1.5 py-0.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded text-xs text-gray-600 dark:text-gray-400">
+                            <span key={i} className="px-1.5 py-0.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-border dark:border-gray-600 rounded text-xs text-gray-600 dark:text-gray-400 dark:text-gray-400">
                               {p.resource}:{p.action}
                             </span>
                           ))}
@@ -235,25 +235,25 @@ export default function RbacPage() {
       {showRoleModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-md p-6">
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Nouveau rôle</h2>
+            <h2 className="text-lg font-bold text-gray-900 dark:text-foreground dark:text-white mb-4">Nouveau rôle</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom du rôle</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Nom du rôle</label>
                 <input
                   type="text"
                   value={newRole.name}
                   onChange={(e) => setNewRole(prev => ({ ...prev, name: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"
                   placeholder="ex: veterinaire"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Description</label>
                 <input
                   type="text"
                   value={newRole.description}
                   onChange={(e) => setNewRole(prev => ({ ...prev, description: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"
                   placeholder="Description du rôle"
                 />
               </div>
@@ -261,7 +261,7 @@ export default function RbacPage() {
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => setShowRoleModal(false)}
-                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg text-sm hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 dark:text-gray-300 rounded-lg text-sm hover:bg-gray-50 dark:bg-muted/20 dark:hover:bg-gray-700"
               >
                 Annuler
               </button>

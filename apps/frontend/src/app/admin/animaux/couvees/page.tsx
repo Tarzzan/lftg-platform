@@ -71,8 +71,8 @@ export default function CouveesPage() {
       {/* En-tête */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Couvées & Incubation</h1>
-          <p className="text-sm text-gray-500 mt-1">{activeCount} couvée(s) active(s)</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground dark:text-white">Couvées & Incubation</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{activeCount} couvée(s) active(s)</p>
         </div>
         <button
           onClick={() => setShowModal(true)}
@@ -91,7 +91,7 @@ export default function CouveesPage() {
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
               filterStatus === s
                 ? 'bg-forest-600 text-white'
-                : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
+                : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'
             }`}
           >
             {s === '' ? 'Toutes' : STATUS_LABELS[s] || s}
@@ -129,7 +129,7 @@ export default function CouveesPage() {
             return (
               <div
                 key={brood.id}
-                className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-5 hover:shadow-md transition-shadow cursor-pointer"
+                className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-5 hover:shadow-md transition-shadow cursor-pointer"
                 onClick={() => router.push(`/admin/animaux/couvees/${brood.id}`)}
               >
                 <div className="flex items-start justify-between mb-3">
@@ -138,7 +138,7 @@ export default function CouveesPage() {
                       🥚
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-900 dark:text-white">
+                      <p className="font-semibold text-gray-900 dark:text-foreground dark:text-white">
                         {brood.species?.name || 'Espèce inconnue'}
                       </p>
                       <p className="text-xs text-gray-500">{brood.eggCount} œufs</p>
@@ -149,17 +149,17 @@ export default function CouveesPage() {
                   </span>
                 </div>
 
-                <div className="space-y-1 text-xs text-gray-500 mb-3">
+                <div className="space-y-1 text-xs text-gray-500 dark:text-gray-400 mb-3">
                   <div className="flex justify-between">
                     <span>Début incubation</span>
-                    <span className="font-medium text-gray-700 dark:text-gray-300">
+                    <span className="font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300">
                       {new Date(brood.incubationStartDate).toLocaleDateString('fr-FR')}
                     </span>
                   </div>
                   {brood.expectedHatchDate && (
                     <div className="flex justify-between">
                       <span>Éclosion prévue</span>
-                      <span className="font-medium text-gray-700 dark:text-gray-300">
+                      <span className="font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300">
                         {new Date(brood.expectedHatchDate).toLocaleDateString('fr-FR')}
                       </span>
                     </div>
@@ -167,7 +167,7 @@ export default function CouveesPage() {
                   {brood.temperature && (
                     <div className="flex justify-between">
                       <span>Température cible</span>
-                      <span className="font-medium text-gray-700 dark:text-gray-300">{brood.temperature}°C</span>
+                      <span className="font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300">{brood.temperature}°C</span>
                     </div>
                   )}
                 </div>
@@ -210,18 +210,18 @@ export default function CouveesPage() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg">
-            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white">🥚 Nouvelle couvée</h2>
-              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 text-xl">×</button>
+            <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-border dark:border-gray-700">
+              <h2 className="text-lg font-bold text-gray-900 dark:text-foreground dark:text-white">🥚 Nouvelle couvée</h2>
+              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 text-xl">×</button>
             </div>
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Espèce *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Espèce *</label>
                   <select
                     value={form.speciesId}
                     onChange={e => setForm(p => ({ ...p, speciesId: e.target.value }))}
-                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"
                   >
                     <option value="">Sélectionner une espèce</option>
                     {(species || []).map((s: any) => (
@@ -230,79 +230,79 @@ export default function CouveesPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nombre d'œufs *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Nombre d'œufs *</label>
                   <input
                     type="number"
                     min="1"
                     value={form.eggCount}
                     onChange={e => setForm(p => ({ ...p, eggCount: e.target.value }))}
-                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"
                     placeholder="12"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Incubateur</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Incubateur</label>
                   <input
                     type="text"
                     value={form.incubatorId}
                     onChange={e => setForm(p => ({ ...p, incubatorId: e.target.value }))}
-                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"
                     placeholder="Incubateur A"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Début incubation *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Début incubation *</label>
                   <input
                     type="date"
                     value={form.incubationStartDate}
                     onChange={e => setForm(p => ({ ...p, incubationStartDate: e.target.value }))}
-                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Éclosion prévue</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Éclosion prévue</label>
                   <input
                     type="date"
                     value={form.expectedHatchDate}
                     onChange={e => setForm(p => ({ ...p, expectedHatchDate: e.target.value }))}
-                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Température (°C)</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Température (°C)</label>
                   <input
                     type="number"
                     step="0.1"
                     value={form.temperature}
                     onChange={e => setForm(p => ({ ...p, temperature: e.target.value }))}
-                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"
                     placeholder="37.5"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Humidité (%)</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Humidité (%)</label>
                   <input
                     type="number"
                     step="1"
                     value={form.humidity}
                     onChange={e => setForm(p => ({ ...p, humidity: e.target.value }))}
-                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"
                     placeholder="60"
                   />
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Notes</label>
                   <textarea
                     value={form.notes}
                     onChange={e => setForm(p => ({ ...p, notes: e.target.value }))}
                     rows={2}
-                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"
                     placeholder="Observations..."
                   />
                 </div>
               </div>
             </div>
-            <div className="flex gap-3 p-6 border-t border-gray-200 dark:border-gray-700">
+            <div className="flex gap-3 p-6 border-t border-gray-200 dark:border-border dark:border-gray-700">
               <button
                 onClick={() => createMutation.mutate({
                   speciesId: form.speciesId,
@@ -321,7 +321,7 @@ export default function CouveesPage() {
               </button>
               <button
                 onClick={() => setShowModal(false)}
-                className="flex-1 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="flex-1 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 dark:text-gray-300 hover:bg-gray-50 dark:bg-muted/20 dark:hover:bg-gray-700 transition-colors"
               >
                 Annuler
               </button>

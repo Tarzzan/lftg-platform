@@ -123,7 +123,7 @@ export default function WebSocketPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Notifications SSE</h1>
-          <p className="text-gray-500 text-sm mt-1">Server-Sent Events — Flux temps réel de la plateforme</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Server-Sent Events — Flux temps réel de la plateforme</p>
         </div>
         <div className="flex items-center gap-3">
           <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium ${statusBadge}`}>
@@ -147,7 +147,7 @@ export default function WebSocketPage() {
           { label: 'Statut SSE', value: connectionStatus === 'connected' ? 'Actif' : 'Inactif', color: connectionStatus === 'connected' ? 'text-green-600' : 'text-gray-500' },
           { label: 'Protocole', value: 'SSE/HTTP', color: 'text-purple-600' },
         ].map((m) => (
-          <div key={m.label} className="bg-white rounded-xl p-4 border border-gray-200 shadow-sm">
+          <div key={m.label} className="bg-white dark:bg-card rounded-xl p-4 border border-gray-200 dark:border-border shadow-sm">
             <p className="text-sm text-gray-500">{m.label}</p>
             <p className={`text-2xl font-bold mt-1 ${m.color}`}>{m.value}</p>
           </div>
@@ -155,13 +155,13 @@ export default function WebSocketPage() {
       </div>
 
       {/* Onglets */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-        <div className="flex border-b border-gray-200">
+      <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border shadow-sm overflow-hidden">
+        <div className="flex border-b border-gray-200 dark:border-border">
           {(['events', 'channels', 'test'] as const).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`px-6 py-3 text-sm font-medium ${tab === t ? 'border-b-2 border-green-600 text-green-600' : 'text-gray-500 hover:text-gray-700'}`}
+              className={`px-6 py-3 text-sm font-medium ${tab === t ? 'border-b-2 border-green-600 text-green-600' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}
             >
               {t === 'events' ? `Flux d'événements (${events.length})` : t === 'channels' ? 'Canaux' : 'Tester'}
             </button>
@@ -183,7 +183,7 @@ export default function WebSocketPage() {
                     <div className="flex items-center gap-3 mb-1">
                       <span className="text-gray-500">{ev.time}</span>
                       <span className="text-green-400 font-bold">{ev.type}</span>
-                      <span className="text-gray-600 ml-auto">{ev.source}</span>
+                      <span className="text-gray-600 dark:text-gray-400 ml-auto">{ev.source}</span>
                     </div>
                     <pre className="text-gray-300 text-xs overflow-x-auto">{ev.data}</pre>
                   </div>
@@ -196,7 +196,7 @@ export default function WebSocketPage() {
         {tab === 'channels' && (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 text-xs text-gray-500 uppercase">
+              <thead className="bg-gray-50 dark:bg-muted/20 text-xs text-gray-500 dark:text-gray-400 uppercase">
                 <tr>
                   {['Endpoint SSE', 'Description', 'Statut'].map((h) => (
                     <th key={h} className="px-4 py-3 text-left">{h}</th>
@@ -227,7 +227,7 @@ export default function WebSocketPage() {
               <p>Connectez-vous au flux SSE ci-dessus pour voir les événements en temps réel. Les événements sont émis automatiquement par le backend lors d&apos;actions sur la plateforme.</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">URL du flux SSE</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">URL du flux SSE</label>
               <input
                 readOnly
                 value={`/api/v1/notifications/stream`}
@@ -235,7 +235,7 @@ export default function WebSocketPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Exemple de payload reçu</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Exemple de payload reçu</label>
               <textarea
                 readOnly
                 value={`{"id":"evt_001","type":"animal.alert","data":{"animalId":"A001","message":"Température anormale"},"timestamp":"${new Date().toISOString()}"}`}

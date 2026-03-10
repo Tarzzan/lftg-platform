@@ -177,14 +177,14 @@ export default function GpsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">🗺️ Géolocalisation GPS</h1>
-          <p className="text-sm text-gray-500 mt-1">Suivi temps réel des animaux équipés de balises GPS</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Suivi temps réel des animaux équipés de balises GPS</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 text-xs text-green-600 bg-green-50 px-3 py-1.5 rounded-full border border-green-200">
             <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
             Temps réel · Rafraîchissement 30s
           </div>
-          <button onClick={() => refetch()} className="px-3 py-1.5 text-sm border border-gray-200 text-gray-600 rounded-lg hover:bg-gray-50">
+          <button onClick={() => refetch()} className="px-3 py-1.5 text-sm border border-gray-200 dark:border-border text-gray-600 dark:text-gray-400 rounded-lg hover:bg-gray-50">
             🔄 Actualiser
           </button>
         </div>
@@ -214,7 +214,7 @@ export default function GpsPage() {
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${tab === t ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${tab === t ? 'bg-white text-gray-900 dark:text-foreground shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}
           >
             {t === 'map' ? '🗺️ Carte interactive' : t === 'list' ? '📋 Liste' : '🏠 Enclos'}
           </button>
@@ -231,7 +231,7 @@ export default function GpsPage() {
           {tab === 'map' && (
             <div className="grid lg:grid-cols-3 gap-4">
               {/* Carte Leaflet */}
-              <div className="lg:col-span-2 bg-white rounded-xl border border-gray-200 overflow-hidden" style={{ height: '500px' }}>
+              <div className="lg:col-span-2 bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border overflow-hidden" style={{ height: '500px' }}>
                 {isClient && trackers.length > 0 ? (
                   <LeafletMap trackers={trackers} selected={selected} onSelect={setSelected} />
                 ) : (
@@ -252,12 +252,12 @@ export default function GpsPage() {
               {/* Panneau latéral */}
               <div className="space-y-3">
                 {selectedTracker ? (
-                  <div className="bg-white rounded-xl border border-forest-200 p-4 shadow-sm">
+                  <div className="bg-white dark:bg-card rounded-xl border border-forest-200 p-4 shadow-sm">
                     <div className="flex items-center justify-between mb-3">
                       <h3 className="font-semibold text-gray-900">{selectedTracker.animalName}</h3>
-                      <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-600 text-sm">✕</button>
+                      <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 text-sm">✕</button>
                     </div>
-                    <p className="text-xs text-gray-500 italic mb-3">{selectedTracker.species}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 italic mb-3">{selectedTracker.species}</p>
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-gray-500">Statut</span>
@@ -300,13 +300,13 @@ export default function GpsPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="bg-gray-50 rounded-xl p-4 text-center text-sm text-gray-500">
+                  <div className="bg-gray-50 dark:bg-muted/20 rounded-xl p-4 text-center text-sm text-gray-500">
                     Cliquez sur un marqueur pour voir les détails
                   </div>
                 )}
 
                 {/* Liste compacte des trackers */}
-                <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border overflow-hidden">
                   <div className="px-4 py-3 border-b border-gray-100 text-sm font-medium text-gray-700">
                     Balises actives ({trackers.length})
                   </div>
@@ -317,12 +317,12 @@ export default function GpsPage() {
                         <button
                           key={tracker.id}
                           onClick={() => setSelected(selected === tracker.id ? null : tracker.id)}
-                          className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors text-left ${selected === tracker.id ? 'bg-forest-50' : ''}`}
+                          className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:bg-muted/20 transition-colors text-left ${selected === tracker.id ? 'bg-forest-50' : ''}`}
                         >
                           <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${cfg.dot}`} />
                           <div className="flex-1 min-w-0">
-                            <div className="text-sm font-medium text-gray-900 truncate">{tracker.animalName}</div>
-                            <div className="text-xs text-gray-500 truncate">{tracker.zone || tracker.species}</div>
+                            <div className="text-sm font-medium text-gray-900 dark:text-foreground truncate">{tracker.animalName}</div>
+                            <div className="text-xs text-gray-500 dark:text-gray-400 truncate">{tracker.zone || tracker.species}</div>
                           </div>
                           <div className="text-right flex-shrink-0">
                             <div className={`text-xs font-medium ${tracker.batteryLevel < 20 ? 'text-red-600' : 'text-gray-500'}`}>
@@ -340,17 +340,17 @@ export default function GpsPage() {
           )}
 
           {tab === 'list' && (
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-gray-50 border-b border-gray-200">
-                    <th className="text-left py-3 px-4 text-gray-600 font-medium">Animal</th>
-                    <th className="text-left py-3 px-4 text-gray-600 font-medium">Espèce</th>
-                    <th className="text-left py-3 px-4 text-gray-600 font-medium">Statut</th>
-                    <th className="text-left py-3 px-4 text-gray-600 font-medium">Batterie</th>
-                    <th className="text-left py-3 px-4 text-gray-600 font-medium">Zone</th>
-                    <th className="text-left py-3 px-4 text-gray-600 font-medium">Position</th>
-                    <th className="text-left py-3 px-4 text-gray-600 font-medium">Dernière vue</th>
+                  <tr className="bg-gray-50 dark:bg-muted/20 border-b border-gray-200 dark:border-border">
+                    <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Animal</th>
+                    <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Espèce</th>
+                    <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Statut</th>
+                    <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Batterie</th>
+                    <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Zone</th>
+                    <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Position</th>
+                    <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium">Dernière vue</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -359,7 +359,7 @@ export default function GpsPage() {
                     return (
                       <tr key={tracker.id} className="border-b border-gray-100 hover:bg-gray-50">
                         <td className="py-3 px-4 font-medium text-gray-900">{tracker.animalName}</td>
-                        <td className="py-3 px-4 text-gray-500 italic text-xs">{tracker.species}</td>
+                        <td className="py-3 px-4 text-gray-500 dark:text-gray-400 italic text-xs">{tracker.species}</td>
                         <td className="py-3 px-4">
                           <span className={`flex items-center gap-1.5 text-xs font-medium ${cfg.color}`}>
                             <span className={`w-2 h-2 rounded-full ${cfg.dot}`} />
@@ -377,11 +377,11 @@ export default function GpsPage() {
                             <span className="text-xs text-gray-600">{tracker.batteryLevel}%</span>
                           </div>
                         </td>
-                        <td className="py-3 px-4 text-gray-600 text-xs">{tracker.zone || '—'}</td>
+                        <td className="py-3 px-4 text-gray-600 dark:text-gray-400 text-xs">{tracker.zone || '—'}</td>
                         <td className="py-3 px-4 font-mono text-xs text-gray-500">
                           {tracker.currentPosition?.lat?.toFixed(4)}, {tracker.currentPosition?.lng?.toFixed(4)}
                         </td>
-                        <td className="py-3 px-4 text-gray-500 text-xs">{timeAgo(tracker.lastSeen)}</td>
+                        <td className="py-3 px-4 text-gray-500 dark:text-gray-400 text-xs">{timeAgo(tracker.lastSeen)}</td>
                       </tr>
                     );
                   })}
@@ -393,7 +393,7 @@ export default function GpsPage() {
           {tab === 'enclosures' && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {geofences.length === 0 ? (
-                <div className="col-span-3 bg-white rounded-xl border border-gray-200 p-12 text-center">
+                <div className="col-span-3 bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-12 text-center">
                   <p className="text-4xl mb-3">🏠</p>
                   <p className="text-gray-500">Aucun enclos défini dans le système GPS.</p>
                 </div>
@@ -401,7 +401,7 @@ export default function GpsPage() {
                 geofences.map((zone: any) => {
                   const zoneTrackers = trackers.filter((t: any) => t.zone === zone.name);
                   return (
-                    <div key={zone.id || zone.name} className="bg-white rounded-xl border border-gray-200 p-4">
+                    <div key={zone.id || zone.name} className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-4">
                       <div className="flex items-center gap-3 mb-3">
                         <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style={{ backgroundColor: zone.color + '20' }}>
                           🏠

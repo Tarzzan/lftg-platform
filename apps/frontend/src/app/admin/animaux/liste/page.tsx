@@ -12,13 +12,17 @@ import Link from 'next/link';
 import { animauxApi, exportApi } from '@/lib/api';
 import { AnimalModal } from '@/components/modals/AnimalModal';
 
+// ─── Assets CDN ───────────────────────────────────────────────────────────────
+const ANIMALS_SCENE = 'https://files.manuscdn.com/user_upload_by_module/session_file/92503813/wWLrFtLcniaHCBOV.webp';
+const PECO_EMPTY = 'https://files.manuscdn.com/user_upload_by_module/session_file/92503813/RVzvPoLvUuowKCFW.webp';
+
 const SEX_LABELS: Record<string, string> = { male: '♂ Mâle', female: '♀ Femelle', '': 'Inconnu' };
 const SEX_COLORS: Record<string, string> = { male: 'text-blue-600', female: 'text-pink-600', '': 'text-gray-400' };
 
 const STATUS_CONFIG: Record<string, { label: string; bg: string; dot: string }> = {
   alive:       { label: 'Vivant',    bg: 'bg-emerald-100 text-emerald-700', dot: 'bg-emerald-500' },
   ACTIF:       { label: 'Vivant',    bg: 'bg-emerald-100 text-emerald-700', dot: 'bg-emerald-500' },
-  deceased:    { label: 'Décédé',    bg: 'bg-gray-100 text-gray-500',       dot: 'bg-gray-400' },
+  deceased:    { label: 'Décédé',    bg: 'bg-gray-100 dark:bg-muted/40 text-gray-500 dark:text-gray-400 dark:text-gray-400',       dot: 'bg-gray-400' },
   transferred: { label: 'Transféré', bg: 'bg-amber-100 text-amber-700',     dot: 'bg-amber-500' },
   released:    { label: 'Relâché',   bg: 'bg-blue-100 text-blue-700',       dot: 'bg-blue-500' },
 };
@@ -26,7 +30,7 @@ const STATUS_CONFIG: Record<string, { label: string; bg: string; dot: string }> 
 const CITES_CONFIG: Record<string, { label: string; color: string }> = {
   'I':         { label: 'CITES I',  color: 'bg-red-100 text-red-700 border border-red-200' },
   'II':        { label: 'CITES II', color: 'bg-orange-100 text-orange-700 border border-orange-200' },
-  'Non listé': { label: 'Non CITES', color: 'bg-gray-100 text-gray-500 border border-gray-200' },
+  'Non listé': { label: 'Non CITES', color: 'bg-gray-100 dark:bg-muted/40 text-gray-500 dark:text-gray-400 dark:text-gray-400 border border-gray-200 dark:border-border dark:border-border' },
 };
 
 // Emoji par groupe taxonomique
@@ -93,12 +97,18 @@ export default function AnimauxListePage() {
 
   return (
     <div className="space-y-6">
+      <style>{`
+        @keyframes mascotFloat {
+          0%, 100% { transform: translateY(0px) rotate(-1deg); }
+          50% { transform: translateY(-10px) rotate(1deg); }
+        }
+      `}</style>
       {/* Hero Header */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-forest-700 via-forest-600 to-emerald-600 p-6 text-white shadow-lg">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-2 right-8 text-8xl">🦜</div>
-          <div className="absolute bottom-2 right-32 text-6xl">🐊</div>
-          <div className="absolute top-4 right-48 text-5xl">🐢</div>
+      <div className="relative overflow-hidden rounded-2xl p-6 text-white shadow-xl" style={{ minHeight: '160px' }}>
+        {/* Background image cinématique */}
+        <div className="absolute inset-0 rounded-2xl overflow-hidden">
+          <img src={ANIMALS_SCENE} alt="" className="w-full h-full object-cover" style={{ objectPosition: 'center 30%' }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(13,43,26,0.85) 0%, rgba(26,71,49,0.75) 50%, rgba(45,125,125,0.65) 100%)' }} />
         </div>
         <div className="relative flex items-start justify-between">
           <div>
@@ -243,7 +253,11 @@ export default function AnimauxListePage() {
       ) : filtered.length === 0 ? (
         <div className="text-center py-20">
           <div className="text-6xl mb-4">🔍</div>
-          <p className="text-muted-foreground font-medium">Aucun animal trouvé</p>
+          <div className="flex flex-col items-center py-12 rounded-2xl bg-gradient-to-br from-forest-50 to-emerald-50 border border-forest-100">
+            <img src={PECO_EMPTY} alt="Péco" className="w-28 h-28 object-contain mb-3" style={{ animation: 'mascotFloat 3s ease-in-out infinite', filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.1))' }} />
+            <p className="text-base font-semibold text-forest-700">Aucun animal trouvé</p>
+            <p className="text-sm text-forest-400 mt-1">Essayez de modifier vos filtres ou ajoutez un animal 🐾</p>
+          </div>
           <p className="text-sm text-muted-foreground mt-1">Essayez de modifier vos filtres</p>
         </div>
       ) : viewMode === 'grid' ? (
@@ -287,7 +301,7 @@ export default function AnimauxListePage() {
                 {/* Métadonnées */}
                 <div className="flex flex-wrap items-center gap-2 mt-3">
                   {animal.sex && (
-                    <span className={`text-xs font-medium ${SEX_COLORS[animal.sex] ?? 'text-gray-500'}`}>
+                    <span className={`text-xs font-medium ${SEX_COLORS[animal.sex] ?? 'text-gray-500 dark:text-gray-400 dark:text-gray-400'}`}>
                       {SEX_LABELS[animal.sex]}
                     </span>
                   )}
@@ -323,7 +337,7 @@ export default function AnimauxListePage() {
                 <div className="flex items-center gap-1 mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
                   <Link
                     href={`/admin/animaux/${animal.id}`}
-                    className="flex-1 flex items-center justify-center gap-1 py-1.5 text-xs font-medium bg-white/80 hover:bg-white rounded-lg transition-colors shadow-sm"
+                    className="flex-1 flex items-center justify-center gap-1 py-1.5 text-xs font-medium bg-white/80 hover:bg-white dark:bg-card rounded-lg transition-colors shadow-sm"
                   >
                     <Eye className="w-3 h-3" /> Fiche
                   </Link>
@@ -386,7 +400,7 @@ export default function AnimauxListePage() {
                       <p className="text-xs text-muted-foreground italic">{animal.species?.scientificName}</p>
                     </td>
                     <td className="px-4 py-3">
-                      <p className={`font-medium ${SEX_COLORS[animal.sex ?? ''] ?? 'text-gray-500'}`}>
+                      <p className={`font-medium ${SEX_COLORS[animal.sex ?? ''] ?? 'text-gray-500 dark:text-gray-400 dark:text-gray-400'}`}>
                         {SEX_LABELS[animal.sex ?? ''] ?? '—'}
                       </p>
                       {age !== null && <p className="text-xs text-muted-foreground">{age} ans</p>}
