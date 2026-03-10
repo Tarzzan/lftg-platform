@@ -26,7 +26,9 @@ function DocumentViewer({ doc }: { doc: any }) {
   const [loaded, setLoaded] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-  const url = doc.url?.startsWith('http') ? doc.url : `${apiBase}${doc.url}`;
+  // Les fichiers /uploads sont servis à la racine du serveur, pas sous /api/v1
+  const serverBase = apiBase.replace(/\/api\/v1$/, '').replace(/\/api$/, '');
+  const url = doc.url?.startsWith('http') ? doc.url : `${serverBase}${doc.url}`;
   const typeConf = DOC_TYPE_CONFIG[doc.type] || DOC_TYPE_CONFIG.PDF;
   const TypeIcon = typeConf.icon;
 
@@ -626,6 +628,14 @@ export default function EnrollmentDetailPage() {
   const [activeLesson, setActiveLesson] = useState<any>(null);
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
 
+  // Chargement des documents de la leçon active
+  const { data: lessonDocuments } = useQuery({
+    queryKey: ['lesson-documents', activeLesson?.id],
+    queryFn: () => formationApi.getDocsByLesson(activeLesson!.id),
+    enabled: !!activeLesson?.id,
+    staleTime: 60_000,
+  });
+
   const { data: progressData, isLoading } = useQuery({
     queryKey: ['enrollment-progress', enrollmentId],
     queryFn: () => formationApi.getEnrollmentProgress(enrollmentId),
@@ -792,7 +802,7 @@ export default function EnrollmentDetailPage() {
         {activeLesson ? (
           <div className="p-8">
             <LessonViewer
-              lesson={activeLesson}
+              lesson={{ ...activeLesson, documents: lessonDocuments || activeLesson.documents || [] }}
               enrollmentId={enrollmentId}
               isCompleted={completedLessons.has(activeLesson.id)}
               onComplete={() => {

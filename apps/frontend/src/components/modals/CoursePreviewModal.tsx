@@ -7,6 +7,8 @@
  */
 
 import { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { formationApi } from '@/lib/api';
 import {
   X, BookOpen, Clock, ChevronDown, ChevronRight, CheckCircle,
   Play, Circle, ArrowLeft, SkipForward, FileText, Video, Archive,
@@ -77,7 +79,9 @@ function DocumentViewerPreview({ doc }: { doc: Document }) {
   const [loaded, setLoaded] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-  const url = doc.url?.startsWith('http') ? doc.url : `${apiBase}${doc.url}`;
+  // Les fichiers /uploads sont servis à la racine du serveur, pas sous /api/v1
+  const serverBase = apiBase.replace(/\/api\/v1$/, '').replace(/\/api$/, '');
+  const url = doc.url?.startsWith('http') ? doc.url : `${serverBase}${doc.url}`;
   const typeConf = DOC_TYPE_CONFIG[doc.type] || DOC_TYPE_CONFIG.FILE;
   const TypeIcon = typeConf.icon;
 
@@ -306,6 +310,14 @@ export function CoursePreviewModal({ course, isOpen, onClose }: CoursePreviewMod
   const [activeLesson, setActiveLesson] = useState<Lesson | null>(null);
   const [expandedChapters, setExpandedChapters] = useState<Set<string>>(new Set());
 
+  // Chargement des documents de la leçon active
+  const { data: lessonDocuments } = useQuery({
+    queryKey: ['lesson-documents-preview', activeLesson?.id],
+    queryFn: () => formationApi.getDocsByLesson(activeLesson!.id),
+    enabled: !!activeLesson?.id && isOpen,
+    staleTime: 60_000,
+  });
+
   const allLessons = course.chapters?.flatMap((c) => c.lessons || []) || [];
   const activeIdx = allLessons.findIndex((l) => l.id === activeLesson?.id);
   const hasNext = activeIdx < allLessons.length - 1;
@@ -484,7 +496,7 @@ export function CoursePreviewModal({ course, isOpen, onClose }: CoursePreviewMod
         <div className="flex-1 overflow-y-auto bg-gray-50/30 dark:bg-background">
           {activeLesson ? (
             <div className="p-8">
-              <LessonViewerPreview lesson={activeLesson} />
+              <LessonViewerPreview lesson={{ ...activeLesson, documents: lessonDocuments || activeLesson.documents || [] }} />
 
               {/* Navigation entre leçons */}
               <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-200 dark:border-border max-w-3xl mx-auto">
