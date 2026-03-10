@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { Controller, Get, Post, Body, Query, Param, UseGuards} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';

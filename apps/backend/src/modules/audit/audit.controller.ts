@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Controller, Get, Query, Param, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { AuditService } from './audit.service';

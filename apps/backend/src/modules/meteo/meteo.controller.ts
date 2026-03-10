@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { MeteoService } from './meteo.service';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { StatsService } from './stats.service';

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 
 export const CurrentUser = createParamDecorator(

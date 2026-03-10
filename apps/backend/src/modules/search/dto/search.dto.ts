@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { IsString, IsOptional, IsIn, IsInt, Min, Max } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';

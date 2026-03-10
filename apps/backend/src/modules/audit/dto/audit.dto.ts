@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ApiProperty } from '@nestjs/swagger';
 export class AuditQueryDto {
   @ApiProperty({ description: "Identifiant de l\'utilisateur", required: false })

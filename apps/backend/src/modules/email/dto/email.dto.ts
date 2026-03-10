@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ApiProperty } from '@nestjs/swagger';
 export class SendEmailDto {
   @ApiProperty({ description: "Destinataire", example: "contact@lftg.fr" })

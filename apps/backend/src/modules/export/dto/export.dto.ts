@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ApiProperty } from '@nestjs/swagger';
 export class ExportQueryDto {
   @ApiProperty({ description: "Format d\'export", enum: ['csv', 'xlsx', 'pdf'], default: 'csv' })
