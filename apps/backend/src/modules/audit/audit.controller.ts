@@ -40,7 +40,7 @@ export class AuditController {
   }
 
   @Get('users/:userId')
-  @ApiOperation({ summary: "Logs d"audit d"un utilisateur" })
+  @ApiOperation({ summary: "Logs d'audit d'un utilisateur" })
   findByUser(@Param('userId') userId: string) {
     return this.service.findAll({ userId });
   }

@@ -114,7 +114,7 @@ export class KiosqueService {
         id: 'alert-1',
         type: 'MEDICAL',
         severity: 'HIGH',
-        title: "Vaccination due — Ara ararauna "Bleu"",
+        title: "Vaccination due — Ara ararauna 'Bleu'",
         description: "Rappel vaccinal prévu le 2026-03-03",
         animalId: 'anim-1',
         dueAt: '2026-03-03T00:00:00Z',

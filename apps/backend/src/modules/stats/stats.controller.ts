@@ -42,7 +42,7 @@ export class StatsController {
 
   @Get('formation/progress')
   @ApiOperation({ summary: "Progression des inscriptions aux formations" })
-  @ApiResponse({ status: 200, description: "Nombre d"inscriptions terminées vs en cours" })
+  @ApiResponse({ status: 200, description: "Nombre d'inscriptions terminées vs en cours" })
   getFormationProgress() {
     return this.statsService.getFormationProgress();
   }
