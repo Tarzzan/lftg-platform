@@ -66,6 +66,7 @@ function Navbar({ scrollY }: { scrollY: number }) {
     { label: 'Missions', href: '#missions' },
     { label: 'Formations', href: '#formations' },
     { label: 'Faune', href: '#faune' },
+    { label: 'Adhésion', href: '#adhesion' },
     { label: 'Contact', href: '#contact' },
   ];
 
@@ -117,9 +118,7 @@ function Navbar({ scrollY }: { scrollY: number }) {
             Espace membres
           </Link>
           <a
-            href="https://www.helloasso.com"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#adhesion"
             className="px-4 py-2 text-sm font-semibold text-white bg-[#c17f3a] hover:bg-[#d4924a] rounded-full transition-all duration-200 shadow-lg shadow-[#c17f3a]/30"
           >
             Adhérer
@@ -155,7 +154,7 @@ function Navbar({ scrollY }: { scrollY: number }) {
             <Link href="/auth/login" className="text-center py-2 text-sm text-white border border-white/20 rounded-full">
               Espace membres
             </Link>
-            <a href="https://www.helloasso.com" target="_blank" rel="noopener noreferrer"
+            <a href="#adhesion" onClick={() => setMenuOpen(false)}
               className="text-center py-2 text-sm font-semibold text-white bg-[#c17f3a] rounded-full">
               Adhérer
             </a>
@@ -246,9 +245,7 @@ function HeroSection({ scrollY }: { scrollY: number }) {
                 </span>
               </a>
               <a
-                href="https://www.helloasso.com"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#adhesion"
                 className="px-8 py-4 border-2 border-white/30 hover:border-white/60 text-white font-semibold rounded-full transition-all duration-300 hover:bg-white/10 backdrop-blur-sm"
               >
                 Adhérer à l'association
@@ -348,17 +345,13 @@ function AssociationSection() {
             </p>
             <div className="flex flex-wrap gap-4">
               <a
-                href="https://www.helloasso.com"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#adhesion"
                 className="px-6 py-3 bg-[#1a4731] hover:bg-[#0d2b1a] text-white font-semibold rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 Adhérer à l'association
               </a>
               <a
-                href="https://www.helloasso.com"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="#adhesion"
                 className="px-6 py-3 border-2 border-[#c17f3a] text-[#c17f3a] hover:bg-[#c17f3a] hover:text-white font-semibold rounded-full transition-all duration-300"
               >
                 Faire un don
@@ -804,6 +797,209 @@ function FauneSection() {
 }
 
 /* ─────────────────────────────────────────────
+   COMPOSANT — Section Adhésion & Dons (HelloAsso)
+───────────────────────────────────────────── */
+function AdhesionSection() {
+  const { ref, visible } = useReveal();
+  const [activeTab, setActiveTab] = useState<'adhesion' | 'don'>('adhesion');
+
+  return (
+    <section id="adhesion" className="relative py-24 overflow-hidden bg-[#faf7f2]">
+      {/* Décor feuilles */}
+      <div className="absolute top-0 left-0 right-0 h-32 pointer-events-none">
+        <svg viewBox="0 0 1440 128" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
+          <path d="M0,64 C360,128 1080,0 1440,64 L1440,0 L0,0 Z" fill="white" />
+        </svg>
+      </div>
+
+      <div className="relative z-10 max-w-6xl mx-auto px-6">
+        <div
+          ref={ref}
+          className={`transition-all duration-1000 ${visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}
+        >
+          {/* En-tête */}
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#1a4731]/10 rounded-full text-[#1a4731] text-sm font-medium mb-6">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+              </svg>
+              Nous soutenir
+            </div>
+            <h2 className="text-4xl lg:text-5xl font-bold text-[#0d2b1a] mb-4" style={{ fontFamily: 'Georgia, serif' }}>
+              Adhérer &amp; Donner
+            </h2>
+            <p className="text-[#4a5568] text-lg max-w-2xl mx-auto">
+              Votre soutien est essentiel pour la protection de la faune amazonienne et le développement
+              de nos formations professionnelles en Guyane.
+            </p>
+          </div>
+
+          {/* Onglets */}
+          <div className="flex justify-center mb-8">
+            <div className="inline-flex bg-white rounded-2xl p-1.5 shadow-md border border-[#1a4731]/10">
+              <button
+                onClick={() => setActiveTab('adhesion')}
+                className={`px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                  activeTab === 'adhesion'
+                    ? 'bg-[#1a4731] text-white shadow-lg'
+                    : 'text-[#4a5568] hover:text-[#1a4731]'
+                }`}
+              >
+                🌿 Adhésion
+              </button>
+              <button
+                onClick={() => setActiveTab('don')}
+                className={`px-8 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
+                  activeTab === 'don'
+                    ? 'bg-[#c17f3a] text-white shadow-lg'
+                    : 'text-[#4a5568] hover:text-[#c17f3a]'
+                }`}
+              >
+                ❤️ Don libre
+              </button>
+            </div>
+          </div>
+
+          {/* Contenu onglet */}
+          <div className="grid lg:grid-cols-5 gap-8 items-start">
+
+            {/* Infos latérales */}
+            <div className="lg:col-span-2 space-y-6">
+              {activeTab === 'adhesion' ? (
+                <>
+                  <div className="bg-white rounded-2xl p-6 shadow-md border border-[#1a4731]/8">
+                    <h3 className="font-bold text-[#0d2b1a] text-lg mb-4" style={{ fontFamily: 'Georgia, serif' }}>Pourquoi adhérer ?</h3>
+                    <ul className="space-y-3">
+                      {[
+                        { icon: '🌿', text: 'Soutenir la protection de la faune guyanaise' },
+                        { icon: '🎓', text: 'Accéder aux formations à tarif préférentiel' },
+                        { icon: '🤝', text: 'Rejoindre une communauté passionnée' },
+                        { icon: '📋', text: 'Voter aux assemblées générales' },
+                        { icon: '📰', text: 'Recevoir notre lettre d’information' },
+                      ].map(item => (
+                        <li key={item.text} className="flex items-start gap-3">
+                          <span className="text-lg flex-shrink-0">{item.icon}</span>
+                          <span className="text-[#4a5568] text-sm leading-relaxed">{item.text}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="bg-[#1a4731]/5 rounded-2xl p-5 border border-[#1a4731]/10">
+                    <div className="text-xs text-[#1a4731] font-semibold uppercase tracking-wider mb-2">Tarif adhésion</div>
+                    <div className="text-3xl font-bold text-[#0d2b1a]">15 € <span className="text-base font-normal text-[#4a5568]">/an</span></div>
+                    <div className="text-sm text-[#4a5568] mt-1">Formule standard — option A</div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="bg-white rounded-2xl p-6 shadow-md border border-[#c17f3a]/15">
+                    <h3 className="font-bold text-[#0d2b1a] text-lg mb-4" style={{ fontFamily: 'Georgia, serif' }}>Votre don en action</h3>
+                    <ul className="space-y-3">
+                      {[
+                        { icon: '🦜', text: 'Soins vétérinaires pour les animaux recueillis' },
+                        { icon: '🌱', text: 'Amélioration des enclos et espaces naturels' },
+                        { icon: '📚', text: 'Développement de nouveaux modules de formation' },
+                        { icon: '🌍', text: 'Sensibilisation dans les écoles guyanaises' },
+                        { icon: '📸', text: 'Documentation et inventaire de la biodiversité' },
+                      ].map(item => (
+                        <li key={item.text} className="flex items-start gap-3">
+                          <span className="text-lg flex-shrink-0">{item.icon}</span>
+                          <span className="text-[#4a5568] text-sm leading-relaxed">{item.text}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="bg-[#c17f3a]/8 rounded-2xl p-5 border border-[#c17f3a]/20">
+                    <div className="text-xs text-[#c17f3a] font-semibold uppercase tracking-wider mb-2">Déductible des impôts</div>
+                    <div className="text-sm text-[#4a5568] leading-relaxed">
+                      En tant qu’association reconnue d’intérêt général, vos dons ouvrent droit
+                      à une réduction d’impôt de <strong className="text-[#c17f3a]">66 %</strong> du montant versé.
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Widget HelloAsso */}
+            <div className="lg:col-span-3">
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-[#1a4731]/10">
+                {/* En-tête du widget */}
+                <div className={`px-6 py-4 flex items-center gap-3 ${
+                  activeTab === 'adhesion' ? 'bg-[#1a4731]' : 'bg-[#c17f3a]'
+                }`}>
+                  <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="text-white font-semibold text-sm">
+                      {activeTab === 'adhesion' ? 'Formulaire d’adhésion' : 'Formulaire de don'} — HelloAsso
+                    </div>
+                    <div className="text-white/70 text-xs">Paiement sécurisé • Sans frais pour l’association</div>
+                  </div>
+                  <div className="ml-auto">
+                    <svg className="w-5 h-5 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
+                </div>
+
+                {/* iFrame HelloAsso */}
+                {activeTab === 'adhesion' ? (
+                  <iframe
+                    id="haWidget-adhesion"
+                    src="https://www.helloasso.com/associations/la-ferme-tropicale-de-guyane/adhesions/formulaire-d-adhesion-l-f-t-g-option-a-3/widget"
+                    style={{ width: '100%', height: '750px', border: 'none', display: 'block', backgroundColor: '#ffffff' }}
+                    title="Formulaire d'adhésion HelloAsso"
+                    loading="lazy"
+                    allow="payment"
+                  />
+                ) : (
+                  <iframe
+                    id="haWidget-don"
+                    src="https://www.helloasso.com/associations/la-ferme-tropicale-de-guyane/formulaires/1/widget"
+                    style={{ width: '100%', height: '750px', border: 'none', display: 'block', backgroundColor: '#ffffff' }}
+                    title="Formulaire de don HelloAsso"
+                    loading="lazy"
+                    allow="payment"
+                  />
+                )}
+
+                {/* Pied du widget */}
+                <div className="bg-gray-50 px-6 py-3 flex items-center justify-between border-t border-gray-100">
+                  <div className="flex items-center gap-2 text-gray-400 text-xs">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    Paiement sécurisé par HelloAsso
+                  </div>
+                  <a
+                    href="https://www.helloasso.com/associations/la-ferme-tropicale-de-guyane"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-[#1a4731] hover:underline"
+                  >
+                    Voir sur HelloAsso →
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Vague bas */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
+          <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="#0d2b1a" />
+        </svg>
+      </div>
+    </section>
+  );
+}
+
+/* ─────────────────────────────────────────────
    COMPOSANT — Section Contact
 ───────────────────────────────────────────── */
 function ContactSection() {
@@ -1018,8 +1214,8 @@ function Footer() {
             <h4 className="text-white font-semibold mb-4 text-sm">Liens utiles</h4>
             <div className="space-y-2 text-sm">
               <Link href="/auth/login" className="block hover:text-[#c17f3a] transition-colors">Espace membres</Link>
-              <a href="https://www.helloasso.com" target="_blank" rel="noopener noreferrer" className="block hover:text-[#c17f3a] transition-colors">Adhésion HelloAsso</a>
-              <a href="https://www.helloasso.com" target="_blank" rel="noopener noreferrer" className="block hover:text-[#c17f3a] transition-colors">Don HelloAsso</a>
+              <a href="#adhesion" className="block hover:text-[#c17f3a] transition-colors">Adhésion HelloAsso</a>
+              <a href="#adhesion" className="block hover:text-[#c17f3a] transition-colors">Don HelloAsso</a>
               <a href="https://lftg.info" target="_blank" rel="noopener noreferrer" className="block hover:text-[#c17f3a] transition-colors">Site officiel lftg.info</a>
             </div>
           </div>
@@ -1063,6 +1259,7 @@ export default function PublicPage() {
         <MissionsSection />
         <FormationsSection />
         <FauneSection />
+        <AdhesionSection />
         <ContactSection />
         <Footer />
       </div>
