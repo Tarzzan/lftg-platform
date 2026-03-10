@@ -34,7 +34,7 @@ export class AgendaController {
   ) {
     const ical = await this.agendaService.exportToICal({ startDate, endDate, userId });
     res.setHeader('Content-Type', 'text/calendar; charset=utf-8');
-    res.setHeader('Content-Disposition', 'attachment; filename="lftg-agenda.ics"");
+    res.setHeader("Content-Disposition", "attachment; filename=\"lftg-agenda.ics\"");
     res.send(ical);
   }
 
