@@ -15,6 +15,7 @@ import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { NotificationBell } from '@/components/ui/NotificationBell';
 import { CommandPalette, useCommandPalette } from '@/components/ui/CommandPalette';
 import { DemoBanner } from '@/components/DemoBanner';
+import { useColorTheme } from '@/lib/theme/ColorThemeContext';
 
 const navigation = [
   {
@@ -143,6 +144,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const { user, clearAuth } = useAuthStore();
   const { isOpen: cmdOpen, open: openCmd, close: closeCmd } = useCommandPalette();
+  const { currentPalette } = useColorTheme();
   const [hydrated, setHydrated] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -259,11 +261,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           boxShadow: '4px 0 32px rgba(0,0,0,0.5)',
         }}
       >
-        {/* Overlay sombre pour lisibilité du texte */}
+        {/* Overlay dynamique selon la palette de couleurs */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: 'linear-gradient(180deg, rgba(4,18,9,0.85) 0%, rgba(8,30,15,0.78) 40%, rgba(4,18,9,0.90) 100%)',
+            background: currentPalette.sidebarBg !== '#041209'
+              ? `linear-gradient(180deg, ${currentPalette.sidebarBg}dd 0%, ${currentPalette.sidebarBg}cc 40%, ${currentPalette.sidebarBg}ee 100%)`
+              : 'linear-gradient(180deg, rgba(4,18,9,0.85) 0%, rgba(8,30,15,0.78) 40%, rgba(4,18,9,0.90) 100%)',
           }}
         />
 
@@ -276,8 +280,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-lg"
             style={{
-              background: 'linear-gradient(135deg, #c17f3a, #e8a84e)',
-              boxShadow: '0 2px 8px rgba(193,127,58,0.4)',
+              background: `linear-gradient(135deg, ${currentPalette.sidebarAccent}, ${currentPalette.sidebarAccent}cc)`,
+              boxShadow: `0 2px 8px ${currentPalette.sidebarAccent}66`,
             }}
           >
             🐗
@@ -301,7 +305,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {collapsed && (
             <button
               onClick={toggleSidebar}
-              className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-[#c17f3a] flex items-center justify-center shadow-lg text-white hover:bg-[#d4924a] transition-colors z-10"
+              className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full flex items-center justify-center shadow-lg text-white transition-colors z-10"
+              style={{ background: currentPalette.sidebarAccent }}
             >
               <ChevronRight className={`w-3 h-3 transition-transform ${collapsed ? '' : 'rotate-180'}`} />
             </button>
@@ -325,10 +330,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     className="w-full flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg mt-1.5 mb-0.5 transition-all duration-150 group/header"
                     style={{
                       background: hasActiveItem
-                        ? 'linear-gradient(90deg, rgba(193,127,58,0.35), rgba(193,127,58,0.15))'
+                        ? `linear-gradient(90deg, ${currentPalette.sidebarAccent}59, ${currentPalette.sidebarAccent}26)`
                         : 'rgba(0,0,0,0.45)',
                       border: hasActiveItem
-                        ? '1px solid rgba(232,168,78,0.4)'
+                        ? `1px solid ${currentPalette.sidebarAccent}66`
                         : '1px solid rgba(255,255,255,0.10)',
                       backdropFilter: 'blur(6px)',
                     }}
@@ -336,7 +341,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     <span
                       className="inline-flex items-center gap-1.5 flex-1 text-[9px] font-bold uppercase tracking-widest"
                       style={{
-                        color: hasActiveItem ? '#f0c060' : 'rgba(255,255,255,0.92)',
+                        color: hasActiveItem ? currentPalette.sidebarAccent : 'rgba(255,255,255,0.92)',
                         textShadow: '0 1px 6px rgba(0,0,0,0.9), 0 0 12px rgba(0,0,0,0.7)',
                       }}
                     >
@@ -345,7 +350,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </span>
                     <ChevronDown
                       className={`w-3 h-3 flex-shrink-0 transition-transform duration-200 ${isGroupOpen ? 'rotate-0' : '-rotate-90'}`}
-                      style={{ color: hasActiveItem ? 'rgba(240,192,96,0.9)' : 'rgba(255,255,255,0.55)' }}
+                          style={{ color: hasActiveItem ? `${currentPalette.sidebarAccent}e6` : 'rgba(255,255,255,0.55)' }}
                     />
                   </button>
                 ) : (
@@ -380,20 +385,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             }
                           `}
                           style={isActive ? {
-                            background: 'linear-gradient(90deg, rgba(193,127,58,0.25), rgba(193,127,58,0.08))',
-                            borderLeft: '2px solid #c17f3a',
+                            background: `linear-gradient(90deg, ${currentPalette.sidebarAccent}40, ${currentPalette.sidebarAccent}14)`,
+                            borderLeft: `2px solid ${currentPalette.sidebarAccent}`,
                           } : {}}
                         >
                           {isActive && (
                             <span
                               className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-4 rounded-r"
-                              style={{ background: '#c17f3a' }}
+                              style={{ background: currentPalette.sidebarAccent }}
                             />
                           )}
-                          <Icon className={`flex-shrink-0 transition-transform group-hover:scale-110 ${collapsed ? 'w-5 h-5' : 'w-3.5 h-3.5'} ${isActive ? 'text-[#e8a84e]' : ''}`} />
+                          <Icon className={`flex-shrink-0 transition-transform group-hover:scale-110 ${collapsed ? 'w-5 h-5' : 'w-3.5 h-3.5'}`} style={isActive ? { color: currentPalette.sidebarAccent } : {}} />
                           {!collapsed && <span className="truncate">{item.label}</span>}
                           {!collapsed && isActive && (
-                            <ChevronRight className="w-3 h-3 ml-auto text-[#c17f3a] flex-shrink-0" />
+                            <ChevronRight className="w-3 h-3 ml-auto flex-shrink-0" style={{ color: currentPalette.sidebarAccent }} />
                           )}
                         </Link>
                       );
@@ -411,7 +416,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <div className="flex flex-col items-center gap-2">
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-                style={{ background: 'linear-gradient(135deg, #c17f3a, #e8a84e)' }}
+                style={{ background: `linear-gradient(135deg, ${currentPalette.sidebarAccent}, ${currentPalette.sidebarAccent}cc)` }}
                 title={user.name || user.email}
               >
                 {user.name?.[0]?.toUpperCase() || user.email[0].toUpperCase()}
@@ -431,7 +436,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             >
               <div
                 className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-                style={{ background: 'linear-gradient(135deg, #c17f3a, #e8a84e)', boxShadow: '0 2px 8px rgba(193,127,58,0.3)' }}
+                style={{ background: `linear-gradient(135deg, ${currentPalette.sidebarAccent}, ${currentPalette.sidebarAccent}cc)`, boxShadow: `0 2px 8px ${currentPalette.sidebarAccent}4d` }}
               >
                 {user.name?.[0]?.toUpperCase() || user.email[0].toUpperCase()}
               </div>

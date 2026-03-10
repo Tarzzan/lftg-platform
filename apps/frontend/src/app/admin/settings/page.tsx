@@ -16,6 +16,8 @@ import {
 } from 'lucide-react';
 import { authApi, usersApi } from '@/lib/api';
 import { useTheme } from '@/lib/theme/ThemeContext';
+import { useColorTheme, PRESET_THEMES, rgbStringToHex } from '@/lib/theme/ColorThemeContext';
+import type { ColorPalette } from '@/lib/theme/ColorThemeContext';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Section = 'profil' | 'securite' | 'apparence' | 'notifications' | 'plateforme' | 'ia';
@@ -246,10 +248,85 @@ function SecuriteSection({ me }: { me: any }) {
   );
 }
 
+// ─── Composant ColorSwatch ────────────────────────────────────────────────────
+function ColorSwatch({ label, colorKey, value, onChange }: {
+  label: string;
+  colorKey: keyof ColorPalette;
+  value: string;
+  onChange: (key: keyof ColorPalette, hex: string) => void;
+}) {
+  const isHex = value.startsWith('#');
+  const hexValue = isHex ? value : rgbStringToHex(value);
+
+  return (
+    <div className="flex items-center gap-3">
+      <div className="relative flex-shrink-0">
+        <div
+          className="w-9 h-9 rounded-xl border-2 border-white shadow-md cursor-pointer overflow-hidden"
+          style={{ background: hexValue }}
+        >
+          <input
+            type="color"
+            value={hexValue}
+            onChange={(e) => onChange(colorKey, e.target.value)}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            title={label}
+          />
+        </div>
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 truncate">{label}</p>
+        <p className="text-xs text-gray-400 font-mono">{hexValue}</p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Composant PreviewMini ────────────────────────────────────────────────────
+function PreviewMini({ palette }: { palette: ColorPalette }) {
+  const bg = rgbStringToHex(palette.background);
+  const primary = rgbStringToHex(palette.primary);
+  const card = rgbStringToHex(palette.card);
+  const border = rgbStringToHex(palette.border);
+  const accent = rgbStringToHex(palette.accent);
+  const sidebar = palette.sidebarBg;
+  const sidebarAccent = palette.sidebarAccent;
+
+  return (
+    <div className="rounded-xl overflow-hidden border border-gray-200 dark:border-border shadow-sm" style={{ background: bg, height: '80px', display: 'flex' }}>
+      {/* Sidebar mini */}
+      <div className="w-8 flex-shrink-0 flex flex-col gap-1 p-1" style={{ background: sidebar }}>
+        <div className="w-full h-2 rounded" style={{ background: sidebarAccent, opacity: 0.9 }} />
+        <div className="w-full h-1 rounded" style={{ background: 'rgba(255,255,255,0.3)' }} />
+        <div className="w-full h-1 rounded" style={{ background: 'rgba(255,255,255,0.15)' }} />
+        <div className="w-full h-1 rounded" style={{ background: 'rgba(255,255,255,0.15)' }} />
+        <div className="w-full h-1 rounded" style={{ background: 'rgba(255,255,255,0.15)' }} />
+      </div>
+      {/* Content mini */}
+      <div className="flex-1 p-1.5 flex flex-col gap-1">
+        <div className="flex gap-1">
+          <div className="flex-1 h-4 rounded" style={{ background: card, border: `1px solid ${border}` }} />
+          <div className="flex-1 h-4 rounded" style={{ background: card, border: `1px solid ${border}` }} />
+          <div className="flex-1 h-4 rounded" style={{ background: card, border: `1px solid ${border}` }} />
+        </div>
+        <div className="flex gap-1 items-center">
+          <div className="h-3 w-12 rounded" style={{ background: primary }} />
+          <div className="h-3 w-8 rounded" style={{ background: accent, opacity: 0.7 }} />
+        </div>
+        <div className="h-2 rounded" style={{ background: border }} />
+        <div className="h-2 rounded w-3/4" style={{ background: border, opacity: 0.5 }} />
+      </div>
+    </div>
+  );
+}
+
+// ─── Section Apparence ────────────────────────────────────────────────────────
 function ApparenceSection() {
   const { theme, setTheme } = useTheme();
+  const { currentPalette, isCustom, applyPreset, updateColor, resetToDefault, saveCustom } = useColorTheme();
   const [density, setDensity] = useState<'compact' | 'normal' | 'spacious'>('normal');
   const [language, setLanguage] = useState('fr');
+  const [activeTab, setActiveTab] = useState<'presets' | 'custom'>('presets');
 
   const themeOptions = [
     { value: 'light', label: 'Clair', icon: Sun, desc: 'Thème forêt tropicale clair' },
@@ -257,10 +334,24 @@ function ApparenceSection() {
     { value: 'system', label: 'Système', icon: Monitor, desc: 'Suit les préférences OS' },
   ];
 
+  const colorFields: { key: keyof ColorPalette; label: string; group: string }[] = [
+    { key: 'primary',     label: 'Couleur primaire',   group: 'Interface' },
+    { key: 'secondary',   label: 'Couleur secondaire', group: 'Interface' },
+    { key: 'accent',      label: 'Couleur accent',     group: 'Interface' },
+    { key: 'background',  label: 'Fond de page',       group: 'Interface' },
+    { key: 'card',        label: 'Fond des cartes',    group: 'Interface' },
+    { key: 'border',      label: 'Bordures',           group: 'Interface' },
+    { key: 'sidebarBg',   label: 'Fond sidebar',       group: 'Sidebar' },
+    { key: 'sidebarAccent', label: 'Accent sidebar',   group: 'Sidebar' },
+    { key: 'sidebarText', label: 'Texte sidebar',      group: 'Sidebar' },
+  ];
+
+  const groups = ['Interface', 'Sidebar'];
+
   return (
-    <SectionCard title="Apparence" description="Personnalisez l'interface de la plateforme" icon={Palette}>
-      <div className="space-y-3">
-        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">Thème de couleur</p>
+    <div className="space-y-4">
+      {/* ─── Mode clair/sombre ─── */}
+      <SectionCard title="Mode d'affichage" description="Clair, sombre ou selon votre système" icon={Sun}>
         <div className="grid grid-cols-3 gap-3">
           {themeOptions.map((opt) => {
             const Icon = opt.icon;
@@ -282,40 +373,172 @@ function ApparenceSection() {
             );
           })}
         </div>
-      </div>
+      </SectionCard>
 
-      <div className="space-y-3">
-        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">Densité d'affichage</p>
-        <div className="flex gap-2">
-          {(['compact', 'normal', 'spacious'] as const).map((d) => (
-            <button
-              key={d}
-              onClick={() => setDensity(d)}
-              className={`flex-1 py-2 text-xs font-medium rounded-lg border transition-all ${
-                density === d
-                  ? 'border-forest-500 bg-forest-50 dark:bg-forest-900/20 text-forest-700 dark:text-forest-400'
-                  : 'border-gray-200 dark:border-border text-gray-600 dark:text-gray-400 hover:border-forest-300'
-              }`}
-            >
-              {d === 'compact' ? 'Compact' : d === 'normal' ? 'Normal' : 'Aéré'}
-            </button>
-          ))}
+      {/* ─── Palette de couleurs ─── */}
+      <SectionCard title="Palette de couleurs" description="Personnalisez les couleurs de la plateforme en temps réel" icon={Palette}>
+
+        {/* Thème actif */}
+        <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-forest-50 to-transparent dark:from-forest-900/20 border border-forest-200 dark:border-forest-700/40">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0 shadow-sm" style={{ background: rgbStringToHex(currentPalette.primary) }}>
+            {currentPalette.emoji}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold text-gray-900 dark:text-foreground">{currentPalette.name}</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{currentPalette.description}</p>
+          </div>
+          {isCustom && (
+            <span className="px-2 py-0.5 text-xs font-semibold bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 rounded-full flex-shrink-0">Personnalisé</span>
+          )}
         </div>
-      </div>
 
-      <FormField label="Langue de l'interface">
-        <select
-          value={language}
-          onChange={(e) => setLanguage(e.target.value)}
-          className="w-full px-3.5 py-2.5 text-sm border border-gray-200 dark:border-border rounded-xl bg-white dark:bg-muted/20 text-gray-900 dark:text-foreground focus:outline-none focus:ring-2 focus:ring-forest-500/30 focus:border-forest-400"
-        >
-          <option value="fr">🇫🇷 Français</option>
-          <option value="en">🇬🇧 English</option>
-          <option value="es">🇪🇸 Español</option>
-          <option value="pt">🇧🇷 Português</option>
-        </select>
-      </FormField>
-    </SectionCard>
+        {/* Onglets */}
+        <div className="flex gap-1 p-1 bg-gray-100 dark:bg-muted/30 rounded-xl">
+          <button
+            onClick={() => setActiveTab('presets')}
+            className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
+              activeTab === 'presets'
+                ? 'bg-white dark:bg-card shadow-sm text-gray-900 dark:text-foreground'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'
+            }`}
+          >
+            🎨 Thèmes prédéfinis
+          </button>
+          <button
+            onClick={() => setActiveTab('custom')}
+            className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
+              activeTab === 'custom'
+                ? 'bg-white dark:bg-card shadow-sm text-gray-900 dark:text-foreground'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'
+            }`}
+          >
+            🖌️ Personnaliser
+          </button>
+        </div>
+
+        {/* Thèmes prédéfinis */}
+        {activeTab === 'presets' && (
+          <div className="grid grid-cols-2 gap-3">
+            {PRESET_THEMES.map((preset) => {
+              const isActive = currentPalette.id === preset.id;
+              return (
+                <button
+                  key={preset.id}
+                  onClick={() => applyPreset(preset)}
+                  className={`relative flex flex-col gap-2 p-3 rounded-xl border-2 text-left transition-all ${
+                    isActive
+                      ? 'border-forest-500 shadow-md'
+                      : 'border-gray-200 dark:border-border hover:border-gray-300 dark:hover:border-border'
+                  }`}
+                >
+                  {isActive && (
+                    <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-forest-500 flex items-center justify-center">
+                      <Check className="w-3 h-3 text-white" />
+                    </div>
+                  )}
+                  <PreviewMini palette={preset} />
+                  <div className="flex items-center gap-2">
+                    <span className="text-base">{preset.emoji}</span>
+                    <div>
+                      <p className="text-xs font-bold text-gray-800 dark:text-foreground">{preset.name}</p>
+                      <p className="text-xs text-gray-400 truncate">{preset.description}</p>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Personnalisation avancée */}
+        {activeTab === 'custom' && (
+          <div className="space-y-4">
+            {/* Prévisualisation live */}
+            <div className="space-y-1.5">
+              <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide">Prévisualisation</p>
+              <PreviewMini palette={currentPalette} />
+            </div>
+
+            {/* Pickers par groupe */}
+            {groups.map((group) => (
+              <div key={group} className="space-y-3">
+                <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide flex items-center gap-2">
+                  <span className="w-3 h-0.5 bg-gray-300 dark:bg-gray-600 rounded" />
+                  {group}
+                </p>
+                <div className="grid grid-cols-1 gap-2">
+                  {colorFields
+                    .filter(f => f.group === group)
+                    .map(({ key, label }) => {
+                      const rawValue = currentPalette[key] as string;
+                      return (
+                        <ColorSwatch
+                          key={key}
+                          label={label}
+                          colorKey={key}
+                          value={rawValue}
+                          onChange={updateColor}
+                        />
+                      );
+                    })}
+                </div>
+              </div>
+            ))}
+
+            {/* Actions */}
+            <div className="flex gap-2 pt-2 border-t border-gray-100 dark:border-border">
+              <button
+                onClick={() => { saveCustom(); toast.success('Palette personnalisée sauvegardée !'); }}
+                className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-semibold bg-forest-600 text-white rounded-xl hover:bg-forest-700 transition-colors"
+              >
+                <Save className="w-3.5 h-3.5" /> Sauvegarder
+              </button>
+              <button
+                onClick={() => { resetToDefault(); toast.success('Thème réinitialisé'); }}
+                className="flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-semibold bg-gray-100 dark:bg-muted/30 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-200 dark:hover:bg-muted/50 transition-colors"
+              >
+                <RefreshCw className="w-3.5 h-3.5" /> Réinitialiser
+              </button>
+            </div>
+          </div>
+        )}
+      </SectionCard>
+
+      {/* ─── Densité et langue ─── */}
+      <SectionCard title="Interface" description="Densité d'affichage et langue" icon={Globe}>
+        <div className="space-y-3">
+          <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">Densité d'affichage</p>
+          <div className="flex gap-2">
+            {(['compact', 'normal', 'spacious'] as const).map((d) => (
+              <button
+                key={d}
+                onClick={() => setDensity(d)}
+                className={`flex-1 py-2 text-xs font-medium rounded-lg border transition-all ${
+                  density === d
+                    ? 'border-forest-500 bg-forest-50 dark:bg-forest-900/20 text-forest-700 dark:text-forest-400'
+                    : 'border-gray-200 dark:border-border text-gray-600 dark:text-gray-400 hover:border-forest-300'
+                }`}
+              >
+                {d === 'compact' ? 'Compact' : d === 'normal' ? 'Normal' : 'Aéré'}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <FormField label="Langue de l'interface">
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            className="w-full px-3.5 py-2.5 text-sm border border-gray-200 dark:border-border rounded-xl bg-white dark:bg-muted/20 text-gray-900 dark:text-foreground focus:outline-none focus:ring-2 focus:ring-forest-500/30 focus:border-forest-400"
+          >
+            <option value="fr">🇫🇷 Français</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="es">🇪🇸 Español</option>
+            <option value="pt">🇧🇷 Português</option>
+          </select>
+        </FormField>
+      </SectionCard>
+    </div>
   );
 }
 
