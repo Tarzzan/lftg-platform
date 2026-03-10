@@ -36,12 +36,12 @@ export class CitesService {
   private readonly citesDatabase: Record<string, { appendix: CitesAppendix; restrictions: string[] }> = {
     'amazona amazonica': { appendix: 'II', restrictions: ['Permis CITES requis pour commerce international', 'Baguage obligatoire'] },
     'ara ararauna': { appendix: 'II', restrictions: ['Permis CITES requis', 'Certification élevage captif recommandée'] },
-    'ara macao': { appendix: 'I', restrictions: ['Commerce commercial interdit', 'Permis scientifique requis', 'Certificat d'élevage captif obligatoire'] },
-    'caiman crocodilus': { appendix: 'II', restrictions: ['Quota d'exportation national', 'Permis CITES requis'] },
+    'ara macao': { appendix: 'I', restrictions: ['Commerce commercial interdit', 'Permis scientifique requis', "Certificat d'élevage captif obligatoire"] },
+    'caiman crocodilus': { appendix: 'II', restrictions: ["Quota d'exportation national", 'Permis CITES requis'] },
     'dendrobates azureus': { appendix: 'II', restrictions: ['Permis CITES requis', 'Élevage captif recommandé'] },
     'harpia harpyja': { appendix: 'I', restrictions: ['Commerce commercial strictement interdit', 'Protection maximale'] },
     'boa constrictor': { appendix: 'II', restrictions: ['Permis CITES requis pour export', 'Baguage recommandé'] },
-    'iguana iguana': { appendix: 'II', restrictions: ['Permis CITES requis', 'Quota selon pays d'origine'] },
+    'iguana iguana': { appendix: 'II', restrictions: ['Permis CITES requis', "Quota selon pays d'origine"] },
     'chelonoidis carbonaria': { appendix: 'II', restrictions: ['Permis CITES requis', 'Élevage captif documenté'] },
     'podocnemis unifilis': { appendix: 'II', restrictions: ['Permis CITES requis', 'Espèce vulnérable UICN'] },
   };

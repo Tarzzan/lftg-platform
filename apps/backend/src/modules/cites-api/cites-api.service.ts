@@ -71,12 +71,12 @@ export class CitesApiService {
         {
           type: 'CITES',
           appendix: 'II',
-          notes: 'Espèce inscrite à l'Annexe II de la CITES. Nécessite un permis CITES pour toute transaction internationale.',
+          notes: "Espèce inscrite à l'Annexe II de la CITES. Nécessite un permis CITES pour toute transaction internationale.",
         },
         {
           type: 'EU',
           annex: 'B',
-          notes: 'Inscrite à l'Annexe B du Règlement CE 338/97. Nécessite un certificat CE pour les transactions intra-UE.',
+          notes: "Inscrite à l'Annexe B du Règlement CE 338/97. Nécessite un certificat CE pour les transactions intra-UE.",
         },
       ],
       trade_restrictions: {
@@ -102,8 +102,8 @@ export class CitesApiService {
       euListing: species.eu_listing,
       requiresPermit,
       requirements: requiresPermit ? [
-        'Permis d'exportation CITES',
-        'Permis d'importation CITES',
+        "Permis d'exportation CITES",
+        "Permis d'importation CITES",
         'Certificat CE (si transaction intra-UE)',
         'Marquage individuel (bague ou puce)',
       ] : [],
@@ -113,8 +113,8 @@ export class CitesApiService {
 
   async getPermitTemplates() {
     return [
-      { id: 'tpl-1', type: 'EXPORT_PERMIT', name: 'Permis d'exportation CITES', format: 'PDF' },
-      { id: 'tpl-2', type: 'IMPORT_PERMIT', name: 'Permis d'importation CITES', format: 'PDF' },
+      { id: 'tpl-1', type: 'EXPORT_PERMIT', name: "Permis d'exportation CITES", format: 'PDF' },
+      { id: 'tpl-2', type: 'IMPORT_PERMIT', name: "Permis d'importation CITES", format: 'PDF' },
       { id: 'tpl-3', type: 'EU_CERTIFICATE', name: 'Certificat CE 338/97', format: 'PDF' },
       { id: 'tpl-4', type: 'CAPTIVE_BRED', name: 'Déclaration naissance en captivité', format: 'PDF' },
     ];

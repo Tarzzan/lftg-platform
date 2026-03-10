@@ -94,7 +94,7 @@ dans l'en-tête \`Authorization: Bearer <token>\` pour toutes les requêtes prot
     .addTag('Export', 'Export CSV et rapports PDF')
     .addTag('Import', 'Import CSV en masse')
     .addTag('Stats', 'Statistiques et tableaux de bord')
-    .addTag('Audit', 'Journal d'audit des actions')
+    .addTag("Audit", "Journal d'audit des actions")
     .addServer('http://localhost:3001', 'Développement local')
     .addServer('https://api.lftg.fr', 'Production')
     .build();
