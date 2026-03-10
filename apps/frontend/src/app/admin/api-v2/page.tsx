@@ -15,7 +15,7 @@ export default function ApiV2Page() {
 
   const SCOPES = ['animals:read', 'animals:write', 'medical:read', 'medical:write', 'stock:read', 'stock:write', 'cites:read', 'analytics:read', 'webhooks:write'];
 
-  const { data: keys, isLoading }, isError = useQuery({
+  const { data: keys, isLoading , isError } = useQuery({
     queryKey: ['api-keys'],
     queryFn: () => api.get('/public/v2/api-keys').then(r => r.data),
   });

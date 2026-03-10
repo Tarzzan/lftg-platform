@@ -240,8 +240,9 @@ model StockRequest {
   item        StockItem @relation(fields: [itemId], references: [id])
   quantity    Float
   reason      String?
+  priority    String    @default("NORMAL")
   requesterId String
-  status      String    @default("draft")
+  status      String    @default("PENDING")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }

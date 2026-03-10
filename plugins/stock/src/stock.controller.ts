@@ -50,6 +50,7 @@ export class StockController {
   @Post('requests')
   @ApiOperation({ summary: 'Crée une demande de sortie stock' })
   createRequest(@Body() body: any, @CurrentUser('id') userId: string) {
-    return this.service.createRequest({ ...body, requesterId: userId });
+    const { priority, ...safeBody } = body;
+    return this.service.createRequest({ ...safeBody, requesterId: userId });
   }
 }

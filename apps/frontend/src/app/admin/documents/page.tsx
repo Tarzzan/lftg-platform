@@ -22,15 +22,6 @@ interface Document {
   url?: string;
 }
 
-// Données de démonstration supprimées — données réelles via API
-// const _docs_REMOVED = [
-  { id: '1', name: 'Permis_CITES_Amazona_2025.pdf', category: 'CITES', size: 245000, uploadedAt: '2025-01-15', uploadedBy: 'Admin', linkedTo: 'Amazona (E-01)', tags: ['cites', 'permis', 'annexe-ii'] },
-  { id: '2', name: 'Certificat_sante_Ara_Bleu.pdf', category: 'MEDICAL', size: 180000, uploadedAt: '2026-01-20', uploadedBy: 'Dr. Rousseau', linkedTo: 'Ara Bleu (E-03)', tags: ['santé', 'vétérinaire'] },
-  { id: '3', name: 'Facture_VT-2026-021.pdf', category: 'VENTE', size: 95000, uploadedAt: '2026-02-28', uploadedBy: 'Pierre Leblanc', linkedTo: 'VT-2026-021', tags: ['facture', 'vente'] },
-  { id: '4', name: 'Fiche_espece_Harpia_harpyja.pdf', category: 'ESPECE', size: 320000, uploadedAt: '2025-06-10', uploadedBy: 'Marie Dupont', linkedTo: 'Harpy (E-04)', tags: ['espèce', 'annexe-i'] },
-  { id: '5', name: 'Rapport_inspection_DREAL_2025.pdf', category: 'ADMINISTRATIF', size: 512000, uploadedAt: '2025-11-05', uploadedBy: 'Admin', tags: ['inspection', 'dreal', 'conformité'] },
-  { id: '6', name: 'Protocole_soins_reptiles.pdf', category: 'PROTOCOLE', size: 280000, uploadedAt: '2025-08-15', uploadedBy: 'Dr. Rousseau', tags: ['protocole', 'reptiles', 'soins'] },
-];
 
 const CATEGORY_CONFIG: Record<string, { emoji: string; color: string; label: string }> = {
   CITES: { emoji: '📜', color: 'bg-red-100 text-red-700', label: 'CITES' },
@@ -55,7 +46,7 @@ export default function DocumentsPage() {
   const [isDragging, setIsDragging] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
 
-  const { data: allDocs = [], isLoading }, isError = useQuery({
+  const { data: allDocs = [], isLoading , isError } = useQuery({
     queryKey: ['documents'],
     queryFn: () => documentsApi.list(),
   });

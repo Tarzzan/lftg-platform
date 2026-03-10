@@ -28,7 +28,7 @@ export default function CitesPage() {
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState({ permitNumber: '', type: 'IMPORT', status: 'ACTIVE', issuedBy: '', issuedAt: '', expiresAt: '', species: '', quantity: 1, notes: '' });
 
-  const { data: permits = [], isLoading }, isError = useQuery({
+  const { data: permits = [], isLoading , isError } = useQuery({
     queryKey: ['cites-permits', filterStatus],
     queryFn: () => api.get(`/cites/permits${filterStatus !== 'ALL' ? `?status=${filterStatus}` : ''}`).then(r => r.data),
   });
