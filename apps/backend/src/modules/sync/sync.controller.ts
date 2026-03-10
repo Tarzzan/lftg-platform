@@ -18,7 +18,7 @@ export class SyncController {
   }
 
   @Get("status/:clientId")
-  @ApiOperation({ summary: "Statut de sync d\'un client" })
+  @ApiOperation({ summary: "Statut de sync d'un client" })
   getSyncStatus(@Param('clientId') clientId: string) {
     return this.syncService.getSyncStatus(clientId);
   }

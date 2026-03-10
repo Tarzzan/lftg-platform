@@ -173,7 +173,7 @@ export class GbifService {
       VU: 'Vulnérable',
       EN: 'En danger',
       CR: 'En danger critique',
-      EW: 'Éteinte à l\'état sauvage',
+      EW: 'Éteinte à l'état sauvage',
       EX: 'Éteinte',
       DD: 'Données insuffisantes',
     };

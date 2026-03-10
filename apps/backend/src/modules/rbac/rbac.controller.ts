@@ -20,7 +20,7 @@ export class RbacController {
   }
 
   @Get("roles/:id")
-  @ApiOperation({ summary: "Détail d\'un rôle" })
+  @ApiOperation({ summary: "Détail d'un rôle" })
   @ApiResponse({ status: 200, type: RoleResponseDto })
   findRole(@Param('id') id: string) {
     return this.rbacService.findRoleById(id);
@@ -54,7 +54,7 @@ export class RbacController {
   }
 
   @Get("users/:userId/permissions")
-  @ApiOperation({ summary: "Permissions effectives d\'un utilisateur" })
+  @ApiOperation({ summary: "Permissions effectives d'un utilisateur" })
   getUserPermissions(@Param('userId') userId: string) {
     return this.rbacService.getUserPermissions(userId);
   }

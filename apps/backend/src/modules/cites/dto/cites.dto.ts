@@ -7,11 +7,11 @@ export class CreateCitesPermitDto {
   @IsString()
   permitNumber: string;
 
-  @ApiProperty({ description: "ID de l\'animal concerné" })
+  @ApiProperty({ description: "ID de l'animal concerné" })
   @IsString()
   animalId: string;
 
-  @ApiProperty({ description: "Date d\'expiration du permis" })
+  @ApiProperty({ description: "Date d'expiration du permis" })
   @IsDateString()
   expiresAt: string;
 
@@ -27,7 +27,7 @@ export class CitesQueryDto {
   @IsString()
   status?: string;
 
-  @ApiPropertyOptional({ description: "Filtrer par ID d\'animal" })
+  @ApiPropertyOptional({ description: "Filtrer par ID d'animal" })
   @IsOptional()
   @IsString()
   animalId?: string;

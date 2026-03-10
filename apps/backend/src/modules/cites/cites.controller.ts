@@ -12,13 +12,13 @@ export class CitesController {
   constructor(private readonly citesService: CitesService) {}
 
   @Get('check')
-  @ApiOperation({ summary: "Vérifier le statut CITES d\'une espèce (via query)" })
+  @ApiOperation({ summary: "Vérifier le statut CITES d'une espèce (via query)" })
   async checkSpeciesQuery(@Query('scientificName') scientificName: string) {
     return this.citesService.checkSpecies(scientificName);
   }
 
   @Get('check/:scientificName')
-  @ApiOperation({ summary: "Vérifier le statut CITES d\'une espèce (via param)" })
+  @ApiOperation({ summary: "Vérifier le statut CITES d'une espèce (via param)" })
   async checkSpeciesParam(@Param('scientificName') scientificName: string) {
     return this.citesService.checkSpecies(decodeURIComponent(scientificName));
   }
@@ -36,7 +36,7 @@ export class CitesController {
   }
 
   @Get('permits/animal/:animalId')
-  @ApiOperation({ summary: "Permis CITES d\'un animal" })
+  @ApiOperation({ summary: "Permis CITES d'un animal" })
   async getPermitsByAnimal(@Param('animalId') animalId: string) {
     return this.citesService.getPermitsByAnimal(animalId);
   }
@@ -60,7 +60,7 @@ export class CitesController {
   }
 
   @Patch("permits/:id/status")
-  @ApiOperation({ summary: "Mettre à jour le statut d\'un permis" })
+  @ApiOperation({ summary: "Mettre à jour le statut d'un permis" })
   async updatePermitStatus(
     @Param('id') id: string,
     @Body('status') status: 'ACTIVE' | 'EXPIRED' | 'REVOKED' | 'SUSPENDED' | 'PENDING',

@@ -54,7 +54,7 @@ export class QuizService {
           type: "MULTIPLE_CHOICE",
           options: ['Avocat', 'Mangue', 'Raisin', 'Cerise (noyau)'],
           correctAnswers: [0, 3],
-          explanation: 'L\'avocat et les noyaux de cerise sont toxiques pour les perroquets.',
+          explanation: 'L'avocat et les noyaux de cerise sont toxiques pour les perroquets.',
           points: 15,
         },
         {
@@ -63,7 +63,7 @@ export class QuizService {
           type: "SINGLE_CHOICE",
           options: ['15-18°C', '20-25°C', '28-32°C', '35-40°C'],
           correctAnswer: 1,
-          explanation: 'Les perroquets tropicaux sont à l\'aise entre 20 et 25°C.',
+          explanation: 'Les perroquets tropicaux sont à l'aise entre 20 et 25°C.',
           points: 10,
         },
       ],

@@ -13,7 +13,7 @@ export class AgendaController {
   constructor(private readonly agendaService: AgendaService) {}
 
   @Get()
-  @ApiOperation({ summary: "Lister les événements de l\'agenda" })
+  @ApiOperation({ summary: "Lister les événements de l'agenda" })
   async getEvents(
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
@@ -25,7 +25,7 @@ export class AgendaController {
   }
 
   @Get('export/ical')
-  @ApiOperation({ summary: "Exporter l\'agenda au format iCal (.ics)" })
+  @ApiOperation({ summary: "Exporter l'agenda au format iCal (.ics)" })
   async exportICal(
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
@@ -45,7 +45,7 @@ export class AgendaController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: "Détail d\'un événement" })
+  @ApiOperation({ summary: "Détail d'un événement" })
   async getEvent(@Param('id') id: string) {
     return this.agendaService.getEventById(id);
   }

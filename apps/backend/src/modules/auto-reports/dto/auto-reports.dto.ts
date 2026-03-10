@@ -22,7 +22,7 @@ export class CreateScheduleDto {
   @IsString()
   name: string;
 
-  @ApiProperty({ enum: ReportFrequency, description: "Fréquence d\'envoi" })
+  @ApiProperty({ enum: ReportFrequency, description: "Fréquence d'envoi" })
   @IsEnum(ReportFrequency)
   frequency: ReportFrequency;
 

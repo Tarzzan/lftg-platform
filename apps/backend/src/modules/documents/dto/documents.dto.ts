@@ -20,7 +20,7 @@ export class CreateDocumentDto {
   @IsEnum(DocumentType)
   type?: DocumentType;
 
-  @ApiPropertyOptional({ description: "ID de l\'animal associé" })
+  @ApiPropertyOptional({ description: "ID de l'animal associé" })
   @IsOptional()
   @IsString()
   animalId?: string;
@@ -37,7 +37,7 @@ export class DocumentQueryDto {
   @IsString()
   type?: string;
 
-  @ApiPropertyOptional({ description: "Filtrer par ID d\'animal" })
+  @ApiPropertyOptional({ description: "Filtrer par ID d'animal" })
   @IsOptional()
   @IsString()
   animalId?: string;

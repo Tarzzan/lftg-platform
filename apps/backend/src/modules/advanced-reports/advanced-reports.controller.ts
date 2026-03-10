@@ -18,8 +18,7 @@ export class AdvancedReportsController {
   @ApiResponse({ status: 200, description: "Fichier PDF du rapport CITES" })
   async generateCitesReport(@Res() res: Response) {
     const pdfBuffer = await this.advancedReportsService.generateCitesReport();
-    res.set({
-      "Content-Type': 'application/pdf',
+    res.set({ 'Content-Type': 'application/pdf',
       'Content-Disposition': 'attachment; filename=cites-report.pdf',
       'Content-Length': pdfBuffer.length,
     });

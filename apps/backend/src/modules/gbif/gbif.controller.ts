@@ -25,7 +25,7 @@ export class GbifController {
   getBiodiversityStats() { return this.gbifService.getBiodiversityStats(); }
 
   @Get("species/:name/details")
-  @ApiOperation({ summary: "Détails d\'une espèce" })
+  @ApiOperation({ summary: "Détails d'une espèce" })
   getSpeciesDetails(@Param('name') name: string) {
     return this.gbifService.getSpeciesDetails(name);
   }

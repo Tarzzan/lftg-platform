@@ -37,7 +37,7 @@ export class EnclosController {
   }
 
   @Get(":id")
-  @ApiOperation({ summary: "Détail d\'un enclos avec ses animaux" })
+  @ApiOperation({ summary: "Détail d'un enclos avec ses animaux" })
   findOne(@Param('id') id: string) {
     return this.enclosService.findOne(id);
   }

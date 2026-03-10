@@ -54,7 +54,7 @@ export class ParrainageService {
           id: 'upd-001',
           date: new Date('2026-02-15'),
           title: "Nouvelles de votre filleul !",
-          content: "AM-001 se porte à merveille. Il a appris 3 nouveaux mots ce mois-ci et participe activement aux sessions d\'enrichissement comportemental.',
+          content: "AM-001 se porte à merveille. Il a appris 3 nouveaux mots ce mois-ci et participe activement aux sessions d'enrichissement comportemental.',
           author: 'soigneur@lftg.fr',
         },
       ],

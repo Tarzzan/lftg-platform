@@ -23,7 +23,7 @@ export class TicketsController {
   }
 
   @Get(':id')
-  @ApiOperation({ summary: "Détail d\'un ticket" })
+  @ApiOperation({ summary: "Détail d'un ticket" })
   findOne(@Param('id') id: string) {
     return this.ticketsService.findOne(id);
   }
@@ -41,7 +41,7 @@ export class TicketsController {
   }
 
   @Patch(':id/status')
-  @ApiOperation({ summary: "Mettre à jour le statut d\'un ticket" })
+  @ApiOperation({ summary: "Mettre à jour le statut d'un ticket" })
   updateStatus(@Param('id') id: string, @Body('status') status: TicketStatus) {
     return this.ticketsService.updateStatus(id, status);
   }

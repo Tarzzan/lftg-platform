@@ -18,13 +18,13 @@ export class CitesApiController {
   }
 
   @Get('species/:taxonId')
-  @ApiOperation({ summary: "Détails CITES d\'une espèce" })
+  @ApiOperation({ summary: "Détails CITES d'une espèce" })
   getSpeciesDetails(@Param('taxonId') taxonId: string) {
     return this.citesApiService.getSpeciesDetails(taxonId);
   }
 
   @Post('compliance-check')
-  @ApiOperation({ summary: "Vérifier la conformité CITES d\'une transaction" })
+  @ApiOperation({ summary: "Vérifier la conformité CITES d'une transaction" })
   checkCompliance(@Body() body: { speciesName: string; quantity: number; transactionType: string }) {
     return this.citesApiService.checkCompliance(body.speciesName, body.quantity, body.transactionType);
   }

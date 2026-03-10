@@ -34,7 +34,7 @@ export class AlertesController {
   }
 
   @Get("rules")
-  @ApiOperation({ summary: "Règles d\'alerte configurées" })
+  @ApiOperation({ summary: "Règles d'alerte configurées" })
   getRules() {
     return this.alertesService.getRules();
   }

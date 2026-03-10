@@ -18,13 +18,13 @@ export class GpsController {
   }
 
   @Get("trackers/:id")
-  @ApiOperation({ summary: "Détail d\'un tracker GPS" })
+  @ApiOperation({ summary: "Détail d'un tracker GPS" })
   getTracker(@Param('id') id: string) {
     return this.gpsService.getTrackerById(id);
   }
 
   @Get('trackers/:id/trail')
-  @ApiOperation({ summary: "Trajectoire d\'un animal sur N heures" })
+  @ApiOperation({ summary: "Trajectoire d'un animal sur N heures" })
   getTrail(@Param('id') id: string, @Query('hours') hours?: string) {
     return this.gpsService.getTrackerTrail(id, hours ? parseInt(hours) : 6);
   }

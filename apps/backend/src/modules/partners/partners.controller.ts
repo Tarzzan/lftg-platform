@@ -20,7 +20,7 @@ export class PartnersController {
   getStats() { return this.partnersService.getStats(); }
 
   @Get(":id")
-  @ApiOperation({ summary: "Détail d\'un partenaire" })
+  @ApiOperation({ summary: "Détail d'un partenaire" })
   findOne(@Param('id') id: string) { return this.partnersService.findOne(id); }
 
   @Post()
@@ -36,7 +36,7 @@ export class PartnersController {
   activate(@Param("id") id: string) { return this.partnersService.activate(id); }
 
   @Post(':id/rotate-key')
-  @ApiOperation({ summary: "Renouveler les clés API d\'un partenaire" })
+  @ApiOperation({ summary: "Renouveler les clés API d'un partenaire" })
   rotateApiKey(@Param('id') id: string) { return this.partnersService.rotateApiKey(id); }
 
   @Post('validate')

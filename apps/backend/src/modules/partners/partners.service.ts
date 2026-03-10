@@ -55,7 +55,7 @@ export class PartnersService {
       contactName: 'Dr. Pierre Martin',
       phone: '+594 594 123 456',
       website: 'https://zoo-guyane.fr',
-      description: "Partenaire officiel pour les échanges d\'animaux",
+      description: "Partenaire officiel pour les échanges d'animaux",
       apiKey: 'lftg_pk_zoo_guyane_2026',
       secretKey: 'lftg_sk_' + crypto.randomBytes(16).toString('hex'),
       permissions: ['animals:read', 'species:read', 'cites:read'],

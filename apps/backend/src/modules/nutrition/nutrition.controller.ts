@@ -18,7 +18,7 @@ export class NutritionController {
   }
 
   @Get("plans/:id")
-  @ApiOperation({ summary: "Détail d\'un plan nutritionnel" })
+  @ApiOperation({ summary: "Détail d'un plan nutritionnel" })
   getPlan(@Param('id') id: string) {
     return this.nutritionService.getPlanById(id);
   }

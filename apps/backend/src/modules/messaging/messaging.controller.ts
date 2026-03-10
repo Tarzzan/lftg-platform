@@ -25,7 +25,7 @@ export class MessagingController {
   }
 
   @Get("conversations/:id/messages")
-  @ApiOperation({ summary: "Récupérer les messages d\'une conversation" })
+  @ApiOperation({ summary: "Récupérer les messages d'une conversation" })
   getMessages(
     @Param('id') id: string,
     @Query('page') page = 1,

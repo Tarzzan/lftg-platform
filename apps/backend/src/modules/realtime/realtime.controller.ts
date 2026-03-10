@@ -34,7 +34,7 @@ export class RealtimeController {
   }
 
   @Get('environment/:zone')
-  @ApiOperation({ summary: "Données environnementales d\'une zone spécifique" })
+  @ApiOperation({ summary: "Données environnementales d'une zone spécifique" })
   @ApiParam({ name: 'zone', description: "Identifiant de la zone (ex: reptiles, oiseaux)" })
   @ApiResponse({ status: 200, description: "Données environnementales de la zone" })
   getEnvironmentByZone(@Param('zone') zone: string) {

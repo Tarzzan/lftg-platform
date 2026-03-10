@@ -209,7 +209,7 @@ export class AgendaService {
   }
 
   private escapeICalText(text: string): string {
-    return text.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+    return text.replace(/\\/g, '\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
   }
 
   private async generateRecurrences(eventId: string, dto: AgendaEventDto): Promise<void> {

@@ -18,7 +18,7 @@ export class HistoryController {
   }
 
   @Get('entity/:entityType/:entityId')
-  @ApiOperation({ summary: "Historique d\'une entité" })
+  @ApiOperation({ summary: "Historique d'une entité" })
   async getEntityHistory(
     @Param('entityType') entityType: string,
     @Param('entityId') entityId: string,
@@ -27,7 +27,7 @@ export class HistoryController {
   }
 
   @Get('user/:userId')
-  @ApiOperation({ summary: "Activité d\'un utilisateur" })
+  @ApiOperation({ summary: "Activité d'un utilisateur" })
   async getUserActivity(@Param('userId') userId: string, @Query('limit') limit?: string) {
     return this.historyService.getUserActivity(userId, limit ? parseInt(limit) : 50);
   }

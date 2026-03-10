@@ -33,7 +33,7 @@ export class AuthController {
 
   @Public() // Should be protected by a refresh token guard
   @Post("refresh")
-  @ApiOperation({ summary: "Rafraîchir le token d\'accès" })
+  @ApiOperation({ summary: "Rafraîchir le token d'accès" })
   async refreshToken(@Request() req: Request, @Res({ passthrough: true }) res: Response) {
     // This assumes the refresh token is sent in the request cookies
     const refreshToken = req.cookies['refresh_token'];
@@ -54,7 +54,7 @@ export class AuthController {
 
   @Get("me")
   @ApiBearerAuth()
-  @ApiOperation({ summary: "Profil de l\'utilisateur connecté" })
+  @ApiOperation({ summary: "Profil de l'utilisateur connecté" })
   async getProfile(@CurrentUser('id') userId: string) {
     return this.authService.getProfile(userId);
   }

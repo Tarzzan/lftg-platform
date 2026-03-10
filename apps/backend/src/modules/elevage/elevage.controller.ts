@@ -24,7 +24,7 @@ export class ElevageController {
   }
 
   @Get("genealogy/:animalId")
-  @ApiOperation({ summary: "Arbre généalogique d\'un animal" })
+  @ApiOperation({ summary: "Arbre généalogique d'un animal" })
   getGenealogy(
     @Param('animalId') animalId: string,
     @Query('depth') depth = 3,
@@ -33,7 +33,7 @@ export class ElevageController {
   }
 
   @Get('suggest-pairings/:animalId')
-  @ApiOperation({ summary: "Suggestions d\'appariement pour un animal" })
+  @ApiOperation({ summary: "Suggestions d'appariement pour un animal" })
   suggestPairings(@Param('animalId') animalId: string) {
     return this.elevageService.suggestPairings(animalId);
   }

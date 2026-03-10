@@ -36,7 +36,7 @@ export class ParrainageController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get(":id")
-  @ApiOperation({ summary: "Détail d\'un parrainage" })
+  @ApiOperation({ summary: "Détail d'un parrainage" })
   getSponsorship(@Param('id') id: string) {
     return this.parrainageService.getSponsorshipById(id);
   }

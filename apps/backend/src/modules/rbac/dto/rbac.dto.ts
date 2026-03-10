@@ -35,7 +35,7 @@ export class CreatePermissionDto {
 }
 
 export class AssignRoleDto {
-  @ApiProperty({ description: "ID de l\'utilisateur" })
+  @ApiProperty({ description: "ID de l'utilisateur" })
   @IsString()
   userId: string;
 

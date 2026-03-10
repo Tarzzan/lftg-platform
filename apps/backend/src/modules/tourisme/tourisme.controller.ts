@@ -36,7 +36,7 @@ export class TourismeController {
   }
 
   @Put("reservations/:id/status")
-  @ApiOperation({ summary: "Mettre à jour le statut d\'une réservation" })
+  @ApiOperation({ summary: "Mettre à jour le statut d'une réservation" })
   updateStatus(@Param('id') id: string, @Body() body: { status: string }) {
     return this.tourismeService.updateReservationStatus(id, body.status);
   }
