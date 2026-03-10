@@ -8,7 +8,7 @@ const STATUS_COLORS: Record<string, string> = {
   succeeded: 'bg-green-100 text-green-800',
   pending: 'bg-yellow-100 text-yellow-800',
   failed: 'bg-red-100 text-red-800',
-  refunded: 'bg-gray-100 text-gray-800',
+  refunded: 'bg-gray-100 dark:bg-gray-800 text-gray-800',
 };
 
 export default function StripePage() {
@@ -47,11 +47,11 @@ export default function StripePage() {
         <div className="flex gap-2">
           {(['week', 'month', 'year'] as const).map(p => (
             <button key={p} onClick={() => setPeriod(p)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${period === p ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-border hover:bg-gray-50'}`}>
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${period === p ? 'bg-indigo-600 text-white' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-border hover:bg-gray-50'}`}>
               {p === 'week' ? 'Semaine' : p === 'month' ? 'Mois' : 'Année'}
             </button>
           ))}
-          <button onClick={() => refetchStats()} className="p-2 rounded-lg bg-white dark:bg-card border border-gray-200 dark:border-border hover:bg-gray-50">
+          <button onClick={() => refetchStats()} className="p-2 rounded-lg bg-white dark:bg-card border border-gray-200 dark:border-border hover:bg-gray-50 dark:bg-gray-900">
             <RefreshCw className="w-4 h-4 text-gray-500" />
           </button>
         </div>
@@ -119,7 +119,7 @@ export default function StripePage() {
                       {tx.amount != null ? `${(tx.amount / 100).toFixed(2)} ${(tx.currency ?? 'eur').toUpperCase()}` : '—'}
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[tx.status] ?? 'bg-gray-100 text-gray-700'}`}>
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[tx.status] ?? 'bg-gray-100 dark:bg-gray-800 text-gray-700'}`}>
                         {tx.status ?? 'unknown'}
                       </span>
                     </td>

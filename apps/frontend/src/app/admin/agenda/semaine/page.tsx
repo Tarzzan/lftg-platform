@@ -12,7 +12,7 @@ const TYPE_CONFIG: Record<string, { label: string; color: string }> = {
   CLEANING:   { label: 'Nettoyage',    color: 'bg-orange-100 border-orange-400 text-orange-800' },
   TRAINING:   { label: 'Formation',    color: 'bg-purple-100 border-purple-400 text-purple-800' },
   INSPECTION: { label: 'Inspection',   color: 'bg-amber-100 border-amber-400 text-amber-800' },
-  OTHER:      { label: 'Autre',        color: 'bg-gray-100 border-gray-400 text-gray-800' },
+  OTHER:      { label: 'Autre',        color: 'bg-gray-100 dark:bg-gray-800 border-gray-400 text-gray-800' },
 };
 
 const DAYS_FR = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
@@ -138,7 +138,7 @@ export default function AgendaSemainePage() {
                         <div
                           key={event.id}
                           className={`text-xs rounded border px-1.5 py-1 mb-0.5 cursor-pointer hover:opacity-80 transition-opacity ${
-                            TYPE_CONFIG[event.type]?.color || 'bg-gray-100 border-gray-300 text-gray-700'
+                            TYPE_CONFIG[event.type]?.color || 'bg-gray-100 dark:bg-gray-800 border-gray-300 text-gray-700'
                           } ${event.status === 'COMPLETED' ? 'opacity-60 line-through' : ''}`}
                           title={`${event.title}${event.assignedTo ? ` — ${event.assignedTo.firstName} ${event.assignedTo.lastName}` : ''}`}
                           onClick={() => {

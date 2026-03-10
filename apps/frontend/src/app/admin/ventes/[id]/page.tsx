@@ -9,7 +9,7 @@ const STATUS_COLORS: Record<string, string> = {
   PENDING: 'bg-amber-100 text-amber-700',
   CONFIRMED: 'bg-blue-100 text-blue-700',
   COMPLETED: 'bg-green-100 text-green-700',
-  CANCELLED: 'bg-gray-100 text-gray-600',
+  CANCELLED: 'bg-gray-100 dark:bg-gray-800 text-gray-600',
   REFUNDED: 'bg-red-100 text-red-700',
 };
 
@@ -83,7 +83,7 @@ export default function SaleDetailPage() {
         <div className="flex items-center gap-4">
           <button
             onClick={() => router.back()}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className="p-2 rounded-lg hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-800 transition-colors"
           >
             ←
           </button>

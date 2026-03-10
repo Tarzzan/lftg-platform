@@ -11,6 +11,7 @@ const config: Config = {
     extend: {
       // =============================================
       //  LFTG Design System — Biodiversité Guyane
+      //  Mode sombre via variables CSS (dark mode)
       // =============================================
       colors: {
         // Primary: Forêt tropicale
@@ -82,38 +83,41 @@ const config: Config = {
           900: '#1c1917',
           950: '#0c0a09',
         },
-        // Semantic aliases
+        // ─── Couleurs sémantiques via variables CSS ───────────────────────
+        // Ces couleurs utilisent des variables CSS pour supporter le dark mode
+        // Les variables sont définies dans globals.css (:root et .dark)
         primary: {
-          DEFAULT: '#16a34a',
-          foreground: '#ffffff',
+          DEFAULT: 'rgb(var(--primary) / <alpha-value>)',
+          foreground: 'rgb(var(--primary-foreground) / <alpha-value>)',
         },
         secondary: {
-          DEFAULT: '#ea580c',
-          foreground: '#ffffff',
+          DEFAULT: 'rgb(var(--secondary) / <alpha-value>)',
+          foreground: 'rgb(var(--secondary-foreground) / <alpha-value>)',
         },
         accent: {
-          DEFAULT: '#f59e0b',
-          foreground: '#1c1917',
+          DEFAULT: 'rgb(var(--accent) / <alpha-value>)',
+          foreground: 'rgb(var(--accent-foreground) / <alpha-value>)',
         },
-        background: '#fafaf9',
-        foreground: '#1c1917',
+        background: 'rgb(var(--background) / <alpha-value>)',
+        foreground: 'rgb(var(--foreground) / <alpha-value>)',
         muted: {
-          DEFAULT: '#f5f5f4',
-          foreground: '#78716c',
+          DEFAULT: 'rgb(var(--muted) / <alpha-value>)',
+          foreground: 'rgb(var(--muted-foreground) / <alpha-value>)',
         },
-        border: '#e7e5e4',
-        ring: '#16a34a',
+        border: 'rgb(var(--border) / <alpha-value>)',
+        input: 'rgb(var(--input) / <alpha-value>)',
+        ring: 'rgb(var(--ring) / <alpha-value>)',
         destructive: {
-          DEFAULT: '#dc2626',
-          foreground: '#ffffff',
+          DEFAULT: 'rgb(var(--destructive) / <alpha-value>)',
+          foreground: 'rgb(var(--destructive-foreground) / <alpha-value>)',
         },
         card: {
-          DEFAULT: '#ffffff',
-          foreground: '#1c1917',
+          DEFAULT: 'rgb(var(--card) / <alpha-value>)',
+          foreground: 'rgb(var(--card-foreground) / <alpha-value>)',
         },
         popover: {
-          DEFAULT: '#ffffff',
-          foreground: '#1c1917',
+          DEFAULT: 'rgb(var(--popover) / <alpha-value>)',
+          foreground: 'rgb(var(--popover-foreground) / <alpha-value>)',
         },
       },
       fontFamily: {

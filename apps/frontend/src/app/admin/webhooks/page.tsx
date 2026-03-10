@@ -87,7 +87,7 @@ export default function WebhooksPage() {
             <div className="flex flex-wrap gap-2">
               {WEBHOOK_EVENTS.map(event => (
                 <button key={event} onClick={() => handleToggleEvent(event)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${form.events.includes(event) ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-600 dark:text-gray-400 border-gray-200 dark:border-border hover:border-indigo-300'}`}>
+                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${form.events.includes(event) ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-border hover:border-indigo-300'}`}>
                   {event}
                 </button>
               ))}
@@ -95,7 +95,7 @@ export default function WebhooksPage() {
           </div>
           <div className="flex gap-2">
             <button onClick={handleAddWebhook} className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm">Ajouter</button>
-            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-100 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 text-sm">Annuler</button>
+            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 text-sm">Annuler</button>
           </div>
         </div>
       )}

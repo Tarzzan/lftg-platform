@@ -9,7 +9,7 @@ const ACTION_COLORS: Record<string, string> = {
   UPDATE: 'bg-blue-100 text-blue-800',
   DELETE: 'bg-red-100 text-red-800',
   LOGIN: 'bg-purple-100 text-purple-800',
-  LOGOUT: 'bg-gray-100 text-gray-600',
+  LOGOUT: 'bg-gray-100 dark:bg-gray-800 text-gray-600',
   EXPORT: 'bg-orange-100 text-orange-800',
   VIEW: 'bg-indigo-100 text-indigo-800',
 };
@@ -74,10 +74,10 @@ export default function SecurityPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-gray-100 rounded-lg p-1 w-fit">
+      <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 w-fit">
         {(['audit', 'users', 'roles'] as const).map(tab => (
           <button key={tab} onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === tab ? 'bg-white text-gray-900 dark:text-foreground shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}>
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === tab ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-foreground shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}>
             {tab === 'audit' ? 'Journal d\'audit' : tab === 'users' ? 'Utilisateurs' : 'Rôles'}
           </button>
         ))}
@@ -94,7 +94,7 @@ export default function SecurityPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-gray-50">
+                  <tr className="bg-gray-50 dark:bg-gray-900">
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Action</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Ressource</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Utilisateur</th>
@@ -104,9 +104,9 @@ export default function SecurityPage() {
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {logs.map((log: any, i: number) => (
-                    <tr key={log.id ?? i} className="hover:bg-gray-50">
+                    <tr key={log.id ?? i} className="hover:bg-gray-50 dark:bg-gray-900">
                       <td className="px-4 py-3">
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${ACTION_COLORS[log.action] ?? 'bg-gray-100 text-gray-600'}`}>
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${ACTION_COLORS[log.action] ?? 'bg-gray-100 dark:bg-gray-800 text-gray-600'}`}>
                           {log.action ?? '—'}
                         </span>
                       </td>
@@ -134,7 +134,7 @@ export default function SecurityPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="bg-gray-50">
+                  <tr className="bg-gray-50 dark:bg-gray-900">
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Nom</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Email</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase">Rôle</th>
@@ -144,14 +144,14 @@ export default function SecurityPage() {
                 </thead>
                 <tbody className="divide-y divide-gray-50">
                   {userList.map((u: any) => (
-                    <tr key={u.id} className="hover:bg-gray-50">
+                    <tr key={u.id} className="hover:bg-gray-50 dark:bg-gray-900">
                       <td className="px-4 py-3 font-medium text-gray-900">{u.name ?? (`${u.firstName ?? ''} ${u.lastName ?? ''}`.trim() || '—')}</td>
                       <td className="px-4 py-3 text-gray-600">{u.email}</td>
                       <td className="px-4 py-3">
                         <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">{u.role ?? u.roles?.[0] ?? '—'}</span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${u.isActive !== false ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${u.isActive !== false ? 'bg-green-100 text-green-800' : 'bg-gray-100 dark:bg-gray-800 text-gray-600'}`}>
                           {u.isActive !== false ? 'Actif' : 'Inactif'}
                         </span>
                       </td>

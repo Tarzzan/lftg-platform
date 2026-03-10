@@ -147,7 +147,7 @@ export default function AnimauxListePage() {
             </a>
             <button
               onClick={() => setModal({ open: true })}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-white text-forest-700 rounded-lg hover:bg-forest-50 transition-colors shadow-sm"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-white dark:bg-gray-800 text-forest-700 rounded-lg hover:bg-forest-50 transition-colors shadow-sm"
             >
               <Plus className="w-4 h-4" />
               Nouvel animal
@@ -343,7 +343,7 @@ export default function AnimauxListePage() {
                   </Link>
                   <button
                     onClick={() => setModal({ open: true, animal })}
-                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/80 hover:bg-white text-muted-foreground hover:text-forest-600 transition-colors shadow-sm"
+                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-white/80 hover:bg-white dark:bg-gray-800 text-muted-foreground hover:text-forest-600 transition-colors shadow-sm"
                   >
                     <Edit2 className="w-3.5 h-3.5" />
                   </button>

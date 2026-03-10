@@ -145,7 +145,7 @@ function CourseProgressCard({ enrollment }: { enrollment: any }) {
             <span className="text-[10px] text-gray-400">Progression</span>
             <span className="text-[10px] font-bold text-gray-600">{progress}%</span>
           </div>
-          <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+          <div className="h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-700 bg-gradient-to-r ${colors.bg}`}
               style={{ width: `${progress}%` }}
@@ -205,7 +205,7 @@ export default function MonParcoursPage() {
 
   const { data: enrollments = [], isLoading } = useQuery({
     queryKey: ['my-enrollments'],
-    queryFn: () => formationApi.getMyEnrollments(),
+    queryFn: () => formationApi.myEnrollments(),
   });
 
   const { data: badges = [] } = useQuery({
@@ -215,7 +215,7 @@ export default function MonParcoursPage() {
 
   const { data: stats } = useQuery({
     queryKey: ['my-stats'],
-    queryFn: () => formationApi.getMyStats(),
+    queryFn: () => formationApi.stats(),
   });
 
   const completed = enrollments.filter((e: any) => (e.progress ?? 0) >= 100).length;
@@ -355,10 +355,10 @@ export default function MonParcoursPage() {
           {[...Array(6)].map((_, i) => (
             <div key={i} className="rounded-2xl overflow-hidden animate-pulse">
               <div className="h-28 bg-gray-200" />
-              <div className="p-4 bg-white space-y-2">
+              <div className="p-4 bg-white dark:bg-gray-800 space-y-2">
                 <div className="h-4 bg-gray-200 rounded w-3/4" />
-                <div className="h-3 bg-gray-100 rounded w-1/2" />
-                <div className="h-2 bg-gray-100 rounded-full" />
+                <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded w-1/2" />
+                <div className="h-2 bg-gray-100 dark:bg-gray-800 rounded-full" />
               </div>
             </div>
           ))}

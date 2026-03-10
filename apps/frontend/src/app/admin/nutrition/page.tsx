@@ -205,13 +205,13 @@ export default function NutritionPage() {
                 </div>
 
                 {selectedPlan?.id === plan.id && (
-                  <div className="border-t border-gray-100 p-4 bg-gray-50">
+                  <div className="border-t border-gray-100 p-4 bg-gray-50 dark:bg-gray-900">
                     <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Détail des repas</h4>
                     <div className="space-y-3">
                       {plan.meals.map(meal => (
                         <div key={meal.id} className="bg-white dark:bg-card rounded-lg border border-gray-200 dark:border-border p-3">
                           <div className="flex items-center gap-2 mb-2">
-                            <span className="text-xs font-bold text-gray-900 dark:text-foreground bg-gray-100 px-2 py-0.5 rounded">{meal.time}</span>
+                            <span className="text-xs font-bold text-gray-900 dark:text-foreground bg-gray-100 dark:bg-gray-800 px-2 py-0.5 rounded">{meal.time}</span>
                             <span className="text-sm font-medium text-gray-800">{meal.name}</span>
                           </div>
                           <div className="space-y-1">

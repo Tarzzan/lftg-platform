@@ -29,7 +29,7 @@ interface Animal {
 
 const STATUS_COLORS: Record<string, string> = {
   ACTIVE: 'bg-green-100 text-green-800',
-  INACTIVE: 'bg-gray-100 text-gray-600',
+  INACTIVE: 'bg-gray-100 dark:bg-gray-800 text-gray-600',
   MAINTENANCE: 'bg-yellow-100 text-yellow-800',
 };
 
@@ -140,7 +140,7 @@ export default function EnclosDetailPage() {
             <p className="text-gray-600 dark:text-gray-400 text-sm mt-2 max-w-xl">{enclosure.description}</p>
           )}
         </div>
-        <span className={`px-3 py-1 rounded-full text-sm font-medium ${STATUS_COLORS[enclosure.status] ?? 'bg-gray-100 text-gray-600'}`}>
+        <span className={`px-3 py-1 rounded-full text-sm font-medium ${STATUS_COLORS[enclosure.status] ?? 'bg-gray-100 dark:bg-gray-800 text-gray-600'}`}>
           {enclosure.status}
         </span>
       </div>
@@ -229,14 +229,14 @@ export default function EnclosDetailPage() {
                   </thead>
                   <tbody className="divide-y divide-gray-100">
                     {enclosure.animals.map((animal) => (
-                      <tr key={animal.id} className="hover:bg-gray-50">
+                      <tr key={animal.id} className="hover:bg-gray-50 dark:bg-gray-900">
                         <td className="px-4 py-3 font-mono text-xs text-gray-500">{animal.identifier}</td>
                         <td className="px-4 py-3 font-medium text-gray-900">{animal.name}</td>
                         <td className="px-4 py-3 text-gray-600 dark:text-gray-400 italic text-xs">
                           {animal.species?.scientificName ?? '—'}
                         </td>
                         <td className="px-4 py-3">
-                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${ANIMAL_STATUS_COLORS[animal.status] ?? 'bg-gray-100 text-gray-600'}`}>
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${ANIMAL_STATUS_COLORS[animal.status] ?? 'bg-gray-100 dark:bg-gray-800 text-gray-600'}`}>
                             {animal.status}
                           </span>
                         </td>

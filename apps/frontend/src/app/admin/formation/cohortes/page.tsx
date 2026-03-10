@@ -81,7 +81,7 @@ function CohortModal({ isOpen, onClose, cohort, courses }: {
 const STATUS_CLASSES: Record<string, string> = {
   upcoming: 'bg-maroni-100 text-maroni-700',
   active: 'bg-forest-100 text-forest-700',
-  completed: 'bg-gray-100 text-gray-600',
+  completed: 'bg-gray-100 dark:bg-gray-800 text-gray-600',
   cancelled: 'bg-red-100 text-red-700',
 };
 const STATUS_LABELS: Record<string, string> = {

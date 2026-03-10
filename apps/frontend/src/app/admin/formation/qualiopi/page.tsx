@@ -132,7 +132,7 @@ function IndicatorCard({ indicator, data }: { indicator: typeof QUALIOPI_INDICAT
       <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">{indicator.description}</p>
 
       {!isRisk && (
-        <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden mb-2">
+        <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-1.5 overflow-hidden mb-2">
           <div
             className={`h-1.5 rounded-full transition-all duration-700 ${
               score >= 80 ? 'bg-green-500' : score >= 60 ? 'bg-amber-500' : 'bg-red-500'
@@ -313,8 +313,8 @@ function GlobalQualiopiScore({ data }: { data: any }) {
   return (
     <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-700 via-blue-600 to-purple-700 p-6 text-white">
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-white translate-y-1/2 -translate-x-1/2" />
+        <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-white dark:bg-gray-800 -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 rounded-full bg-white dark:bg-gray-800 translate-y-1/2 -translate-x-1/2" />
       </div>
       <div className="relative z-10 flex items-center justify-between">
         <div>
@@ -414,7 +414,7 @@ export default function QualiopiPage() {
         <select
           value={selectedCohort}
           onChange={(e) => setSelectedCohort(e.target.value)}
-          className="w-full max-w-lg px-3 py-2.5 border border-gray-200 dark:border-border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white"
+          className="w-full max-w-lg px-3 py-2.5 border border-gray-200 dark:border-border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800"
         >
           <option value="">— Choisir une cohorte —</option>
           {(cohorts as any[]).map((c: any) => (

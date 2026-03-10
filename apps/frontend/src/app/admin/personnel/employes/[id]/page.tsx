@@ -285,7 +285,7 @@ export default function EmployeeDetailPage() {
                   </thead>
                   <tbody className="divide-y divide-gray-100">
                     {employee.leaves.map((leave) => (
-                      <tr key={leave.id} className="hover:bg-gray-50">
+                      <tr key={leave.id} className="hover:bg-gray-50 dark:bg-gray-900">
                         <td className="px-4 py-3 font-medium text-gray-900 dark:text-foreground capitalize">{leave.type}</td>
                         <td className="px-4 py-3 text-gray-600">
                           {new Date(leave.startDate).toLocaleDateString('fr-FR')}
@@ -294,7 +294,7 @@ export default function EmployeeDetailPage() {
                           {new Date(leave.endDate).toLocaleDateString('fr-FR')}
                         </td>
                         <td className="px-4 py-3">
-                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${LEAVE_STATUS_COLORS[leave.status ?? ''] ?? 'bg-gray-100 text-gray-600'}`}>
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${LEAVE_STATUS_COLORS[leave.status ?? ''] ?? 'bg-gray-100 dark:bg-gray-800 text-gray-600'}`}>
                             {leave.status ?? 'En attente'}
                           </span>
                         </td>

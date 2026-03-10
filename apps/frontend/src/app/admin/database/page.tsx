@@ -139,7 +139,7 @@ export default function DatabasePage() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {DB_MODELS.map((model) => (
-                  <tr key={model} className="hover:bg-gray-50">
+                  <tr key={model} className="hover:bg-gray-50 dark:bg-gray-900">
                     <td className="px-4 py-3 font-mono text-sm font-medium text-blue-700">{model}</td>
                     <td className="px-4 py-3">
                       <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-medium">

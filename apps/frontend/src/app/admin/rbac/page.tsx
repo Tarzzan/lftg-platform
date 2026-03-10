@@ -176,7 +176,7 @@ export default function RbacPage() {
                         </span>
                       ))}
                       {(!user.roles || user.roles.length === 0) && (
-                        <span className="px-2 py-0.5 bg-gray-100 text-gray-500 dark:text-gray-400 dark:bg-gray-700 dark:text-gray-400 rounded-full text-xs">Aucun rôle</span>
+                        <span className="px-2 py-0.5 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 dark:bg-gray-700 dark:text-gray-400 rounded-full text-xs">Aucun rôle</span>
                       )}
                     </div>
                   </div>

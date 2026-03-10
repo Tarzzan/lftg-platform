@@ -45,7 +45,7 @@ function AttendanceSheetCard({ sheet, cohortId }: { sheet: any; cohortId: string
         <div className="flex items-center gap-4">
           <div className="text-center">
             <div className="flex items-center gap-1">
-              <div className="w-20 bg-gray-100 rounded-full h-2 overflow-hidden">
+              <div className="w-20 bg-gray-100 dark:bg-gray-800 rounded-full h-2 overflow-hidden">
                 <div
                   className={`h-2 rounded-full ${rate >= 80 ? 'bg-green-500' : rate >= 50 ? 'bg-amber-500' : 'bg-red-500'}`}
                   style={{ width: `${rate}%` }}
@@ -70,7 +70,7 @@ function AttendanceSheetCard({ sheet, cohortId }: { sheet: any; cohortId: string
                   <p className="text-xs text-gray-400">{new Date(sig.signedAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</p>
                 </div>
                 {sig.signatureData && (
-                  <img src={sig.signatureData} alt="signature" className="w-16 h-8 object-contain border border-gray-200 dark:border-border rounded bg-white" />
+                  <img src={sig.signatureData} alt="signature" className="w-16 h-8 object-contain border border-gray-200 dark:border-border rounded bg-white dark:bg-gray-800" />
                 )}
               </div>
             ))}
@@ -230,7 +230,7 @@ export default function EmargementPage() {
             </div>
           </div>
           <div className="flex justify-end gap-2 mt-4">
-            <button onClick={() => setShowCreate(false)} className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 rounded-lg">Annuler</button>
+            <button onClick={() => setShowCreate(false)} className="px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800 rounded-lg">Annuler</button>
             <button
               onClick={() => createMutation.mutate()}
               disabled={!newSheet.sessionDate || createMutation.isPending}

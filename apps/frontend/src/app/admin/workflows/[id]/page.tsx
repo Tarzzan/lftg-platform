@@ -9,17 +9,17 @@ import { workflowsApi } from '@/lib/api';
 import { Modal, FormField, Textarea, ModalFooter, BtnPrimary, BtnSecondary } from '@/components/ui/Modal';
 
 const STATE_CONFIG: Record<string, { label: string; color: string; icon: any }> = {
-  draft:      { label: 'Brouillon',   color: 'bg-gray-100 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-border',    icon: AlertCircle },
+  draft:      { label: 'Brouillon',   color: 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-border',    icon: AlertCircle },
   pending:    { label: 'En attente',  color: 'bg-gold-100 text-gold-700 border-gold-200',    icon: Clock },
   in_progress:{ label: 'En cours',   color: 'bg-maroni-100 text-maroni-700 border-maroni-200', icon: PlayCircle },
   approved:   { label: 'Approuvé',   color: 'bg-forest-100 text-forest-700 border-forest-200', icon: CheckCircle },
   rejected:   { label: 'Rejeté',     color: 'bg-red-100 text-red-700 border-red-200',        icon: XCircle },
-  cancelled:  { label: 'Annulé',     color: 'bg-gray-100 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-border',     icon: XCircle },
+  cancelled:  { label: 'Annulé',     color: 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-border',     icon: XCircle },
   completed:  { label: 'Terminé',    color: 'bg-forest-100 text-forest-700 border-forest-200', icon: CheckCircle },
 };
 
 function StateBadge({ state }: { state: string }) {
-  const cfg = STATE_CONFIG[state] ?? { label: state, color: 'bg-gray-100 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-border', icon: AlertCircle };
+  const cfg = STATE_CONFIG[state] ?? { label: state, color: 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-border', icon: AlertCircle };
   const Icon = cfg.icon;
   return (
     <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border ${cfg.color}`}>

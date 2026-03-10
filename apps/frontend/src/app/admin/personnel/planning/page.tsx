@@ -93,18 +93,18 @@ export default function PlanningPage() {
               {departments.map(d => <option key={d} value={d}>{d}</option>)}
             </select>
           )}
-          <div className="flex items-center gap-1 bg-gray-100 rounded-lg p-1">
-            <button onClick={() => setView('semaine')} className={`px-3 py-1.5 text-sm rounded-md transition-colors ${view === 'semaine' ? 'bg-white shadow-sm font-medium' : 'text-gray-500'}`}>
+          <div className="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+            <button onClick={() => setView('semaine')} className={`px-3 py-1.5 text-sm rounded-md transition-colors ${view === 'semaine' ? 'bg-white dark:bg-gray-800 shadow-sm font-medium' : 'text-gray-500'}`}>
               Semaine
             </button>
-            <button onClick={() => setView('liste')} className={`px-3 py-1.5 text-sm rounded-md transition-colors ${view === 'liste' ? 'bg-white shadow-sm font-medium' : 'text-gray-500'}`}>
+            <button onClick={() => setView('liste')} className={`px-3 py-1.5 text-sm rounded-md transition-colors ${view === 'liste' ? 'bg-white dark:bg-gray-800 shadow-sm font-medium' : 'text-gray-500'}`}>
               Liste
             </button>
           </div>
           <div className="flex items-center gap-1">
-            <button onClick={() => setWeekOffset(w => w - 1)} className="p-2 hover:bg-gray-100 rounded-lg text-gray-600">←</button>
-            <button onClick={() => setWeekOffset(0)} className="px-3 py-1.5 text-sm hover:bg-gray-100 rounded-lg text-gray-600">Aujourd'hui</button>
-            <button onClick={() => setWeekOffset(w => w + 1)} className="p-2 hover:bg-gray-100 rounded-lg text-gray-600">→</button>
+            <button onClick={() => setWeekOffset(w => w - 1)} className="p-2 hover:bg-gray-100 dark:bg-gray-800 rounded-lg text-gray-600">←</button>
+            <button onClick={() => setWeekOffset(0)} className="px-3 py-1.5 text-sm hover:bg-gray-100 dark:bg-gray-800 rounded-lg text-gray-600">Aujourd'hui</button>
+            <button onClick={() => setWeekOffset(w => w + 1)} className="p-2 hover:bg-gray-100 dark:bg-gray-800 rounded-lg text-gray-600">→</button>
           </div>
         </div>
       </div>
@@ -136,7 +136,7 @@ export default function PlanningPage() {
               </thead>
               <tbody>
                 {filteredEmployees.map((emp: any) => (
-                  <tr key={emp.id} className="border-b border-gray-100 hover:bg-gray-50">
+                  <tr key={emp.id} className="border-b border-gray-100 hover:bg-gray-50 dark:bg-gray-900">
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-2">
                         <div className="w-7 h-7 rounded-full bg-forest-100 flex items-center justify-center text-xs font-bold text-forest-700">
@@ -144,7 +144,7 @@ export default function PlanningPage() {
                         </div>
                         <div>
                           <div className="font-medium text-gray-900 dark:text-foreground text-xs">{emp.firstName} {emp.lastName}</div>
-                          <span className={`text-xs px-1.5 py-0.5 rounded ${DEPT_COLORS[emp.department] || 'bg-gray-100 text-gray-600'}`}>
+                          <span className={`text-xs px-1.5 py-0.5 rounded ${DEPT_COLORS[emp.department] || 'bg-gray-100 dark:bg-gray-800 text-gray-600'}`}>
                             {emp.department || 'N/A'}
                           </span>
                         </div>
@@ -200,7 +200,7 @@ export default function PlanningPage() {
                         <span className="text-gray-500">
                           {new Date(leave.startDate).toLocaleDateString('fr-FR')} → {new Date(leave.endDate).toLocaleDateString('fr-FR')}
                         </span>
-                        <span className={`ml-auto px-2 py-0.5 rounded font-medium ${leave.status === 'APPROVED' ? 'bg-green-100 text-green-700' : leave.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600'}`}>
+                        <span className={`ml-auto px-2 py-0.5 rounded font-medium ${leave.status === 'APPROVED' ? 'bg-green-100 text-green-700' : leave.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 dark:bg-gray-800 text-gray-600'}`}>
                           {leave.status === 'APPROVED' ? 'Approuvé' : leave.status === 'PENDING' ? 'En attente' : leave.status}
                         </span>
                       </div>
@@ -220,7 +220,7 @@ export default function PlanningPage() {
         <span className="font-medium">Légende :</span>
         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-green-100 border border-green-200 inline-block"></span> Présent</span>
         <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-amber-100 border border-amber-200 inline-block"></span> Congé</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-gray-100 border border-gray-200 dark:border-border inline-block"></span> Weekend</span>
+        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-border inline-block"></span> Weekend</span>
       </div>
     </div>
   );

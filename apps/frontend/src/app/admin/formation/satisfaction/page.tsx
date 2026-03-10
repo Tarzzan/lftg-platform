@@ -240,7 +240,7 @@ function FeedbackResults({ feedbacks }: { feedbacks: any[] }) {
           <ThumbsUp className="w-4 h-4 text-green-600" /> Recommandation
         </h3>
         <div className="flex items-center gap-4">
-          <div className="flex-1 h-4 bg-gray-100 rounded-full overflow-hidden flex">
+          <div className="flex-1 h-4 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden flex">
             <div className="bg-green-500 h-full transition-all" style={{ width: `${(recommend.yes / feedbacks.length) * 100}%` }} />
             <div className="bg-amber-400 h-full transition-all" style={{ width: `${(recommend.maybe / feedbacks.length) * 100}%` }} />
             <div className="bg-red-400 h-full transition-all" style={{ width: `${(recommend.no / feedbacks.length) * 100}%` }} />

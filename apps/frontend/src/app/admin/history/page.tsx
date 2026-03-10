@@ -11,7 +11,7 @@ const ENTITY_CONFIG: Record<string, { emoji: string; label: string; color: strin
   SALE: { emoji: '💰', label: 'Vente', color: 'bg-purple-100 text-purple-700' },
   USER: { emoji: '👤', label: 'Utilisateur', color: 'bg-indigo-100 text-indigo-700' },
   MEDICAL_VISIT: { emoji: '🏥', label: 'Visite médicale', color: 'bg-red-100 text-red-700' },
-  WORKFLOW: { emoji: '⚙️', label: 'Workflow', color: 'bg-gray-100 text-gray-700' },
+  WORKFLOW: { emoji: '⚙️', label: 'Workflow', color: 'bg-gray-100 dark:bg-gray-800 text-gray-700' },
 };
 
 const ACTION_CONFIG: Record<string, { icon: string; label: string; color: string }> = {
@@ -104,7 +104,7 @@ export default function HistoryPage() {
           {/* Timeline */}
           <div className="lg:col-span-2 space-y-3">
             {filtered.map((entry: any) => {
-              const entityConf = ENTITY_CONFIG[entry.entityType] || { emoji: '📄', label: entry.entityType, color: 'bg-gray-100 text-gray-700' };
+              const entityConf = ENTITY_CONFIG[entry.entityType] || { emoji: '📄', label: entry.entityType, color: 'bg-gray-100 dark:bg-gray-800 text-gray-700' };
               const actionConf = ACTION_CONFIG[entry.action] || { icon: '📝', label: entry.action, color: 'text-gray-600' };
               const isSelected = selectedEntry?.id === entry.id;
 

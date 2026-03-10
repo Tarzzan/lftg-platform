@@ -97,7 +97,7 @@ export default function AccountingPage() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-2 text-sm rounded-lg transition-colors ${activeTab === tab.id ? 'bg-white text-forest-700 font-semibold shadow-sm' : 'text-wood-600 hover:text-wood-900'}`}
+                className={`px-4 py-2 text-sm rounded-lg transition-colors ${activeTab === tab.id ? 'bg-white dark:bg-gray-800 text-forest-700 font-semibold shadow-sm' : 'text-wood-600 hover:text-wood-900'}`}
               >
                 {tab.label}
               </button>

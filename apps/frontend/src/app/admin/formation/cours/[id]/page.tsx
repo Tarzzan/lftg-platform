@@ -57,7 +57,7 @@ function DocumentUploader({ courseId, lessonId, onSuccess }: { courseId?: string
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-all ${
               displayMode === m.value
                 ? 'bg-forest-600 text-white border-forest-600'
-                : 'bg-white text-gray-600 dark:text-gray-400 border-gray-200 dark:border-border hover:border-forest-400'
+                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-border hover:border-forest-400'
             }`}
           >
             <m.icon className="w-3.5 h-3.5" />
@@ -205,7 +205,7 @@ function LessonEditor({ lesson, onClose }: { lesson: any; onClose: () => void })
       </div>
 
       <div className="flex justify-end gap-2">
-        <button onClick={onClose} className="px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 rounded-lg">Annuler</button>
+        <button onClick={onClose} className="px-3 py-1.5 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800 rounded-lg">Annuler</button>
         <button onClick={() => updateMutation.mutate()} disabled={updateMutation.isPending} className="flex items-center gap-1.5 px-4 py-1.5 text-sm bg-forest-600 text-white rounded-lg hover:bg-forest-700 disabled:opacity-50">
           <Save className="w-3.5 h-3.5" /> Enregistrer
         </button>
@@ -305,7 +305,7 @@ function ChapterSection({ chapter, courseId }: { chapter: any; courseId: string 
               <button onClick={() => { if (newLessonTitle.trim()) addLessonMutation.mutate(); }} disabled={!newLessonTitle.trim()} className="px-3 py-2 text-sm bg-forest-600 text-white rounded-lg hover:bg-forest-700 disabled:opacity-50">
                 <Check className="w-4 h-4" />
               </button>
-              <button onClick={() => setAddingLesson(false)} className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400 hover:bg-gray-100 rounded-lg">
+              <button onClick={() => setAddingLesson(false)} className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800 rounded-lg">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -366,13 +366,13 @@ export default function CourseDetailPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <button onClick={() => router.back()} className="p-2 text-gray-400 hover:text-gray-600 dark:text-gray-400 hover:bg-gray-100 rounded-lg transition-colors">
+        <button onClick={() => router.back()} className="p-2 text-gray-400 hover:text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800 rounded-lg transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </button>
         <div className="flex-1">
           <div className="flex items-center gap-3">
             <h1 className="text-2xl font-bold text-gray-900">{course.title}</h1>
-            <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${course.isPublished ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+            <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${course.isPublished ? 'bg-green-100 text-green-700' : 'bg-gray-100 dark:bg-gray-800 text-gray-500'}`}>
               {course.isPublished ? 'Publié' : 'Brouillon'}
             </span>
           </div>
@@ -387,7 +387,7 @@ export default function CourseDetailPage() {
             onClick={() => togglePublishMutation.mutate()}
             className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
               course.isPublished
-                ? 'bg-gray-100 text-gray-700 dark:text-gray-300 hover:bg-gray-200'
+                ? 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200'
                 : 'bg-forest-600 text-white hover:bg-forest-700'
             }`}
           >
@@ -422,7 +422,7 @@ export default function CourseDetailPage() {
                 <button onClick={() => { if (newChapterTitle.trim()) addChapterMutation.mutate(); }} disabled={!newChapterTitle.trim()} className="px-4 py-2 text-sm bg-forest-600 text-white rounded-lg hover:bg-forest-700 disabled:opacity-50">
                   Ajouter
                 </button>
-                <button onClick={() => setAddingChapter(false)} className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400 hover:bg-gray-100 rounded-lg">
+                <button onClick={() => setAddingChapter(false)} className="px-3 py-2 text-sm text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800 rounded-lg">
                   <X className="w-4 h-4" />
                 </button>
               </div>

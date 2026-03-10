@@ -91,7 +91,7 @@ export default function MobileAppPage() {
 
   const AnimalsScreen = () => (
     <div className="h-full bg-gray-50 dark:bg-muted/20 flex flex-col">
-      <div className="bg-white px-4 py-3 border-b border-gray-200 dark:border-border">
+      <div className="bg-white dark:bg-gray-800 px-4 py-3 border-b border-gray-200 dark:border-border">
         <h2 className="font-bold text-gray-900">Animaux</h2>
         <p className="text-xs text-gray-500">{stats?.animals?.alive ?? 0} animaux vivants · {stats?.animals?.species ?? 0} espèces</p>
       </div>
@@ -107,7 +107,7 @@ export default function MobileAppPage() {
 
   const AlertsScreen = () => (
     <div className="h-full bg-gray-50 dark:bg-muted/20 flex flex-col">
-      <div className="bg-white px-4 py-3 border-b border-gray-200 dark:border-border">
+      <div className="bg-white dark:bg-gray-800 px-4 py-3 border-b border-gray-200 dark:border-border">
         <h2 className="font-bold text-gray-900">Alertes</h2>
         <p className="text-xs text-gray-500">{stats?.stock?.lowStock ?? 0} alertes stock faible</p>
       </div>
@@ -130,7 +130,7 @@ export default function MobileAppPage() {
 
   const ProfileScreen = () => (
     <div className="h-full bg-gray-50 dark:bg-muted/20 flex flex-col">
-      <div className="bg-white px-4 py-3 border-b border-gray-200 dark:border-border">
+      <div className="bg-white dark:bg-gray-800 px-4 py-3 border-b border-gray-200 dark:border-border">
         <h2 className="font-bold text-gray-900">Profil</h2>
       </div>
       <div className="flex-1 p-4 flex items-center justify-center">

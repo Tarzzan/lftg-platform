@@ -10,7 +10,7 @@ import {
   CreditCard, Cloud, Globe, Code2, Calculator, ChevronRight,
   LogOut, Settings, Search, Command, Menu, X, Sparkles,
 } from 'lucide-react';
-import { useAuthStore } from '@/store/authStore';
+import { useAuthStore } from '@/lib/auth-store';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { NotificationBell } from '@/components/ui/NotificationBell';
 import { CommandPalette, useCommandPalette } from '@/components/ui/CommandPalette';

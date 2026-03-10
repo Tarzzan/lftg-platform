@@ -104,7 +104,7 @@ export default function AutoReportsPage() {
               className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 text-sm">
               {createMutation.isPending ? 'Création...' : 'Planifier'}
             </button>
-            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-100 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 text-sm">Annuler</button>
+            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 text-sm">Annuler</button>
           </div>
         </div>
       )}
@@ -120,7 +120,7 @@ export default function AutoReportsPage() {
       ) : (
         <div className="space-y-3">
           {list.map((s: any) => {
-            const typeInfo = TYPE_LABELS[s.type] ?? { label: s.type, color: 'bg-gray-100 text-gray-700' };
+            const typeInfo = TYPE_LABELS[s.type] ?? { label: s.type, color: 'bg-gray-100 dark:bg-gray-800 text-gray-700' };
             return (
               <div key={s.id} className="bg-white dark:bg-card rounded-xl border border-gray-100 p-4 shadow-sm">
                 <div className="flex items-center justify-between">
@@ -132,7 +132,7 @@ export default function AutoReportsPage() {
                       <div className="flex items-center gap-2">
                         <p className="font-medium text-gray-900">{s.name}</p>
                         <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${typeInfo.color}`}>{typeInfo.label}</span>
-                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">{FREQ_LABELS[s.frequency] ?? s.frequency}</span>
+                        <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-600">{FREQ_LABELS[s.frequency] ?? s.frequency}</span>
                       </div>
                       <div className="flex items-center gap-3 mt-1 text-xs text-gray-500">
                         <span className="flex items-center gap-1">

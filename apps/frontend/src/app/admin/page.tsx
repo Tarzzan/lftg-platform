@@ -319,6 +319,7 @@ export default function DashboardPage() {
               <p className="text-xs text-white/60 mt-0.5">La Ferme Tropicale de Guyane</p>
             </div>
           </div>
+        </div>
         <div className="flex items-center gap-3 flex-wrap">
           {editMode && inactiveWidgets.length > 0 && (
             <div className="flex gap-2 flex-wrap">
@@ -403,7 +404,7 @@ export default function DashboardPage() {
             <button
               key={action.label}
               onClick={action.onClick}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 dark:bg-muted/20 dark:bg-muted/20 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 dark:text-gray-300 dark:text-gray-300 transition-colors"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 dark:bg-muted/20 dark:bg-muted/20 dark:bg-gray-700/50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 dark:text-gray-300 dark:text-gray-300 transition-colors"
             >
               <span>📥</span>
               {action.label}

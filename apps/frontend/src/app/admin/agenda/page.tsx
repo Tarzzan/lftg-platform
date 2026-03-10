@@ -27,7 +27,7 @@ const TYPE_CONFIG = {
   CLEANING:   { emoji: '🧹', color: 'bg-blue-100 text-blue-700 border-blue-200',    label: 'Nettoyage' },
   TRAINING:   { emoji: '📚', color: 'bg-purple-100 text-purple-700 border-purple-200', label: 'Formation' },
   INSPECTION: { emoji: '🔍', color: 'bg-orange-100 text-orange-700 border-orange-200', label: 'Inspection' },
-  OTHER:      { emoji: '📌', color: 'bg-gray-100 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-border',    label: 'Autre' },
+  OTHER:      { emoji: '📌', color: 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-border',    label: 'Autre' },
 };
 
 const PRIORITY_CONFIG = {
@@ -157,12 +157,12 @@ export default function AgendaPage() {
 
       {/* Filtres et vue */}
       <div className="flex flex-wrap items-center gap-3">
-        <div className="flex bg-gray-100 rounded-lg p-1">
+        <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
           {(['month', 'list'] as const).map(v => (
             <button
               key={v}
               onClick={() => setView(v)}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${view === v ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${view === v ? 'bg-white dark:bg-gray-800 shadow-sm text-gray-900' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}
             >
               {v === 'month' ? 'Mois' : 'Liste'}
             </button>
@@ -171,7 +171,7 @@ export default function AgendaPage() {
         <div className="flex gap-2 flex-wrap">
           <button
             onClick={() => setFilterType('ALL')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${filterType === 'ALL' ? 'bg-gray-800 text-white border-gray-800' : 'bg-white text-gray-600 dark:text-gray-400 border-gray-200 dark:border-border hover:bg-gray-50'}`}
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${filterType === 'ALL' ? 'bg-gray-800 text-white border-gray-800' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-border hover:bg-gray-50'}`}
           >
             Tous {events.length > 0 && `(${events.length})`}
           </button>
@@ -181,7 +181,7 @@ export default function AgendaPage() {
               <button
                 key={type}
                 onClick={() => setFilterType(type)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${filterType === type ? config.color + ' border-current' : 'bg-white text-gray-600 dark:text-gray-400 border-gray-200 dark:border-border hover:bg-gray-50'}`}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${filterType === type ? config.color + ' border-current' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-border hover:bg-gray-50'}`}
               >
                 {config.emoji} {config.label} {count > 0 && `(${count})`}
               </button>
@@ -201,13 +201,13 @@ export default function AgendaPage() {
           {/* Calendrier mensuel */}
           <div className="lg:col-span-2 bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border overflow-hidden">
             <div className="flex items-center justify-between p-4 border-b border-gray-100">
-              <button onClick={prevMonth} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <button onClick={prevMonth} className="p-2 hover:bg-gray-100 dark:bg-gray-800 rounded-lg transition-colors">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
               <h2 className="font-semibold text-gray-900">{MONTHS[currentMonth]} {currentYear}</h2>
-              <button onClick={nextMonth} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+              <button onClick={nextMonth} className="p-2 hover:bg-gray-100 dark:bg-gray-800 rounded-lg transition-colors">
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
@@ -244,7 +244,7 @@ export default function AgendaPage() {
                           {dayEvents.slice(0, 2).map(event => (
                             <div
                               key={event.id}
-                              className={`text-xs px-1.5 py-0.5 rounded truncate border ${TYPE_CONFIG[event.type]?.color || 'bg-gray-100 text-gray-700'}`}
+                              className={`text-xs px-1.5 py-0.5 rounded truncate border ${TYPE_CONFIG[event.type]?.color || 'bg-gray-100 dark:bg-gray-800 text-gray-700'}`}
                             >
                               {TYPE_CONFIG[event.type]?.emoji} {event.title.substring(0, 15)}
                             </div>
@@ -280,7 +280,7 @@ export default function AgendaPage() {
                 </div>
               ) : (
                 selectedDayEvents.map(event => (
-                  <div key={event.id} className={`p-3 rounded-xl border ${TYPE_CONFIG[event.type]?.color || 'bg-gray-100 border-gray-200 dark:border-border'}`}>
+                  <div key={event.id} className={`p-3 rounded-xl border ${TYPE_CONFIG[event.type]?.color || 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-border'}`}>
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-2">
                         <span className="text-lg">{TYPE_CONFIG[event.type]?.emoji}</span>
@@ -345,7 +345,7 @@ export default function AgendaPage() {
             <div className="divide-y divide-gray-100">
               {[...events].sort((a, b) => a.startDate.localeCompare(b.startDate)).map(event => (
                 <div key={event.id} className="flex items-center gap-4 p-4 hover:bg-gray-50 dark:bg-muted/20 transition-colors">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg border ${TYPE_CONFIG[event.type]?.color || 'bg-gray-100 border-gray-200 dark:border-border'}`}>
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg border ${TYPE_CONFIG[event.type]?.color || 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-border'}`}>
                     {TYPE_CONFIG[event.type]?.emoji}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -362,7 +362,7 @@ export default function AgendaPage() {
                     <span className={`text-xs font-medium ${PRIORITY_CONFIG[event.priority]?.color || ''}`}>
                       {PRIORITY_CONFIG[event.priority]?.label}
                     </span>
-                    <span className={`text-xs px-2 py-0.5 rounded-full ${event.status === 'COMPLETED' ? 'bg-green-100 text-green-700' : event.status === 'CANCELLED' ? 'bg-gray-100 text-gray-500' : 'bg-yellow-100 text-yellow-700'}`}>
+                    <span className={`text-xs px-2 py-0.5 rounded-full ${event.status === 'COMPLETED' ? 'bg-green-100 text-green-700' : event.status === 'CANCELLED' ? 'bg-gray-100 dark:bg-gray-800 text-gray-500' : 'bg-yellow-100 text-yellow-700'}`}>
                       {event.status === 'COMPLETED' ? 'Complété' : event.status === 'CANCELLED' ? 'Annulé' : 'En attente'}
                     </span>
                   </div>
@@ -407,7 +407,7 @@ export default function AgendaPage() {
           <div className="bg-white dark:bg-card rounded-2xl w-full max-w-lg shadow-2xl">
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
               <h2 className="text-lg font-semibold">Nouvel événement</h2>
-              <button onClick={() => setShowModal(false)} className="p-2 hover:bg-gray-100 rounded-lg">✕</button>
+              <button onClick={() => setShowModal(false)} className="p-2 hover:bg-gray-100 dark:bg-gray-800 rounded-lg">✕</button>
             </div>
             <div className="p-6 space-y-4">
               <div>
@@ -491,7 +491,7 @@ export default function AgendaPage() {
               </div>
             </div>
             <div className="flex gap-3 p-6 pt-0">
-              <button onClick={() => setShowModal(false)} className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50">
+              <button onClick={() => setShowModal(false)} className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 dark:bg-gray-900">
                 Annuler
               </button>
               <button

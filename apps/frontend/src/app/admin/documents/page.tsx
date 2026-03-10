@@ -28,7 +28,7 @@ const CATEGORY_CONFIG: Record<string, { emoji: string; color: string; label: str
   MEDICAL: { emoji: '🩺', color: 'bg-blue-100 text-blue-700', label: 'Médical' },
   VENTE: { emoji: '💰', color: 'bg-yellow-100 text-yellow-700', label: 'Vente' },
   ESPECE: { emoji: '🦜', color: 'bg-green-100 text-green-700', label: 'Espèce' },
-  ADMINISTRATIF: { emoji: '🏛️', color: 'bg-gray-100 text-gray-700', label: 'Administratif' },
+  ADMINISTRATIF: { emoji: '🏛️', color: 'bg-gray-100 dark:bg-gray-800 text-gray-700', label: 'Administratif' },
   PROTOCOLE: { emoji: '📋', color: 'bg-purple-100 text-purple-700', label: 'Protocole' },
 };
 
@@ -115,12 +115,12 @@ export default function DocumentsPage() {
         />
         <div className="flex gap-2 flex-wrap">
           <button onClick={() => setFilterCategory('ALL')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${filterCategory === 'ALL' ? 'bg-gray-800 text-white' : 'bg-white text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-border hover:bg-gray-50'}`}>
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${filterCategory === 'ALL' ? 'bg-gray-800 text-white' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-border hover:bg-gray-50'}`}>
             Tous
           </button>
           {Object.entries(CATEGORY_CONFIG).map(([cat, conf]) => (
             <button key={cat} onClick={() => setFilterCategory(cat)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${filterCategory === cat ? conf.color + ' border-current' : 'bg-white text-gray-600 dark:text-gray-400 border-gray-200 dark:border-border hover:bg-gray-50'}`}>
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${filterCategory === cat ? conf.color + ' border-current' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-border hover:bg-gray-50'}`}>
               {conf.emoji} {conf.label}
             </button>
           ))}
@@ -128,7 +128,7 @@ export default function DocumentsPage() {
         <div className="ml-auto flex gap-1">
           {(['grid', 'list'] as const).map(mode => (
             <button key={mode} onClick={() => setViewMode(mode)}
-              className={`p-2 rounded-lg transition-colors ${viewMode === mode ? 'bg-forest-100 text-forest-700' : 'hover:bg-gray-100 text-gray-500'}`}>
+              className={`p-2 rounded-lg transition-colors ${viewMode === mode ? 'bg-forest-100 text-forest-700' : 'hover:bg-gray-100 dark:bg-gray-800 text-gray-500'}`}>
               {mode === 'grid' ? '⊞' : '☰'}
             </button>
           ))}
@@ -139,7 +139,7 @@ export default function DocumentsPage() {
       {viewMode === 'grid' ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filtered.map(doc => {
-            const catConf = CATEGORY_CONFIG[doc.category] || { emoji: '📄', color: 'bg-gray-100 text-gray-700', label: doc.category };
+            const catConf = CATEGORY_CONFIG[doc.category] || { emoji: '📄', color: 'bg-gray-100 dark:bg-gray-800 text-gray-700', label: doc.category };
             return (
               <div key={doc.id} className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-4 hover:border-forest-300 hover:shadow-sm transition-all cursor-pointer group">
                 <div className="text-4xl mb-3 text-center">{catConf.emoji}</div>
@@ -149,7 +149,7 @@ export default function DocumentsPage() {
                 {doc.linkedTo && <div className="mt-1 text-xs text-forest-600 text-center truncate">{doc.linkedTo}</div>}
                 <div className="mt-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button className="flex-1 text-xs py-1 bg-forest-50 text-forest-700 rounded hover:bg-forest-100 transition-colors">Voir</button>
-                  <button className="flex-1 text-xs py-1 bg-gray-50 dark:bg-muted/20 text-gray-600 dark:text-gray-400 rounded hover:bg-gray-100 transition-colors">⬇</button>
+                  <button className="flex-1 text-xs py-1 bg-gray-50 dark:bg-muted/20 text-gray-600 dark:text-gray-400 rounded hover:bg-gray-100 dark:bg-gray-800 transition-colors">⬇</button>
                 </div>
               </div>
             );
@@ -167,7 +167,7 @@ export default function DocumentsPage() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filtered.map(doc => {
-                const catConf = CATEGORY_CONFIG[doc.category] || { emoji: '📄', color: 'bg-gray-100 text-gray-700', label: doc.category };
+                const catConf = CATEGORY_CONFIG[doc.category] || { emoji: '📄', color: 'bg-gray-100 dark:bg-gray-800 text-gray-700', label: doc.category };
                 return (
                   <tr key={doc.id} className="hover:bg-gray-50 dark:bg-muted/20 transition-colors">
                     <td className="px-4 py-3">
@@ -186,7 +186,7 @@ export default function DocumentsPage() {
                     <td className="px-4 py-3">
                       <div className="flex gap-2">
                         <button className="text-xs px-2 py-1 bg-forest-50 text-forest-700 rounded hover:bg-forest-100">Voir</button>
-                        <button className="text-xs px-2 py-1 bg-gray-50 dark:bg-muted/20 text-gray-600 dark:text-gray-400 rounded hover:bg-gray-100">⬇</button>
+                        <button className="text-xs px-2 py-1 bg-gray-50 dark:bg-muted/20 text-gray-600 dark:text-gray-400 rounded hover:bg-gray-100 dark:bg-gray-800">⬇</button>
                         <button className="text-xs px-2 py-1 bg-red-50 text-red-600 rounded hover:bg-red-100">✕</button>
                       </div>
                     </td>
@@ -204,7 +204,7 @@ export default function DocumentsPage() {
           <div className="bg-white dark:bg-card rounded-2xl w-full max-w-md shadow-2xl">
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
               <h2 className="text-lg font-semibold">Uploader un document</h2>
-              <button onClick={() => setShowUploadModal(false)} className="p-2 hover:bg-gray-100 rounded-lg">✕</button>
+              <button onClick={() => setShowUploadModal(false)} className="p-2 hover:bg-gray-100 dark:bg-gray-800 rounded-lg">✕</button>
             </div>
             <div className="p-6 space-y-4">
               <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center">
@@ -230,7 +230,7 @@ export default function DocumentsPage() {
               </div>
             </div>
             <div className="flex gap-3 p-6 pt-0">
-              <button onClick={() => setShowUploadModal(false)} className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50">Annuler</button>
+              <button onClick={() => setShowUploadModal(false)} className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 dark:bg-gray-900">Annuler</button>
               <button onClick={() => setShowUploadModal(false)} className="flex-1 px-4 py-2 bg-forest-600 text-white rounded-lg text-sm hover:bg-forest-700">Uploader</button>
             </div>
           </div>

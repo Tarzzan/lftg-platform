@@ -162,7 +162,7 @@ export default function SwaggerPage() {
             <button
               key={tag}
               onClick={() => setSelectedTag(tag)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${selectedTag === tag ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 dark:text-gray-400 hover:bg-gray-200'}`}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${selectedTag === tag ? 'bg-blue-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200'}`}
             >
               {tag} <span className="opacity-70">({tagCounts[tag]})</span>
             </button>
@@ -193,7 +193,7 @@ export default function SwaggerPage() {
                   onClick={() => setExpandedEndpoint(isExpanded ? null : key)}
                   className="w-full flex items-center gap-3 px-4 py-3 hover:bg-gray-50 dark:bg-muted/20 text-left"
                 >
-                  <span className={`px-2 py-0.5 rounded text-xs font-bold border ${METHOD_COLORS[endpoint.method] ?? 'bg-gray-100 text-gray-800 border-gray-200 dark:border-border'} min-w-[56px] text-center`}>
+                  <span className={`px-2 py-0.5 rounded text-xs font-bold border ${METHOD_COLORS[endpoint.method] ?? 'bg-gray-100 dark:bg-gray-800 text-gray-800 border-gray-200 dark:border-border'} min-w-[56px] text-center`}>
                     {endpoint.method}
                   </span>
                   <span className="font-mono text-sm text-gray-800 flex-1">{endpoint.path}</span>
@@ -201,7 +201,7 @@ export default function SwaggerPage() {
                   {endpoint.auth ? (
                     <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">🔒 Auth</span>
                   ) : (
-                    <span className="text-xs bg-gray-100 text-gray-500 dark:text-gray-400 px-2 py-0.5 rounded-full">Public</span>
+                    <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 px-2 py-0.5 rounded-full">Public</span>
                   )}
                   <span className="text-gray-400 text-xs">{isExpanded ? '▲' : '▼'}</span>
                 </button>

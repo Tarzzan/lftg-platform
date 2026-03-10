@@ -5,7 +5,7 @@ import { api } from '@/lib/api';
 
 function TreeNode({ node, depth = 0 }: { node: any; depth?: number }) {
   const [expanded, setExpanded] = useState(depth < 2);
-  const sexColor = node.sex === 'M' ? 'bg-blue-100 border-blue-300 text-blue-800' : node.sex === 'F' ? 'bg-pink-100 border-pink-300 text-pink-800' : 'bg-gray-100 border-gray-300 text-gray-800';
+  const sexColor = node.sex === 'M' ? 'bg-blue-100 border-blue-300 text-blue-800' : node.sex === 'F' ? 'bg-pink-100 border-pink-300 text-pink-800' : 'bg-gray-100 dark:bg-gray-800 border-gray-300 text-gray-800';
   const isRoot = depth === 0;
 
   return (
@@ -130,7 +130,7 @@ export default function GenealogyPage() {
                 </thead>
                 <tbody>
                   {animals.map((animal: any) => (
-                    <tr key={animal.id} className="border-b border-gray-100 hover:bg-gray-50">
+                    <tr key={animal.id} className="border-b border-gray-100 hover:bg-gray-50 dark:bg-gray-900">
                       <td className="py-3 px-4 font-mono text-xs text-gray-500">{animal.identifier}</td>
                       <td className="py-3 px-4 font-medium text-gray-900">{animal.name || animal.identifier}</td>
                       <td className="py-3 px-4 text-gray-600">{animal.species}</td>
@@ -149,7 +149,7 @@ export default function GenealogyPage() {
                         {animal.hasGenealogy ? (
                           <span className="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded font-medium">Renseignée</span>
                         ) : (
-                          <span className="bg-gray-100 text-gray-500 dark:text-gray-400 text-xs px-2 py-0.5 rounded">Non renseignée</span>
+                          <span className="bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 text-xs px-2 py-0.5 rounded">Non renseignée</span>
                         )}
                       </td>
                       <td className="py-3 px-4">
@@ -224,7 +224,7 @@ export default function GenealogyPage() {
                     .filter((a: any) => a.hasGenealogy)
                     .sort((a: any, b: any) => b.inbreeding - a.inbreeding)
                     .map((animal: any) => (
-                      <tr key={animal.id} className="border-b border-gray-100 hover:bg-gray-50">
+                      <tr key={animal.id} className="border-b border-gray-100 hover:bg-gray-50 dark:bg-gray-900">
                         <td className="py-3 px-4 font-medium text-gray-900">{animal.name || animal.identifier}</td>
                         <td className="py-3 px-4 text-gray-600">{animal.species}</td>
                         <td className={`py-3 px-4 font-bold ${inbreedingColor(animal.inbreeding)}`}>

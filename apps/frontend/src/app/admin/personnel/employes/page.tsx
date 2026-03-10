@@ -132,7 +132,7 @@ export default function EmployesPage() {
                 <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 dark:text-gray-300">{emp.jobTitle ?? '—'}</td>
                 <td className="px-4 py-3">
                   {emp.department ? (
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${DEPT_COLORS[emp.department] ?? 'bg-gray-100 text-gray-800'}`}>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${DEPT_COLORS[emp.department] ?? 'bg-gray-100 dark:bg-gray-800 text-gray-800'}`}>
                       {emp.department}
                     </span>
                   ) : '—'}
@@ -151,7 +151,7 @@ export default function EmployesPage() {
                     </a>
                     <button
                       onClick={() => { setEditEmployee(emp); setShowModal(true); }}
-                      className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 dark:text-gray-400 hover:bg-gray-100 transition-colors"
+                      className="w-8 h-8 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800 transition-colors"
                     >
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
@@ -304,7 +304,7 @@ function EmployeeModal({ employee, users, onClose, onSuccess }: { employee: any;
           )}
 
           <div className="flex gap-3 mt-6">
-            <button type="button" onClick={onClose} className="flex-1 px-4 py-2 border border-gray-200 dark:border-border text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50">
+            <button type="button" onClick={onClose} className="flex-1 px-4 py-2 border border-gray-200 dark:border-border text-gray-700 dark:text-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 dark:bg-gray-900">
               Annuler
             </button>
             <button type="submit" disabled={loading} className="flex-1 px-4 py-2 bg-forest-600 text-white rounded-lg text-sm font-medium hover:bg-forest-700 disabled:opacity-50">

@@ -180,7 +180,7 @@ export default function DockerPage() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {SERVICES_STATIC.map((svc) => (
-                  <tr key={svc.name} className="hover:bg-gray-50">
+                  <tr key={svc.name} className="hover:bg-gray-50 dark:bg-gray-900">
                     <td className="px-4 py-3 font-mono text-sm font-medium text-blue-700">{svc.name}</td>
                     <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 font-mono">{svc.image}</td>
                     <td className="px-4 py-3 text-sm text-gray-600 dark:text-gray-400 font-mono">{svc.port}</td>

@@ -208,7 +208,7 @@ export default function RecompensesPage() {
             Collection de Badges
           </h2>
           <div className="flex items-center gap-2">
-            <div className="w-24 h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div className="w-24 h-2 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-maroni-400 to-forest-500 rounded-full transition-all duration-700"
                 style={{ width: `${(badges.length / allBadgeTypes.length) * 100}%` }}
@@ -255,7 +255,7 @@ export default function RecompensesPage() {
                     idx === 0 ? 'bg-gold-400 text-white' :
                     idx === 1 ? 'bg-gray-300 text-white' :
                     idx === 2 ? 'bg-amber-600 text-white' :
-                    'bg-gray-100 text-gray-500'
+                    'bg-gray-100 dark:bg-gray-800 text-gray-500'
                   }`}>
                     {idx === 0 ? <Crown className="w-4 h-4" /> : idx + 1}
                   </div>

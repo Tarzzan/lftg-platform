@@ -184,7 +184,7 @@ export default function GpsPage() {
             <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
             Temps réel · Rafraîchissement 30s
           </div>
-          <button onClick={() => refetch()} className="px-3 py-1.5 text-sm border border-gray-200 dark:border-border text-gray-600 dark:text-gray-400 rounded-lg hover:bg-gray-50">
+          <button onClick={() => refetch()} className="px-3 py-1.5 text-sm border border-gray-200 dark:border-border text-gray-600 dark:text-gray-400 rounded-lg hover:bg-gray-50 dark:bg-gray-900">
             🔄 Actualiser
           </button>
         </div>
@@ -209,12 +209,12 @@ export default function GpsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-gray-100 p-1 rounded-lg w-fit">
+      <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg w-fit">
         {(['map', 'list', 'enclosures'] as const).map(t => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${tab === t ? 'bg-white text-gray-900 dark:text-foreground shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${tab === t ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-foreground shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}
           >
             {t === 'map' ? '🗺️ Carte interactive' : t === 'list' ? '📋 Liste' : '🏠 Enclos'}
           </button>
@@ -357,7 +357,7 @@ export default function GpsPage() {
                   {trackers.map((tracker: any) => {
                     const cfg = statusConfig[tracker.status] || statusConfig.inactive;
                     return (
-                      <tr key={tracker.id} className="border-b border-gray-100 hover:bg-gray-50">
+                      <tr key={tracker.id} className="border-b border-gray-100 hover:bg-gray-50 dark:bg-gray-900">
                         <td className="py-3 px-4 font-medium text-gray-900">{tracker.animalName}</td>
                         <td className="py-3 px-4 text-gray-500 dark:text-gray-400 italic text-xs">{tracker.species}</td>
                         <td className="py-3 px-4">

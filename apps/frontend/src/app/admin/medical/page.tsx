@@ -216,7 +216,7 @@ export default function MedicalPage() {
                     <p className="text-xs text-muted-foreground">{visit.animal.species.name}</p>
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${visitTypeColors[visit.type] || 'bg-gray-100 text-gray-700'}`}>
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${visitTypeColors[visit.type] || 'bg-gray-100 dark:bg-gray-800 text-gray-700'}`}>
                       {visitTypeLabels[visit.type] || visit.type}
                     </span>
                   </td>

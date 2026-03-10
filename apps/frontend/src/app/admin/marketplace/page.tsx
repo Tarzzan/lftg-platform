@@ -112,7 +112,7 @@ export default function MarketplacePage() {
               <button
                 key={f.key}
                 onClick={() => setFilterType(f.key)}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${filterType === f.key ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-600 dark:text-gray-400 hover:bg-gray-200'}`}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${filterType === f.key ? 'bg-green-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200'}`}
               >
                 {f.label}
               </button>
@@ -150,7 +150,7 @@ export default function MarketplacePage() {
                       </div>
                     </div>
                     {animal.species?.citesCategory && (
-                      <span className="text-xs bg-gray-100 text-gray-600 dark:text-gray-400 px-2 py-0.5 rounded">
+                      <span className="text-xs bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 px-2 py-0.5 rounded">
                         CITES {animal.species.citesCategory}
                       </span>
                     )}

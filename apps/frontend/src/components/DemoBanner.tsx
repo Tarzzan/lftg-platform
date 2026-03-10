@@ -1,6 +1,6 @@
 "use client";
-
 // Bandeau de démonstration désactivé définitivement
-export default function DemoBanner() {
+export function DemoBanner() {
   return null;
 }
+export default DemoBanner;

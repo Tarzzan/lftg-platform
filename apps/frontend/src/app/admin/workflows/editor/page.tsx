@@ -7,7 +7,7 @@ import { api } from '@/lib/api';
 
 const STATUS_COLORS: Record<string, string> = {
   active: 'bg-green-100 text-green-800',
-  inactive: 'bg-gray-100 text-gray-600',
+  inactive: 'bg-gray-100 dark:bg-gray-800 text-gray-600',
   running: 'bg-blue-100 text-blue-800',
   completed: 'bg-green-100 text-green-800',
   failed: 'bg-red-100 text-red-800',
@@ -63,10 +63,10 @@ export default function WorkflowsEditorPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-gray-100 rounded-lg p-1 w-fit">
+      <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 w-fit">
         {(['definitions', 'instances'] as const).map(tab => (
           <button key={tab} onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === tab ? 'bg-white text-gray-900 dark:text-foreground shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}>
+            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === tab ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-foreground shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}>
             {tab === 'definitions' ? `Définitions (${defs.length})` : `Instances (${insts.length})`}
           </button>
         ))}
@@ -106,7 +106,7 @@ export default function WorkflowsEditorPage() {
               className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 text-sm">
               {createMutation.isPending ? 'Création...' : 'Créer'}
             </button>
-            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-100 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 text-sm">Annuler</button>
+            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 text-sm">Annuler</button>
           </div>
         </div>
       )}
@@ -133,7 +133,7 @@ export default function WorkflowsEditorPage() {
                     <p className="font-medium text-gray-900">{def.name}</p>
                     <p className="text-xs text-gray-500">{def.description ?? 'Aucune description'}</p>
                     <div className="flex items-center gap-2 mt-1">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[def.status] ?? 'bg-gray-100 text-gray-600'}`}>
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[def.status] ?? 'bg-gray-100 dark:bg-gray-800 text-gray-600'}`}>
                         {def.status ?? 'inactive'}
                       </span>
                       {def.trigger && <span className="text-xs text-gray-400">Déclencheur: {def.trigger}</span>}
@@ -179,7 +179,7 @@ export default function WorkflowsEditorPage() {
                   </p>
                 </div>
               </div>
-              <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[inst.status] ?? 'bg-gray-100 text-gray-600'}`}>
+              <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${STATUS_COLORS[inst.status] ?? 'bg-gray-100 dark:bg-gray-800 text-gray-600'}`}>
                 {inst.status ?? 'unknown'}
               </span>
             </div>

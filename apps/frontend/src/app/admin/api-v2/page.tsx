@@ -108,7 +108,7 @@ export default function ApiV2Page() {
             <div className="flex flex-wrap gap-2">
               {SCOPES.map(scope => (
                 <button key={scope} onClick={() => toggleScope(scope)}
-                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${form.scopes.includes(scope) ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-gray-600 dark:text-gray-400 border-gray-200 dark:border-border hover:border-indigo-300'}`}>
+                  className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${form.scopes.includes(scope) ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-border hover:border-indigo-300'}`}>
                   {scope}
                 </button>
               ))}
@@ -119,7 +119,7 @@ export default function ApiV2Page() {
               className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 text-sm">
               {createMutation.isPending ? 'Génération...' : 'Générer la clé'}
             </button>
-            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-100 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 text-sm">Annuler</button>
+            <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 text-sm">Annuler</button>
           </div>
         </div>
       )}

@@ -80,7 +80,7 @@ export default function ImportPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {IMPORT_TYPES.map(t => (
           <button key={t.key} onClick={() => { setSelectedType(t); setFile(null); setResult(null); }}
-            className={`p-4 rounded-xl border text-left transition-all ${selectedType.key === t.key ? 'border-indigo-500 bg-indigo-50' : 'border-gray-100 bg-white hover:border-indigo-200'}`}>
+            className={`p-4 rounded-xl border text-left transition-all ${selectedType.key === t.key ? 'border-indigo-500 bg-indigo-50' : 'border-gray-100 bg-white dark:bg-gray-800 hover:border-indigo-200'}`}>
             <FileText className={`w-5 h-5 mb-2 ${selectedType.key === t.key ? 'text-indigo-600' : 'text-gray-400'}`} />
             <p className={`font-medium text-sm ${selectedType.key === t.key ? 'text-indigo-900' : 'text-gray-900'}`}>{t.label}</p>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t.description}</p>
@@ -93,7 +93,7 @@ export default function ImportPage() {
         <div className="flex items-center justify-between">
           <h2 className="font-semibold text-gray-900">Import : {selectedType.label}</h2>
           <button onClick={handleDownloadTemplate}
-            className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 text-sm transition-colors">
+            className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 text-sm transition-colors">
             <Download className="w-4 h-4" />
             Télécharger le modèle CSV
           </button>

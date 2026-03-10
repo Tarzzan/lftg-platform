@@ -109,7 +109,7 @@ function DocumentViewer({ doc }: { doc: any }) {
 
   return (
     <a href={url} download
-      className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-muted/20 border border-gray-200 dark:border-border rounded-xl hover:bg-gray-100 transition-colors group"
+      className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-muted/20 border border-gray-200 dark:border-border rounded-xl hover:bg-gray-100 dark:bg-gray-800 transition-colors group"
     >
       <div className="w-10 h-10 rounded-lg bg-gray-200 flex items-center justify-center flex-shrink-0">
         <Archive className="w-5 h-5 text-gray-500" />
@@ -204,7 +204,7 @@ function SignaturePad({ onSign, onCancel }: { onSign: (data: string) => void; on
         </div>
         <button
           onClick={clear}
-          className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors px-2 py-1 rounded-lg hover:bg-gray-100"
+          className="flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 dark:text-gray-400 transition-colors px-2 py-1 rounded-lg hover:bg-gray-100 dark:bg-gray-800"
         >
           <RefreshCw className="w-3 h-3" /> Effacer
         </button>
@@ -306,7 +306,7 @@ function QuizBlock({ quiz, enrollmentId }: { quiz: any; enrollmentId: string }) 
                 isCorrectOpt ? 'bg-forest-500 text-white' :
                 isWrongOpt   ? 'bg-red-500 text-white' :
                 isSelected   ? 'bg-gold-500 text-white' :
-                               'bg-gray-100 text-gray-500'
+                               'bg-gray-100 dark:bg-gray-800 text-gray-500'
               }`}>{letter}</span>
               {opt}
               {isCorrectOpt && <CheckCircle className="w-4 h-4 text-forest-500 ml-auto" />}
@@ -533,7 +533,7 @@ function LessonViewer({ lesson, enrollmentId, isCompleted, onComplete }: {
             )}
             <button onClick={() => setShowNotes(!showNotes)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all border
-                ${showNotes ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-white text-gray-500 dark:text-gray-400 border-gray-200 dark:border-border hover:border-amber-300 hover:text-amber-600'}`}>
+                ${showNotes ? 'bg-amber-100 text-amber-700 border-amber-200' : 'bg-white dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-border hover:border-amber-300 hover:text-amber-600'}`}>
               <StickyNote className="w-3.5 h-3.5" /> Notes
             </button>
           </div>
@@ -664,7 +664,7 @@ export default function EnrollmentDetailPage() {
   return (
     <div className="flex h-[calc(100vh-80px)] gap-0 -mx-6 -mb-6">
       {/* ── Sidebar — Plan de cours ── */}
-      <div className="w-72 flex-shrink-0 border-r border-gray-100 bg-white flex flex-col overflow-hidden">
+      <div className="w-72 flex-shrink-0 border-r border-gray-100 bg-white dark:bg-gray-800 flex flex-col overflow-hidden">
         {/* Header */}
         <div className="p-4 border-b border-gray-100">
           <button
@@ -682,7 +682,7 @@ export default function EnrollmentDetailPage() {
               <span className="text-xs text-gray-500">Progression</span>
               <span className="text-xs font-bold text-gray-700">{progress}%</span>
             </div>
-            <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+            <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2 overflow-hidden">
               <div
                 className={`h-2 rounded-full transition-all duration-700 ${
                   progress >= 80 ? 'bg-forest-500' : progress >= 50 ? 'bg-gold-500' : 'bg-maroni-500'
@@ -712,7 +712,7 @@ export default function EnrollmentDetailPage() {
                   }}
                   className="flex items-center gap-2 w-full p-2.5 rounded-lg hover:bg-gray-50 dark:bg-muted/20 transition-colors text-left"
                 >
-                  <span className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0 text-xs font-bold bg-gray-100 text-gray-500">
+                  <span className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0 text-xs font-bold bg-gray-100 dark:bg-gray-800 text-gray-500">
                     {chIdx + 1}
                   </span>
                   <div className="flex-1 min-w-0">
@@ -806,7 +806,7 @@ export default function EnrollmentDetailPage() {
               <button
                 onClick={() => activeIdx > 0 && setActiveLesson(allLessons[activeIdx - 1])}
                 disabled={activeIdx === 0}
-                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-border rounded-xl hover:bg-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-border rounded-xl hover:bg-white dark:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" /> Précédente
               </button>
@@ -814,7 +814,7 @@ export default function EnrollmentDetailPage() {
               <button
                 onClick={() => hasNext && setActiveLesson(allLessons[activeIdx + 1])}
                 disabled={!hasNext}
-                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-border rounded-xl hover:bg-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-sm text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-border rounded-xl hover:bg-white dark:bg-gray-800 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               >
                 Suivante <SkipForward className="w-4 h-4" />
               </button>

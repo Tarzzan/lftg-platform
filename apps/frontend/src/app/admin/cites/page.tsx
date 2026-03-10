@@ -7,7 +7,7 @@ import { api } from '@/lib/api';
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
   ACTIVE: { label: 'Actif', color: 'bg-green-100 text-green-700' },
   EXPIRED: { label: 'Expiré', color: 'bg-red-100 text-red-700' },
-  REVOKED: { label: 'Révoqué', color: 'bg-gray-100 text-gray-700' },
+  REVOKED: { label: 'Révoqué', color: 'bg-gray-100 dark:bg-gray-800 text-gray-700' },
   SUSPENDED: { label: 'Suspendu', color: 'bg-orange-100 text-orange-700' },
   PENDING: { label: 'En attente', color: 'bg-blue-100 text-blue-700' },
 };
@@ -114,7 +114,7 @@ export default function CitesPage() {
               <div className="flex gap-2 mb-4">
                 {['ALL', 'ACTIVE', 'EXPIRED', 'PENDING', 'REVOKED'].map(s => (
                   <button key={s} onClick={() => setFilterStatus(s)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${filterStatus === s ? 'bg-forest-600 text-white' : 'bg-gray-100 text-gray-600 dark:text-gray-400 hover:bg-gray-200'}`}>
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${filterStatus === s ? 'bg-forest-600 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200'}`}>
                     {s === 'ALL' ? 'Tous' : STATUS_CONFIG[s]?.label || s}
                   </button>
                 ))}
@@ -159,7 +159,7 @@ export default function CitesPage() {
                             </div>
                           </div>
                           <div className="text-right">
-                            <span className={`text-xs px-2 py-1 rounded-full font-medium ${STATUS_CONFIG[permit.status]?.color || 'bg-gray-100 text-gray-700'}`}>
+                            <span className={`text-xs px-2 py-1 rounded-full font-medium ${STATUS_CONFIG[permit.status]?.color || 'bg-gray-100 dark:bg-gray-800 text-gray-700'}`}>
                               {STATUS_CONFIG[permit.status]?.label || permit.status}
                             </span>
                             {permit.expiresAt && (
@@ -300,7 +300,7 @@ export default function CitesPage() {
           <div className="bg-white dark:bg-card rounded-2xl w-full max-w-lg shadow-2xl">
             <div className="flex items-center justify-between p-6 border-b border-gray-100">
               <h2 className="text-lg font-semibold">Nouveau permis CITES</h2>
-              <button onClick={() => setShowModal(false)} className="p-2 hover:bg-gray-100 rounded-lg">✕</button>
+              <button onClick={() => setShowModal(false)} className="p-2 hover:bg-gray-100 dark:bg-gray-800 rounded-lg">✕</button>
             </div>
             <div className="p-6 space-y-4">
               <div>
@@ -350,7 +350,7 @@ export default function CitesPage() {
               </div>
             </div>
             <div className="flex gap-3 p-6 border-t border-gray-100">
-              <button onClick={() => setShowModal(false)} className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 dark:text-gray-300 rounded-lg text-sm hover:bg-gray-50">Annuler</button>
+              <button onClick={() => setShowModal(false)} className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 dark:text-gray-300 rounded-lg text-sm hover:bg-gray-50 dark:bg-gray-900">Annuler</button>
               <button
                 onClick={() => createMutation.mutate(form)}
                 disabled={!form.permitNumber || createMutation.isPending}

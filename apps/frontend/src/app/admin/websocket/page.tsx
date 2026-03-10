@@ -104,7 +104,7 @@ export default function WebSocketPage() {
   }, []);
 
   const statusBadge = {
-    idle: 'bg-gray-100 text-gray-600',
+    idle: 'bg-gray-100 dark:bg-gray-800 text-gray-600',
     connecting: 'bg-yellow-100 text-yellow-800',
     connected: 'bg-green-100 text-green-800',
     error: 'bg-red-100 text-red-800',
@@ -205,7 +205,7 @@ export default function WebSocketPage() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {CHANNELS.map((ch) => (
-                  <tr key={ch.name} className="hover:bg-gray-50">
+                  <tr key={ch.name} className="hover:bg-gray-50 dark:bg-gray-900">
                     <td className="px-4 py-3 font-mono text-sm font-medium text-green-700">/api/v1/{ch.name}</td>
                     <td className="px-4 py-3 text-sm text-gray-600">{ch.description}</td>
                     <td className="px-4 py-3">
@@ -231,7 +231,7 @@ export default function WebSocketPage() {
               <input
                 readOnly
                 value={`/api/v1/notifications/stream`}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono bg-gray-50"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono bg-gray-50 dark:bg-gray-900"
               />
             </div>
             <div>
@@ -240,7 +240,7 @@ export default function WebSocketPage() {
                 readOnly
                 value={`{"id":"evt_001","type":"animal.alert","data":{"animalId":"A001","message":"Température anormale"},"timestamp":"${new Date().toISOString()}"}`}
                 rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono bg-gray-50"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono bg-gray-50 dark:bg-gray-900"
               />
             </div>
             <button
