@@ -196,6 +196,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           SIDEBAR — Thème forêt tropicale premium
           ═══════════════════════════════════════════ */}
       <aside
+        role="navigation"
+        aria-label="Navigation principale"
         className={`
           fixed lg:relative z-50 lg:z-auto
           flex-shrink-0 flex flex-col h-full
