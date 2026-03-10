@@ -322,20 +322,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 {!collapsed ? (
                   <button
                     onClick={() => toggleGroup(group.section)}
-                    className={`
-                      w-full flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg mt-1.5 mb-0.5
-                      transition-all duration-150 group/header
-                      ${hasActiveItem
-                        ? 'bg-white/10 hover:bg-white/15'
-                        : 'hover:bg-white/8'
-                      }
-                    `}
+                    className="w-full flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg mt-1.5 mb-0.5 transition-all duration-150 group/header"
+                    style={{
+                      background: hasActiveItem
+                        ? 'linear-gradient(90deg, rgba(193,127,58,0.35), rgba(193,127,58,0.15))'
+                        : 'rgba(0,0,0,0.45)',
+                      border: hasActiveItem
+                        ? '1px solid rgba(232,168,78,0.4)'
+                        : '1px solid rgba(255,255,255,0.10)',
+                      backdropFilter: 'blur(6px)',
+                    }}
                   >
                     <span
                       className="inline-flex items-center gap-1.5 flex-1 text-[9px] font-bold uppercase tracking-widest"
                       style={{
-                        color: hasActiveItem ? 'rgba(232,168,78,0.95)' : 'rgba(255,255,255,0.7)',
-                        textShadow: '0 1px 3px rgba(0,0,0,0.6)',
+                        color: hasActiveItem ? '#f0c060' : 'rgba(255,255,255,0.92)',
+                        textShadow: '0 1px 6px rgba(0,0,0,0.9), 0 0 12px rgba(0,0,0,0.7)',
                       }}
                     >
                       <span>{group.emoji}</span>
@@ -343,7 +345,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </span>
                     <ChevronDown
                       className={`w-3 h-3 flex-shrink-0 transition-transform duration-200 ${isGroupOpen ? 'rotate-0' : '-rotate-90'}`}
-                      style={{ color: hasActiveItem ? 'rgba(232,168,78,0.8)' : 'rgba(255,255,255,0.35)' }}
+                      style={{ color: hasActiveItem ? 'rgba(240,192,96,0.9)' : 'rgba(255,255,255,0.55)' }}
                     />
                   </button>
                 ) : (
