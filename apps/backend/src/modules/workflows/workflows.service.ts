@@ -106,7 +106,7 @@ export class WorkflowsService {
     if (!t) throw new BadRequestException(`Transition '${transitionName}' introuvable`);
     if (t.from !== instance.currentState && t.from !== '*') {
       throw new BadRequestException(
-        `Transition '${transitionName}" impossible depuis l'état "${instance.currentState}'`,
+        `Transition '${transitionName}' impossible depuis l'état '${instance.currentState}'`,
       );
     }
 

@@ -308,7 +308,7 @@ export class PdfReportService {
       ${data.lowStock.length > 0 ? `
       <div class="alert-box danger" style="margin-bottom:16px">
         <strong>⚠️ ${data.lowStock.length} article${data.lowStock.length > 1 ? 's' : ''} en stock faible</strong>
-        <p style="margin-top:4px">${data.lowStock.map((a: any) => a.name).join(", ')}</p>
+        <p style="margin-top:4px">${data.lowStock.map((a: any) => a.name).join(', ')}</p>
       </div>` : ''}
 
       ${Object.entries(byCategory).map(([category, articles]: [string, any]) => `
