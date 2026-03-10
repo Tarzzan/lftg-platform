@@ -267,10 +267,21 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {navigation.map((group) => (
             <div key={group.section} className="mb-1">
               {!collapsed && (
-                <p className="px-3 mb-1 text-[9px] font-bold uppercase tracking-widest text-white/30 flex items-center gap-1.5">
-                  <span>{group.emoji}</span>
-                  <span>{group.section}</span>
-                </p>
+                <div className="px-2 mb-1.5 mt-2">
+                  <span
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-widest"
+                    style={{
+                      background: 'rgba(255,255,255,0.12)',
+                      border: '1px solid rgba(255,255,255,0.18)',
+                      color: 'rgba(255,255,255,0.85)',
+                      backdropFilter: 'blur(4px)',
+                      textShadow: '0 1px 3px rgba(0,0,0,0.6)',
+                    }}
+                  >
+                    <span>{group.emoji}</span>
+                    <span>{group.section}</span>
+                  </span>
+                </div>
               )}
               {collapsed && <div className="my-2 border-t border-white/10" />}
               <div className="space-y-0.5">
