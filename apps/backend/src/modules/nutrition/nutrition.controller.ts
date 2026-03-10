@@ -11,30 +11,30 @@ export class NutritionController {
   constructor(private readonly nutritionService: NutritionService) {}
 
   @Get('plans')
-  @ApiOperation({ summary: "Lister les plans nutritionnels' })
+  @ApiOperation({ summary: "Lister les plans nutritionnels" })
   getPlans() {
     return this.nutritionService.getPlans();
   }
 
-  @Get("plans/:id')
+  @Get("plans/:id")
   @ApiOperation({ summary: "Détail d\'un plan nutritionnel" })
   getPlan(@Param('id') id: string) {
     return this.nutritionService.getPlanById(id);
   }
 
   @Get('records')
-  @ApiOperation({ summary: "Historique des repas' })
-  getRecords(@Query("date') date?: string) {
+  @ApiOperation({ summary: "Historique des repas" })
+  getRecords(@Query("date") date?: string) {
     return this.nutritionService.getFeedingRecords(date);
   }
 
   @Get('schedule/today')
-  @ApiOperation({ summary: "Planning des repas du jour' })
+  @ApiOperation({ summary: "Planning des repas du jour" })
   getTodaySchedule() {
     return this.nutritionService.getTodaySchedule();
   }
 
-  @Get("stats')
+  @Get("stats")
   @ApiOperation({ summary: 'Statistiques nutritionnelles' })
   getStats() {
     return this.nutritionService.getNutritionStats();

@@ -18,16 +18,16 @@ export class AccountingController {
   constructor(private readonly accountingService: AccountingService) {}
 
   @Get('summary')
-  @ApiOperation({ summary: "Résumé comptable annuel' })
-  @ApiResponse({ status: 200, description: "Résumé comptable' })
+  @ApiOperation({ summary: "Résumé comptable annuel" })
+  @ApiResponse({ status: 200, description: "Résumé comptable" })
   getSummary(@Query('year') year?: string) {
     return this.accountingService.getAccountingSummary(+year || new Date().getFullYear());
   }
 
   @Get('transactions')
-  @ApiOperation({ summary: "Liste des transactions' })
+  @ApiOperation({ summary: "Liste des transactions" })
   getTransactions(
-    @Query("from') from?: string,
+    @Query("from") from?: string,
     @Query('to') to?: string,
     @Query('type') type?: string,
   ) {

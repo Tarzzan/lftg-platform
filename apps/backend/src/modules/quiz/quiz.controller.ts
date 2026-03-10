@@ -29,12 +29,12 @@ export class QuizController {
   }
 
   @Post('certificates/generate')
-  @ApiOperation({ summary: "Générer un certificat de réussite' })
+  @ApiOperation({ summary: "Générer un certificat de réussite" })
   generateCertificate(@Body() body: { userId: string; courseId: string }) {
     return this.quizService.generateCertificate(body.userId, body.courseId);
   }
 
-  @Get("progress/:userId')
+  @Get("progress/:userId")
   @ApiOperation({ summary: "Progression d\'un utilisateur" })
   getUserProgress(@Param('userId') userId: string) {
     return this.quizService.getUserProgress(userId);

@@ -11,12 +11,12 @@ export class GpsController {
   constructor(private readonly gpsService: GpsService) {}
 
   @Get('trackers')
-  @ApiOperation({ summary: "Lister tous les trackers GPS' })
+  @ApiOperation({ summary: "Lister tous les trackers GPS" })
   getTrackers() {
     return this.gpsService.getTrackers();
   }
 
-  @Get("trackers/:id')
+  @Get("trackers/:id")
   @ApiOperation({ summary: "Détail d\'un tracker GPS" })
   getTracker(@Param('id') id: string) {
     return this.gpsService.getTrackerById(id);
@@ -29,12 +29,12 @@ export class GpsController {
   }
 
   @Get('geofences')
-  @ApiOperation({ summary: "Lister les zones géographiques' })
+  @ApiOperation({ summary: "Lister les zones géographiques" })
   getGeofences() {
     return this.gpsService.getGeofences();
   }
 
-  @Get("stats')
+  @Get("stats")
   @ApiOperation({ summary: 'Statistiques GPS' })
   getStats() {
     return this.gpsService.getGpsStats();

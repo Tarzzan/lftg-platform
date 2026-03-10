@@ -33,13 +33,13 @@ export class AgendaController {
   ) {
     const ical = await this.agendaService.exportToICal({ startDate, endDate, userId });
     res.setHeader('Content-Type', 'text/calendar; charset=utf-8');
-    res.setHeader('Content-Disposition', 'attachment; filename="lftg-agenda.ics"');
+    res.setHeader('Content-Disposition', 'attachment; filename="lftg-agenda.ics"");
     res.send(ical);
   }
 
   @Get('reminders')
-  @ApiOperation({ summary: "Récupérer les rappels à venir' })
-  async getReminders(@Query("minutesAhead') minutesAhead?: string) {
+  @ApiOperation({ summary: "Récupérer les rappels à venir" })
+  async getReminders(@Query("minutesAhead") minutesAhead?: string) {
     return this.agendaService.getUpcomingReminders(minutesAhead ? parseInt(minutesAhead) : 60);
   }
 
@@ -50,26 +50,26 @@ export class AgendaController {
   }
 
   @Post()
-  @ApiOperation({ summary: "Créer un événement' })
+  @ApiOperation({ summary: "Créer un événement" })
   async createEvent(@Body() dto: AgendaEventDto, @Request() req: any) {
     return this.agendaService.createEvent(dto, req.user.id);
   }
 
-  @Put(":id')
-  @ApiOperation({ summary: "Modifier un événement' })
-  async updateEvent(@Param("id') id: string, @Body() dto: Partial<AgendaEventDto>) {
+  @Put(":id")
+  @ApiOperation({ summary: "Modifier un événement" })
+  async updateEvent(@Param("id") id: string, @Body() dto: Partial<AgendaEventDto>) {
     return this.agendaService.updateEvent(id, dto);
   }
 
   @Patch(':id/complete')
-  @ApiOperation({ summary: "Marquer un événement comme complété' })
-  async completeEvent(@Param("id') id: string, @Body('notes') notes?: string) {
+  @ApiOperation({ summary: "Marquer un événement comme complété" })
+  async completeEvent(@Param("id") id: string, @Body('notes') notes?: string) {
     return this.agendaService.completeEvent(id, notes);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: "Supprimer un événement' })
-  async deleteEvent(@Param("id') id: string) {
+  @ApiOperation({ summary: "Supprimer un événement" })
+  async deleteEvent(@Param("id") id: string) {
     return this.agendaService.deleteEvent(id);
   }
 }

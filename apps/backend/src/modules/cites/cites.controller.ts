@@ -24,14 +24,14 @@ export class CitesController {
   }
 
   @Get('permits')
-  @ApiOperation({ summary: "Lister tous les permis CITES' })
-  async getAllPermits(@Query("status') status?: string, @Query('type') type?: string) {
+  @ApiOperation({ summary: "Lister tous les permis CITES" })
+  async getAllPermits(@Query("status") status?: string, @Query('type') type?: string) {
     return this.citesService.getAllPermits({ status, type });
   }
 
   @Get('permits/expiring')
-  @ApiOperation({ summary: "Permis expirant bientôt' })
-  async getExpiringPermits(@Query("daysAhead') daysAhead?: string) {
+  @ApiOperation({ summary: "Permis expirant bientôt" })
+  async getExpiringPermits(@Query("daysAhead") daysAhead?: string) {
     return this.citesService.getExpiringPermits(daysAhead ? parseInt(daysAhead) : 30);
   }
 
@@ -42,24 +42,24 @@ export class CitesController {
   }
 
   @Get('compliance')
-  @ApiOperation({ summary: "Rapport de conformité CITES' })
+  @ApiOperation({ summary: "Rapport de conformité CITES" })
   async getComplianceReport() {
     return this.citesService.generateComplianceReport();
   }
 
-  @Get("compliance-report')
-  @ApiOperation({ summary: "Rapport de conformité CITES (alias)' })
+  @Get("compliance-report")
+  @ApiOperation({ summary: "Rapport de conformité CITES (alias)" })
   async getComplianceReportAlias() {
     return this.citesService.generateComplianceReport();
   }
 
-  @Post("permits')
-  @ApiOperation({ summary: "Créer un permis CITES' })
+  @Post("permits")
+  @ApiOperation({ summary: "Créer un permis CITES" })
   async createPermit(@Body() dto: CitesPermitDto, @Request() req: any) {
     return this.citesService.createPermit(dto, req.user.id);
   }
 
-  @Patch("permits/:id/status')
+  @Patch("permits/:id/status")
   @ApiOperation({ summary: "Mettre à jour le statut d\'un permis" })
   async updatePermitStatus(
     @Param('id') id: string,

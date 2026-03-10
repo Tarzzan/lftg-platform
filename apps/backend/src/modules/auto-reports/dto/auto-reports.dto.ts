@@ -17,7 +17,7 @@ export enum ReportType {
 }
 
 export class CreateScheduleDto {
-  @ApiProperty({ description: "Nom du rapport planifié', example: "Rapport mensuel CITES' })
+  @ApiProperty({ description: "Nom du rapport planifié", example: "Rapport mensuel CITES" })
   @IsString()
   name: string;
 
@@ -25,16 +25,16 @@ export class CreateScheduleDto {
   @IsEnum(ReportFrequency)
   frequency: ReportFrequency;
 
-  @ApiProperty({ description: "Expression cron', example: "0 0 1 * *' })
+  @ApiProperty({ description: "Expression cron", example: "0 0 1 * *" })
   @IsString()
   cronExpr: string;
 
-  @ApiProperty({ type: [String], description: "Liste des destinataires email' })
+  @ApiProperty({ type: [String], description: "Liste des destinataires email" })
   @IsArray()
   @IsString({ each: true })
   recipients: string[];
 
-  @ApiProperty({ enum: ReportType, description: "Type de rapport' })
+  @ApiProperty({ enum: ReportType, description: "Type de rapport" })
   @IsEnum(ReportType)
   type: ReportType;
 }

@@ -17,30 +17,30 @@ export class MlController {
   constructor(private readonly mlService: MlService) {}
 
   @Get('breeding-predictions')
-  @ApiOperation({ summary: "Prédictions de reproduction' })
+  @ApiOperation({ summary: "Prédictions de reproduction" })
   getBreedingPredictions() {
     return this.mlService.getBreedingPredictions();
   }
 
-  @Get("behavioral-anomalies')
+  @Get("behavioral-anomalies")
   @ApiOperation({ summary: "Détection d'anomalies comportementales" })
   getBehavioralAnomalies() {
     return this.mlService.getBehavioralAnomalies();
   }
 
   @Get('nutrition-recommendations')
-  @ApiOperation({ summary: "Recommandations nutritionnelles' })
-  getNutritionRecommendations(@Query("animalId') animalId: string) {
+  @ApiOperation({ summary: "Recommandations nutritionnelles" })
+  getNutritionRecommendations(@Query("animalId") animalId: string) {
     return this.mlService.getNutritionRecommendations(animalId);
   }
 
   @Post('predict')
-  @ApiOperation({ summary: "Lancer une prédiction ML' })
+  @ApiOperation({ summary: "Lancer une prédiction ML" })
   predict(@Body() dto: MlPredictionDto) {
     return this.mlService.predict?.(dto) ?? { prediction: null };
   }
 
-  @Get("models')
+  @Get("models")
   @ApiOperation({ summary: 'Liste des modèles ML disponibles' })
   getModels() {
     return this.mlService.getModels?.() ?? [];

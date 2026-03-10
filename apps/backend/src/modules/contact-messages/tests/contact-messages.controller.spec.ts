@@ -31,8 +31,8 @@ describe('ContactMessagesController', () => {
 
   describe('create', () => {
     it('should create a contact message', async () => {
-      const dto = { senderName: 'Jean Dupont', senderEmail: 'jean@test.fr', subject: 'Test', message: "Bonjour' };
-      const result = { id: "1', reference: 'MSG-ABC123', ...dto, status: 'UNREAD' };
+      const dto = { senderName: 'Jean Dupont', senderEmail: 'jean@test.fr', subject: 'Test', message: "Bonjour" };
+      const result = { id: "1", reference: 'MSG-ABC123', ...dto, status: 'UNREAD' };
       mockService.create.mockResolvedValue(result);
       expect(await controller.create(dto as any)).toEqual(result);
       expect(mockService.create).toHaveBeenCalledWith(dto);

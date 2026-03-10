@@ -11,8 +11,8 @@ export class CitesApiController {
   constructor(private readonly citesApiService: CitesApiService) {}
 
   @Get('search')
-  @ApiOperation({ summary: "Rechercher une espèce dans la base CITES' })
-  searchSpecies(@Query("q') query: string) {
+  @ApiOperation({ summary: "Rechercher une espèce dans la base CITES" })
+  searchSpecies(@Query("q") query: string) {
     return this.citesApiService.searchSpecies(query || '');
   }
 

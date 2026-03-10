@@ -37,8 +37,8 @@ describe('ContactMessagesService', () => {
 
   describe('create', () => {
     it('should create a contact message with auto-generated reference', async () => {
-      const data = { senderName: 'Alice', senderEmail: 'alice@test.fr', subject: 'Info', message: "Bonjour' };
-      const created = { id: "1', reference: 'MSG-ABC', ...data, status: 'UNREAD' };
+      const data = { senderName: 'Alice', senderEmail: 'alice@test.fr', subject: 'Info', message: "Bonjour" };
+      const created = { id: "1", reference: 'MSG-ABC', ...data, status: 'UNREAD' };
       mockPrisma.contactMessage.create.mockResolvedValue(created);
       const result = await service.create(data);
       expect(result).toEqual(created);
@@ -54,10 +54,10 @@ describe('ContactMessagesService', () => {
     });
 
     it('should generate a unique reference starting with MSG-', async () => {
-      const data = { senderName: 'Bob', senderEmail: 'bob@test.fr', subject: 'Test', message: "Test' };
+      const data = { senderName: 'Bob', senderEmail: 'bob@test.fr', subject: 'Test', message: "Test" };
       mockPrisma.contactMessage.create.mockImplementation(({ data }) => {
         expect(data.reference).toMatch(/^MSG-/);
-        return Promise.resolve({ id: "2', ...data });
+        return Promise.resolve({ id: "2", ...data });
       });
       await service.create(data);
     });

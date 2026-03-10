@@ -461,12 +461,12 @@ export class ReportsService {
 
   getAvailableReports() {
     return [
-      { type: 'monthly_summary', label: "Rapport mensuel', description: "Synthèse complète de l\'activité du mois', icon: '📊' },
-      { type: 'animal_medical', label: "Dossier médical animal', description: "Historique médical complet d\'un animal', icon: '🩺' },
-      { type: 'cites_compliance', label: "Bilan CITES', description: "État des permis et conformité réglementaire', icon: '📜' },
-      { type: 'hr_summary', label: "Rapport RH', description: "Bilan du personnel, congés et formations', icon: '👥' },
-      { type: 'stock_inventory', label: "Inventaire des stocks', description: "État détaillé des stocks et alertes', icon: '📦' },
-      { type: 'sales_analysis', label: "Analyse des ventes', description: "Performance commerciale et top espèces', icon: '💰' },
+      { type: 'monthly_summary', label: "Rapport mensuel", description: "Synthèse complète de l\'activité du mois", icon: '📊' },
+      { type: 'animal_medical', label: "Dossier médical animal", description: "Historique médical complet d\'un animal", icon: '🩺' },
+      { type: 'cites_compliance', label: "Bilan CITES", description: "État des permis et conformité réglementaire", icon: '📜' },
+      { type: 'hr_summary', label: "Rapport RH", description: "Bilan du personnel, congés et formations", icon: '👥' },
+      { type: 'stock_inventory', label: "Inventaire des stocks", description: "État détaillé des stocks et alertes", icon: '📦' },
+      { type: 'sales_analysis', label: "Analyse des ventes", description: "Performance commerciale et top espèces", icon: '💰' },
     ];
   }
 }

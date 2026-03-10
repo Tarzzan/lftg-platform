@@ -12,9 +12,9 @@ export class TicketsController {
   constructor(private readonly ticketsService: TicketsService) {}
 
   @Get()
-  @ApiOperation({ summary: "Lister les tickets' })
+  @ApiOperation({ summary: "Lister les tickets" })
   findAll(
-    @Query("status') status?: TicketStatus,
+    @Query("status") status?: TicketStatus,
     @Query('priority') priority?: TicketPriority,
     @Query('category') category?: TicketCategory,
   ) {
@@ -28,14 +28,14 @@ export class TicketsController {
   }
 
   @Post()
-  @ApiOperation({ summary: "Créer un ticket' })
+  @ApiOperation({ summary: "Créer un ticket" })
   create(@CurrentUser() user: any, @Body() dto: CreateTicketDto) {
     return this.ticketsService.create(user.id, dto);
   }
 
-  @Patch(":id')
-  @ApiOperation({ summary: "Mettre à jour un ticket' })
-  update(@Param("id') id: string, @Body() data: any) {
+  @Patch(":id")
+  @ApiOperation({ summary: "Mettre à jour un ticket" })
+  update(@Param("id") id: string, @Body() data: any) {
     return this.ticketsService.update(id, data);
   }
 
@@ -46,15 +46,15 @@ export class TicketsController {
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: "Supprimer un ticket' })
-  delete(@Param("id') id: string) {
+  @ApiOperation({ summary: "Supprimer un ticket" })
+  delete(@Param("id") id: string) {
     return this.ticketsService.delete(id);
   }
 
   @Post(':id/comments')
-  @ApiOperation({ summary: "Ajouter un commentaire à un ticket' })
+  @ApiOperation({ summary: "Ajouter un commentaire à un ticket" })
   addComment(
-    @Param("id') id: string,
+    @Param("id") id: string,
     @CurrentUser() user: any,
     @Body('content') content: string,
   ) {

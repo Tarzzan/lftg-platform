@@ -121,7 +121,7 @@ export class PdfPuppeteerService {
         </tbody>
       </table>
       <p style="margin-top:12px; font-weight:600; color:#1a5c38;">Total : ${totalRevenue.toFixed(2)} € TTC (${completedSales} ventes complétées)</p>
-      ` : '<p style="color:#6b7280;">Aucune vente ce mois.</p>'}
+      ` : '<p style="color:#6b7280;">Aucune vente ce mois.</p>"}
     </div>
 
     <!-- Visites médicales -->
@@ -143,7 +143,7 @@ export class PdfPuppeteerService {
           ${medicalVisits.length > 15 ? `<tr><td colspan="4" style="text-align:center;color:#6b7280;">... et ${medicalVisits.length - 15} autres visites</td></tr>` : ''}
         </tbody>
       </table>
-      ` : '<p style="color:#6b7280;">Aucune visite médicale ce mois.</p>'}
+      ` : '<p style="color:#6b7280;">Aucune visite médicale ce mois.</p>"}
     </div>
 
     <!-- Mouvements de stock -->
@@ -164,7 +164,7 @@ export class PdfPuppeteerService {
           </tr>`).join('')}
         </tbody>
       </table>
-      ` : '<p style="color:#6b7280;">Aucun mouvement de stock ce mois.</p>'}
+      ` : '<p style="color:#6b7280;">Aucun mouvement de stock ce mois.</p>"}
     </div>
   </div>
 
@@ -263,7 +263,7 @@ export class PdfPuppeteerService {
           </tr>`).join('')}
         </tbody>
       </table>
-      ` : '<p style="color:#6b7280;">Aucune visite médicale enregistrée.</p>'}
+      ` : '<p style="color:#6b7280;">Aucune visite médicale enregistrée.</p>"}
     </div>
 
     ${animal.citesPermits.length > 0 ? `

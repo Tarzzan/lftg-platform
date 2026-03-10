@@ -11,8 +11,8 @@ export class HistoryController {
   constructor(private readonly historyService: HistoryService) {}
 
   @Get('recent')
-  @ApiOperation({ summary: "Activité récente globale' })
-  async getRecent(@Query("limit') limit?: string) {
+  @ApiOperation({ summary: "Activité récente globale" })
+  async getRecent(@Query("limit") limit?: string) {
     return this.historyService.getRecentActivity(limit ? parseInt(limit) : 100);
   }
 

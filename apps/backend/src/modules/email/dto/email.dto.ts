@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 export class SendEmailDto {
-  @ApiProperty({ description: "Destinataire', example: "contact@lftg.fr' })
+  @ApiProperty({ description: "Destinataire", example: "contact@lftg.fr" })
   to: string;
 
   @ApiProperty({ description: "Sujet de l\'email" })

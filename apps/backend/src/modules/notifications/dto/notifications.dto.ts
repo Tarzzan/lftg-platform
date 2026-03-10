@@ -9,11 +9,11 @@ export enum NotificationType {
 }
 
 export class CreateNotificationDto {
-  @ApiProperty({ description: "Titre de la notification' })
+  @ApiProperty({ description: "Titre de la notification" })
   @IsString()
   title: string;
 
-  @ApiProperty({ description: "Message de la notification' })
+  @ApiProperty({ description: "Message de la notification" })
   @IsString()
   message: string;
 
@@ -22,14 +22,14 @@ export class CreateNotificationDto {
   @IsEnum(NotificationType)
   type?: NotificationType;
 
-  @ApiPropertyOptional({ description: "IDs des utilisateurs destinataires' })
+  @ApiPropertyOptional({ description: "IDs des utilisateurs destinataires" })
   @IsOptional()
   @IsArray()
   userIds?: string[];
 }
 
 export class MarkReadDto {
-  @ApiProperty({ description: "IDs des notifications à marquer comme lues' })
+  @ApiProperty({ description: "IDs des notifications à marquer comme lues" })
   @IsArray()
   ids: string[];
 }

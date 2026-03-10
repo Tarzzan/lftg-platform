@@ -17,21 +17,21 @@ export class AnalyticsController {
   constructor(private readonly analyticsService: AnalyticsService) {}
 
   @Get('births')
-  @ApiOperation({ summary: "Naissances par mois' })
-  @ApiResponse({ status: 200, description: "Statistiques de naissances' })
+  @ApiOperation({ summary: "Naissances par mois" })
+  @ApiResponse({ status: 200, description: "Statistiques de naissances" })
   getBirthsByMonth(@Query('year') year?: string) {
     return this.analyticsService.getBirthsByMonth(year ? +year : undefined);
   }
 
   @Get('species')
-  @ApiOperation({ summary: "Distribution par espèce' })
+  @ApiOperation({ summary: "Distribution par espèce" })
   getSpeciesDistribution() {
     return this.analyticsService.getSpeciesDistribution();
   }
 
-  @Get("health-trends')
-  @ApiOperation({ summary: "Tendances de santé' })
-  getHealthTrends(@Query("days') days?: string) {
+  @Get("health-trends")
+  @ApiOperation({ summary: "Tendances de santé" })
+  getHealthTrends(@Query("days") days?: string) {
     return this.analyticsService.getHealthTrends?.(+days || 30) ?? [];
   }
 

@@ -8,13 +8,13 @@ describe('SearchController', () => {
     query: 'jaguar',
     total: 2,
     results: [
-      { type: 'animal', id: '1', label: "Jaguar mâle', score: 0.95 },
-      { type: "animal', id: '2', label: "Jaguar femelle', score: 0.90 },
+      { type: 'animal', id: '1', label: "Jaguar mâle", score: 0.95 },
+      { type: "animal", id: '2', label: "Jaguar femelle", score: 0.90 },
     ],
   };
   const mockService = {
     globalSearch: jest.fn().mockResolvedValue(mockResults),
-    searchSuggestions: jest.fn().mockResolvedValue(["jaguar', 'jaguar mâle']),
+    searchSuggestions: jest.fn().mockResolvedValue(["jaguar", 'jaguar mâle']),
   };
 
   beforeEach(async () => {

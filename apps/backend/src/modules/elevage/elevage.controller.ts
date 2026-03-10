@@ -11,18 +11,18 @@ export class ElevageController {
   constructor(private readonly elevageService: ElevageService) {}
 
   @Get('stats')
-  @ApiOperation({ summary: "Statistiques génétiques globales' })
+  @ApiOperation({ summary: "Statistiques génétiques globales" })
   getGeneticStats() {
     return this.elevageService.getGeneticStats();
   }
 
-  @Get("breeding-pairs')
-  @ApiOperation({ summary: "Lister les couples reproducteurs' })
+  @Get("breeding-pairs")
+  @ApiOperation({ summary: "Lister les couples reproducteurs" })
   getBreedingPairs() {
     return this.elevageService.getBreedingPairs();
   }
 
-  @Get("genealogy/:animalId')
+  @Get("genealogy/:animalId")
   @ApiOperation({ summary: "Arbre généalogique d\'un animal" })
   getGenealogy(
     @Param('animalId') animalId: string,

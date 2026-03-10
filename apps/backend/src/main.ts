@@ -74,8 +74,8 @@ dans l'en-tête \`Authorization: Bearer <token>\` pour toutes les requêtes prot
         scheme: 'bearer',
         bearerFormat: 'JWT',
         name: 'JWT',
-        description: "Token JWT obtenu via /api/v1/auth/login',
-        in: "header',
+        description: "Token JWT obtenu via /api/v1/auth/login",
+        in: "header",
       },
       'JWT-auth',
     )

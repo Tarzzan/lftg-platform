@@ -10,34 +10,34 @@ export class GbifController {
   constructor(private readonly gbifService: GbifService) {}
 
   @Get('species')
-  @ApiOperation({ summary: "Rechercher une espèce dans GBIF' })
-  searchSpecies(@Query("q') query: string, @Query('limit') limit: string) {
+  @ApiOperation({ summary: "Rechercher une espèce dans GBIF" })
+  searchSpecies(@Query("q") query: string, @Query('limit') limit: string) {
     return this.gbifService.searchSpecies(query || '', parseInt(limit) || 10);
   }
 
   @Get('species/all')
-  @ApiOperation({ summary: "Toutes les espèces LFTG enrichies GBIF' })
+  @ApiOperation({ summary: "Toutes les espèces LFTG enrichies GBIF" })
   getAllSpecies() { return this.gbifService.getAllSpecies(); }
 
-  @Get("stats')
-  @ApiOperation({ summary: "Statistiques de biodiversité' })
+  @Get("stats")
+  @ApiOperation({ summary: "Statistiques de biodiversité" })
   getBiodiversityStats() { return this.gbifService.getBiodiversityStats(); }
 
-  @Get("species/:name/details')
+  @Get("species/:name/details")
   @ApiOperation({ summary: "Détails d\'une espèce" })
   getSpeciesDetails(@Param('name') name: string) {
     return this.gbifService.getSpeciesDetails(name);
   }
 
   @Get('species/:name/occurrences')
-  @ApiOperation({ summary: "Occurrences en Guyane' })
-  getOccurrences(@Param("name') name: string) {
+  @ApiOperation({ summary: "Occurrences en Guyane" })
+  getOccurrences(@Param("name") name: string) {
     return this.gbifService.getOccurrencesInGuyane(name);
   }
 
   @Get('species/:name/conservation')
-  @ApiOperation({ summary: "Statut de conservation UICN + CITES' })
-  checkConservation(@Param("name') name: string) {
+  @ApiOperation({ summary: "Statut de conservation UICN + CITES" })
+  checkConservation(@Param("name") name: string) {
     return this.gbifService.checkConservationStatus(name);
   }
 

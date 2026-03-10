@@ -16,10 +16,10 @@ export class PdfReportController {
    * Génère le rapport mensuel HTML
    */
   @Get('monthly')
-  @ApiOperation({ summary: "Rapport mensuel HTML' })
-  @ApiQuery({ name: "year', required: false, example: 2026 })
+  @ApiOperation({ summary: "Rapport mensuel HTML" })
+  @ApiQuery({ name: "year", required: false, example: 2026 })
   @ApiQuery({ name: 'month', required: false, example: 3 })
-  @ApiResponse({ status: 200, description: "Rapport mensuel HTML généré', content: { "text/html': {} } })
+  @ApiResponse({ status: 200, description: "Rapport mensuel HTML généré", content: { "text/html': {} } })
   async getMonthlyReport(
     @Query('year') year: string,
     @Query('month') month: string,

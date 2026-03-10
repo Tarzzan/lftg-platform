@@ -10,27 +10,27 @@ export class StripeController {
   constructor(private readonly stripeService: StripeService) {}
 
   @Post('payment-intent')
-  @ApiOperation({ summary: "Créer une intention de paiement' })
+  @ApiOperation({ summary: "Créer une intention de paiement" })
   createPaymentIntent(@Body() dto: CreatePaymentIntentDto) {
     return this.stripeService.createPaymentIntent(dto);
   }
 
-  @Post("checkout')
-  @ApiOperation({ summary: "Créer une session Checkout' })
+  @Post("checkout")
+  @ApiOperation({ summary: "Créer une session Checkout" })
   createCheckoutSession(@Body() dto: CreateCheckoutSessionDto) {
     return this.stripeService.createCheckoutSession(dto);
   }
 
-  @Get("stats')
-  @ApiOperation({ summary: "Statistiques de paiement' })
-  getPaymentStats(@Query("period') period: 'day' | 'week' | 'month' | 'year') {
+  @Get("stats")
+  @ApiOperation({ summary: "Statistiques de paiement" })
+  getPaymentStats(@Query("period") period: 'day' | 'week' | 'month' | 'year') {
     return this.stripeService.getPaymentStats(period || 'month');
   }
 
   @Get('transactions')
-  @ApiOperation({ summary: "Lister les transactions' })
+  @ApiOperation({ summary: "Lister les transactions" })
   listTransactions(
-    @Query("limit') limit: string,
+    @Query("limit") limit: string,
     @Query('offset') offset: string,
   ) {
     return this.stripeService.listTransactions(
@@ -40,9 +40,9 @@ export class StripeController {
   }
 
   @Post('payment-link/:saleId')
-  @ApiOperation({ summary: "Créer un lien de paiement pour une vente' })
+  @ApiOperation({ summary: "Créer un lien de paiement pour une vente" })
   createPaymentLink(
-    @Param("saleId') saleId: string,
+    @Param("saleId") saleId: string,
     @Body() body: { amount: number; description: string },
   ) {
     return this.stripeService.createPaymentLink(saleId, body.amount, body.description);
