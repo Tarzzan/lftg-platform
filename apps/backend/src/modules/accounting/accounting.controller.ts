@@ -35,13 +35,13 @@ export class AccountingController {
   }
 
   @Get('transactions/:id')
-  @ApiOperation({ summary: 'Détail d'une transaction' })
+  @ApiOperation({ summary: "Détail d'une transaction" })
   getTransaction(@Param('id') id: string) {
     return this.accountingService.getTransaction?.(id) ?? { id };
   }
 
   @Post('transactions')
-  @ApiOperation({ summary: 'Créer une transaction' })
+  @ApiOperation({ summary: "Créer une transaction" })
   createTransaction(@Body() dto: CreateTransactionDto) {
     return this.accountingService.createTransaction?.(dto) ?? dto;
   }
