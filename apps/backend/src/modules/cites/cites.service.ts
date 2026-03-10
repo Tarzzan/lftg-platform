@@ -37,7 +37,7 @@ export class CitesService {
     'amazona amazonica': { appendix: 'II', restrictions: ['Permis CITES requis pour commerce international', 'Baguage obligatoire'] },
     'ara ararauna': { appendix: 'II', restrictions: ['Permis CITES requis', 'Certification élevage captif recommandée'] },
     'ara macao': { appendix: 'I', restrictions: ['Commerce commercial interdit', 'Permis scientifique requis', "Certificat d'élevage captif obligatoire"] },
-    'caiman crocodilus': { appendix: 'II', restrictions: ["Quota d'exportation national", 'Permis CITES requis'] },
+    'caiman crocodilus': { appendix: 'II", restrictions: ["Quota d'exportation national", "Permis CITES requis'] },
     'dendrobates azureus': { appendix: 'II', restrictions: ['Permis CITES requis', 'Élevage captif recommandé'] },
     'harpia harpyja': { appendix: 'I', restrictions: ['Commerce commercial strictement interdit', 'Protection maximale'] },
     'boa constrictor': { appendix: 'II', restrictions: ['Permis CITES requis pour export', 'Baguage recommandé'] },

@@ -54,7 +54,7 @@ export class QuizService {
           type: 'MULTIPLE_CHOICE',
           options: ['Avocat', 'Mangue', 'Raisin', 'Cerise (noyau)'],
           correctAnswers: [0, 3],
-          explanation: 'L'avocat et les noyaux de cerise sont toxiques pour les perroquets.',
+          explanation: "L'avocat et les noyaux de cerise sont toxiques pour les perroquets.",
           points: 15,
         },
         {

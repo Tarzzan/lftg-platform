@@ -113,8 +113,8 @@ export class CitesApiService {
 
   async getPermitTemplates() {
     return [
-      { id: 'tpl-1', type: 'EXPORT_PERMIT', name: "Permis d'exportation CITES", format: 'PDF' },
-      { id: 'tpl-2', type: 'IMPORT_PERMIT', name: "Permis d'importation CITES", format: 'PDF' },
+      { id: 'tpl-1', type: 'EXPORT_PERMIT", name: "Permis d'exportation CITES", format: "PDF' },
+      { id: 'tpl-2', type: 'IMPORT_PERMIT", name: "Permis d'importation CITES", format: "PDF' },
       { id: 'tpl-3', type: 'EU_CERTIFICATE', name: 'Certificat CE 338/97', format: 'PDF' },
       { id: 'tpl-4', type: 'CAPTIVE_BRED', name: 'Déclaration naissance en captivité', format: 'PDF' },
     ];
