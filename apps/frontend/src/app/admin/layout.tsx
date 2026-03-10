@@ -8,7 +8,7 @@ import {
   Bird, Leaf, Home, Egg, Stethoscope, BookOpen, Users2,
   GraduationCap, HelpCircle, TrendingUp, Trophy, FileText,
   CreditCard, Cloud, Globe, Code2, Calculator, ChevronRight,
-  LogOut, Settings, Search, Command, Menu, X, Sparkles,
+  LogOut, Settings, Search, Command, Menu, X, Sparkles, ChevronDown,
 } from 'lucide-react';
 import { useAuthStore } from '@/lib/auth-store';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
@@ -146,12 +146,63 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [hydrated, setHydrated] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  // État des groupes rétractables : clé = section name, valeur = ouvert/fermé
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     setHydrated(true);
     const saved = localStorage.getItem('lftg-sidebar-collapsed');
     if (saved !== null) setCollapsed(saved === 'true');
+
+    // Restaurer l'état des groupes depuis localStorage
+    const savedGroups = localStorage.getItem('lftg-sidebar-groups');
+    if (savedGroups) {
+      try {
+        setOpenGroups(JSON.parse(savedGroups));
+      } catch {
+        // Initialiser avec la section active ouverte
+        initOpenGroups(pathname);
+      }
+    } else {
+      initOpenGroups(pathname);
+    }
   }, []);
+
+  // Ouvre automatiquement le groupe contenant la page active
+  const initOpenGroups = (path: string) => {
+    const initial: Record<string, boolean> = {};
+    navigation.forEach((group) => {
+      const hasActive = group.items.some(
+        item => path === item.path || (item.path !== '/admin' && path.startsWith(item.path))
+      );
+      // Ouvrir le groupe actif et "Tableau de bord" par défaut
+      initial[group.section] = hasActive || group.section === 'Tableau de bord';
+    });
+    setOpenGroups(initial);
+  };
+
+  // Ouvrir automatiquement le groupe de la page active lors d'un changement de route
+  useEffect(() => {
+    if (!hydrated) return;
+    setOpenGroups(prev => {
+      const next = { ...prev };
+      navigation.forEach((group) => {
+        const hasActive = group.items.some(
+          item => pathname === item.path || (item.path !== '/admin' && pathname.startsWith(item.path))
+        );
+        if (hasActive) next[group.section] = true;
+      });
+      return next;
+    });
+  }, [pathname, hydrated]);
+
+  const toggleGroup = (section: string) => {
+    setOpenGroups(prev => {
+      const next = { ...prev, [section]: !prev[section] };
+      localStorage.setItem('lftg-sidebar-groups', JSON.stringify(next));
+      return next;
+    });
+  };
 
   useEffect(() => {
     if (hydrated && !user) router.push('/login');
@@ -174,11 +225,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // Breadcrumb segments
   const segments = pathname.split('/').filter(Boolean);
-
-  // Find current section for sidebar header
-  const currentSection = navigation.find(g =>
-    g.items.some(item => pathname === item.path || (item.path !== '/admin' && pathname.startsWith(item.path)))
-  );
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#f5f2ed] dark:bg-[#0d1a0f]">
@@ -263,68 +309,98 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-1 scrollbar-thin scrollbar-thumb-white/10">
-          {navigation.map((group) => (
-            <div key={group.section} className="mb-1">
-              {!collapsed && (
-                <div className="px-2 mb-1.5 mt-2">
-                  <span
-                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[9px] font-bold uppercase tracking-widest"
-                    style={{
-                      background: 'rgba(255,255,255,0.12)',
-                      border: '1px solid rgba(255,255,255,0.18)',
-                      color: 'rgba(255,255,255,0.85)',
-                      backdropFilter: 'blur(4px)',
-                      textShadow: '0 1px 3px rgba(0,0,0,0.6)',
-                    }}
+        <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-0.5 scrollbar-thin scrollbar-thumb-white/10">
+          {navigation.map((group) => {
+            const isGroupOpen = openGroups[group.section] ?? true;
+            const hasActiveItem = group.items.some(
+              item => pathname === item.path || (item.path !== '/admin' && pathname.startsWith(item.path))
+            );
+
+            return (
+              <div key={group.section} className="mb-0.5">
+                {/* En-tête de groupe — cliquable pour rétracter */}
+                {!collapsed ? (
+                  <button
+                    onClick={() => toggleGroup(group.section)}
+                    className={`
+                      w-full flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg mt-1.5 mb-0.5
+                      transition-all duration-150 group/header
+                      ${hasActiveItem
+                        ? 'bg-white/10 hover:bg-white/15'
+                        : 'hover:bg-white/8'
+                      }
+                    `}
                   >
-                    <span>{group.emoji}</span>
-                    <span>{group.section}</span>
-                  </span>
-                </div>
-              )}
-              {collapsed && <div className="my-2 border-t border-white/10" />}
-              <div className="space-y-0.5">
-                {group.items.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = pathname === item.path || (item.path !== '/admin' && pathname.startsWith(item.path));
-                  return (
-                    <Link
-                      key={item.path}
-                      href={item.path}
-                      title={collapsed ? item.label : undefined}
-                      onClick={() => setMobileOpen(false)}
-                      className={`
-                        relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium
-                        transition-all duration-150 group
-                        ${collapsed ? 'justify-center px-0 py-2.5' : ''}
-                        ${isActive
-                          ? 'text-white'
-                          : 'text-white/60 hover:text-white/90 hover:bg-white/8'
-                        }
-                      `}
-                      style={isActive ? {
-                        background: 'linear-gradient(90deg, rgba(193,127,58,0.25), rgba(193,127,58,0.08))',
-                        borderLeft: '2px solid #c17f3a',
-                      } : {}}
+                    <span
+                      className="inline-flex items-center gap-1.5 flex-1 text-[9px] font-bold uppercase tracking-widest"
+                      style={{
+                        color: hasActiveItem ? 'rgba(232,168,78,0.95)' : 'rgba(255,255,255,0.7)',
+                        textShadow: '0 1px 3px rgba(0,0,0,0.6)',
+                      }}
                     >
-                      {isActive && (
-                        <span
-                          className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-4 rounded-r"
-                          style={{ background: '#c17f3a' }}
-                        />
-                      )}
-                      <Icon className={`flex-shrink-0 transition-transform group-hover:scale-110 ${collapsed ? 'w-5 h-5' : 'w-3.5 h-3.5'} ${isActive ? 'text-[#e8a84e]' : ''}`} />
-                      {!collapsed && <span className="truncate">{item.label}</span>}
-                      {!collapsed && isActive && (
-                        <ChevronRight className="w-3 h-3 ml-auto text-[#c17f3a] flex-shrink-0" />
-                      )}
-                    </Link>
-                  );
-                })}
+                      <span>{group.emoji}</span>
+                      <span className="truncate">{group.section}</span>
+                    </span>
+                    <ChevronDown
+                      className={`w-3 h-3 flex-shrink-0 transition-transform duration-200 ${isGroupOpen ? 'rotate-0' : '-rotate-90'}`}
+                      style={{ color: hasActiveItem ? 'rgba(232,168,78,0.8)' : 'rgba(255,255,255,0.35)' }}
+                    />
+                  </button>
+                ) : (
+                  <div className="my-2 border-t border-white/10" />
+                )}
+
+                {/* Items du groupe — animés */}
+                <div
+                  className="overflow-hidden transition-all duration-200 ease-in-out"
+                  style={{
+                    maxHeight: (!collapsed && isGroupOpen) || collapsed ? '500px' : '0px',
+                    opacity: (!collapsed && isGroupOpen) || collapsed ? 1 : 0,
+                  }}
+                >
+                  <div className="space-y-0.5 pb-0.5">
+                    {group.items.map((item) => {
+                      const Icon = item.icon;
+                      const isActive = pathname === item.path || (item.path !== '/admin' && pathname.startsWith(item.path));
+                      return (
+                        <Link
+                          key={item.path}
+                          href={item.path}
+                          title={collapsed ? item.label : undefined}
+                          onClick={() => setMobileOpen(false)}
+                          className={`
+                            relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium
+                            transition-all duration-150 group
+                            ${collapsed ? 'justify-center px-0 py-2.5' : ''}
+                            ${isActive
+                              ? 'text-white'
+                              : 'text-white/60 hover:text-white/90 hover:bg-white/8'
+                            }
+                          `}
+                          style={isActive ? {
+                            background: 'linear-gradient(90deg, rgba(193,127,58,0.25), rgba(193,127,58,0.08))',
+                            borderLeft: '2px solid #c17f3a',
+                          } : {}}
+                        >
+                          {isActive && (
+                            <span
+                              className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-4 rounded-r"
+                              style={{ background: '#c17f3a' }}
+                            />
+                          )}
+                          <Icon className={`flex-shrink-0 transition-transform group-hover:scale-110 ${collapsed ? 'w-5 h-5' : 'w-3.5 h-3.5'} ${isActive ? 'text-[#e8a84e]' : ''}`} />
+                          {!collapsed && <span className="truncate">{item.label}</span>}
+                          {!collapsed && isActive && (
+                            <ChevronRight className="w-3 h-3 ml-auto text-[#c17f3a] flex-shrink-0" />
+                          )}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </nav>
 
         {/* User footer */}
