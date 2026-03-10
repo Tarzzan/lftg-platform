@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { formationApi, exportApi } from '@/lib/api';
 import { CourseModal } from '@/components/modals/CourseModal';
+import { CoursePreviewModal } from '@/components/modals/CoursePreviewModal';
 
 const LEVEL_CONFIG: Record<string, { label: string; color: string; dot: string }> = {
   'débutant':      { label: 'Débutant',      color: 'bg-forest-100 text-forest-700',   dot: 'bg-forest-500' },
@@ -40,7 +41,7 @@ const CATEGORY_GRADIENTS: Record<string, string> = {
   'Autre': 'from-forest-700 to-maroni-500',
 };
 
-function CourseCard({ course, onEdit, onDelete }: { course: any; onEdit: () => void; onDelete: () => void }) {
+function CourseCard({ course, onEdit, onDelete, onPreview }: { course: any; onEdit: () => void; onDelete: () => void; onPreview: () => void }) {
   const router = useRouter();
   const levelConfig = LEVEL_CONFIG[course.level] || null;
   const gradient = CATEGORY_GRADIENTS[course.category] || 'from-forest-700 to-maroni-500';
@@ -154,6 +155,13 @@ function CourseCard({ course, onEdit, onDelete }: { course: any; onEdit: () => v
             <Layers className="w-3.5 h-3.5" /> Programme
           </button>
           <button
+            onClick={onPreview}
+            className="flex items-center justify-center gap-1 px-3 py-1.5 text-xs font-medium text-amber-600 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors"
+            title="Prévisualiser le cours"
+          >
+            <Eye className="w-3.5 h-3.5" />
+          </button>
+          <button
             onClick={onEdit}
             className="flex items-center justify-center gap-1 px-3 py-1.5 text-xs font-medium text-muted-foreground bg-muted rounded-lg hover:bg-muted/80 transition-colors"
           >
@@ -177,6 +185,7 @@ export default function FormationCoursPage() {
   const [category, setCategory] = useState('Tous');
   const [publishedFilter, setPublishedFilter] = useState<'all' | 'published' | 'draft'>('all');
   const [modal, setModal] = useState<{ open: boolean; course?: any }>({ open: false });
+  const [previewCourse, setPreviewCourse] = useState<any | null>(null);
 
   const { data: courses = [], isLoading, isError, error } = useQuery({
     queryKey: ['courses'],
@@ -372,6 +381,7 @@ export default function FormationCoursPage() {
               course={course}
               onEdit={() => setModal({ open: true, course })}
               onDelete={() => { if (confirm(`Supprimer "${course.title}" ?`)) deleteMutation.mutate(course.id); }}
+              onPreview={() => setPreviewCourse(course)}
             />
           ))}
         </div>
@@ -382,6 +392,14 @@ export default function FormationCoursPage() {
         onClose={() => setModal({ open: false })}
         course={modal.course}
       />
+
+      {previewCourse && (
+        <CoursePreviewModal
+          course={previewCourse}
+          isOpen={!!previewCourse}
+          onClose={() => setPreviewCourse(null)}
+        />
+      )}
     </div>
   );
 }

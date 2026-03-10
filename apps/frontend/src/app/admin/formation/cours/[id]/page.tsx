@@ -9,6 +9,7 @@ import {
   BookOpen, Clock, GripVertical, Save, X, Check
 } from 'lucide-react';
 import { formationApi } from '@/lib/api';
+import { CoursePreviewModal } from '@/components/modals/CoursePreviewModal';
 
 const DISPLAY_MODES = [
   { value: 'EMBED', label: 'Fenêtre embarquée', icon: Monitor, description: 'Affiché dans la page (iframe)' },
@@ -327,6 +328,7 @@ export default function CourseDetailPage() {
   const [addingChapter, setAddingChapter] = useState(false);
   const [newChapterTitle, setNewChapterTitle] = useState('');
   const [showUploadCourse, setShowUploadCourse] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   const { data: course, isLoading } = useQuery({ queryKey: ['course', id], queryFn: () => formationApi.getCourse(id) });
 
@@ -383,6 +385,13 @@ export default function CourseDetailPage() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowPreview(true)}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border-2 border-amber-400 text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/20 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors"
+          >
+            <Eye className="w-4 h-4" />
+            Prévisualiser
+          </button>
           <button
             onClick={() => togglePublishMutation.mutate()}
             className={`flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
@@ -490,6 +499,15 @@ export default function CourseDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Modal de prévisualisation */}
+      {course && (
+        <CoursePreviewModal
+          course={course}
+          isOpen={showPreview}
+          onClose={() => setShowPreview(false)}
+        />
+      )}
     </div>
   );
 }
