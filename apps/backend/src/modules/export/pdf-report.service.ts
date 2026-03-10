@@ -277,7 +277,7 @@ export class PdfReportService {
               </div>` : ''}
           </div>
         `).join('')}
-      </div>` : '<p style="color:#6b7280;font-style:italic">Aucune visite médicale enregistrée.</p>"}
+      </div>` : '<p style="color:#6b7280;font-style:italic">Aucune visite médicale enregistrée.</p>'}
     `;
 
     return this.buildBaseHTML(`Dossier médical — ${animal.name}`, content);

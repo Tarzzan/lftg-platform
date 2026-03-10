@@ -235,7 +235,7 @@ export class PdfNativeService {
       `).join('')}
     </tbody>
   </table>
-  ` : '<p style="color:#6b7280;font-style:italic">Aucune vente ce mois-ci.</p>"}
+  ` : '<p style="color:#6b7280;font-style:italic">Aucune vente ce mois-ci.</p>'}
 
   <div class="footer">
     🦜 La Ferme Tropicale de Guyane — LFTG Platform v4.0.0 — Rapport généré automatiquement
@@ -288,7 +288,7 @@ export class PdfNativeService {
       `).join('')}
     </tbody>
   </table>
-  ` : '<p style="color:#6b7280;font-style:italic">Aucun acte médical enregistré.</p>"}
+  ` : '<p style="color:#6b7280;font-style:italic">Aucun acte médical enregistré.</p>'}
 
   <div class="footer">
     🦜 La Ferme Tropicale de Guyane — LFTG Platform v4.0.0 — Dossier confidentiel
