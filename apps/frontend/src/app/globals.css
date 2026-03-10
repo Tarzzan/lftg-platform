@@ -115,3 +115,50 @@
     background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2316a34a' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   LFTG THEME PREMIUM — Ajouts thème tropical
+   ═══════════════════════════════════════════════════════════════════ */
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-8px) rotate(1deg); }
+  66% { transform: translateY(-4px) rotate(-1deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-float { animation: float 4s ease-in-out infinite; }
+.animate-fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
+
+.skeleton {
+  background: linear-gradient(90deg, #f0ede8 25%, #e8e4de 50%, #f0ede8 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 0.5rem;
+}
+
+.lftg-card-premium {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(26, 71, 49, 0.1);
+  border-radius: 1rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lftg-card-premium:hover {
+  box-shadow: 0 8px 32px rgba(26, 71, 49, 0.15);
+  transform: translateY(-2px);
+}
+
+.scrollbar-thin::-webkit-scrollbar { width: 4px; height: 4px; }
+.scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+.scrollbar-thumb-forest::-webkit-scrollbar-thumb { background: rgba(26,71,49,0.2); border-radius: 2px; }
