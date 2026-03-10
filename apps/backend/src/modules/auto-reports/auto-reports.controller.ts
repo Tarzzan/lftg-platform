@@ -20,31 +20,31 @@ export class AutoReportsController {
   constructor(private readonly autoReportsService: AutoReportsService) {}
 
   @Get("schedules")
-  @ApiOperation({ summary: 'Liste tous les rapports automatiques planifiés' })
-  @ApiResponse({ status: 200, description: 'Liste des planifications de rapports' })
+  @ApiOperation({ summary: "Liste tous les rapports automatiques planifiés' })
+  @ApiResponse({ status: 200, description: "Liste des planifications de rapports' })
   getSchedules() { return SCHEDULES; }
 
   @Get("schedules/:id")
-  @ApiOperation({ summary: 'Récupère un rapport planifié par son ID' })
-  @ApiParam({ name: 'id', description: 'Identifiant du rapport planifié (ex: S001)' })
-  @ApiResponse({ status: 200, description: 'Détails du rapport planifié' })
+  @ApiOperation({ summary: "Récupère un rapport planifié par son ID' })
+  @ApiParam({ name: "id', description: "Identifiant du rapport planifié (ex: S001)' })
+  @ApiResponse({ status: 200, description: "Détails du rapport planifié' })
   getSchedule(@Param("id") id: string) { return SCHEDULES.find(s => s.id === id) || null; }
 
   @Post("schedules")
-  @ApiOperation({ summary: 'Crée un nouveau rapport automatique planifié' })
-  @ApiBody({ schema: { example: { name: 'Mon rapport', frequency: 'weekly', cronExpr: '0 8 * * 1', recipients: ['admin@lftg.fr'], type: 'cites' } } })
-  @ApiResponse({ status: 201, description: 'Rapport planifié créé' })
+  @ApiOperation({ summary: "Crée un nouveau rapport automatique planifié' })
+  @ApiBody({ schema: { example: { name: "Mon rapport', frequency: 'weekly', cronExpr: '0 8 * * 1', recipients: ['admin@lftg.fr'], type: 'cites' } } })
+  @ApiResponse({ status: 201, description: "Rapport planifié créé' })
   createSchedule(@Body() body: any) { return { ...body, id: `S${Date.now()}`, status: "active", lastRun: null, nextRun: null }; }
 
   @Delete("schedules/:id")
-  @ApiOperation({ summary: 'Supprime un rapport planifié' })
-  @ApiParam({ name: 'id', description: 'Identifiant du rapport à supprimer' })
-  @ApiResponse({ status: 200, description: 'Rapport supprimé' })
+  @ApiOperation({ summary: "Supprime un rapport planifié' })
+  @ApiParam({ name: 'id', description: "Identifiant du rapport à supprimer' })
+  @ApiResponse({ status: 200, description: "Rapport supprimé' })
   deleteSchedule(@Param("id") id: string) { return { deleted: true, id }; }
 
   @Post("schedules/:id/run")
-  @ApiOperation({ summary: 'Déclenche immédiatement un rapport planifié' })
-  @ApiParam({ name: 'id', description: 'Identifiant du rapport à exécuter' })
-  @ApiResponse({ status: 200, description: 'Rapport déclenché' })
+  @ApiOperation({ summary: "Déclenche immédiatement un rapport planifié' })
+  @ApiParam({ name: "id', description: "Identifiant du rapport à exécuter' })
+  @ApiResponse({ status: 200, description: "Rapport déclenché' })
   runNow(@Param("id") id: string) { return { triggered: true, id, runAt: new Date().toISOString() }; }
 }

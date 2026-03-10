@@ -11,7 +11,7 @@ export class ParrainageController {
 
   @Public()
   @Get('animals')
-  @ApiOperation({ summary: 'Animaux disponibles au parrainage (public)' })
+  @ApiOperation({ summary: "Animaux disponibles au parrainage (public)' })
   getAvailableAnimals() {
     return this.parrainageService.getAvailableAnimals();
   }
@@ -19,7 +19,7 @@ export class ParrainageController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get()
-  @ApiOperation({ summary: 'Lister les parrainages' })
+  @ApiOperation({ summary: "Lister les parrainages' })
   getSponsorships() {
     return this.parrainageService.getSponsorships();
   }
@@ -27,15 +27,15 @@ export class ParrainageController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('stats')
-  @ApiOperation({ summary: 'Statistiques parrainage' })
+  @ApiOperation({ summary: "Statistiques parrainage' })
   getStats() {
     return this.parrainageService.getStats();
   }
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  @ApiOperation({ summary: 'Détail d\'un parrainage' })
+  @Get(":id')
+  @ApiOperation({ summary: "Détail d\'un parrainage" })
   getSponsorship(@Param('id') id: string) {
     return this.parrainageService.getSponsorshipById(id);
   }

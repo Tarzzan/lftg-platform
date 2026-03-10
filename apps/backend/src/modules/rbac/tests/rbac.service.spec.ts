@@ -56,10 +56,10 @@ describe('RbacService', () => {
   });
 
   it('createRole() should call prisma.role.create', async () => {
-    const dto = { name: 'VETERINAIRE', description: 'Vétérinaire' };
+    const dto = { name: 'VETERINAIRE', description: "Vétérinaire' };
     const result = await service.createRole(dto);
     expect(mockPrisma.role.create).toHaveBeenCalled();
-    expect(result.name).toBe('TEST');
+    expect(result.name).toBe("TEST');
   });
 
   it('deleteRole() should call prisma.role.delete', async () => {
@@ -69,10 +69,10 @@ describe('RbacService', () => {
   });
 
   it('createPermission() should call prisma.permission.create', async () => {
-    const dto = { action: 'read', subject: 'Animal', description: 'Lire les animaux' };
+    const dto = { action: 'read', subject: 'Animal', description: "Lire les animaux' };
     const result = await service.createPermission(dto);
     expect(mockPrisma.permission.create).toHaveBeenCalled();
-    expect(result.action).toBe('read');
+    expect(result.action).toBe("read');
   });
 
   it('getUserPermissions() should return deduplicated permissions for user with roles', async () => {

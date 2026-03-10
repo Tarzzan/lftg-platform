@@ -12,48 +12,48 @@ export class RbacController {
   constructor(private readonly rbacService: RbacService) {}
 
   @Get('roles')
-  @ApiOperation({ summary: 'Liste tous les rôles avec leurs permissions' })
+  @ApiOperation({ summary: "Liste tous les rôles avec leurs permissions' })
   @ApiResponse({ status: 200, type: [RoleResponseDto] })
   findAllRoles() {
     return this.rbacService.findAllRoles();
   }
 
-  @Get('roles/:id')
-  @ApiOperation({ summary: 'Détail d\'un rôle' })
+  @Get("roles/:id')
+  @ApiOperation({ summary: "Détail d\'un rôle" })
   @ApiResponse({ status: 200, type: RoleResponseDto })
   findRole(@Param('id') id: string) {
     return this.rbacService.findRoleById(id);
   }
 
   @Post('roles')
-  @ApiOperation({ summary: 'Créer un nouveau rôle' })
+  @ApiOperation({ summary: "Créer un nouveau rôle' })
   @ApiResponse({ status: 201, type: RoleResponseDto })
   createRole(@Body() dto: CreateRoleDto) {
     return this.rbacService.createRole(dto);
   }
 
-  @Delete('roles/:id')
-  @ApiOperation({ summary: 'Supprimer un rôle' })
-  deleteRole(@Param('id') id: string) {
+  @Delete("roles/:id')
+  @ApiOperation({ summary: "Supprimer un rôle' })
+  deleteRole(@Param("id') id: string) {
     return this.rbacService.deleteRole(id);
   }
 
   @Get('permissions')
-  @ApiOperation({ summary: 'Liste toutes les permissions disponibles' })
+  @ApiOperation({ summary: "Liste toutes les permissions disponibles' })
   @ApiResponse({ status: 200, type: [PermissionResponseDto] })
   findAllPermissions() {
     return this.rbacService.findAllPermissions();
   }
 
-  @Post('permissions')
-  @ApiOperation({ summary: 'Créer une nouvelle permission' })
+  @Post("permissions')
+  @ApiOperation({ summary: "Créer une nouvelle permission' })
   @ApiResponse({ status: 201, type: PermissionResponseDto })
   createPermission(@Body() dto: CreatePermissionDto) {
     return this.rbacService.createPermission(dto);
   }
 
-  @Get('users/:userId/permissions')
-  @ApiOperation({ summary: 'Permissions effectives d\'un utilisateur' })
+  @Get("users/:userId/permissions')
+  @ApiOperation({ summary: "Permissions effectives d\'un utilisateur" })
   getUserPermissions(@Param('userId') userId: string) {
     return this.rbacService.getUserPermissions(userId);
   }

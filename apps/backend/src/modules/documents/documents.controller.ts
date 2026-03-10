@@ -11,9 +11,9 @@ export class DocumentsController {
   constructor(private readonly documentsService: DocumentsService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Lister ou rechercher des documents' })
+  @ApiOperation({ summary: "Lister ou rechercher des documents' })
   async getAll(
-    @Query('q') q?: string,
+    @Query("q') q?: string,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
   ) {
@@ -27,12 +27,12 @@ export class DocumentsController {
   }
 
   @Get('stats')
-  @ApiOperation({ summary: 'Statistiques des documents' })
+  @ApiOperation({ summary: "Statistiques des documents' })
   async getStats() {
     return this.documentsService.getDocumentStats();
   }
 
-  @Get('entity/:entityType/:entityId')
+  @Get("entity/:entityType/:entityId')
   @ApiOperation({ summary: "Documents d'une entité" })
   async getByEntity(
     @Param('entityType') entityType: string,
@@ -48,14 +48,14 @@ export class DocumentsController {
   }
 
   @Post()
-  @ApiOperation({ summary: 'Créer un document (lien URL)' })
+  @ApiOperation({ summary: "Créer un document (lien URL)' })
   async createDocument(@Body() meta: DocumentMetaDto, @Request() req: any) {
     return this.documentsService.saveDocument(meta, req.user?.id);
   }
 
-  @Delete(':id')
-  @ApiOperation({ summary: 'Supprimer un document' })
-  async deleteDocument(@Param('id') id: string) {
+  @Delete(":id')
+  @ApiOperation({ summary: "Supprimer un document' })
+  async deleteDocument(@Param("id') id: string) {
     return this.documentsService.deleteDocument(id);
   }
 }

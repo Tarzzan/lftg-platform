@@ -137,8 +137,8 @@ export class MeteoService {
       alerts.push({
         type: 'pluie_intense',
         severity: 'warning',
-        title: 'Vigilance pluie intense',
-        description: 'Précipitations importantes attendues cet après-midi. Vérifier les enclos extérieurs.',
+        title: "Vigilance pluie intense',
+        description: "Précipitations importantes attendues cet après-midi. Vérifier les enclos extérieurs.',
         startTime: new Date().toISOString(),
         endTime: new Date(Date.now() + 6 * 3600000).toISOString(),
       });
@@ -148,8 +148,8 @@ export class MeteoService {
       alerts.push({
         type: 'canicule',
         severity: 'danger',
-        title: 'Alerte canicule',
-        description: 'Températures exceptionnelles >36°C. Hydratation renforcée pour tous les animaux.',
+        title: "Alerte canicule',
+        description: "Températures exceptionnelles >36°C. Hydratation renforcée pour tous les animaux.',
         startTime: new Date().toISOString(),
         endTime: new Date(Date.now() + 48 * 3600000).toISOString(),
       });

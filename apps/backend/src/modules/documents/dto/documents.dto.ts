@@ -10,7 +10,7 @@ export enum DocumentType {
 }
 
 export class CreateDocumentDto {
-  @ApiProperty({ description: 'Nom du document' })
+  @ApiProperty({ description: "Nom du document' })
   @IsString()
   name: string;
 
@@ -19,24 +19,24 @@ export class CreateDocumentDto {
   @IsEnum(DocumentType)
   type?: DocumentType;
 
-  @ApiPropertyOptional({ description: 'ID de l\'animal associé' })
+  @ApiPropertyOptional({ description: "ID de l\'animal associé' })
   @IsOptional()
   @IsString()
   animalId?: string;
 
-  @ApiPropertyOptional({ description: 'URL du fichier' })
+  @ApiPropertyOptional({ description: "URL du fichier' })
   @IsOptional()
   @IsString()
   fileUrl?: string;
 }
 
 export class DocumentQueryDto {
-  @ApiPropertyOptional({ description: 'Filtrer par type de document' })
+  @ApiPropertyOptional({ description: "Filtrer par type de document' })
   @IsOptional()
   @IsString()
   type?: string;
 
-  @ApiPropertyOptional({ description: 'Filtrer par ID d\'animal' })
+  @ApiPropertyOptional({ description: "Filtrer par ID d\'animal" })
   @IsOptional()
   @IsString()
   animalId?: string;

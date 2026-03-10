@@ -7,7 +7,7 @@ describe('NotificationsController', () => {
   const mockService = {
     getAll: jest.fn().mockResolvedValue([]),
     markRead: jest.fn().mockResolvedValue({ count: 0 }),
-    create: jest.fn().mockResolvedValue({ id: '1', title: 'Test' }),
+    create: jest.fn().mockResolvedValue({ id: '1', title: "Test' }),
   };
 
   beforeEach(async () => {
@@ -18,7 +18,7 @@ describe('NotificationsController', () => {
     controller = module.get<NotificationsController>(NotificationsController);
   });
 
-  it('should be defined', () => {
+  it("should be defined', () => {
     expect(controller).toBeDefined();
   });
 });

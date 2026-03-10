@@ -11,19 +11,19 @@ export class ElevageController {
   constructor(private readonly elevageService: ElevageService) {}
 
   @Get('stats')
-  @ApiOperation({ summary: 'Statistiques génétiques globales' })
+  @ApiOperation({ summary: "Statistiques génétiques globales' })
   getGeneticStats() {
     return this.elevageService.getGeneticStats();
   }
 
-  @Get('breeding-pairs')
-  @ApiOperation({ summary: 'Lister les couples reproducteurs' })
+  @Get("breeding-pairs')
+  @ApiOperation({ summary: "Lister les couples reproducteurs' })
   getBreedingPairs() {
     return this.elevageService.getBreedingPairs();
   }
 
-  @Get('genealogy/:animalId')
-  @ApiOperation({ summary: 'Arbre généalogique d\'un animal' })
+  @Get("genealogy/:animalId')
+  @ApiOperation({ summary: "Arbre généalogique d\'un animal" })
   getGenealogy(
     @Param('animalId') animalId: string,
     @Query('depth') depth = 3,
@@ -32,7 +32,7 @@ export class ElevageController {
   }
 
   @Get('suggest-pairings/:animalId')
-  @ApiOperation({ summary: 'Suggestions d\'appariement pour un animal' })
+  @ApiOperation({ summary: "Suggestions d\'appariement pour un animal" })
   suggestPairings(@Param('animalId') animalId: string) {
     return this.elevageService.suggestPairings(animalId);
   }

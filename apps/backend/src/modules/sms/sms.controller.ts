@@ -11,18 +11,18 @@ export class SmsController {
   constructor(private readonly smsService: SmsService) {}
 
   @Post('send')
-  @ApiOperation({ summary: 'Envoyer une alerte SMS' })
+  @ApiOperation({ summary: "Envoyer une alerte SMS' })
   sendAlert(@Body() alert: SmsAlert) {
     return this.smsService.sendAlert(alert);
   }
 
-  @Post('bulk')
-  @ApiOperation({ summary: 'Envoyer des alertes SMS en masse' })
+  @Post("bulk')
+  @ApiOperation({ summary: "Envoyer des alertes SMS en masse' })
   sendBulk(@Body() alerts: SmsAlert[]) {
     return this.smsService.sendBulk(alerts);
   }
 
-  @Get('history')
+  @Get("history')
   @ApiOperation({ summary: 'Historique des SMS envoyés' })
   getHistory() {
     return this.smsService.getAlertHistory();

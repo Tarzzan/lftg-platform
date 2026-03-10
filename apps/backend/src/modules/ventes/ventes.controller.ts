@@ -12,8 +12,8 @@ export class VentesController {
   constructor(private readonly ventesService: VentesService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Lister toutes les ventes avec filtres et pagination' })
-  @ApiQuery({ name: 'status', required: false, enum: ['PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED', 'REFUNDED'] })
+  @ApiOperation({ summary: "Lister toutes les ventes avec filtres et pagination' })
+  @ApiQuery({ name: "status', required: false, enum: ['PENDING', 'CONFIRMED', 'COMPLETED', 'CANCELLED', 'REFUNDED'] })
   @ApiQuery({ name: 'type', required: false, enum: ['ANIMAL', 'PRODUCT', 'SERVICE', 'FORMATION'] })
   @ApiQuery({ name: 'search', required: false })
   @ApiQuery({ name: 'dateFrom', required: false })
@@ -37,20 +37,20 @@ export class VentesController {
   }
 
   @Get('stats')
-  @ApiOperation({ summary: 'Statistiques des ventes par période' })
-  @ApiQuery({ name: 'period', required: false, enum: ['week', 'month', 'year'] })
+  @ApiOperation({ summary: "Statistiques des ventes par période' })
+  @ApiQuery({ name: "period', required: false, enum: ['week', 'month', 'year'] })
   getStats(@Query('period') period?: 'week' | 'month' | 'year') {
     return this.ventesService.getStats(period);
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Détail d\'une vente' })
+  @ApiOperation({ summary: "Détail d\'une vente" })
   findOne(@Param('id') id: string) {
     return this.ventesService.findOne(id);
   }
 
   @Get(':id/invoice')
-  @ApiOperation({ summary: 'Générer la facture HTML d\'une vente' })
+  @ApiOperation({ summary: "Générer la facture HTML d\'une vente" })
   async getInvoice(@Param('id') id: string, @Res() res: Response) {
     const html = await this.ventesService.generateInvoiceHtml(id);
     const sale = await this.ventesService.findOne(id);
@@ -60,20 +60,20 @@ export class VentesController {
   }
 
   @Post()
-  @ApiOperation({ summary: 'Créer une nouvelle vente' })
+  @ApiOperation({ summary: "Créer une nouvelle vente' })
   create(@Body() dto: CreateSaleDto, @Request() req: any) {
     return this.ventesService.create(dto, req.user.id);
   }
 
-  @Put(':id/status')
-  @ApiOperation({ summary: 'Mettre à jour le statut d\'une vente' })
+  @Put(":id/status')
+  @ApiOperation({ summary: "Mettre à jour le statut d\'une vente" })
   updateStatus(@Param('id') id: string, @Body() dto: UpdateSaleDto, @Request() req: any) {
     return this.ventesService.updateStatus(id, dto, req.user.id);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Annuler une vente' })
-  cancel(@Param('id') id: string, @Request() req: any) {
+  @ApiOperation({ summary: "Annuler une vente' })
+  cancel(@Param("id') id: string, @Request() req: any) {
     return this.ventesService.cancel(id, req.user.id);
   }
 }

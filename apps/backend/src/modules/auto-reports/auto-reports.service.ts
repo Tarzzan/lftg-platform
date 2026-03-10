@@ -30,10 +30,10 @@ export class AutoReportsService {
       from: '"LFTG Platform" <noreply@lftg.fr>',
       to: 'admin@lftg.fr',
       subject: 'Rapport mensuel de la plateforme',
-      text: 'Veuillez trouver ci-joint le rapport mensuel.',
+      text: "Veuillez trouver ci-joint le rapport mensuel.',
       attachments: [
         {
-          filename: 'report.pdf',
+          filename: "report.pdf',
           // Ici, nous devrions générer un vrai PDF
           content: 'Contenu du rapport en PDF',
         },

@@ -10,8 +10,8 @@ export class QuizService {
       {
         id: 'quiz-1',
         courseId,
-        title: 'Quiz — Soins aux perroquets',
-        description: 'Évaluez vos connaissances sur les soins aux psittacidés',
+        title: "Quiz — Soins aux perroquets',
+        description: "Évaluez vos connaissances sur les soins aux psittacidés',
         questions: 10,
         timeLimit: 20,
         passingScore: 70,
@@ -22,8 +22,8 @@ export class QuizService {
       {
         id: 'quiz-2',
         courseId,
-        title: 'Quiz — Réglementation CITES',
-        description: 'Test sur la convention CITES et les espèces protégées',
+        title: "Quiz — Réglementation CITES',
+        description: "Test sur la convention CITES et les espèces protégées',
         questions: 15,
         timeLimit: 30,
         passingScore: 80,
@@ -37,12 +37,12 @@ export class QuizService {
   async getQuizDetails(quizId: string) {
     return {
       id: quizId,
-      title: 'Quiz — Soins aux perroquets',
+      title: "Quiz — Soins aux perroquets',
       questions: [
         {
-          id: 'q-1',
-          text: 'Quelle est la fréquence de nourrissage recommandée pour un Ara adulte ?',
-          type: 'SINGLE_CHOICE',
+          id: "q-1',
+          text: "Quelle est la fréquence de nourrissage recommandée pour un Ara adulte ?',
+          type: "SINGLE_CHOICE',
           options: ['1 fois par jour', '2 fois par jour', '3 fois par jour', 'En libre service'],
           correctAnswer: 1,
           explanation: 'Les Aras adultes doivent être nourris 2 fois par jour, matin et soir.',
@@ -50,8 +50,8 @@ export class QuizService {
         },
         {
           id: 'q-2',
-          text: 'Quels fruits sont toxiques pour les perroquets ?',
-          type: 'MULTIPLE_CHOICE',
+          text: "Quels fruits sont toxiques pour les perroquets ?',
+          type: "MULTIPLE_CHOICE',
           options: ['Avocat', 'Mangue', 'Raisin', 'Cerise (noyau)'],
           correctAnswers: [0, 3],
           explanation: 'L\'avocat et les noyaux de cerise sont toxiques pour les perroquets.',
@@ -59,8 +59,8 @@ export class QuizService {
         },
         {
           id: 'q-3',
-          text: 'La température idéale pour un perroquet tropical est de :',
-          type: 'SINGLE_CHOICE',
+          text: "La température idéale pour un perroquet tropical est de :',
+          type: "SINGLE_CHOICE',
           options: ['15-18°C', '20-25°C', '28-32°C', '35-40°C'],
           correctAnswer: 1,
           explanation: 'Les perroquets tropicaux sont à l\'aise entre 20 et 25°C.',

@@ -30,18 +30,18 @@ export class RealtimeService {
   getMetrics(): RealtimeMetric[] {
     const now = new Date();
     return [
-      { key: 'animals_total', label: 'Animaux vivants', value: 247, unit: '', trend: 'stable', delta: 0, timestamp: now, category: 'animals' },
-      { key: 'animals_sick', label: 'Animaux malades', value: 3, unit: '', trend: 'up', delta: 1, timestamp: now, category: 'animals' },
-      { key: 'feedings_done', label: 'Repas effectués', value: 5, unit: '/8', trend: 'up', delta: 1, timestamp: now, category: 'animals' },
-      { key: 'stock_alerts', label: 'Alertes stock', value: 4, unit: '', trend: 'stable', delta: 0, timestamp: now, category: 'stock' },
-      { key: 'sales_today', label: 'Ventes aujourd\'hui', value: 1240, unit: '€', trend: 'up', delta: 340, timestamp: now, category: 'sales' },
-      { key: 'visitors_today', label: 'Visiteurs aujourd\'hui', value: 32, unit: '', trend: 'up', delta: 8, timestamp: now, category: 'staff' },
-      { key: 'staff_present', label: 'Personnel présent', value: 7, unit: '/12', trend: 'stable', delta: 0, timestamp: now, category: 'staff' },
-      { key: 'temperature_avg', label: 'Temp. moyenne serres', value: 28.4, unit: '°C', trend: 'stable', delta: 0.2, timestamp: now, category: 'environment' },
-      { key: 'humidity_avg', label: 'Humidité moyenne', value: 78, unit: '%', trend: 'up', delta: 3, timestamp: now, category: 'environment' },
-      { key: 'active_workflows', label: 'Workflows actifs', value: 4, unit: '', trend: 'stable', delta: 0, timestamp: now, category: 'animals' },
-      { key: 'couvees_active', label: 'Couvées actives', value: 12, unit: '', trend: 'stable', delta: 0, timestamp: now, category: 'animals' },
-      { key: 'gps_alerts', label: 'Alertes GPS', value: 1, unit: '', trend: 'up', delta: 1, timestamp: now, category: 'animals' },
+      { key: 'animals_total', label: "Animaux vivants', value: 247, unit: "', trend: 'stable', delta: 0, timestamp: now, category: 'animals' },
+      { key: 'animals_sick', label: "Animaux malades', value: 3, unit: "', trend: 'up', delta: 1, timestamp: now, category: 'animals' },
+      { key: 'feedings_done', label: "Repas effectués', value: 5, unit: "/8', trend: 'up', delta: 1, timestamp: now, category: 'animals' },
+      { key: 'stock_alerts', label: "Alertes stock', value: 4, unit: "', trend: 'stable', delta: 0, timestamp: now, category: 'stock' },
+      { key: 'sales_today', label: "Ventes aujourd\'hui", value: 1240, unit: '€', trend: 'up', delta: 340, timestamp: now, category: 'sales' },
+      { key: 'visitors_today', label: "Visiteurs aujourd\'hui", value: 32, unit: '', trend: 'up', delta: 8, timestamp: now, category: 'staff' },
+      { key: 'staff_present', label: "Personnel présent', value: 7, unit: "/12', trend: 'stable', delta: 0, timestamp: now, category: 'staff' },
+      { key: 'temperature_avg', label: "Temp. moyenne serres', value: 28.4, unit: "°C', trend: 'stable', delta: 0.2, timestamp: now, category: 'environment' },
+      { key: 'humidity_avg', label: "Humidité moyenne', value: 78, unit: "%', trend: 'up', delta: 3, timestamp: now, category: 'environment' },
+      { key: 'active_workflows', label: "Workflows actifs', value: 4, unit: "', trend: 'stable', delta: 0, timestamp: now, category: 'animals' },
+      { key: 'couvees_active', label: "Couvées actives', value: 12, unit: "', trend: 'stable', delta: 0, timestamp: now, category: 'animals' },
+      { key: 'gps_alerts', label: "Alertes GPS', value: 1, unit: "', trend: 'up', delta: 1, timestamp: now, category: 'animals' },
     ];
   }
 
@@ -51,8 +51,8 @@ export class RealtimeService {
       {
         id: 'evt-001',
         type: 'feeding',
-        title: 'Repas effectué',
-        description: 'Petit-déjeuner des Aras — 6 animaux nourris',
+        title: "Repas effectué',
+        description: "Petit-déjeuner des Aras — 6 animaux nourris',
         entityId: 'zone-voliere',
         entityName: 'Volière Principale',
         timestamp: new Date(now - 12 * 60 * 1000),
@@ -62,8 +62,8 @@ export class RealtimeService {
       {
         id: 'evt-002',
         type: 'alert',
-        title: 'Alerte GPS',
-        description: 'Amazone AZ-022 détectée hors périmètre Nord',
+        title: "Alerte GPS',
+        description: "Amazone AZ-022 détectée hors périmètre Nord',
         entityId: 'anim-022',
         entityName: 'Amazone AZ-022',
         timestamp: new Date(now - 45 * 60 * 1000),
@@ -73,8 +73,8 @@ export class RealtimeService {
       {
         id: 'evt-003',
         type: 'medical',
-        title: 'Visite vétérinaire',
-        description: 'Contrôle de routine — Ara Macao AM-042',
+        title: "Visite vétérinaire',
+        description: "Contrôle de routine — Ara Macao AM-042',
         entityId: 'anim-042',
         entityName: 'Ara Macao AM-042',
         timestamp: new Date(now - 90 * 60 * 1000),
@@ -84,8 +84,8 @@ export class RealtimeService {
       {
         id: 'evt-004',
         type: 'sale',
-        title: 'Vente enregistrée',
-        description: 'Vente #VTE-2026-0127 — 840€ (Ara ararauna)',
+        title: "Vente enregistrée',
+        description: "Vente #VTE-2026-0127 — 840€ (Ara ararauna)',
         entityId: 'sale-127',
         entityName: 'Vente #VTE-2026-0127',
         timestamp: new Date(now - 2 * 60 * 60 * 1000),
@@ -95,8 +95,8 @@ export class RealtimeService {
       {
         id: 'evt-005',
         type: 'hatching',
-        title: 'Éclosion imminente',
-        description: 'Couvée COV-2026-08 — Éclosion prévue dans 2 jours',
+        title: "Éclosion imminente',
+        description: "Couvée COV-2026-08 — Éclosion prévue dans 2 jours',
         entityId: 'cov-008',
         entityName: 'Couvée Amazone #COV-2026-08',
         timestamp: new Date(now - 3 * 60 * 60 * 1000),
@@ -106,8 +106,8 @@ export class RealtimeService {
       {
         id: 'evt-006',
         type: 'alert',
-        title: 'Stock critique',
-        description: 'Graines de tournesol : 2 kg restants (seuil : 5 kg)',
+        title: "Stock critique',
+        description: "Graines de tournesol : 2 kg restants (seuil : 5 kg)',
         entityId: 'art-001',
         entityName: 'Graines de tournesol',
         timestamp: new Date(now - 4 * 60 * 60 * 1000),

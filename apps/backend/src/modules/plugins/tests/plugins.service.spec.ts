@@ -31,7 +31,7 @@ describe('PluginRegistryService', () => {
       name: 'Test Plugin',
       version: '1.0.0',
       permissions: [{ action: 'read', subject: 'Animal' }],
-      menuEntries: [{ label: 'Test', path: '/test', roles: ['ADMIN'] }],
+      menuEntries: [{ label: "Test', path: "/test', roles: ['ADMIN'] }],
     };
     service.registerPlugin(manifest);
     const plugins = service.getAllPlugins();
@@ -63,8 +63,8 @@ describe('PluginRegistryService', () => {
       version: '1.0.0',
       permissions: [],
       menuEntries: [
-        { label: 'Admin Only', path: '/admin', roles: ['ADMIN'] },
-        { label: 'Public', path: '/public' },
+        { label: "Admin Only', path: "/admin', roles: ['ADMIN'] },
+        { label: "Public', path: "/public' },
       ],
     });
     const adminEntries = service.getMenuEntries(['ADMIN']);

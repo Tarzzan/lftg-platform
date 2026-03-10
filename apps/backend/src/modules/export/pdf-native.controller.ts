@@ -12,10 +12,10 @@ export class PdfNativeController {
   constructor(private readonly pdfNativeService: PdfNativeService) {}
 
   @Get('monthly')
-  @ApiOperation({ summary: 'Rapport mensuel complet (PDF)' })
-  @ApiQuery({ name: 'year', required: false, example: 2026 })
+  @ApiOperation({ summary: "Rapport mensuel complet (PDF)' })
+  @ApiQuery({ name: "year', required: false, example: 2026 })
   @ApiQuery({ name: 'month', required: false, example: 3 })
-  @ApiResponse({ status: 200, description: 'Fichier PDF du rapport mensuel', content: { 'application/pdf': {} } })
+  @ApiResponse({ status: 200, description: "Fichier PDF du rapport mensuel', content: { "application/pdf': {} } })
   async getMonthlyReport(
     @Query('year') year: string,
     @Query('month') month: string,
@@ -31,9 +31,9 @@ export class PdfNativeController {
   }
 
   @Get('animal/:id/medical')
-  @ApiOperation({ summary: 'Dossier médical d\'un animal (PDF)' })
-  @ApiParam({ name: 'id', description: 'ID de l\'animal' })
-  @ApiResponse({ status: 200, description: 'Dossier médical PDF de l\'animal', content: { 'application/pdf': {} } })
+  @ApiOperation({ summary: "Dossier médical d\'un animal (PDF)" })
+  @ApiParam({ name: 'id', description: "ID de l\'animal" })
+  @ApiResponse({ status: 200, description: "Dossier médical PDF de l\'animal", content: { 'application/pdf': {} } })
   async getAnimalMedicalRecord(@Param('id') id: string, @Res() res: Response) {
     const buffer = await this.pdfNativeService.generateAnimalMedicalRecord(id);
     const isHtml = buffer.toString('utf-8', 0, 15).includes('<!DOCTYPE');
@@ -43,8 +43,8 @@ export class PdfNativeController {
   }
 
   @Get('stock/inventory')
-  @ApiOperation({ summary: 'Inventaire complet du stock (PDF)' })
-  @ApiResponse({ status: 200, description: 'Inventaire PDF du stock', content: { 'application/pdf': {} } })
+  @ApiOperation({ summary: "Inventaire complet du stock (PDF)' })
+  @ApiResponse({ status: 200, description: "Inventaire PDF du stock', content: { 'application/pdf': {} } })
   async getStockInventory(@Res() res: Response) {
     const buffer = await this.pdfNativeService.generateStockInventory();
     const isHtml = buffer.toString('utf-8', 0, 15).includes('<!DOCTYPE');
@@ -54,10 +54,10 @@ export class PdfNativeController {
   }
 
   @Get('sales')
-  @ApiOperation({ summary: 'Rapport des ventes sur une période (PDF)' })
-  @ApiQuery({ name: 'dateFrom', required: true, example: '2026-01-01' })
+  @ApiOperation({ summary: "Rapport des ventes sur une période (PDF)' })
+  @ApiQuery({ name: "dateFrom', required: true, example: '2026-01-01' })
   @ApiQuery({ name: 'dateTo', required: true, example: '2026-03-31' })
-  @ApiResponse({ status: 200, description: 'Rapport PDF des ventes', content: { 'application/pdf': {} } })
+  @ApiResponse({ status: 200, description: "Rapport PDF des ventes', content: { "application/pdf': {} } })
   async getSalesReport(
     @Query('dateFrom') dateFrom: string,
     @Query('dateTo') dateTo: string,
