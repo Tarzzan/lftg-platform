@@ -48,7 +48,7 @@ export class ImportService {
       try {
         if (!row.name || !row.species_name) {
           result.errors++;
-          result.details.push({ row: rowNum, status: 'error', message: "Colonnes "name" et "species_name" obligatoires" });
+          result.details.push({ row: rowNum, status: 'error', message: "Colonnes 'name' et 'species_name' obligatoires" });
           continue;
         }
 
