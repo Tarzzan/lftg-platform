@@ -168,15 +168,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
   }, []);
 
-  // Ouvre automatiquement le groupe contenant la page active
+  // Ouvre uniquement le groupe contenant la page active (+ Tableau de bord)
   const initOpenGroups = (path: string) => {
     const initial: Record<string, boolean> = {};
     navigation.forEach((group) => {
       const hasActive = group.items.some(
         item => path === item.path || (item.path !== '/admin' && path.startsWith(item.path))
       );
-      // Ouvrir le groupe actif et "Tableau de bord" par défaut
-      initial[group.section] = hasActive || group.section === 'Tableau de bord';
+      // N'ouvrir que le groupe actif (Tableau de bord toujours ouvert car c'est la page /admin)
+      initial[group.section] = hasActive;
     });
     setOpenGroups(initial);
   };
