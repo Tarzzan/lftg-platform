@@ -93,7 +93,7 @@ export class PlatformConfigService {
       for (const [key, value] of Object.entries(updates)) {
         const serialized = JSON.stringify(value);
         await this.prisma.$executeRaw`
-          INSERT INTO "PlatformConfig" (key, value, 'updatedAt")
+          INSERT INTO "PlatformConfig" (key, value, 'updatedAt')
           VALUES (${key}, ${serialized}, NOW())
           ON CONFLICT (key) DO UPDATE SET value = ${serialized}, "updatedAt" = NOW()
         `;

@@ -49,7 +49,7 @@ export class TourismeController {
 
   @Get('calendar')
   @ApiOperation({ summary: "Calendrier des visites" })
-  getCalendar(@Query("year") year: string, @Query('month") month: string) {
+  getCalendar(@Query("year") year: string, @Query('month') month: string) {
     return this.tourismeService.getCalendar(parseInt(year) || 2026, parseInt(month) || 3);
   }
 }

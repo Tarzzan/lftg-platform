@@ -202,7 +202,7 @@ export class PdfNativeService {
       <p class="subtitle">${monthName} — La Ferme Tropicale de Guyane</p>
     </div>
     <div style="text-align:right">
-      <p style="font-size:10px;color:#6b7280">Généré le ${new Date().toLocaleDateString('fr-FR")}</p>
+      <p style="font-size:10px;color:#6b7280">Généré le ${new Date().toLocaleDateString('fr-FR')}</p>
       <p style="font-size:10px;color:#6b7280">LFTG Platform v4.0.0</p>
     </div>
   </div>
@@ -260,7 +260,7 @@ export class PdfNativeService {
       <p class='subtitle'>${animal.name || 'Sans nom'} (${animal.identifier}) — ${animal.species?.name}</p>
     </div>
     <div style="text-align:right">
-      <p style="font-size:10px;color:#6b7280">Généré le ${new Date().toLocaleDateString('fr-FR")}</p>
+      <p style="font-size:10px;color:#6b7280">Généré le ${new Date().toLocaleDateString('fr-FR')}</p>
     </div>
   </div>
 
