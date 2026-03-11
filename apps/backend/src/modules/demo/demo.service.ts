@@ -18,16 +18,16 @@ export class DemoService {
     // Tables entièrement peuplées par des données de démo hardcodées
     // (aucune donnée réelle ne peut y être car elles sont vides en prod)
     const demoOnlyTables = [
-      'AgendaEvent',
-      'HistoryLog',
-      'MlPrediction',
-      'IotReading',
-      'GpsTrack',
+      "AgendaEvent",
+      "HistoryLog",
+      "MlPrediction",
+      "IotReading",
+      "GpsTrack",
       "Alert",
-      'AlertRule',
-      'Meal',
-      'NutritionPlan',
-      'Sponsorship',
+      "AlertRule",
+      "Meal",
+      "NutritionPlan",
+      "Sponsorship",
       "Sponsor",
     ];
 

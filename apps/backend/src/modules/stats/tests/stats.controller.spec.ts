@@ -94,15 +94,15 @@ describe('StatsController', () => {
   describe('getWorkflowsByState', () => {
     it('should return workflows grouped by state', async () => {
       const data = [
-        { state: 'pending', label: "En attente", count: 5 },
-        { state: "completed", label: "Terminé", count: 10 },
+        { state: 'pending', label: 'En attente', count: 5 },
+        { state: 'completed', label: 'Terminé', count: 10 },
       ];
       mockService.getWorkflowsByState.mockResolvedValue(data);
       expect(await controller.getWorkflowsByState()).toEqual(data);
     });
   });
 
-  describe("getFormationProgress", () => {
+  describe('getFormationProgress', () => {
     it('should return formation enrollment progress', async () => {
       const data = [
         { status: 'completed', count: 8 },

@@ -6,10 +6,10 @@ describe('RbacController', () => {
   let controller: RbacController;
   const mockService = {
     findAllRoles: jest.fn().mockResolvedValue([
-      { id: '1', name: 'ADMIN', description: "Administrateur", permissions: [] },
-      { id: "2", name: 'SOIGNEUR', description: "Soigneur animalier", permissions: [] },
+      { id: '1', name: 'ADMIN', description: 'Administrateur', permissions: [] },
+      { id: '2', name: 'SOIGNEUR', description: 'Soigneur animalier', permissions: [] },
     ]),
-    findRoleById: jest.fn().mockResolvedValue({ id: "1", name: 'ADMIN', permissions: [] }),
+    findRoleById: jest.fn().mockResolvedValue({ id: '1', name: 'ADMIN', permissions: [] }),
     createRole: jest.fn().mockResolvedValue({ id: '3', name: 'VETERINAIRE', permissions: [] }),
     deleteRole: jest.fn().mockResolvedValue({ id: '1', name: 'ADMIN' }),
     findAllPermissions: jest.fn().mockResolvedValue([
@@ -44,10 +44,10 @@ describe('RbacController', () => {
   });
 
   it('createRole() should create a role', async () => {
-    const dto = { name: 'VETERINAIRE', description: "Vétérinaire" };
+    const dto = { name: 'VETERINAIRE', description: 'Vétérinaire' };
     const result = await controller.createRole(dto);
     expect(result).toBeDefined();
-    expect(result.name).toBe("VETERINAIRE");
+    expect(result.name).toBe('VETERINAIRE');
   });
 
   it('findAllPermissions() should return permissions', async () => {

@@ -17,7 +17,7 @@ export class AuthController {
   @Public()
   @UseGuards(AuthGuard('local'))
   @Post('login')
-  @ApiOperation({ summary: "Connexion utilisateur" })
+  @ApiOperation({ summary: 'Connexion utilisateur' })
   async login(@Request() req: any, @Body() _dto: LoginDto, @Res({ passthrough: true }) res: Response) {
     const tokens = await this.authService.login(req.user);
     res.cookie('refresh_token', tokens.refreshToken, { httpOnly: true, sameSite: 'strict' });
@@ -26,14 +26,14 @@ export class AuthController {
 
   @Public()
   @Post('register')
-  @ApiOperation({ summary: "Inscription utilisateur" })
+  @ApiOperation({ summary: 'Inscription utilisateur' })
   async register(@Body() dto: RegisterDto) {
     return this.authService.register(dto);
   }
 
   @Public() // Should be protected by a refresh token guard
   @Post('refresh')
-  @ApiOperation({ summary: "Rafraîchir le token d'accès" })
+  @ApiOperation({ summary: "Rafraîchir le token d\'accès" })
   async refreshToken(@Request() req: Request, @Res({ passthrough: true }) res: Response) {
     // This assumes the refresh token is sent in the request cookies
     const refreshToken = req.cookies['refresh_token'];
@@ -45,23 +45,23 @@ export class AuthController {
 
   @Post('logout')
   @ApiBearerAuth()
-  @ApiOperation({ summary: "Déconnexion utilisateur" })
+  @ApiOperation({ summary: 'Déconnexion utilisateur' })
   async logout(@CurrentUser('id') userId: string, @Res({ passthrough: true }) res: Response) {
     await this.authService.logout(userId);
     res.clearCookie('refresh_token');
-    return { message: "Déconnexion réussie" };
+    return { message: 'Déconnexion réussie' };
   }
 
   @Get('me')
   @ApiBearerAuth()
-  @ApiOperation({ summary: "Profil de l'utilisateur connecté" })
+  @ApiOperation({ summary: "Profil de l\'utilisateur connecté" })
   async getProfile(@CurrentUser('id') userId: string) {
     return this.authService.getProfile(userId);
   }
 
   @Post('2fa/generate')
   @ApiBearerAuth()
-  @ApiOperation({ summary: "Générer un secret 2FA" })
+  @ApiOperation({ summary: 'Générer un secret 2FA' })
   async generateTwoFactorSecret(@CurrentUser('id') userId: string) {
     const qrCodeDataUrl = await this.authService.generateTwoFactorSecret(userId);
     return { qrCodeDataUrl };
@@ -69,8 +69,8 @@ export class AuthController {
 
   @Post('2fa/verify')
   @ApiBearerAuth()
-  @ApiOperation({ summary: "Vérifier un token 2FA" })
-  async verifyTwoFactorToken(@CurrentUser("id") userId: string, @Body('token') token: string) {
+  @ApiOperation({ summary: 'Vérifier un token 2FA' })
+  async verifyTwoFactorToken(@CurrentUser('id') userId: string, @Body('token') token: string) {
     return this.authService.verifyTwoFactorToken(userId, token);
   }
 }

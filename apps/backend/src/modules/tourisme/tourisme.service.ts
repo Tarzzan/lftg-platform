@@ -10,8 +10,8 @@ export class TourismeService {
     return [
       {
         id: 'visit-1',
-        title: "Visite guidée Perroquets & Perruches",
-        date: "2026-03-05T10:00:00Z",
+        title: 'Visite guidée Perroquets & Perruches',
+        date: '2026-03-05T10:00:00Z',
         duration: 90,
         guide: 'Marie Dupont',
         maxParticipants: 15,
@@ -24,8 +24,8 @@ export class TourismeService {
       },
       {
         id: 'visit-2',
-        title: "Découverte Reptiles de Guyane",
-        date: "2026-03-05T14:00:00Z",
+        title: 'Découverte Reptiles de Guyane',
+        date: '2026-03-05T14:00:00Z',
         duration: 60,
         guide: 'Jean Martin',
         maxParticipants: 10,
@@ -38,8 +38,8 @@ export class TourismeService {
       },
       {
         id: 'visit-3',
-        title: "Groupe scolaire — CE2 École Jules Ferry",
-        date: "2026-03-07T09:00:00Z",
+        title: 'Groupe scolaire — CE2 École Jules Ferry',
+        date: '2026-03-07T09:00:00Z',
         duration: 120,
         guide: 'Sophie Bernard',
         maxParticipants: 30,
@@ -52,8 +52,8 @@ export class TourismeService {
       },
       {
         id: 'visit-4',
-        title: "Visite privée famille — Réservation Dupont",
-        date: "2026-03-08T11:00:00Z",
+        title: 'Visite privée famille — Réservation Dupont',
+        date: '2026-03-08T11:00:00Z',
         duration: 120,
         guide: 'Marie Dupont',
         maxParticipants: 6,

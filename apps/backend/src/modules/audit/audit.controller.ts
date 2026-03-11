@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Controller, Get, Query, Param, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { AuditService } from './audit.service';
@@ -19,7 +18,7 @@ export class AuditController {
   constructor(private service: AuditService) {}
 
   @Get()
-  @ApiOperation({ summary: "Consulte les logs d'audit' })
+  @ApiOperation({ summary: "Consulte les logs d'audit" })
   @ApiQuery({ name: 'userId', required: false })
   @ApiQuery({ name: 'action', required: false })
   @ApiQuery({ name: 'from', required: false })
@@ -34,13 +33,13 @@ export class AuditController {
   }
 
   @Get('stats')
-  @ApiOperation({ summary: "Statistiques des logs d'audit' })
+  @ApiOperation({ summary: "Statistiques des logs d'audit" })
   getStats() {
     return this.service.getStats?.() ?? { total: 0, byAction: {} };
   }
 
   @Get('users/:userId')
-  @ApiOperation({ summary: "Logs d'audit d'un utilisateur" })
+  @ApiOperation({ summary: "Logs d'audit d"un utilisateur' })
   findByUser(@Param('userId') userId: string) {
     return this.service.findAll({ userId });
   }

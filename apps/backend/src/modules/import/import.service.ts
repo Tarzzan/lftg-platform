@@ -48,11 +48,11 @@ export class ImportService {
       try {
         if (!row.name || !row.species_name) {
           result.errors++;
-          result.details.push({ row: rowNum, status: 'error', message: "Colonnes 'name' et 'species_name' obligatoires" });
+          result.details.push({ row: rowNum, status: 'error', message: 'Colonnes "name" et "species_name" obligatoires' });
           continue;
         }
 
-        // Trouver ou créer l"espèce
+        // Trouver ou créer l'espèce
         let species = await this.prisma.species.findFirst({
           where: { name: { equals: row.species_name, mode: 'insensitive' } },
         });
@@ -121,11 +121,11 @@ export class ImportService {
       try {
         if (!row.name) {
           result.errors++;
-          result.details.push({ row: rowNum, status: 'error', message: "Colonne 'name' obligatoire" });
+          result.details.push({ row: rowNum, status: 'error', message: 'Colonne "name" obligatoire' });
           continue;
         }
 
-        // Vérifier si l"article existe déjà
+        // Vérifier si l'article existe déjà
         const existing = await this.prisma.stockArticle.findFirst({
           where: { name: { equals: row.name, mode: 'insensitive' } },
         });
@@ -172,14 +172,14 @@ export class ImportService {
       try {
         if (!row.email) {
           result.errors++;
-          result.details.push({ row: rowNum, status: 'error', message: "Colonne 'email' obligatoire" });
+          result.details.push({ row: rowNum, status: 'error', message: 'Colonne "email" obligatoire' });
           continue;
         }
 
         const existing = await this.prisma.user.findUnique({ where: { email: row.email } });
         if (existing) {
           result.skipped++;
-          result.details.push({ row: rowNum, status: "skipped", message: `Utilisateur "${row.email}" existe déjà` });
+          result.details.push({ row: rowNum, status: 'skipped', message: `Utilisateur "${row.email}" existe déjà` });
           continue;
         }
 

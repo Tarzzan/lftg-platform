@@ -15,23 +15,23 @@ export class WorkflowsController {
 
   // --- Definitions ---
   @Get('definitions')
-  @ApiOperation({ summary: "Liste toutes les définitions de workflows" })
+  @ApiOperation({ summary: 'Liste toutes les définitions de workflows' })
   findAllDefinitions() {
     return this.service.findAllDefinitions();
   }
 
-  @Get("definitions/:id")
+  @Get('definitions/:id')
   findDefinition(@Param('id') id: string) {
     return this.service.findDefinitionById(id);
   }
 
   @Post('definitions')
-  @ApiOperation({ summary: "Crée une nouvelle définition de workflow" })
+  @ApiOperation({ summary: 'Crée une nouvelle définition de workflow' })
   createDefinition(@Body() body: any) {
     return this.service.createDefinition(body);
   }
 
-  @Put("definitions/:id")
+  @Put('definitions/:id')
   updateDefinitionPut(@Param('id') id: string, @Body() body: any) {
     return this.service.updateDefinition(id, body);
   }
@@ -43,7 +43,7 @@ export class WorkflowsController {
 
   // --- Instances ---
   @Get('instances')
-  @ApiOperation({ summary: "Liste les instances de workflow" })
+  @ApiOperation({ summary: 'Liste les instances de workflow' })
   findAllInstances(
     @Query('state') state?: string,
     @Query('assigneeId') assigneeId?: string,
@@ -58,15 +58,15 @@ export class WorkflowsController {
   }
 
   @Post('instances')
-  @ApiOperation({ summary: "Démarre une nouvelle instance de workflow" })
+  @ApiOperation({ summary: 'Démarre une nouvelle instance de workflow' })
   createInstance(@Body() body: any) {
     return this.service.createInstance(body);
   }
 
-  @Post("instances/:id/transition")
-  @ApiOperation({ summary: "Déclenche une transition sur une instance" })
+  @Post('instances/:id/transition')
+  @ApiOperation({ summary: 'Déclenche une transition sur une instance' })
   transition(
-    @Param("id") id: string,
+    @Param('id') id: string,
     @Body() body: { transition: string; notes?: string; formData?: Record<string, any> },
     @CurrentUser('id') userId: string,
   ) {

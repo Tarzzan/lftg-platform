@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { StatsService } from './stats.service';
@@ -12,8 +11,8 @@ export class StatsController {
   constructor(private readonly statsService: StatsService) {}
 
   @Get('dashboard')
-  @ApiOperation({ summary: "Statistiques globales du tableau de bord" })
-  @ApiResponse({ status: 200, description: "Statistiques animaux, stock, workflows, RH, formation" })
+  @ApiOperation({ summary: 'Statistiques globales du tableau de bord' })
+  @ApiResponse({ status: 200, description: 'Statistiques animaux, stock, workflows, RH, formation' })
   getDashboard() {
     return this.statsService.getDashboardStats();
   }
@@ -26,22 +25,22 @@ export class StatsController {
   }
 
   @Get('stock/evolution')
-  @ApiOperation({ summary: "Evolution des mouvements de stock sur N jours" })
-  @ApiQuery({ name: 'days', required: false, description: "Nombre de jours (défaut: 30)" })
-  @ApiResponse({ status: 200, description: "Entrées et sorties de stock par jour" })
+  @ApiOperation({ summary: 'Evolution des mouvements de stock sur N jours' })
+  @ApiQuery({ name: 'days', required: false, description: 'Nombre de jours (défaut: 30)' })
+  @ApiResponse({ status: 200, description: 'Entrées et sorties de stock par jour' })
   getStockEvolution(@Query('days') days?: string) {
     return this.statsService.getStockEvolution(days ? parseInt(days) : 30);
   }
 
   @Get('workflows/by-state')
-  @ApiOperation({ summary: "Répartition des workflows par état" })
-  @ApiResponse({ status: 200, description: "Nombre de workflows par état" })
+  @ApiOperation({ summary: 'Répartition des workflows par état' })
+  @ApiResponse({ status: 200, description: 'Nombre de workflows par état' })
   getWorkflowsByState() {
     return this.statsService.getWorkflowsByState();
   }
 
   @Get('formation/progress')
-  @ApiOperation({ summary: "Progression des inscriptions aux formations" })
+  @ApiOperation({ summary: 'Progression des inscriptions aux formations' })
   @ApiResponse({ status: 200, description: "Nombre d'inscriptions terminées vs en cours" })
   getFormationProgress() {
     return this.statsService.getFormationProgress();

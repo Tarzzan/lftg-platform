@@ -8,7 +8,7 @@ export enum ReportFormat {
 }
 
 export class GenerateReportDto {
-  @ApiProperty({ description: "Type de rapport (animals, health, stock, financial)" })
+  @ApiProperty({ description: 'Type de rapport (animals, health, stock, financial)' })
   @IsString()
   type: string;
 
@@ -17,19 +17,19 @@ export class GenerateReportDto {
   @IsEnum(ReportFormat)
   format?: ReportFormat;
 
-  @ApiPropertyOptional({ description: "Date de début" })
+  @ApiPropertyOptional({ description: 'Date de début' })
   @IsOptional()
   @IsDateString()
   startDate?: string;
 
-  @ApiPropertyOptional({ description: "Date de fin" })
+  @ApiPropertyOptional({ description: 'Date de fin' })
   @IsOptional()
   @IsDateString()
   endDate?: string;
 }
 
 export class ReportQueryDto {
-  @ApiPropertyOptional({ description: "Filtrer par type de rapport" })
+  @ApiPropertyOptional({ description: 'Filtrer par type de rapport' })
   @IsOptional()
   @IsString()
   type?: string;

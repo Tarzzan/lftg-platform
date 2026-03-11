@@ -53,8 +53,8 @@ export class ParrainageService {
         {
           id: 'upd-001',
           date: new Date('2026-02-15'),
-          title: "Nouvelles de votre filleul !",
-          content: "AM-001 se porte à merveille. Il a appris 3 nouveaux mots ce mois-ci et participe activement aux sessions d'enrichissement comportemental.",
+          title: 'Nouvelles de votre filleul !',
+          content: "AM-001 se porte à merveille. Il a appris 3 nouveaux mots ce mois-ci et participe activement aux sessions d\'enrichissement comportemental.",
           author: 'soigneur@lftg.fr',
         },
       ],
@@ -121,14 +121,14 @@ export class ParrainageService {
 
   async getAvailableAnimals() {
     return [
-      { id: 'anim-003', name: 'Ara Chloroptère AC-003', species: 'Ara chloropterus', photo: '🦜', monthlyMin: 20, description: "Magnifique ara rouge de 4 ans, très sociable." },
-      { id: 'anim-007', name: 'Amazone AZ-007', species: 'Amazona amazonica', photo: '🦜', monthlyMin: 15, description: "Amazone à front bleu de 2 ans, en pleine croissance." },
-      { id: 'anim-015', name: 'Boa BC-015', species: 'Boa constrictor', photo: '🐍', monthlyMin: 10, description: "Boa constricteur de 3 ans, calme et en bonne santé." },
+      { id: 'anim-003', name: 'Ara Chloroptère AC-003', species: 'Ara chloropterus', photo: '🦜', monthlyMin: 20, description: 'Magnifique ara rouge de 4 ans, très sociable.' },
+      { id: 'anim-007', name: 'Amazone AZ-007', species: 'Amazona amazonica', photo: '🦜', monthlyMin: 15, description: 'Amazone à front bleu de 2 ans, en pleine croissance.' },
+      { id: 'anim-015', name: 'Boa BC-015', species: 'Boa constrictor', photo: '🐍', monthlyMin: 10, description: 'Boa constricteur de 3 ans, calme et en bonne santé.' },
     ];
   }
 
   async getStats() {
-    const active = this.mockSponsorships.filter(s => s.status === "active");
+    const active = this.mockSponsorships.filter(s => s.status === 'active');
     return {
       total: this.mockSponsorships.length,
       active: active.length,

@@ -41,7 +41,7 @@ export class PdfPuppeteerService {
     const html = `<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset='UTF-8'>
+  <meta charset="UTF-8">
   <title>Rapport Mensuel — ${monthNames[month - 1]} ${year}</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -71,38 +71,38 @@ export class PdfPuppeteerService {
   </style>
 </head>
 <body>
-  <div class='header'>
-    <div class='logo'>🦜</div>
+  <div class="header">
+    <div class="logo">🦜</div>
     <h1>Rapport Mensuel — ${monthNames[month - 1]} ${year}</h1>
     <p>La Ferme Tropicale de Guyane · Généré le ${new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
   </div>
 
-  <div class='content'>
+  <div class="content">
     <!-- KPIs -->
-    <div class='section'>
+    <div class="section">
       <h2>📊 Indicateurs clés du mois</h2>
       <div class="kpi-grid">
-        <div class='kpi-card'>
-          <div class='kpi-value'>${animals}</div>
-          <div class='kpi-label'>Animaux vivants</div>
+        <div class="kpi-card">
+          <div class="kpi-value">${animals}</div>
+          <div class="kpi-label">Animaux vivants</div>
         </div>
-        <div class='kpi-card'>
-          <div class='kpi-value'>${totalRevenue.toFixed(0)} €</div>
+        <div class="kpi-card">
+          <div class="kpi-value">${totalRevenue.toFixed(0)} €</div>
           <div class="kpi-label">Chiffre d'affaires TTC</div>
         </div>
-        <div class='kpi-card'>
-          <div class='kpi-value'>${medicalVisits.length}</div>
-          <div class='kpi-label'>Visites médicales</div>
+        <div class="kpi-card">
+          <div class="kpi-value">${medicalVisits.length}</div>
+          <div class="kpi-label">Visites médicales</div>
         </div>
-        <div class='kpi-card'>
-          <div class='kpi-value'>${workflows.length}</div>
+        <div class="kpi-card">
+          <div class="kpi-value">${workflows.length}</div>
           <div class="kpi-label">Workflows créés</div>
         </div>
       </div>
     </div>
 
     <!-- Ventes -->
-    <div class='section'>
+    <div class="section">
       <h2>💰 Ventes du mois (${sales.length} transactions)</h2>
       ${sales.length > 0 ? `
       <table>
@@ -125,7 +125,7 @@ export class PdfPuppeteerService {
     </div>
 
     <!-- Visites médicales -->
-    <div class='section'>
+    <div class="section">
       <h2>🩺 Visites médicales (${medicalVisits.length})</h2>
       ${medicalVisits.length > 0 ? `
       <table>
@@ -147,7 +147,7 @@ export class PdfPuppeteerService {
     </div>
 
     <!-- Mouvements de stock -->
-    <div class='section'>
+    <div class="section">
       <h2>📦 Mouvements de stock (${stockMovements.length})</h2>
       ${stockMovements.length > 0 ? `
       <table>
@@ -168,7 +168,7 @@ export class PdfPuppeteerService {
     </div>
   </div>
 
-  <div class='footer'>
+  <div class="footer">
     <strong>LFTG Platform v5.0.0</strong> — La Ferme Tropicale de Guyane — Développé par William MERI<br>
     Rapport généré automatiquement le ${new Date().toLocaleString('fr-FR')} · Confidentiel
   </div>
@@ -196,9 +196,9 @@ export class PdfPuppeteerService {
     if (!animal) throw new Error(`Animal ${animalId} introuvable`);
 
     const html = `<!DOCTYPE html>
-<html lang='fr'>
+<html lang="fr">
 <head>
-  <meta charset='UTF-8'>
+  <meta charset="UTF-8">
   <title>Dossier Médical — ${animal.name}</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -220,28 +220,28 @@ export class PdfPuppeteerService {
   </style>
 </head>
 <body>
-  <div class='header'>
+  <div class="header">
     <div style="font-size:48px;">🦜</div>
-    <div class='header-info'>
+    <div class="header-info">
       <h1>Dossier Médical — ${animal.name}</h1>
       <p>${animal.species?.commonName || ''} (${animal.species?.scientificName || ''}) · ID: ${animal.identifier}</p>
       <p>Généré le ${new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
     </div>
   </div>
 
-  <div class='content'>
-    <div class='section'>
+  <div class="content">
+    <div class="section">
       <h2>📋 Informations générales</h2>
-      <div class='info-grid'>
-        <div class='info-card'><label>Nom</label><value>${animal.name}</value></div>
+      <div class="info-grid">
+        <div class="info-card"><label>Nom</label><value>${animal.name}</value></div>
         <div class="info-card"><label>Identifiant</label><value>${animal.identifier}</value></div>
-        <div class='info-card'><label>Statut</label><value>${animal.status}</value></div>
-        <div class='info-card'><label>Espèce</label><value>${animal.species?.commonName || 'N/A'}</value></div>
-        <div class='info-card'><label>Nom scientifique</label><value><em>${animal.species?.scientificName || 'N/A'}</em></value></div>
-        <div class='info-card'><label>CITES</label><value>Annexe ${animal.species?.citesAppendix || 'Non listé'}</value></div>
-        <div class='info-card'><label>Sexe</label><value>${animal.sex || 'Inconnu'}</value></div>
+        <div class="info-card"><label>Statut</label><value>${animal.status}</value></div>
+        <div class="info-card"><label>Espèce</label><value>${animal.species?.commonName || 'N/A'}</value></div>
+        <div class="info-card"><label>Nom scientifique</label><value><em>${animal.species?.scientificName || 'N/A'}</em></value></div>
+        <div class="info-card"><label>CITES</label><value>Annexe ${animal.species?.citesAppendix || 'Non listé'}</value></div>
+        <div class="info-card"><label>Sexe</label><value>${animal.sex || 'Inconnu'}</value></div>
         <div class="info-card"><label>Date de naissance</label><value>${animal.birthDate ? new Date(animal.birthDate).toLocaleDateString('fr-FR') : 'Inconnue'}</value></div>
-        <div class='info-card'><label>Enclos</label><value>${animal.enclosure?.name || 'Non assigné'} ${animal.enclosure?.code ? `(${animal.enclosure.code})` : ''}</value></div>
+        <div class="info-card"><label>Enclos</label><value>${animal.enclosure?.name || 'Non assigné'} ${animal.enclosure?.code ? `(${animal.enclosure.code})` : ''}</value></div>
       </div>
     </div>
 
@@ -267,7 +267,7 @@ export class PdfPuppeteerService {
     </div>
 
     ${animal.citesPermits.length > 0 ? `
-    <div class='section'>
+    <div class="section">
       <h2>📜 Permis CITES actifs</h2>
       <table>
         <thead>
@@ -294,7 +294,7 @@ export class PdfPuppeteerService {
     ` : ''}
   </div>
 
-  <div class='footer'>
+  <div class="footer">
     <strong>LFTG Platform v5.0.0</strong> — La Ferme Tropicale de Guyane — Développé par William MERI<br>
     Document confidentiel — Usage interne uniquement
   </div>
@@ -314,9 +314,9 @@ export class PdfPuppeteerService {
     const totalValue = articles.reduce((sum, a) => sum + (a.quantity * (a.unitPrice?.toNumber() || 0)), 0);
 
     const html = `<!DOCTYPE html>
-<html lang='fr'>
+<html lang="fr">
 <head>
-  <meta charset='UTF-8'>
+  <meta charset="UTF-8">
   <title>Inventaire Stock — ${new Date().toLocaleDateString('fr-FR')}</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -336,15 +336,15 @@ export class PdfPuppeteerService {
   </style>
 </head>
 <body>
-  <div class='header'>
+  <div class="header">
     <h1>📦 Inventaire du Stock</h1>
     <p>La Ferme Tropicale de Guyane · ${new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
   </div>
-  <div class='content'>
+  <div class="content">
     <div class="kpi-row">
-      <div class='kpi'><div class='kpi-value'>${articles.length}</div><div class='kpi-label'>Articles total</div></div>
-      <div class='kpi'><div class='kpi-value'>${critical.length}</div><div class="kpi-label">Articles critiques</div></div>
-      <div class='kpi'><div class="kpi-value">${totalValue.toFixed(2)} €</div><div class='kpi-label'>Valeur totale du stock</div></div>
+      <div class="kpi"><div class="kpi-value">${articles.length}</div><div class="kpi-label">Articles total</div></div>
+      <div class="kpi"><div class="kpi-value">${critical.length}</div><div class="kpi-label">Articles critiques</div></div>
+      <div class="kpi"><div class="kpi-value">${totalValue.toFixed(2)} €</div><div class="kpi-label">Valeur totale du stock</div></div>
     </div>
     <table>
       <thead>

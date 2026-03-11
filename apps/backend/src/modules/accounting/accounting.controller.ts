@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -19,14 +18,14 @@ export class AccountingController {
   constructor(private readonly accountingService: AccountingService) {}
 
   @Get('summary')
-  @ApiOperation({ summary: "Résumé comptable annuel" })
-  @ApiResponse({ status: 200, description: "Résumé comptable" })
+  @ApiOperation({ summary: 'Résumé comptable annuel' })
+  @ApiResponse({ status: 200, description: 'Résumé comptable' })
   getSummary(@Query('year') year?: string) {
     return this.accountingService.getAccountingSummary(+year || new Date().getFullYear());
   }
 
   @Get('transactions')
-  @ApiOperation({ summary: "Liste des transactions" })
+  @ApiOperation({ summary: 'Liste des transactions' })
   getTransactions(
     @Query('from') from?: string,
     @Query('to') to?: string,
@@ -42,7 +41,7 @@ export class AccountingController {
   }
 
   @Post('transactions')
-  @ApiOperation({ summary: "Créer une transaction" })
+  @ApiOperation({ summary: 'Créer une transaction' })
   createTransaction(@Body() dto: CreateTransactionDto) {
     return this.accountingService.createTransaction?.(dto) ?? dto;
   }

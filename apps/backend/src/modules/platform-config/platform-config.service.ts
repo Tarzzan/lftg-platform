@@ -63,7 +63,7 @@ export class PlatformConfigService {
     try {
       // Essayer de lire depuis la DB via une table générique
       const rows = await this.prisma.$queryRaw<{ key: string; value: string }[]>`
-        SELECT key, value FROM 'PlatformConfig'
+        SELECT key, value FROM "PlatformConfig"
       `;
       const config: Partial<PlatformConfig> = {};
       for (const row of rows) {
@@ -93,7 +93,7 @@ export class PlatformConfigService {
       for (const [key, value] of Object.entries(updates)) {
         const serialized = JSON.stringify(value);
         await this.prisma.$executeRaw`
-          INSERT INTO "PlatformConfig" (key, value, 'updatedAt')
+          INSERT INTO "PlatformConfig" (key, value, "updatedAt")
           VALUES (${key}, ${serialized}, NOW())
           ON CONFLICT (key) DO UPDATE SET value = ${serialized}, "updatedAt" = NOW()
         `;

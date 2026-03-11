@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Injectable, UnauthorizedException, ConflictException, Inject } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
@@ -54,7 +53,7 @@ export class AuthService {
 
   async logout(userId: string) {
     await this.prisma.user.update({ where: { id: userId }, data: { refreshToken: null } });
-    return { message: "Déconnexion réussie" };
+    return { message: 'Déconnexion réussie' };
   }
 
   async getProfile(userId: string) {
@@ -62,7 +61,7 @@ export class AuthService {
       where: { id: userId },
       include: { roles: { include: { permissions: true } }, teams: true },
     });
-    if (!user) throw new UnauthorizedException("Utilisateur introuvable");
+    if (!user) throw new UnauthorizedException('Utilisateur introuvable');
     const { password: _, refreshToken: __, ...result } = user;
     return result;
   }
@@ -100,10 +99,10 @@ export class AuthService {
 
   async generateTwoFactorSecret(userId: string) {
     // 2FA désactivé — retourne un message informatif
-    return { message: "2FA non disponible dans cette version" };
+    return { message: '2FA non disponible dans cette version' };
   }
 
   async verifyTwoFactorToken(userId: string, token: string) {
-    return { message: "2FA non disponible dans cette version" };
+    return { message: '2FA non disponible dans cette version' };
   }
 }

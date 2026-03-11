@@ -9,18 +9,18 @@ const mockDefinition = {
   name: 'Test Workflow',
   entityType: 'TestEntity',
   states: {
-    draft: { type: 'initial', label: "Brouillon" },
-    pending: { label: "En attente" },
-    approved: { type: 'final', label: "Approuvé" },
+    draft: { type: 'initial', label: 'Brouillon' },
+    pending: { label: 'En attente' },
+    approved: { type: 'final', label: 'Approuvé' },
   },
   transitions: {
-    submit: { from: "draft", to: 'pending', label: "Soumettre" },
-    approve: { from: "pending", to: 'approved', label: "Approuver" },
+    submit: { from: 'draft', to: 'pending', label: 'Soumettre' },
+    approve: { from: 'pending', to: 'approved', label: 'Approuver' },
   },
 };
 
 const mockInstance = {
-  id: "inst-1",
+  id: 'inst-1',
   definitionId: 'def-1',
   definition: mockDefinition,
   entityId: 'entity-1',

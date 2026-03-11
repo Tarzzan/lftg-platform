@@ -74,7 +74,7 @@ export class NotificationsService {
 
     this.emit({
       type: 'workflow',
-      title: "Workflow mis à jour",
+      title: 'Workflow mis à jour',
       message: `Transition : ${stateLabels[payload.fromState] ?? payload.fromState} → ${stateLabels[payload.toState] ?? payload.toState}`,
       severity: payload.toState === 'approved' ? 'success' : payload.toState === 'rejected' ? 'error' : 'info',
       entityId: payload.instanceId,
@@ -89,7 +89,7 @@ export class NotificationsService {
   emitStockAlert(item: { id: string; name: string; quantity: number; lowStockThreshold: number; unit: string }) {
     this.emit({
       type: 'stock',
-      title: "Alerte stock faible",
+      title: 'Alerte stock faible',
       message: `${item.name} : ${item.quantity} ${item.unit} restant(s) (seuil : ${item.lowStockThreshold})`,
       severity: item.quantity === 0 ? 'error' : 'warning',
       entityId: item.id,

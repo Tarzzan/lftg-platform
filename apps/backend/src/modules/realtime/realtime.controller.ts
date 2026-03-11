@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Controller, Get, Param, Sse, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { Observable, interval, map } from 'rxjs';
@@ -13,30 +12,30 @@ export class RealtimeController {
   constructor(private readonly realtimeService: RealtimeService) {}
 
   @Get('metrics')
-  @ApiOperation({ summary: "Métriques temps réel actuelles (IoT, capteurs, alertes)" })
-  @ApiResponse({ status: 200, description: "Métriques en temps réel" })
+  @ApiOperation({ summary: 'Métriques temps réel actuelles (IoT, capteurs, alertes)' })
+  @ApiResponse({ status: 200, description: 'Métriques en temps réel' })
   getMetrics() {
     return this.realtimeService.getMetrics();
   }
 
   @Get('events')
-  @ApiOperation({ summary: "Événements live récents (alertes, mouvements, repas)" })
-  @ApiResponse({ status: 200, description: "Liste des événements récents" })
+  @ApiOperation({ summary: 'Événements live récents (alertes, mouvements, repas)' })
+  @ApiResponse({ status: 200, description: 'Liste des événements récents' })
   getEvents() {
     return this.realtimeService.getLiveEvents();
   }
 
   @Get('environment')
-  @ApiOperation({ summary: "Données environnementales des zones (température, humidité)" })
-  @ApiResponse({ status: 200, description: "Données environnementales par zone" })
+  @ApiOperation({ summary: 'Données environnementales des zones (température, humidité)' })
+  @ApiResponse({ status: 200, description: 'Données environnementales par zone' })
   getEnvironment() {
     return this.realtimeService.getEnvironmentData();
   }
 
   @Get('environment/:zone')
-  @ApiOperation({ summary: "Données environnementales d'une zone spécifique" })
-  @ApiParam({ name: 'zone', description: "Identifiant de la zone (ex: reptiles, oiseaux)" })
-  @ApiResponse({ status: 200, description: "Données environnementales de la zone" })
+  @ApiOperation({ summary: "Données environnementales d\'une zone spécifique" })
+  @ApiParam({ name: 'zone', description: 'Identifiant de la zone (ex: reptiles, oiseaux)' })
+  @ApiResponse({ status: 200, description: 'Données environnementales de la zone' })
   getEnvironmentByZone(@Param('zone') zone: string) {
     const all = this.realtimeService.getEnvironmentData();
     return Array.isArray(all) ? all.filter((d: any) => d.zone === zone) : all;

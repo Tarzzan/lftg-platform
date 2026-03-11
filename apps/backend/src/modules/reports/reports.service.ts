@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -48,9 +47,9 @@ export class ReportsService {
     const monthName = new Date(year, month - 1).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
     return `
 <!DOCTYPE html>
-<html lang='fr'>
+<html lang="fr">
 <head>
-  <meta charset='UTF-8'>
+  <meta charset="UTF-8">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', system-ui, sans-serif; color: #111827; background: white; padding: 40px; font-size: 13px; line-height: 1.6; }
@@ -76,26 +75,26 @@ export class ReportsService {
 <body>
   ${this.getLFTGHeader('Rapport mensuel', monthName)}
 
-  <div class='kpi-grid'>
-    <div class='kpi'>
-      <div class='kpi-value'>247</div>
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-value">247</div>
       <div class="kpi-label">Animaux vivants</div>
-      <div class='kpi-delta'>▲ +3 ce mois</div>
-    </div>
-    <div class='kpi'>
-      <div class='kpi-value'>12</div>
-      <div class='kpi-label'>Couvées actives</div>
-      <div class='kpi-delta'>▲ +2 ce mois</div>
+      <div class="kpi-delta">▲ +3 ce mois</div>
     </div>
     <div class="kpi">
-      <div class='kpi-value'>8 300 €</div>
-      <div class='kpi-label'>Chiffre d'affaires</div>
-      <div class='kpi-delta'>▲ +29% vs mois préc.</div>
+      <div class="kpi-value">12</div>
+      <div class="kpi-label">Couvées actives</div>
+      <div class="kpi-delta">▲ +2 ce mois</div>
     </div>
-    <div class='kpi'>
-      <div class='kpi-value'>16</div>
+    <div class="kpi">
+      <div class="kpi-value">8 300 €</div>
+      <div class="kpi-label">Chiffre d'affaires</div>
+      <div class="kpi-delta">▲ +29% vs mois préc.</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-value">16</div>
       <div class="kpi-label">Ventes réalisées</div>
-      <div class='kpi-delta'>▲ +4 vs mois préc.</div>
+      <div class="kpi-delta">▲ +4 vs mois préc.</div>
     </div>
   </div>
 
@@ -113,7 +112,7 @@ export class ReportsService {
     </table>
   </div>
 
-  <div class='section'>
+  <div class="section">
     <h2>🩺 Activité médicale</h2>
     <table>
       <thead><tr><th>Type d'acte</th><th>Nombre</th><th>Animaux concernés</th><th>Vétérinaire</th></tr></thead>
@@ -132,7 +131,7 @@ export class ReportsService {
     <div class="alert-box critical">
       <strong>⚠️ Alerte critique :</strong> Graines tropicales — Stock critique (12 kg restants, seuil : 20 kg)
     </div>
-    <div class='alert-box'>
+    <div class="alert-box">
       <strong>⚠️ Alerte :</strong> Vitamines reptiles — Stock bas (8 unités restantes, seuil : 15)
     </div>
     <table>
@@ -146,7 +145,7 @@ export class ReportsService {
     </table>
   </div>
 
-  <div class='section'>
+  <div class="section">
     <h2>💰 Ventes du mois</h2>
     <table>
       <thead><tr><th>Référence</th><th>Date</th><th>Espèce</th><th>Acheteur</th><th>Montant TTC</th><th>Statut</th></tr></thead>
@@ -166,9 +165,9 @@ export class ReportsService {
   async generateAnimalMedicalReport(animalId: string): Promise<string> {
     return `
 <!DOCTYPE html>
-<html lang='fr'>
+<html lang="fr">
 <head>
-  <meta charset='UTF-8'>
+  <meta charset="UTF-8">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', system-ui, sans-serif; color: #111827; background: white; padding: 40px; font-size: 13px; line-height: 1.6; }
@@ -196,8 +195,8 @@ export class ReportsService {
 <body>
   ${this.getLFTGHeader('Dossier médical', 'Amazona (E-01) — Amazone à front bleu')}
 
-  <div class='animal-card'>
-    <div class='animal-avatar'>🦜</div>
+  <div class="animal-card">
+    <div class="animal-avatar">🦜</div>
     <div style="flex: 1;">
       <h2 style="font-size: 20px; font-weight: 800; color: #1a5c38; margin-bottom: 4px;">Amazona</h2>
       <p style="color: #6b7280; font-style: italic; margin-bottom: 12px;">Amazona amazonica — Amazone à front bleu</p>
@@ -209,16 +208,16 @@ export class ReportsService {
     </div>
   </div>
 
-  <div class='info-grid'>
-    <div class='info-item'><div class='info-label'>Date de naissance</div><div class='info-value'>15 mars 2019</div></div>
-    <div class='info-item'><div class="info-label">Sexe</div><div class='info-value'>Femelle</div></div>
-    <div class='info-item'><div class='info-label'>Poids actuel</div><div class='info-value'>420 g</div></div>
-    <div class='info-item'><div class="info-label">Enclos</div><div class='info-value'>Volière A (VOL-A)</div></div>
-    <div class='info-item'><div class='info-label'>Origine</div><div class='info-value'>Élevage en captivité</div></div>
-    <div class='info-item'><div class="info-label">Numéro de bague</div><div class='info-value'>FR-2019-AMZ-001</div></div>
+  <div class="info-grid">
+    <div class="info-item"><div class="info-label">Date de naissance</div><div class="info-value">15 mars 2019</div></div>
+    <div class="info-item"><div class="info-label">Sexe</div><div class="info-value">Femelle</div></div>
+    <div class="info-item"><div class="info-label">Poids actuel</div><div class="info-value">420 g</div></div>
+    <div class="info-item"><div class="info-label">Enclos</div><div class="info-value">Volière A (VOL-A)</div></div>
+    <div class="info-item"><div class="info-label">Origine</div><div class="info-value">Élevage en captivité</div></div>
+    <div class="info-item"><div class="info-label">Numéro de bague</div><div class="info-value">FR-2019-AMZ-001</div></div>
   </div>
 
-  <div class='section'>
+  <div class="section">
     <h2>📋 Historique des visites vétérinaires</h2>
     <table>
       <thead><tr><th>Date</th><th>Type</th><th>Vétérinaire</th><th>Poids</th><th>Diagnostic</th><th>Traitement</th></tr></thead>
@@ -232,7 +231,7 @@ export class ReportsService {
     </table>
   </div>
 
-  <div class='section'>
+  <div class="section">
     <h2>💉 Carnet de vaccination</h2>
     <table>
       <thead><tr><th>Vaccin</th><th>Date</th><th>Rappel prévu</th><th>Lot</th><th>Statut</th></tr></thead>
@@ -244,7 +243,7 @@ export class ReportsService {
     </table>
   </div>
 
-  <div class='section'>
+  <div class="section">
     <h2>📈 Courbe de poids (12 derniers mois)</h2>
     <div style="background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px;">
       <div style="display: flex; align-items: flex-end; gap: 8px; height: 80px;">
@@ -271,9 +270,9 @@ export class ReportsService {
   async generateCITESReport(): Promise<string> {
     return `
 <!DOCTYPE html>
-<html lang='fr'>
+<html lang="fr">
 <head>
-  <meta charset='UTF-8'>
+  <meta charset="UTF-8">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', system-ui, sans-serif; color: #111827; background: white; padding: 40px; font-size: 13px; line-height: 1.6; }
@@ -298,17 +297,17 @@ export class ReportsService {
 <body>
   ${this.getLFTGHeader('Bilan CITES', `Rapport de conformité — ${new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}`)}
 
-  <div class='summary-grid'>
-    <div class='summary-card'><div class='summary-value' style="color: #1a5c38;">4</div><div class='summary-label'>Permis actifs</div></div>
-    <div class="summary-card"><div class='summary-value' style="color: #dc2626;">1</div><div class='summary-label'>Permis expirés</div></div>
-    <div class="summary-card"><div class='summary-value' style="color: #d97706;">2</div><div class='summary-label'>Expirent < 60j</div></div>
-    <div class="summary-card"><div class='summary-value' style="color: #dc2626;">1</div><div class='summary-label'>Animaux Annexe I</div></div>
+  <div class="summary-grid">
+    <div class="summary-card"><div class="summary-value" style="color: #1a5c38;">4</div><div class="summary-label">Permis actifs</div></div>
+    <div class="summary-card"><div class="summary-value" style="color: #dc2626;">1</div><div class="summary-label">Permis expirés</div></div>
+    <div class="summary-card"><div class="summary-value" style="color: #d97706;">2</div><div class="summary-label">Expirent < 60j</div></div>
+    <div class="summary-card"><div class="summary-value" style="color: #dc2626;">1</div><div class="summary-label">Animaux Annexe I</div></div>
   </div>
 
   <div class="alert-box critical">
     <strong>🚨 Action requise :</strong> Le permis CITES du Caïman #3 (FR-CITES-2023-015) est expiré depuis le 31/08/2025. Renouvellement urgent nécessaire.
   </div>
-  <div class='alert-box'>
+  <div class="alert-box">
     <strong>⚠️ Attention :</strong> Le permis de l'Ara Bleu (FR-CITES-2025-002) expire le 15/03/2026 (dans 14 jours). Initier le renouvellement.
   </div>
 
@@ -366,7 +365,7 @@ export class ReportsService {
     </table>
   </div>
 
-  <div class='section'>
+  <div class="section">
     <h2>✅ Recommandations</h2>
     <ol style="padding-left: 20px; space-y: 8px;">
       <li style="margin-bottom: 8px;"><strong>Urgent :</strong> Renouveler immédiatement le permis du Caïman #3 auprès de la DREAL Guyane.</li>
@@ -384,9 +383,9 @@ export class ReportsService {
   async generateHRReport(): Promise<string> {
     return `
 <!DOCTYPE html>
-<html lang='fr'>
+<html lang="fr">
 <head>
-  <meta charset='UTF-8'>
+  <meta charset="UTF-8">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', system-ui, sans-serif; color: #111827; background: white; padding: 40px; font-size: 13px; line-height: 1.6; }
@@ -410,14 +409,14 @@ export class ReportsService {
 <body>
   ${this.getLFTGHeader('Rapport RH', `Bilan du personnel — ${new Date().toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}`)}
 
-  <div class='kpi-grid'>
-    <div class='kpi'><div class='kpi-value'>5</div><div class="kpi-label">Employés actifs</div></div>
-    <div class='kpi'><div class='kpi-value'>94.5%</div><div class='kpi-label'>Taux de présence</div></div>
-    <div class='kpi'><div class='kpi-value'>23h</div><div class="kpi-label">Heures supplémentaires</div></div>
-    <div class='kpi'><div class='kpi-value'>2</div><div class='kpi-label'>Congés en attente</div></div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-value">5</div><div class="kpi-label">Employés actifs</div></div>
+    <div class="kpi"><div class="kpi-value">94.5%</div><div class="kpi-label">Taux de présence</div></div>
+    <div class="kpi"><div class="kpi-value">23h</div><div class="kpi-label">Heures supplémentaires</div></div>
+    <div class="kpi"><div class="kpi-value">2</div><div class="kpi-label">Congés en attente</div></div>
   </div>
 
-  <div class='section'>
+  <div class="section">
     <h2>👥 Effectifs par département</h2>
     <table>
       <thead><tr><th>Département</th><th>Effectif</th><th>CDI</th><th>CDD</th><th>Congés restants moy.</th><th>Heures sup.</th></tr></thead>
@@ -430,7 +429,7 @@ export class ReportsService {
     </table>
   </div>
 
-  <div class='section'>
+  <div class="section">
     <h2>📅 Congés et absences du mois</h2>
     <table>
       <thead><tr><th>Employé</th><th>Type</th><th>Période</th><th>Jours</th><th>Statut</th></tr></thead>
@@ -443,7 +442,7 @@ export class ReportsService {
     </table>
   </div>
 
-  <div class='section'>
+  <div class="section">
     <h2>🎓 Formations et certifications</h2>
     <table>
       <thead><tr><th>Employé</th><th>Formation</th><th>Date</th><th>Durée</th><th>Statut</th></tr></thead>
@@ -462,12 +461,12 @@ export class ReportsService {
 
   getAvailableReports() {
     return [
-      { type: 'monthly_summary', label: "Rapport mensuel", description: "Synthèse complète de l'activité du mois", icon: '📊" },
-      { type: 'animal_medical', label: "Dossier médical animal", description: "Historique médical complet d'un animal", icon: '🩺" },
-      { type: 'cites_compliance', label: "Bilan CITES", description: "État des permis et conformité réglementaire", icon: '📜" },
-      { type: 'hr_summary', label: "Rapport RH", description: "Bilan du personnel, congés et formations", icon: '👥" },
-      { type: 'stock_inventory', label: "Inventaire des stocks", description: "État détaillé des stocks et alertes", icon: '📦" },
-      { type: 'sales_analysis', label: "Analyse des ventes", description: "Performance commerciale et top espèces", icon: '💰" },
+      { type: 'monthly_summary', label: 'Rapport mensuel', description: "Synthèse complète de l\'activité du mois", icon: '📊' },
+      { type: 'animal_medical', label: 'Dossier médical animal', description: "Historique médical complet d\'un animal", icon: '🩺' },
+      { type: 'cites_compliance', label: 'Bilan CITES', description: 'État des permis et conformité réglementaire', icon: '📜' },
+      { type: 'hr_summary', label: 'Rapport RH', description: 'Bilan du personnel, congés et formations', icon: '👥' },
+      { type: 'stock_inventory', label: 'Inventaire des stocks', description: 'État détaillé des stocks et alertes', icon: '📦' },
+      { type: 'sales_analysis', label: 'Analyse des ventes', description: 'Performance commerciale et top espèces', icon: '💰' },
     ];
   }
 }

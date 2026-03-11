@@ -7,7 +7,7 @@ export class ContactMessagesService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: any) {
-    const ref = 'MSG-' + Date.now().toString(36).toUpperCase();
+    const ref = "MSG-" + Date.now().toString(36).toUpperCase();
     return this.prisma.contactMessage.create({
       data: {
         reference: ref,
@@ -16,7 +16,7 @@ export class ContactMessagesService {
         phone: data.phone,
         subject: data.subject,
         message: data.message,
-        status: 'UNREAD',
+        status: "UNREAD",
       },
     });
   }
@@ -25,15 +25,15 @@ export class ContactMessagesService {
     return this.prisma.contactMessage.findMany({
       where: status ? { status } : undefined,
       include: { replies: { include: { author: { select: { id: true, name: true, email: true } } } } },
-      orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: "desc" },
     });
   }
 
   async getStats() {
     const [total, unread, replied, archived] = await Promise.all([
       this.prisma.contactMessage.count(),
-      this.prisma.contactMessage.count({ where: { status: 'UNREAD' } }),
-      this.prisma.contactMessage.count({ where: { status: 'REPLIED' } }),
+      this.prisma.contactMessage.count({ where: { status: "UNREAD" } }),
+      this.prisma.contactMessage.count({ where: { status: "REPLIED" } }),
       this.prisma.contactMessage.count({ where: { status: "ARCHIVED" } }),
     ]);
     return { total, unread, replied, archived };
@@ -44,7 +44,7 @@ export class ContactMessagesService {
       where: { id },
       include: { replies: { include: { author: { select: { id: true, name: true, email: true } } } } },
     });
-    if (msg && msg.status === 'UNREAD') {
+    if (msg && msg.status === "UNREAD") {
       await this.prisma.contactMessage.update({ where: { id }, data: { status: "READ" } });
     }
     return msg;
@@ -56,7 +56,7 @@ export class ContactMessagesService {
 
   async reply(id: string, data: any) {
     // Trouver le premier admin disponible comme auteur
-    const admin = await this.prisma.user.findFirst({ where: { role: 'ADMIN' } });
+    const admin = await this.prisma.user.findFirst({ where: { role: "ADMIN" } });
     const authorId = data.authorId ?? admin?.id;
     if (!authorId) throw new Error("Aucun auteur disponible");
 

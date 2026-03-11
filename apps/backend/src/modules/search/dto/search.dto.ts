@@ -1,10 +1,9 @@
-// @ts-nocheck
 import { IsString, IsOptional, IsIn, IsInt, Min, Max } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class SearchQueryDto {
-  @ApiProperty({ description: "Terme de recherche (min 2 caractères)", example: 'matamata' })
+  @ApiProperty({ description: 'Terme de recherche (min 2 caractères)', example: 'matamata' })
   @IsString()
   q: string;
 

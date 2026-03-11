@@ -10,7 +10,7 @@ describe('PluginsController', () => {
       { id: 'gbif', name: 'GBIF', version: '1.0.0', enabled: true },
     ]),
     getMenuEntries: jest.fn().mockReturnValue([
-      { label: "CITES", path: "/admin/cites", icon: 'shield' },
+      { label: 'CITES', path: '/admin/cites', icon: 'shield' },
     ]),
   };
 

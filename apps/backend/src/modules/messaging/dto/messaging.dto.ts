@@ -2,7 +2,7 @@ import { IsString, IsOptional } from "class-validator";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class CreateMessagingDto {
-  @ApiProperty({ description: 'Nom', example: "item-001" })
+  @ApiProperty({ description: "Nom", example: "item-001" })
   @IsString()
   name: string;
 

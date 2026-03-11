@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Controller, Get, Post, Patch, Param, Query, Body, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -12,7 +11,7 @@ export class AlertesController {
   constructor(private readonly alertesService: AlertesService) {}
 
   @Get()
-  @ApiOperation({ summary: "Lister les alertes avec filtres" })
+  @ApiOperation({ summary: 'Lister les alertes avec filtres' })
   getAlerts(
     @Query('severity') severity?: string,
     @Query('type') type?: string,
@@ -28,32 +27,32 @@ export class AlertesController {
   }
 
   @Get('stats')
-  @ApiOperation({ summary: "Statistiques des alertes" })
+  @ApiOperation({ summary: 'Statistiques des alertes' })
   getStats() {
     return this.alertesService.getAlertStats();
   }
 
   @Get('rules')
-  @ApiOperation({ summary: "Règles d'alerte configurées" })
+  @ApiOperation({ summary: "Règles d\'alerte configurées" })
   getRules() {
     return this.alertesService.getRules();
   }
 
   @Post('check')
-  @ApiOperation({ summary: "Déclencher un cycle de vérification des alertes" })
+  @ApiOperation({ summary: 'Déclencher un cycle de vérification des alertes' })
   runCheck() {
     return this.alertesService.runAlertCheck();
   }
 
-  @Patch(":id/acknowledge")
-  @ApiOperation({ summary: "Acquitter une alerte" })
+  @Patch(':id/acknowledge')
+  @ApiOperation({ summary: 'Acquitter une alerte' })
   acknowledge(@Param('id') id: string, @Body() body: { userId: string }) {
     return this.alertesService.acknowledgeAlert(id, body.userId || 'admin@lftg.fr');
   }
 
   @Patch(':id/resolve')
-  @ApiOperation({ summary: "Résoudre une alerte" })
-  resolve(@Param("id") id: string) {
+  @ApiOperation({ summary: 'Résoudre une alerte' })
+  resolve(@Param('id') id: string) {
     return this.alertesService.resolveAlert(id);
   }
 }

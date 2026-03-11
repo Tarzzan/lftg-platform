@@ -12,13 +12,13 @@ export class ReportsController {
   constructor(private readonly reportsService: ReportsService) {}
 
   @Get()
-  @ApiOperation({ summary: "Lister les rapports disponibles" })
+  @ApiOperation({ summary: 'Lister les rapports disponibles' })
   getAvailableReports() {
     return this.reportsService.getAvailableReports();
   }
 
   @Get('monthly')
-  @ApiOperation({ summary: "Rapport mensuel HTML" })
+  @ApiOperation({ summary: 'Rapport mensuel HTML' })
   async getMonthlySummary(
     @Query('year') year: string = String(new Date().getFullYear()),
     @Query('month') month: string = String(new Date().getMonth() + 1),
@@ -30,7 +30,7 @@ export class ReportsController {
   }
 
   @Get('animal/:id/medical')
-  @ApiOperation({ summary: "Dossier médical animal HTML" })
+  @ApiOperation({ summary: 'Dossier médical animal HTML' })
   async getAnimalMedicalReport(@Param('id') id: string, @Res() res: Response) {
     const html = await this.reportsService.generateAnimalMedicalReport(id);
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -38,7 +38,7 @@ export class ReportsController {
   }
 
   @Get('cites')
-  @ApiOperation({ summary: "Bilan CITES HTML" })
+  @ApiOperation({ summary: 'Bilan CITES HTML' })
   async getCITESReport(@Res() res: Response) {
     const html = await this.reportsService.generateCITESReport();
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -46,10 +46,10 @@ export class ReportsController {
   }
 
   @Get('hr')
-  @ApiOperation({ summary: "Rapport RH HTML" })
+  @ApiOperation({ summary: 'Rapport RH HTML' })
   async getHRReport(@Res() res: Response) {
     const html = await this.reportsService.generateHRReport();
-    res.setHeader("Content-Type", 'text/html; charset=utf-8");
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.send(html);
   }
 }

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as fs from 'fs';
@@ -189,15 +188,15 @@ export class PdfNativeService {
     const { monthName, newAnimals, newBroods, stockMovements, totalRevenue, salesCount, medicalEvents, totalAnimals, totalEnclos, sales } = data;
 
     return `<!DOCTYPE html>
-<html lang='fr'>
-<head><meta charset='UTF-8'><title>Rapport mensuel — ${monthName}</title>
+<html lang="fr">
+<head><meta charset="UTF-8"><title>Rapport mensuel — ${monthName}</title>
 <style>${this.getBaseStyles()}</style>
 </head>
 <body>
-<div class='page'>
-  <div class='header'>
+<div class="page">
+  <div class="header">
     <div>
-      <div class='logo'>🦜</div>
+      <div class="logo">🦜</div>
       <h1>Rapport Mensuel</h1>
       <p class="subtitle">${monthName} — La Ferme Tropicale de Guyane</p>
     </div>
@@ -208,15 +207,15 @@ export class PdfNativeService {
   </div>
 
   <h2>Indicateurs clés du mois</h2>
-  <div class='kpi-grid'>
-    <div class='kpi'><div class='kpi-value'>${totalAnimals}</div><div class='kpi-label'>Animaux actifs</div></div>
-    <div class='kpi'><div class="kpi-value">${newAnimals}</div><div class='kpi-label'>Nouveaux animaux</div></div>
-    <div class='kpi'><div class='kpi-value'>${totalEnclos}</div><div class='kpi-label'>Enclos actifs</div></div>
-    <div class='kpi'><div class="kpi-value">${newBroods}</div><div class='kpi-label'>Nouvelles couvées</div></div>
-    <div class='kpi'><div class='kpi-value'>${medicalEvents}</div><div class='kpi-label'>Actes médicaux</div></div>
-    <div class='kpi'><div class="kpi-value">${stockMovements}</div><div class='kpi-label'>Mouvements stock</div></div>
-    <div class='kpi'><div class='kpi-value'>${salesCount}</div><div class='kpi-label'>Ventes</div></div>
-    <div class='kpi'><div class="kpi-value">${totalRevenue.toFixed(0)} €</div><div class='kpi-label'>Chiffre d'affaires</div></div>
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-value">${totalAnimals}</div><div class="kpi-label">Animaux actifs</div></div>
+    <div class="kpi"><div class="kpi-value">${newAnimals}</div><div class="kpi-label">Nouveaux animaux</div></div>
+    <div class="kpi"><div class="kpi-value">${totalEnclos}</div><div class="kpi-label">Enclos actifs</div></div>
+    <div class="kpi"><div class="kpi-value">${newBroods}</div><div class="kpi-label">Nouvelles couvées</div></div>
+    <div class="kpi"><div class="kpi-value">${medicalEvents}</div><div class="kpi-label">Actes médicaux</div></div>
+    <div class="kpi"><div class="kpi-value">${stockMovements}</div><div class="kpi-label">Mouvements stock</div></div>
+    <div class="kpi"><div class="kpi-value">${salesCount}</div><div class="kpi-label">Ventes</div></div>
+    <div class="kpi"><div class="kpi-value">${totalRevenue.toFixed(0)} €</div><div class="kpi-label">Chiffre d'affaires</div></div>
   </div>
 
   <h2>Ventes du mois</h2>
@@ -237,7 +236,7 @@ export class PdfNativeService {
   </table>
   ` : '<p style="color:#6b7280;font-style:italic">Aucune vente ce mois-ci.</p>'}
 
-  <div class='footer'>
+  <div class="footer">
     🦜 La Ferme Tropicale de Guyane — LFTG Platform v4.0.0 — Rapport généré automatiquement
   </div>
 </div>
@@ -247,17 +246,17 @@ export class PdfNativeService {
 
   private buildAnimalMedicalHtml(animal: any): string {
     return `<!DOCTYPE html>
-<html lang='fr'>
-<head><meta charset='UTF-8'><title>Dossier médical — ${animal.name || animal.identifier}</title>
+<html lang="fr">
+<head><meta charset="UTF-8"><title>Dossier médical — ${animal.name || animal.identifier}</title>
 <style>${this.getBaseStyles()}</style>
 </head>
 <body>
-<div class='page'>
-  <div class='header'>
+<div class="page">
+  <div class="header">
     <div>
       <div class="logo">🦜</div>
       <h1>Dossier Médical</h1>
-      <p class='subtitle'>${animal.name || 'Sans nom'} (${animal.identifier}) — ${animal.species?.name}</p>
+      <p class="subtitle">${animal.name || 'Sans nom'} (${animal.identifier}) — ${animal.species?.name}</p>
     </div>
     <div style="text-align:right">
       <p style="font-size:10px;color:#6b7280">Généré le ${new Date().toLocaleDateString('fr-FR')}</p>
@@ -290,7 +289,7 @@ export class PdfNativeService {
   </table>
   ` : '<p style="color:#6b7280;font-style:italic">Aucun acte médical enregistré.</p>'}
 
-  <div class='footer'>
+  <div class="footer">
     🦜 La Ferme Tropicale de Guyane — LFTG Platform v4.0.0 — Dossier confidentiel
   </div>
 </div>
@@ -302,17 +301,17 @@ export class PdfNativeService {
     const lowStock = items.filter(i => i.quantity <= i.lowStockThreshold);
 
     return `<!DOCTYPE html>
-<html lang='fr'>
-<head><meta charset='UTF-8'><title>Inventaire du stock</title>
+<html lang="fr">
+<head><meta charset="UTF-8"><title>Inventaire du stock</title>
 <style>${this.getBaseStyles()}</style>
 </head>
 <body>
-<div class='page'>
-  <div class='header'>
+<div class="page">
+  <div class="header">
     <div>
       <div class="logo">🦜</div>
       <h1>Inventaire du Stock</h1>
-      <p class='subtitle'>La Ferme Tropicale de Guyane — ${new Date().toLocaleDateString('fr-FR')}</p>
+      <p class="subtitle">La Ferme Tropicale de Guyane — ${new Date().toLocaleDateString('fr-FR')}</p>
     </div>
     <div style="text-align:right">
       <p>${items.length} articles · <span style="color:#dc2626">${lowStock.length} en alerte</span></p>
@@ -354,7 +353,7 @@ export class PdfNativeService {
     </tbody>
   </table>
 
-  <div class='footer'>
+  <div class="footer">
     🦜 La Ferme Tropicale de Guyane — LFTG Platform v4.0.0 — Inventaire généré le ${new Date().toLocaleDateString('fr-FR')}
   </div>
 </div>
@@ -367,17 +366,17 @@ export class PdfNativeService {
     const totalRevenue = completed.reduce((sum, s) => sum + s.total, 0);
 
     return `<!DOCTYPE html>
-<html lang='fr'>
-<head><meta charset='UTF-8'><title>Rapport des ventes</title>
+<html lang="fr">
+<head><meta charset="UTF-8"><title>Rapport des ventes</title>
 <style>${this.getBaseStyles()}</style>
 </head>
 <body>
-<div class='page'>
-  <div class='header'>
+<div class="page">
+  <div class="header">
     <div>
       <div class="logo">🦜</div>
       <h1>Rapport des Ventes</h1>
-      <p class='subtitle'>Du ${new Date(dateFrom).toLocaleDateString('fr-FR')} au ${new Date(dateTo).toLocaleDateString('fr-FR')}</p>
+      <p class="subtitle">Du ${new Date(dateFrom).toLocaleDateString('fr-FR')} au ${new Date(dateTo).toLocaleDateString('fr-FR')}</p>
     </div>
     <div style="text-align:right">
       <p style="font-size:16px;font-weight:700;color:#166534">${totalRevenue.toFixed(2)} €</p>
@@ -385,10 +384,10 @@ export class PdfNativeService {
     </div>
   </div>
 
-  <div class='kpi-grid' style="grid-template-columns:repeat(3,1fr)">
-    <div class='kpi'><div class='kpi-value'>${sales.length}</div><div class='kpi-label'>Total ventes</div></div>
-    <div class='kpi'><div class='kpi-value'>${completed.length}</div><div class="kpi-label">Complétées</div></div>
-    <div class='kpi'><div class="kpi-value">${totalRevenue.toFixed(0)} €</div><div class='kpi-label'>Chiffre d'affaires</div></div>
+  <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+    <div class="kpi"><div class="kpi-value">${sales.length}</div><div class="kpi-label">Total ventes</div></div>
+    <div class="kpi"><div class="kpi-value">${completed.length}</div><div class="kpi-label">Complétées</div></div>
+    <div class="kpi"><div class="kpi-value">${totalRevenue.toFixed(0)} €</div><div class="kpi-label">Chiffre d'affaires</div></div>
   </div>
 
   <h2>Détail des ventes</h2>

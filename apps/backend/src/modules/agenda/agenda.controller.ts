@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Controller, Get, Post, Put, Patch, Delete, Body, Param, Query, UseGuards, Request, Res } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { Response } from 'express';
@@ -13,7 +12,7 @@ export class AgendaController {
   constructor(private readonly agendaService: AgendaService) {}
 
   @Get()
-  @ApiOperation({ summary: "Lister les événements de l'agenda' })
+  @ApiOperation({ summary: "Lister les événements de l\'agenda" })
   async getEvents(
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,
@@ -25,7 +24,7 @@ export class AgendaController {
   }
 
   @Get('export/ical')
-  @ApiOperation({ summary: "Exporter l'agenda au format iCal (.ics)" })
+  @ApiOperation({ summary: 'Exporter l\'agenda au format iCal (.ics)' })
   async exportICal(
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
@@ -34,43 +33,43 @@ export class AgendaController {
   ) {
     const ical = await this.agendaService.exportToICal({ startDate, endDate, userId });
     res.setHeader('Content-Type', 'text/calendar; charset=utf-8');
-    res.setHeader("Content-Disposition", "attachment; filename=\"lftg-agenda.ics\"");
+    res.setHeader('Content-Disposition', 'attachment; filename="lftg-agenda.ics"');
     res.send(ical);
   }
 
   @Get('reminders')
-  @ApiOperation({ summary: "Récupérer les rappels à venir" })
+  @ApiOperation({ summary: 'Récupérer les rappels à venir' })
   async getReminders(@Query('minutesAhead') minutesAhead?: string) {
     return this.agendaService.getUpcomingReminders(minutesAhead ? parseInt(minutesAhead) : 60);
   }
 
   @Get(':id')
-  @ApiOperation({ summary: "Détail d'un événement" })
+  @ApiOperation({ summary: "Détail d\'un événement" })
   async getEvent(@Param('id') id: string) {
     return this.agendaService.getEventById(id);
   }
 
   @Post()
-  @ApiOperation({ summary: "Créer un événement" })
+  @ApiOperation({ summary: 'Créer un événement' })
   async createEvent(@Body() dto: AgendaEventDto, @Request() req: any) {
     return this.agendaService.createEvent(dto, req.user.id);
   }
 
-  @Put(":id")
-  @ApiOperation({ summary: "Modifier un événement" })
+  @Put(':id')
+  @ApiOperation({ summary: 'Modifier un événement' })
   async updateEvent(@Param('id') id: string, @Body() dto: Partial<AgendaEventDto>) {
     return this.agendaService.updateEvent(id, dto);
   }
 
   @Patch(':id/complete')
-  @ApiOperation({ summary: "Marquer un événement comme complété" })
+  @ApiOperation({ summary: 'Marquer un événement comme complété' })
   async completeEvent(@Param('id') id: string, @Body('notes') notes?: string) {
     return this.agendaService.completeEvent(id, notes);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: "Supprimer un événement" })
-  async deleteEvent(@Param("id") id: string) {
+  @ApiOperation({ summary: 'Supprimer un événement' })
+  async deleteEvent(@Param('id') id: string) {
     return this.agendaService.deleteEvent(id);
   }
 }

@@ -1,8 +1,7 @@
-// @ts-nocheck
 import { ApiProperty } from '@nestjs/swagger';
 export class BiQueryDto {
   @ApiProperty({ 
-    description: "Période d'analyse", 
+    description: "Période d\'analyse", 
     enum: ['week', 'month', 'quarter', 'year'],
     default: 'month'
   })

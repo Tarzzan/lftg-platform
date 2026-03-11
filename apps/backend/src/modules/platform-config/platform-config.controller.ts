@@ -11,7 +11,7 @@ export class PlatformConfigController {
   constructor(private readonly service: PlatformConfigService) {}
 
   @Get()
-  @ApiOperation({ summary: "Récupère la configuration complète de la plateforme" })
+  @ApiOperation({ summary: 'Récupère la configuration complète de la plateforme' })
   async getAll() {
     const config = await this.service.getAll();
     // Masquer la clé API dans la réponse
@@ -23,18 +23,18 @@ export class PlatformConfigController {
   }
 
   @Patch()
-  @ApiOperation({ summary: "Met à jour la configuration de la plateforme" })
+  @ApiOperation({ summary: 'Met à jour la configuration de la plateforme' })
   async update(@Body() body: Partial<PlatformConfig>) {
     const updated = await this.service.update(body);
     return {
       ...updated,
       openaiApiKey: this.service.maskApiKey(updated.openaiApiKey),
       openaiApiKeySet: !!updated.openaiApiKey || !!process.env.OPENAI_API_KEY,
-      message: "Configuration sauvegardée avec succès",
+      message: 'Configuration sauvegardée avec succès',
     };
   }
 
-  @Get("ai")
+  @Get('ai')
   @ApiOperation({ summary: 'Récupère uniquement la configuration IA (pour le professeur IA)' })
   async getAiConfig() {
     return this.service.getAiConfig();

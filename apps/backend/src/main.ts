@@ -74,7 +74,7 @@ dans l'en-tête \`Authorization: Bearer <token>\` pour toutes les requêtes prot
         scheme: 'bearer',
         bearerFormat: 'JWT',
         name: 'JWT',
-        description: "Token JWT obtenu via /api/v1/auth/login",
+        description: 'Token JWT obtenu via /api/v1/auth/login',
         in: 'header',
       },
       'JWT-auth',
@@ -94,7 +94,7 @@ dans l'en-tête \`Authorization: Bearer <token>\` pour toutes les requêtes prot
     .addTag('Export', 'Export CSV et rapports PDF')
     .addTag('Import', 'Import CSV en masse')
     .addTag('Stats', 'Statistiques et tableaux de bord')
-    .addTag("Audit", "Journal d'audit des actions")
+    .addTag('Audit', 'Journal d\'audit des actions')
     .addServer('http://localhost:3001', 'Développement local')
     .addServer('https://api.lftg.fr', 'Production')
     .build();
@@ -122,7 +122,7 @@ dans l'en-tête \`Authorization: Bearer <token>\` pour toutes les requêtes prot
   // ─── Health check ──────────────────────────────────────────────────────────
   app.getHttpAdapter().get("/health", (_req: any, res: any) => {
     res.json({
-      status: 'ok',
+      status: "ok",
       version: "15.0.0",
       timestamp: new Date().toISOString(),
       uptime: process.uptime(),

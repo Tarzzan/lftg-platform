@@ -41,7 +41,7 @@ export class PushService {
     });
 
     if (existing) {
-      return { id: existing.id, message: "Abonnement déjà existant" };
+      return { id: existing.id, message: 'Abonnement déjà existant' };
     }
 
     const sub = await this.prisma.pushSubscription.create({
@@ -54,15 +54,15 @@ export class PushService {
       },
     });
 
-    this.logger.log(`Nouvel abonnement push pour l"utilisateur ${dto.userId}`);
-    return { id: sub.id, message: "Abonnement enregistré avec succès" };
+    this.logger.log(`Nouvel abonnement push pour l'utilisateur ${dto.userId}`);
+    return { id: sub.id, message: 'Abonnement enregistré avec succès' };
   }
 
   async unsubscribe(endpoint: string): Promise<{ message: string }> {
     await this.prisma.pushSubscription.deleteMany({
       where: { endpoint },
     });
-    return { message: "Désabonnement effectué" };
+    return { message: 'Désabonnement effectué' };
   }
 
   async getUserSubscriptions(userId: string) {

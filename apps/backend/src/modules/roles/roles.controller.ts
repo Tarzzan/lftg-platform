@@ -11,29 +11,29 @@ export class RolesController {
   constructor(private service: RolesService) {}
 
   @Get()
-  @ApiOperation({ summary: "Liste tous les rôles" })
+  @ApiOperation({ summary: 'Liste tous les rôles' })
   findAll() { return this.service.findAll(); }
 
-  @Get(":id")
+  @Get(':id')
   findOne(@Param('id') id: string) { return this.service.findById(id); }
 
   @Post()
-  @ApiOperation({ summary: "Crée un nouveau rôle" })
+  @ApiOperation({ summary: 'Crée un nouveau rôle' })
   create(@Body() body: { name: string; description?: string }) { return this.service.create(body); }
 
-  @Patch(":id")
+  @Patch(':id')
   update(@Param('id') id: string, @Body() body: { name?: string; description?: string }) {
     return this.service.update(id, body);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: "Supprime un rôle" })
+  @ApiOperation({ summary: 'Supprime un rôle' })
   remove(@Param('id') id: string) { return this.service.delete(id); }
 
   @Post(':id/permissions')
-  @ApiOperation({ summary: "Ajoute des permissions à un rôle" })
+  @ApiOperation({ summary: 'Ajoute des permissions à un rôle' })
   addPermissions(
-    @Param("id") id: string,
+    @Param('id') id: string,
     @Body() body: { permissions: { action: string; subject: string }[] },
   ) {
     return this.service.addPermissions(id, body.permissions);

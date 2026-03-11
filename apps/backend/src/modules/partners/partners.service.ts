@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as crypto from 'crypto';
@@ -55,7 +54,7 @@ export class PartnersService {
       contactName: 'Dr. Pierre Martin',
       phone: '+594 594 123 456',
       website: 'https://zoo-guyane.fr',
-      description: "Partenaire officiel pour les échanges d'animaux",
+      description: "Partenaire officiel pour les échanges d\'animaux",
       apiKey: 'lftg_pk_zoo_guyane_2026',
       secretKey: 'lftg_sk_' + crypto.randomBytes(16).toString('hex'),
       permissions: ['animals:read', 'species:read', 'cites:read'],
@@ -73,7 +72,7 @@ export class PartnersService {
       contactName: 'Dr. Sophie Dupont',
       phone: '+594 594 789 012',
       website: 'https://clinique-amazonie.fr',
-      description: "Accès aux dossiers médicaux pour consultations externes",
+      description: 'Accès aux dossiers médicaux pour consultations externes',
       apiKey: 'lftg_pk_clinique_amazonie_2026',
       secretKey: 'lftg_sk_' + crypto.randomBytes(16).toString('hex'),
       permissions: ['animals:read', 'medical:read', 'medical:write'],
@@ -90,8 +89,8 @@ export class PartnersService {
       type: 'recherche',
       contactName: 'Prof. Jean-Luc Bernard',
       website: 'https://cnrs-amazonie.fr',
-      description: "Programme de recherche sur la biodiversité guyanaise",
-      apiKey: "lftg_pk_cnrs_amazonie_2026",
+      description: 'Programme de recherche sur la biodiversité guyanaise',
+      apiKey: 'lftg_pk_cnrs_amazonie_2026',
       secretKey: 'lftg_sk_' + crypto.randomBytes(16).toString('hex'),
       permissions: ['animals:read', 'species:read', 'elevage:read', 'cites:read'],
       status: 'active',

@@ -107,7 +107,7 @@ export class MessagingService {
       'conv-1': [
         { id: 'm-1', conversationId: 'conv-1', senderId: 'user-2', senderName: 'Marie Dupont', senderAvatar: '👩‍🔬', content: 'Bonjour ! Soins du matin terminés pour la Volière A', type: 'TEXT', createdAt: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(), readBy: ['user-1', 'user-5'] },
         { id: 'm-2', conversationId: 'conv-1', senderId: 'user-5', senderName: 'Sophie Bernard', senderAvatar: '👩‍🎓', content: 'Parfait ! Je prends en charge la Volière B', type: 'TEXT', createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2.5).toISOString(), readBy: ['user-1', 'user-2'] },
-        { id: 'm-3', conversationId: 'conv-1', senderId: 'user-1', senderName: 'William MERI', senderAvatar: '👨‍💼', content: "Merci à tous. N'oubliez pas la pesée mensuelle cet après-midi à 14h", type: 'TEXT', createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), readBy: ['user-2', 'user-5'] },
+        { id: 'm-3', conversationId: 'conv-1', senderId: 'user-1', senderName: 'William MERI', senderAvatar: '👨‍💼', content: "Merci à tous. N\'oubliez pas la pesée mensuelle cet après-midi à 14h", type: 'TEXT', createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), readBy: ['user-2', 'user-5'] },
         { id: 'm-4', conversationId: 'conv-1', senderId: 'user-2', senderName: 'Marie Dupont', senderAvatar: '👩‍🔬', content: 'Le perroquet Amazona a été nourri à 8h30', type: 'TEXT', createdAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(), readBy: [] },
       ],
       'conv-2': [

@@ -5,7 +5,7 @@ import { JwtAuthGuard } from "../../common/guards/jwt-auth.guard";
 
 @ApiTags('Galerie')
 @ApiBearerAuth()
-@Controller('gallery')
+@Controller("gallery")
 @UseGuards(JwtAuthGuard)
 export class GalleryController {
   constructor(private readonly galleryService: GalleryService) {}
@@ -17,7 +17,7 @@ export class GalleryController {
 
   @Post("upload-url")
   async getUploadUrl(
-    @Body('fileName') fileName: string,
+    @Body("fileName") fileName: string,
     @Body("contentType") contentType: string,
   ) {
     const url = await this.galleryService.getPresignedUrl(fileName, contentType);

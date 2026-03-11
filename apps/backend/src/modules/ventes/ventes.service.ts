@@ -278,7 +278,7 @@ export class VentesService {
     return `<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset='UTF-8'>
+  <meta charset="UTF-8">
   <title>Facture ${sale.reference}</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -307,11 +307,11 @@ export class VentesService {
   </style>
 </head>
 <body>
-<div class='page'>
-  <div class='header'>
+<div class="page">
+  <div class="header">
     <div>
-      <div class='logo'>🦜</div>
-      <div class='company'>
+      <div class="logo">🦜</div>
+      <div class="company">
         <h1>La Ferme Tropicale de Guyane</h1>
         <p>LFTG Platform</p>
         <p>Guyane française</p>
@@ -326,13 +326,13 @@ export class VentesService {
     </div>
   </div>
 
-  <div class='parties'>
+  <div class="parties">
     <div class="party">
       <h3>Vendeur</h3>
       <p><strong>La Ferme Tropicale de Guyane</strong></p>
       <p>LFTG Platform</p>
     </div>
-    <div class='party'>
+    <div class="party">
       <h3>Acheteur</h3>
       <p><strong>${sale.buyerName}</strong></p>
       ${sale.buyerEmail ? `<p>${sale.buyerEmail}</p>` : ''}
@@ -364,7 +364,7 @@ export class VentesService {
     </tbody>
   </table>
 
-  <table class='totals'>
+  <table class="totals">
     <tr><td>Sous-total HT</td><td>${sale.subtotal.toFixed(2)} €</td></tr>
     <tr><td>TVA</td><td>${sale.taxAmount.toFixed(2)} €</td></tr>
     <tr class="total-row"><td>Total TTC</td><td>${sale.total.toFixed(2)} €</td></tr>
