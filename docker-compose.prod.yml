@@ -68,7 +68,7 @@ services:
     networks:
       - lftg-network
     healthcheck:
-      test: ["CMD-SHELL", "wget -qO- http://localhost:3001/api/v1/health || exit 1"]
+      test: ["CMD-SHELL", "curl -sf http://localhost:3001/health || exit 1"]
       interval: 15s
       timeout: 10s
       retries: 5
