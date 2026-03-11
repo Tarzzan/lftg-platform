@@ -21,11 +21,11 @@ export class ImportService {
     const lines = content.trim().split('\n').filter(l => l.trim());
     if (lines.length < 2) throw new BadRequestException('Le fichier CSV doit contenir au moins un en-tête et une ligne de données');
 
-    const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '").toLowerCase());
+    const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, '').toLowerCase());
     const rows: Array<Record<string, string>> = [];
 
     for (let i = 1; i < lines.length; i++) {
-      const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, '"));
+      const values = lines[i].split(',').map(v => v.trim().replace(/^"|"$/g, ''));
       const row: Record<string, string> = {};
       headers.forEach((h, idx) => { row[h] = values[idx] || ''; });
       rows.push(row);
