@@ -123,7 +123,7 @@ export class AlertesService {
       type: 'animal_health',
       severity: 'critical',
       title: "Animal malade — Ara Macao #AM-042",
-      message: "L'Ara Macao AM-042 présente des symptômes respiratoires. Consultation vétérinaire urgente requise.',
+      message: "L'Ara Macao AM-042 présente des symptômes respiratoires. Consultation vétérinaire urgente requise.",
       entityType: 'animal',
       entityId: 'anim-042',
       entityName: 'Ara Macao AM-042',

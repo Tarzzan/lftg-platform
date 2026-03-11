@@ -49,7 +49,7 @@ export class ReportsController {
   @ApiOperation({ summary: "Rapport RH HTML" })
   async getHRReport(@Res() res: Response) {
     const html = await this.reportsService.generateHRReport();
-    res.setHeader("Content-Type", 'text/html; charset=utf-8');
+    res.setHeader("Content-Type", 'text/html; charset=utf-8");
     res.send(html);
   }
 }

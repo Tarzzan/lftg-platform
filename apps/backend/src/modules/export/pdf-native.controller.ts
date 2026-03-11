@@ -34,7 +34,7 @@ export class PdfNativeController {
   @Get('animal/:id/medical')
   @ApiOperation({ summary: "Dossier médical d'un animal (PDF)" })
   @ApiParam({ name: 'id', description: "ID de l'animal" })
-  @ApiResponse({ status: 200, description: "Dossier médical PDF de l'animal", content: { 'application/pdf': {} } })
+  @ApiResponse({ status: 200, description: "Dossier médical PDF de l'animal', content: { 'application/pdf': {} } })
   async getAnimalMedicalRecord(@Param('id') id: string, @Res() res: Response) {
     const buffer = await this.pdfNativeService.generateAnimalMedicalRecord(id);
     const isHtml = buffer.toString('utf-8', 0, 15).includes('<!DOCTYPE');

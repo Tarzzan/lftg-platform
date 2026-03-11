@@ -70,7 +70,7 @@ export class AuthController {
   @Post('2fa/verify')
   @ApiBearerAuth()
   @ApiOperation({ summary: "Vérifier un token 2FA" })
-  async verifyTwoFactorToken(@CurrentUser("id") userId: string, @Body('token') token: string) {
+  async verifyTwoFactorToken(@CurrentUser("id") userId: string, @Body('token") token: string) {
     return this.authService.verifyTwoFactorToken(userId, token);
   }
 }

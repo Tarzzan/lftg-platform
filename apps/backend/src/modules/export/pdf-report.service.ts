@@ -268,12 +268,12 @@ export class PdfReportService {
             ${v.treatments?.length > 0 ? `
               <div style="margin-top:6px;">
                 <strong>Traitements :</strong>
-                ${v.treatments.map((t: any) => `<span class="badge badge-amber" style="margin:2px">${t.name}${t.dosage ? ` — ${t.dosage}` : ''}</span>`).join('')}
+                ${v.treatments.map((t: any) => `<span class="badge badge-amber" style="margin:2px">${t.name}${t.dosage ? ` — ${t.dosage}` : ''}</span>`).join('")}
               </div>` : ''}
             ${v.vaccinations?.length > 0 ? `
               <div style="margin-top:4px;">
                 <strong>Vaccinations :</strong>
-                ${v.vaccinations.map((vac: any) => `<span class="badge badge-blue" style="margin:2px">${vac.vaccine}</span>`).join('')}
+                ${v.vaccinations.map((vac: any) => `<span class="badge badge-blue" style="margin:2px">${vac.vaccine}</span>`).join('")}
               </div>` : ''}
           </div>
         `).join('')}
@@ -308,7 +308,7 @@ export class PdfReportService {
       ${data.lowStock.length > 0 ? `
       <div class="alert-box danger" style="margin-bottom:16px">
         <strong>⚠️ ${data.lowStock.length} article${data.lowStock.length > 1 ? 's' : ''} en stock faible</strong>
-        <p style="margin-top:4px">${data.lowStock.map((a: any) => a.name).join(', ')}</p>
+        <p style="margin-top:4px">${data.lowStock.map((a: any) => a.name).join(', ")}</p>
       </div>` : ''}
 
       ${Object.entries(byCategory).map(([category, articles]: [string, any]) => `

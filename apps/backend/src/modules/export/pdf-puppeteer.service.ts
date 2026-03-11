@@ -240,7 +240,7 @@ export class PdfPuppeteerService {
         <div class='info-card'><label>Nom scientifique</label><value><em>${animal.species?.scientificName || 'N/A'}</em></value></div>
         <div class='info-card'><label>CITES</label><value>Annexe ${animal.species?.citesAppendix || 'Non listé'}</value></div>
         <div class='info-card'><label>Sexe</label><value>${animal.sex || 'Inconnu'}</value></div>
-        <div class="info-card"><label>Date de naissance</label><value>${animal.birthDate ? new Date(animal.birthDate).toLocaleDateString('fr-FR') : 'Inconnue'}</value></div>
+        <div class="info-card"><label>Date de naissance</label><value>${animal.birthDate ? new Date(animal.birthDate).toLocaleDateString('fr-FR") : 'Inconnue'}</value></div>
         <div class='info-card'><label>Enclos</label><value>${animal.enclosure?.name || 'Non assigné'} ${animal.enclosure?.code ? `(${animal.enclosure.code})` : ''}</value></div>
       </div>
     </div>

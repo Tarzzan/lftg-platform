@@ -290,7 +290,7 @@ export class EmailService implements OnModuleInit {
         </table>
       </div>
       <p><strong>Message :</strong></p>
-      <p style="background:#f9fafb;padding:16px;border-radius:8px;border-left:4px solid #166534;">${data.message.replace(/\n/g, '<br>')}</p>
+      <p style="background:#f9fafb;padding:16px;border-radius:8px;border-left:4px solid #166534;">${data.message.replace(/\n/g, '<br>")}</p>
       <a href="mailto:${data.senderEmail}" class='btn'>Répondre à ${data.senderName}</a>
     `, `Nouveau contact — ${data.subject}`);
   }
@@ -302,7 +302,7 @@ export class EmailService implements OnModuleInit {
       <p>Notre équipe vous répondra dans les plus brefs délais à l'adresse <strong>${data.senderEmail}</strong>.</p>
       <div class="alert-box success">
         <p>Votre message :</p>
-        <p style="font-style:italic;">${data.message.replace(/\n/g, '<br>')}</p>
+        <p style="font-style:italic;">${data.message.replace(/\n/g, '<br>")}</p>
       </div>
       <p>Merci de votre intérêt pour La Ferme Tropicale de Guyane !</p>
     `, 'Votre message a bien été reçu');

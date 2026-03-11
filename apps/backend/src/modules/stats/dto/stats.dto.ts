@@ -7,7 +7,7 @@ export class StatsQueryDto {
   @IsNumber()
   days?: number;
 
-  @ApiPropertyOptional({ description: "Type de statistique", example: 'animals' })
+  @ApiPropertyOptional({ description: "Type de statistique", example: 'animals" })
   @IsOptional()
   @IsString()
   type?: string;
