@@ -1,10 +1,10 @@
 // @ts-nocheck
 import { ApiProperty } from '@nestjs/swagger';
 export class FcmTokenDto {
-  @ApiProperty({ description: "Token FCM du device", example: 'fcm_token_xxx" })
+  @ApiProperty({ description: "Token FCM du device", example: 'fcm_token_xxx' })
   token: string;
 
-  @ApiProperty({ description: "Identifiant de l'utilisateur" })
+  @ApiProperty({ description: "Identifiant de l'utilisateur' })
   userId: string;
 }
 

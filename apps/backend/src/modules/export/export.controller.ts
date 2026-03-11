@@ -43,7 +43,7 @@ export class ExportController {
   @Get('audit/csv')
   @ApiOperation({ summary: "Exporter les logs d'audit en CSV" })
   @ApiQuery({ name: 'limit', required: false, description: "Nombre maximum de lignes (défaut: 1000)" })
-  @ApiResponse({ status: 200, description: "Fichier CSV des logs d'audit', content: { 'text/csv': {} } })
+  @ApiResponse({ status: 200, description: "Fichier CSV des logs d'audit", content: { 'text/csv': {} } })
   async auditCsv(@Query('limit') limit: string, @Res() res: Response) {
     return this.exportService.exportAuditCsv(res, limit ? parseInt(limit) : 1000);
   }

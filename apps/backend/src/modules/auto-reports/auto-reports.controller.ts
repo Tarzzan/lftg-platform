@@ -32,7 +32,7 @@ export class AutoReportsController {
 
   @Post("schedules")
   @ApiOperation({ summary: "Crée un nouveau rapport automatique planifié" })
-  @ApiBody({ schema: { example: { name: "Mon rapport", frequency: 'weekly', cronExpr: '0 8 * * 1', recipients: ['admin@lftg.fr'], type: 'cites" } } })
+  @ApiBody({ schema: { example: { name: "Mon rapport", frequency: 'weekly', cronExpr: '0 8 * * 1', recipients: ['admin@lftg.fr'], type: 'cites' } } })
   @ApiResponse({ status: 201, description: "Rapport planifié créé" })
   createSchedule(@Body() body: any) { return { ...body, id: `S${Date.now()}`, status: 'active', lastRun: null, nextRun: null }; }
 

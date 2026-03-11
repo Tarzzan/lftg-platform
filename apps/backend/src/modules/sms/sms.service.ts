@@ -33,8 +33,8 @@ export class SmsService {
 
   async getAlertHistory() {
     return [
-      { id: 'sms-1', type: 'STOCK_CRITICAL', to: '+594XXXXXXXX', message: "LFTG ALERTE: Stock graines tournesol critique (2kg restants)", sentAt: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(), status: 'DELIVERED" },
-      { id: 'sms-2', type: 'MEDICAL_URGENT', to: '+594XXXXXXXX', message: "LFTG URGENT: Dendrobate en observation - Dr. Rousseau requis", sentAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(), status: 'DELIVERED" },
+      { id: 'sms-1', type: 'STOCK_CRITICAL', to: '+594XXXXXXXX', message: "LFTG ALERTE: Stock graines tournesol critique (2kg restants)", sentAt: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(), status: 'DELIVERED' },
+      { id: 'sms-2', type: 'MEDICAL_URGENT', to: '+594XXXXXXXX', message: "LFTG URGENT: Dendrobate en observation - Dr. Rousseau requis", sentAt: new Date(Date.now() - 1000 * 60 * 45).toISOString(), status: 'DELIVERED' },
       { id: 'sms-3', type: 'SECURITY', to: '+594XXXXXXXX', message: "LFTG SECURITE: Serrure Volière A défectueuse - intervention requise", sentAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(), status: "DELIVERED" },
     ];
   }

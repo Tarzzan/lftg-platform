@@ -37,7 +37,7 @@ export class DocumentQueryDto {
   @IsString()
   type?: string;
 
-  @ApiPropertyOptional({ description: "Filtrer par ID d'animal" })
+  @ApiPropertyOptional({ description: "Filtrer par ID d'animal' })
   @IsOptional()
   @IsString()
   animalId?: string;

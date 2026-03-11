@@ -13,7 +13,7 @@ export class AgendaController {
   constructor(private readonly agendaService: AgendaService) {}
 
   @Get()
-  @ApiOperation({ summary: "Lister les événements de l'agenda" })
+  @ApiOperation({ summary: "Lister les événements de l'agenda' })
   async getEvents(
     @Query('startDate') startDate?: string,
     @Query('endDate') endDate?: string,

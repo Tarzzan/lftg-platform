@@ -7,7 +7,7 @@ export class AnalyticsQueryDto {
   @IsNumber()
   days?: number;
 
-  @ApiPropertyOptional({ description: "Type de métrique", example: 'visits" })
+  @ApiPropertyOptional({ description: "Type de métrique", example: 'visits' })
   @IsOptional()
   @IsString()
   metric?: string;

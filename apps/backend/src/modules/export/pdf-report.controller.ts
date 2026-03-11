@@ -42,8 +42,8 @@ export class PdfReportController {
    */
   @Get('animal/:id/medical')
   @ApiOperation({ summary: "Dossier médical HTML d'un animal" })
-  @ApiParam({ name: 'id', description: "ID de l'animal" })
-  @ApiResponse({ status: 200, description: "Dossier médical HTML de l'animal', content: { 'text/html': {} } })
+  @ApiParam({ name: 'id', description: "ID de l'animal' })
+  @ApiResponse({ status: 200, description: "Dossier médical HTML de l'animal", content: { 'text/html': {} } })
   async getAnimalMedicalReport(
     @Param('id') id: string,
     @Res() res: Response,
