@@ -14,7 +14,7 @@ import {
   Smartphone, AlertTriangle, Info, Sparkles, Key, RefreshCw,
   Database, Server, Activity, LogOut
 } from 'lucide-react';
-import { authApi, usersApi } from '@/lib/api';
+import { authApi, usersApi, platformConfigApi } from '@/lib/api';
 import { useTheme } from '@/lib/theme/ThemeContext';
 import { useColorTheme, PRESET_THEMES, rgbStringToHex } from '@/lib/theme/ColorThemeContext';
 import type { ColorPalette } from '@/lib/theme/ColorThemeContext';
@@ -666,11 +666,28 @@ function PlateformeSection() {
 }
 
 function IASection() {
+  const queryClient = useQueryClient();
   const [llmModel, setLlmModel] = useState('gpt-4o');
   const [aiEnabled, setAiEnabled] = useState(true);
   const [aiPersonality, setAiPersonality] = useState('pedagogique');
-  const [apiKey, setApiKey] = useState('sk-••••••••••••••••••••••••••••••••');
+  const [apiKey, setApiKey] = useState('');
   const [showKey, setShowKey] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Charger la configuration IA depuis le backend
+  useEffect(() => {
+    platformConfigApi.getAiConfig()
+      .then((data) => {
+        // getAiConfig retourne { model, personality, enabled, apiKey }
+        if (data.model) setLlmModel(data.model);
+        if (data.enabled !== undefined) setAiEnabled(data.enabled);
+        if (data.personality) setAiPersonality(data.personality);
+        if (data.apiKey) setApiKey(data.apiKey);
+        setIsLoaded(true);
+      })
+      .catch(() => setIsLoaded(true));
+  }, []);
 
   const models = [
     { value: 'gpt-4o',           label: 'GPT-4o',           provider: 'OpenAI',    desc: 'Multimodal, très performant', recommended: true },
@@ -751,18 +768,42 @@ function IASection() {
 
       <FormField label="Clé API OpenAI" hint="Stockée de façon sécurisée, jamais exposée côté client">
         <div className="relative">
-          <Input value={showKey ? apiKey : 'sk-••••••••••••••••••••••••••••••••'} type="text" disabled={!showKey} />
-          <button onClick={() => setShowKey(!showKey)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+          <Input
+            value={showKey ? apiKey : (apiKey ? 'sk-' + '•'.repeat(Math.max(0, apiKey.length - 3)) : '•'.repeat(32))}
+            onChange={showKey ? (v) => setApiKey(v) : undefined}
+            type="text"
+            placeholder={showKey ? 'sk-...' : undefined}
+            disabled={!showKey}
+          />
+          <button onClick={() => setShowKey(!showKey)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600" title={showKey ? 'Masquer' : 'Modifier la clé'}>
             {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
           </button>
         </div>
       </FormField>
 
       <button
-        onClick={() => toast.success(`Configuration IA sauvegardée — Modèle : ${llmModel}`)}
-        className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:from-purple-700 hover:to-indigo-700 transition-all"
+        disabled={isSaving || !isLoaded}
+        onClick={async () => {
+          setIsSaving(true);
+          try {
+            await platformConfigApi.update({
+              llmModel,
+              aiEnabled,
+              aiPersonality,
+              ...(showKey && apiKey && !apiKey.includes('•') ? { openaiApiKey: apiKey } : {}),
+            });
+            toast.success(`Configuration IA sauvegardée — Modèle : ${llmModel}`);
+            setShowKey(false);
+          } catch (err: any) {
+            toast.error('Erreur lors de la sauvegarde : ' + (err?.response?.data?.message || err?.message || 'Erreur inconnue'));
+          } finally {
+            setIsSaving(false);
+          }
+        }}
+        className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:from-purple-700 hover:to-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
       >
-        <Save className="w-4 h-4" /> Sauvegarder la configuration IA
+        {isSaving ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+        {isSaving ? 'Sauvegarde...' : 'Sauvegarder la configuration IA'}
       </button>
     </SectionCard>
   );
