@@ -30,6 +30,36 @@
 
 ## Ce qui a été réalisé
 
+### Phase 14.4 — v14.4.0 (Correctif URL Iframe)
+
+**Contexte :** Le contenu des cours de formation (ex: "Alimentation des reptiles") s'affichait mal car l'URL source de l'iframe pointait sur une IP hardcodée (`http://51.210.15.92`), bloquée par les pare-feux d'entreprise.
+
+**Analyse de la cause racine :**
+
+Le composant React `DocumentViewer.tsx` construisait l'URL de l'iframe en se basant sur la variable d'environnement `NEXT_PUBLIC_API_URL`. Une mauvaise configuration de cette variable dans plusieurs fichiers propageait l'IP au lieu d'une URL relative.
+
+```ts
+// Dans DocumentViewer.tsx
+const apiBase = process.env.NEXT_PUBLIC_API_URL; // Ex: "http://51.210.15.92/api/v1"
+const serverBase = apiBase.replace(/\/api\/v1$/, ''); // Ex: "http://51.210.15.92"
+const url = `${serverBase}${doc.url}`; // Ex: "http://51.210.15.92/uploads/cours.html"
+```
+
+**Corrections apportées :**
+
+| Fichier Corrigé | Avant | Après |
+|---|---|---|
+| `apps/frontend/.env.production` | `NEXT_PUBLIC_API_URL=http://51.210.15.92/api/v1` | `NEXT_PUBLIC_API_URL=/api/v1` |
+| `docker-compose.yml` | `NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://51.210.15.92/api/v1}` | `NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-/api/v1}` |
+| `docker-compose.prebuilt.yml` | `NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://51.210.15.92/api/v1}` | `NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-/api/v1}` |
+| `nginx/prod.conf` | `server_name 51.210.15.92 lftg.info;` | `server_name ... lftg.netetfix.fr;` |
+
+**Résultat :**
+
+Avec `NEXT_PUBLIC_API_URL=/api/v1`, `serverBase` devient une chaîne vide (`""`) et l'URL de l'iframe est désormais une URL relative (ex: `/uploads/cours.html`). Cette approche garantit que les cours s'affichent correctement, quel que soit le domaine ou l'IP utilisé pour accéder à la plateforme.
+
+---
+
 ### Phase 14 — v14.0.0 (Notifications, Analytics & Gouvernance)
 
 **Modules NestJS créés** :
@@ -208,4 +238,4 @@ curl -s -X POST "https://api.github.com/repos/Tarzzan/lftg-platform/releases" \
 
 ---
 
-*Signé : William MERI — LFTG Platform v14.0.0 — Mars 2026*
+*Signé : William MERI — LFTG Platform v14.4.0 — Mars 2026*
