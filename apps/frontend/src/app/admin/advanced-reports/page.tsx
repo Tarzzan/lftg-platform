@@ -56,7 +56,7 @@ export default function AdvancedReportsPage() {
         {/* Rapport CITES */}
         <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-3xl">🌿</span>
+            <span className="text-3xl"></span>
             <div>
               <h2 className="text-white font-semibold">Rapport CITES</h2>
               <p className="text-slate-400 text-sm">Inventaire des espèces protégées et permis</p>
@@ -76,15 +76,14 @@ export default function AdvancedReportsPage() {
           <button
             onClick={downloadCitesReport}
             disabled={downloadingCites}
-            className="w-full bg-green-700 hover:bg-green-600 text-white px-4 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-          >
+            className="w-full bg-green-700 hover:bg-green-600 text-white px-4 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
             {downloadingCites ? (
               <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"/>
                 Génération en cours...
               </>
             ) : (
-              <>📥 Télécharger le rapport CITES (PDF)</>
+              <> Télécharger le rapport CITES (PDF)</>
             )}
           </button>
         </div>
@@ -92,7 +91,7 @@ export default function AdvancedReportsPage() {
         {/* Rapport annuel */}
         <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
           <div className="flex items-center gap-3 mb-4">
-            <span className="text-3xl">📊</span>
+            <span className="text-3xl"></span>
             <div>
               <h2 className="text-white font-semibold">Rapport Annuel</h2>
               <p className="text-slate-400 text-sm">Bilan complet de l'exercice</p>
@@ -113,8 +112,7 @@ export default function AdvancedReportsPage() {
               <select
                 value={selectedYear}
                 onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                className="w-full bg-slate-700 text-white rounded-lg px-4 py-2 border border-slate-600 focus:outline-none focus:border-indigo-500"
-              >
+                className="w-full bg-slate-700 text-white rounded-lg px-4 py-2 border border-slate-600 focus:outline-none focus:border-indigo-500">
                 {years.map((y) => (
                   <option key={y} value={y}>{y}</option>
                 ))}
@@ -124,15 +122,14 @@ export default function AdvancedReportsPage() {
           <button
             onClick={downloadAnnualReport}
             disabled={downloadingAnnual}
-            className="w-full bg-indigo-700 hover:bg-indigo-600 text-white px-4 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-          >
+            className="w-full bg-indigo-700 hover:bg-indigo-600 text-white px-4 py-3 rounded-lg font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
             {downloadingAnnual ? (
               <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"/>
                 Génération en cours...
               </>
             ) : (
-              <>📥 Télécharger le rapport {selectedYear} (PDF)</>
+              <> Télécharger le rapport {selectedYear} (PDF)</>
             )}
           </button>
         </div>

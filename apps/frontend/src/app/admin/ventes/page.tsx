@@ -26,10 +26,10 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const TYPE_ICONS: Record<string, string> = {
-  ANIMAL: '🦜',
-  PRODUCT: '📦',
-  SERVICE: '🔧',
-  FORMATION: '🎓',
+  ANIMAL: '/icons/section-animaux.png',
+  PRODUCT: '/icons/section-stock.png',
+  SERVICE: '',
+  FORMATION: '/icons/section-formation.png',
 };
 
 interface SaleForm {
@@ -140,9 +140,9 @@ export default function VentesPage() {
       {stats && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { label: 'CA total', value: `${(stats.totalRevenue || 0).toFixed(0)} €`, icon: '💰', color: 'green' },
-            { label: 'CA ce mois', value: `${(stats.monthRevenue || 0).toFixed(0)} €`, icon: '📅', color: 'blue' },
-            { label: 'Ventes complétées', value: stats.completedCount || 0, icon: '✅', color: 'green' },
+            { label: 'CA total', value: `${(stats.totalRevenue || 0).toFixed(0)} €`, icon: '/icons/section-finance.png', color: 'green' },
+            { label: 'CA ce mois', value: `${(stats.monthRevenue || 0).toFixed(0)} €`, icon: '', color: 'blue' },
+            { label: 'Ventes complétées', value: stats.completedCount || 0, icon: '', color: 'green' },
             { label: 'En attente', value: stats.pendingCount || 0, icon: '⏳', color: 'amber' },
           ].map(kpi => (
             <div key={kpi.label} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-4 text-center">
@@ -200,7 +200,7 @@ export default function VentesPage() {
         >
           <option value="">Tous les types</option>
           {Object.entries(TYPE_ICONS).map(([k, v]) => (
-            <option key={k} value={k}>{v} {k}</option>
+            <option key={k} value={k}>{k}</option>
           ))}
         </select>
         <button
@@ -210,7 +210,7 @@ export default function VentesPage() {
           })}
           className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-600 dark:text-gray-400 dark:text-gray-400 hover:bg-gray-50 dark:bg-muted/20 dark:hover:bg-gray-700 transition-colors"
         >
-          📄 Export PDF
+          Export PDF
         </button>
       </div>
 
@@ -221,7 +221,7 @@ export default function VentesPage() {
         </div>
       ) : salesList.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
-          <p className="text-4xl mb-3">💰</p>
+          <img src="/icons/section-finance.png" alt="" className="w-10 h-10 object-cover rounded-xl mx-auto mb-3" />
           <p>Aucune vente trouvée</p>
         </div>
       ) : (
@@ -254,7 +254,7 @@ export default function VentesPage() {
                     </div>
                   </td>
                   <td className="px-4 py-3">
-                    <span className="text-sm">{TYPE_ICONS[sale.type] || '📋'} {sale.type}</span>
+                    <span className="text-sm">{sale.type}</span>
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-500">
                     {new Date(sale.createdAt).toLocaleDateString('fr-FR')}
@@ -305,7 +305,7 @@ export default function VentesPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-border dark:border-gray-700 sticky top-0 bg-white dark:bg-gray-800">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-foreground dark:text-white">💰 Nouvelle vente</h2>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-foreground dark:text-white">Nouvelle vente</h2>
               <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 text-xl">×</button>
             </div>
             <div className="p-6 space-y-5">
@@ -358,7 +358,7 @@ export default function VentesPage() {
                     className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"
                   >
                     {Object.entries(TYPE_ICONS).map(([k, v]) => (
-                      <option key={k} value={k}>{v} {k}</option>
+                      <option key={k} value={k}>{k}</option>
                     ))}
                   </select>
                 </div>

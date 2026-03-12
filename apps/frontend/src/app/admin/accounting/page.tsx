@@ -50,20 +50,18 @@ export default function AccountingPage() {
         </div>
         <div className="flex items-center gap-3">
           <input
-            type="month"
-            value={exportPeriod}
+            type="month"value={exportPeriod}
             onChange={e => setExportPeriod(e.target.value)}
-            className="px-3 py-2 text-sm border border-wood-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-forest-500"
-          />
+            className="px-3 py-2 text-sm border border-wood-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-forest-500"/>
           <button onClick={handleExportFEC} className="btn-primary text-sm px-4 py-2">
-            📥 Exporter FEC
+             Exporter FEC
           </button>
         </div>
       </div>
 
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-forest-600" />
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-forest-600"/>
           <span className="ml-3 text-wood-500">Chargement des données comptables...</span>
         </div>
       ) : (
@@ -71,10 +69,10 @@ export default function AccountingPage() {
           {/* KPIs */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { label: 'Chiffre d\'affaires', value: `${totalRevenue.toLocaleString('fr-FR')} €`, icon: '💰', color: 'text-green-700', bg: 'bg-green-50' },
-              { label: 'Charges totales', value: `${totalExpenses.toLocaleString('fr-FR')} €`, icon: '📉', color: 'text-red-700', bg: 'bg-red-50' },
-              { label: 'Résultat brut', value: `${grossProfit.toLocaleString('fr-FR')} €`, icon: '📊', color: 'text-forest-700', bg: 'bg-forest-50' },
-              { label: 'Marge brute', value: `${profitMargin} %`, icon: '📈', color: 'text-amber-700', bg: 'bg-amber-50' },
+              { label:'Chiffre d\'affaires', value: `${totalRevenue.toLocaleString('fr-FR')} €`, icon: '', color: 'text-green-700', bg: 'bg-green-50' },
+              { label: 'Charges totales', value: `${totalExpenses.toLocaleString('fr-FR')} €`, icon: '', color: 'text-red-700', bg: 'bg-red-50' },
+              { label: 'Résultat brut', value: `${grossProfit.toLocaleString('fr-FR')} €`, icon: '', color: 'text-forest-700', bg: 'bg-forest-50' },
+              { label: 'Marge brute', value: `${profitMargin} %`, icon: '', color: 'text-amber-700', bg: 'bg-amber-50' },
             ].map((kpi, i) => (
               <div key={i} className={`${kpi.bg} rounded-xl p-4`}>
                 <div className="flex items-center gap-2 mb-1">
@@ -89,10 +87,10 @@ export default function AccountingPage() {
           {/* Tabs */}
           <div className="flex gap-1 bg-wood-100 rounded-xl p-1 w-fit">
             {[
-              { id: 'summary', label: '📊 Résumé' },
-              { id: 'monthly', label: '📅 Mensuel' },
-              { id: 'categories', label: '🏷️ Catégories' },
-              { id: 'export', label: '📥 Export FEC' },
+              { id: 'summary', label: 'Résumé' },
+              { id: 'monthly', label: 'Mensuel' },
+              { id: 'categories', label: '️ Catégories' },
+              { id: 'export', label: 'Export FEC' },
             ].map(tab => (
               <button
                 key={tab.id}
@@ -118,8 +116,8 @@ export default function AccountingPage() {
                 </div>
                 <div className="flex items-center justify-between py-3 border-b border-wood-100">
                   <span className="text-wood-600 font-semibold">Résultat brut</span>
-                  <span className={`font-bold text-lg ${grossProfit >= 0 ? 'text-forest-700' : 'text-red-700'}`}>
-                    {grossProfit >= 0 ? '+' : ''}{grossProfit.toLocaleString('fr-FR')} €
+                  <span className={`font-bold text-lg ${grossProfit >= 0 ?'text-forest-700':'text-red-700'}`}>
+                    {grossProfit >= 0 ?'+':''}{grossProfit.toLocaleString('fr-FR')} €
                   </span>
                 </div>
                 <div className="flex items-center justify-between py-3">
@@ -130,7 +128,7 @@ export default function AccountingPage() {
             </div>
           )}
 
-          {activeTab === 'monthly' && (
+          {activeTab ==='monthly'&& (
             <div className="card p-6">
               <h2 className="font-semibold text-wood-800 mb-4">Évolution mensuelle {exportYear}</h2>
               <div className="overflow-x-auto">
@@ -149,7 +147,7 @@ export default function AccountingPage() {
                       return (
                         <tr key={m.month} className="border-b border-wood-100 hover:bg-wood-50">
                           <td className="py-2 px-3 text-wood-700">
-                            {new Date(exportYear, m.month - 1, 1).toLocaleDateString('fr-FR', { month: 'long' })}
+                            {new Date(exportYear, m.month - 1, 1).toLocaleDateString('fr-FR', { month:'long'})}
                           </td>
                           <td className="py-2 px-3 text-right font-semibold text-green-700">
                             {m.revenue.toLocaleString('fr-FR')}
@@ -157,8 +155,8 @@ export default function AccountingPage() {
                           <td className="py-2 px-3 text-right font-semibold text-red-600">
                             {m.expenses.toLocaleString('fr-FR')}
                           </td>
-                          <td className={`py-2 px-3 text-right font-bold ${result >= 0 ? 'text-forest-700' : 'text-red-700'}`}>
-                            {result >= 0 ? '+' : ''}{result.toLocaleString('fr-FR')}
+                          <td className={`py-2 px-3 text-right font-bold ${result >= 0 ?'text-forest-700':'text-red-700'}`}>
+                            {result >= 0 ?'+':''}{result.toLocaleString('fr-FR')}
                           </td>
                         </tr>
                       );
@@ -169,7 +167,7 @@ export default function AccountingPage() {
             </div>
           )}
 
-          {activeTab === 'categories' && (
+          {activeTab ==='categories'&& (
             <div className="card p-6">
               <h2 className="font-semibold text-wood-800 mb-4">Répartition par catégorie {exportYear}</h2>
               <div className="space-y-4">
@@ -181,8 +179,7 @@ export default function AccountingPage() {
                     </div>
                     <div className="h-2 bg-wood-100 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-forest-500 rounded-full transition-all duration-500"
-                        style={{ width: `${cat.percentage}%` }}
+                        className="h-full bg-forest-500 rounded-full transition-all duration-500"style={{ width: `${cat.percentage}%` }}
                       />
                     </div>
                   </div>
@@ -191,7 +188,7 @@ export default function AccountingPage() {
             </div>
           )}
 
-          {activeTab === 'export' && (
+          {activeTab ==='export'&& (
             <div className="card p-6 space-y-6">
               <div>
                 <h2 className="font-semibold text-wood-800 mb-2">Export FEC — Fichier des Écritures Comptables</h2>
@@ -220,14 +217,12 @@ export default function AccountingPage() {
                 <button
                   onClick={handleExportFEC}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-forest-600 text-white rounded-xl hover:bg-forest-700 font-semibold"
-                >
-                  📥 Télécharger FEC (.txt)
-                </button>
+                >Télécharger FEC (.txt)</button>
               </div>
 
               <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
                 <p className="text-sm text-amber-800">
-                  <strong>⚠️ Rappel légal :</strong> Le FEC doit être conservé pendant 6 ans et présenté à l'administration fiscale en cas de contrôle. Assurez-vous que les données sont complètes avant l'export.
+                  <strong>️ Rappel légal :</strong> Le FEC doit être conservé pendant 6 ans et présenté à l'administration fiscale en cas de contrôle. Assurez-vous que les données sont complètes avant l'export.
                 </p>
               </div>
             </div>

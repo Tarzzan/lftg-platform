@@ -13,7 +13,7 @@ import { formationApi } from '@/lib/api';
 function CapiMascot({ mood = 'happy', size = 80 }: { mood?: 'happy' | 'excited' | 'thinking'; size?: number }) {
   const expressions = {
     happy: { eyes: '◉ ◉', mouth: '‿', color: '#c17f3a', anim: 'animate-bounce' },
-    excited: { eyes: '★ ★', mouth: '▽', color: '#e8a84e', anim: 'animate-pulse' },
+    excited: { eyes: '', mouth: '▽', color: '#e8a84e', anim: 'animate-pulse' },
     thinking: { eyes: '◑ ◐', mouth: '~', color: '#2d7d7d', anim: '' },
   };
   const expr = expressions[mood];
@@ -105,7 +105,7 @@ function CourseProgressCard({ enrollment }: { enrollment: any }) {
         <div
           className="absolute inset-0 opacity-10"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M20 0 L40 20 L20 40 L0 20 Z'/%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='40'height='40'viewBox='0 0 40 40'xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff'fill-opacity='1'%3E%3Cpath d='M20 0 L40 20 L20 40 L0 20 Z'/%3E%3C/g%3E%3C/svg%3E")`,
           }}
         />
         {/* Barre de progression en haut */}
@@ -118,7 +118,7 @@ function CourseProgressCard({ enrollment }: { enrollment: any }) {
         {/* Badge statut */}
         <div className="absolute top-3 right-3">
           <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${colors.badge}`}>
-            {isCompleted ? '✓ Terminé' : isInProgress ? `${progress}%` : 'Nouveau'}
+            {isCompleted ? 'Terminé' : isInProgress ? `${progress}%` : 'Nouveau'}
           </span>
         </div>
         {/* Icône */}
@@ -249,7 +249,7 @@ export default function MonParcoursPage() {
         <div
           className="absolute inset-0 opacity-5"
           style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60'height='60'viewBox='0 0 60 60'xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'fill-rule='evenodd'%3E%3Cg fill='%23ffffff'fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }}
         />
 
@@ -267,13 +267,11 @@ export default function MonParcoursPage() {
             >
               Mon Parcours de Formation
             </h1>
-            <p className="text-white/70 text-sm mb-4">
-              {completed > 0
-                ? `Bravo ! Tu as terminé ${completed} formation${completed > 1 ? 's' : ''}. Continue comme ça ! 🎉`
+            <p className="text-white/70 text-sm mb-4">{completed > 0
+                ? `Bravo ! Tu as terminé ${completed} formation${completed > 1 ? 's' : ''}. Continue comme ça ! `
                 : inProgress > 0
-                ? `Tu as ${inProgress} formation${inProgress > 1 ? 's' : ''} en cours. Capi t'encourage ! 💪`
-                : 'Commence ta première formation et débloque des badges exclusifs ! 🌿'}
-            </p>
+                ? `Tu as ${inProgress} formation${inProgress > 1 ? 's' : ''} en cours. Capi t'encourage ! `
+                :'Commence ta première formation et débloque des badges exclusifs !'}</p>
 
             {/* Barre de progression globale */}
             {enrollments.length > 0 && (
@@ -284,10 +282,9 @@ export default function MonParcoursPage() {
                 </div>
                 <div className="h-2 bg-white/20 rounded-full overflow-hidden">
                   <div
-                    className="h-full rounded-full transition-all duration-1000"
-                    style={{
+                    className="h-full rounded-full transition-all duration-1000"style={{
                       width: `${Math.round((completed / enrollments.length) * 100)}%`,
-                      background: 'linear-gradient(90deg, #c17f3a, #e8a84e)',
+                      background:'linear-gradient(90deg, #c17f3a, #e8a84e)',
                     }}
                   />
                 </div>
@@ -298,16 +295,16 @@ export default function MonParcoursPage() {
           {/* Stats rapides */}
           <div className="hidden lg:flex flex-col gap-2 flex-shrink-0">
             <div className="flex items-center gap-2 text-white/80 text-xs">
-              <CheckCircle className="w-4 h-4 text-emerald-400" />
-              <span><strong className="text-white">{completed}</strong> terminée{completed > 1 ? 's' : ''}</span>
+              <CheckCircle className="w-4 h-4 text-emerald-400"/>
+              <span><strong className="text-white">{completed}</strong> terminée{completed > 1 ?'s':''}</span>
             </div>
             <div className="flex items-center gap-2 text-white/80 text-xs">
-              <Flame className="w-4 h-4 text-amber-400" />
+              <Flame className="w-4 h-4 text-amber-400"/>
               <span><strong className="text-white">{inProgress}</strong> en cours</span>
             </div>
             <div className="flex items-center gap-2 text-white/80 text-xs">
-              <Award className="w-4 h-4 text-[#e8a84e]" />
-              <span><strong className="text-white">{badges.length}</strong> badge{badges.length > 1 ? 's' : ''}</span>
+              <Award className="w-4 h-4 text-[#e8a84e]"/>
+              <span><strong className="text-white">{badges.length}</strong> badge{badges.length > 1 ?'s':''}</span>
             </div>
           </div>
         </div>
@@ -315,35 +312,34 @@ export default function MonParcoursPage() {
 
       {/* ─── Stats bulles ─── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-        <StatBubble icon={BookOpen} value={enrollments.length} label="Formations inscrites" color="#1a4731" />
-        <StatBubble icon={CheckCircle} value={completed} label="Terminées" color="#059669" />
-        <StatBubble icon={Flame} value={inProgress} label="En cours" color="#c17f3a" />
-        <StatBubble icon={Clock} value={`${totalHours}h`} label="Heures de formation" color="#2d7d7d" />
+        <StatBubble icon={BookOpen} value={enrollments.length} label="Formations inscrites"color="#1a4731"/>
+        <StatBubble icon={CheckCircle} value={completed} label="Terminées"color="#059669"/>
+        <StatBubble icon={Flame} value={inProgress} label="En cours"color="#c17f3a"/>
+        <StatBubble icon={Clock} value={`${totalHours}h`} label="Heures de formation"color="#2d7d7d"/>
       </div>
 
       {/* ─── Filtres ─── */}
       <div className="flex gap-2 mb-5 overflow-x-auto pb-1">
         {[
-          { key: 'all', label: `Tout (${enrollments.length})`, icon: GraduationCap },
-          { key: 'in_progress', label: `En cours (${inProgress})`, icon: Flame },
-          { key: 'completed', label: `Terminées (${completed})`, icon: Trophy },
-          { key: 'not_started', label: `À commencer (${notStarted})`, icon: Leaf },
+          { key:'all', label: `Tout (${enrollments.length})`, icon: GraduationCap },
+          { key:'in_progress', label: `En cours (${inProgress})`, icon: Flame },
+          { key:'completed', label: `Terminées (${completed})`, icon: Trophy },
+          { key:'not_started', label: `À commencer (${notStarted})`, icon: Leaf },
         ].map(({ key, label, icon: Icon }) => (
           <button
             key={key}
             onClick={() => setFilter(key as any)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all hover:scale-[1.02]"
-            style={filter === key ? {
-              background: 'linear-gradient(135deg, #1a4731, #2d7d7d)',
-              color: 'white',
-              boxShadow: '0 2px 8px rgba(26,71,49,0.3)',
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-all hover:scale-[1.02]"style={filter === key ? {
+              background:'linear-gradient(135deg, #1a4731, #2d7d7d)',
+              color:'white',
+              boxShadow:'0 2px 8px rgba(26,71,49,0.3)',
             } : {
-              background: 'white',
-              color: '#1a4731',
-              border: '1px solid rgba(26,71,49,0.15)',
+              background:'white',
+              color:'#1a4731',
+              border:'1px solid rgba(26,71,49,0.15)',
             }}
           >
-            <Icon className="w-3.5 h-3.5" />
+            <Icon className="w-3.5 h-3.5"/>
             {label}
           </button>
         ))}
@@ -354,22 +350,21 @@ export default function MonParcoursPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {[...Array(6)].map((_, i) => (
             <div key={i} className="rounded-2xl overflow-hidden animate-pulse">
-              <div className="h-28 bg-gray-200" />
+              <div className="h-28 bg-gray-200"/>
               <div className="p-4 bg-white dark:bg-gray-800 space-y-2">
-                <div className="h-4 bg-gray-200 rounded w-3/4" />
-                <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded w-1/2" />
-                <div className="h-2 bg-gray-100 dark:bg-gray-800 rounded-full" />
+                <div className="h-4 bg-gray-200 rounded w-3/4"/>
+                <div className="h-3 bg-gray-100 dark:bg-gray-800 rounded w-1/2"/>
+                <div className="h-2 bg-gray-100 dark:bg-gray-800 rounded-full"/>
               </div>
             </div>
           ))}
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
-          <CapiMascot mood="thinking" size={100} />
+          <CapiMascot mood="thinking"size={100} />
           <h3 className="mt-4 text-lg font-bold text-gray-700">Aucune formation ici</h3>
           <p className="text-sm text-gray-400 mt-1">
-            {filter === 'all'
-              ? "Tu n'es inscrit à aucune formation pour l'instant."
+            {filter ==='all'?"Tu n'es inscrit à aucune formation pour l'instant."
               : `Aucune formation dans cette catégorie.`}
           </p>
         </div>

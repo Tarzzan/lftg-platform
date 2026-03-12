@@ -31,26 +31,26 @@ interface MeteoForecast {
 }
 
 const weatherIcons: Record<string, string> = {
-  clear: '☀️',
-  sunny: '☀️',
-  cloudy: '☁️',
-  overcast: '🌥️',
-  rain: '🌧️',
-  drizzle: '🌦️',
-  storm: '⛈️',
-  snow: '❄️',
-  fog: '🌫️',
-  wind: '💨',
+  clear: '️',
+  sunny: '️',
+  cloudy: '️',
+  overcast: '️',
+  rain: '️',
+  drizzle: '️',
+  storm: '️',
+  snow: '️',
+  fog: '️',
+  wind: '',
 };
 
 const getWeatherIcon = (desc?: string, icon?: string): string => {
   if (icon) return icon;
-  if (!desc) return '🌤️';
+  if (!desc) return '️';
   const lower = desc.toLowerCase();
   for (const [key, emoji] of Object.entries(weatherIcons)) {
     if (lower.includes(key)) return emoji;
   }
-  return '🌤️';
+  return '️';
 };
 
 export default function MeteoPage() {
@@ -138,35 +138,35 @@ export default function MeteoPage() {
           {/* Recommandations pour les animaux */}
           {current && (
             <div className="bg-slate-800 rounded-xl p-4 border border-slate-700">
-              <h2 className="text-white font-semibold mb-3">🦜 Recommandations pour les animaux</h2>
+              <h2 className="text-white font-semibold mb-3">Recommandations pour les animaux</h2>
               <div className="space-y-2">
                 {(current.temperature || 0) > 30 && (
                   <div className="flex items-center gap-2 text-red-400">
-                    <span>🌡️</span>
+                    <span>️</span>
                     <span className="text-sm">Chaleur excessive — Vérifier l'hydratation et l'ombrage des enclos</span>
                   </div>
                 )}
                 {(current.temperature || 0) < 5 && (
                   <div className="flex items-center gap-2 text-blue-400">
-                    <span>❄️</span>
+                    <span>️</span>
                     <span className="text-sm">Froid — Vérifier le chauffage des enclos tropicaux</span>
                   </div>
                 )}
                 {(current.humidity || 0) > 85 && (
                   <div className="flex items-center gap-2 text-yellow-400">
-                    <span>💧</span>
+                    <span></span>
                     <span className="text-sm">Humidité élevée — Surveiller les reptiles et amphibiens</span>
                   </div>
                 )}
                 {(current.windSpeed || 0) > 50 && (
                   <div className="flex items-center gap-2 text-orange-400">
-                    <span>💨</span>
+                    <span></span>
                     <span className="text-sm">Vent fort — Sécuriser les volières extérieures</span>
                   </div>
                 )}
                 {(current.temperature || 20) >= 15 && (current.temperature || 20) <= 25 && (current.humidity || 50) < 70 && (
                   <div className="flex items-center gap-2 text-green-400">
-                    <span>✅</span>
+                    <span></span>
                     <span className="text-sm">Conditions idéales pour les activités extérieures</span>
                   </div>
                 )}
@@ -177,7 +177,7 @@ export default function MeteoPage() {
           {/* Prévisions 7 jours */}
           {forecast?.days && forecast.days.length > 0 && (
             <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
-              <h2 className="text-white font-semibold mb-4">📅 Prévisions 7 jours</h2>
+              <h2 className="text-white font-semibold mb-4">Prévisions 7 jours</h2>
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
                 {forecast.days.map((day) => (
                   <div key={day.date} className="bg-slate-700 rounded-lg p-3 text-center">
@@ -188,7 +188,7 @@ export default function MeteoPage() {
                     <p className="text-white font-semibold text-sm">{day.tempMax !== undefined ? `${day.tempMax}°` : '—'}</p>
                     <p className="text-slate-400 text-xs">{day.tempMin !== undefined ? `${day.tempMin}°` : '—'}</p>
                     {day.precipitation !== undefined && day.precipitation > 0 && (
-                      <p className="text-blue-400 text-xs mt-1">💧 {day.precipitation}mm</p>
+                      <p className="text-blue-400 text-xs mt-1">{day.precipitation}mm</p>
                     )}
                   </div>
                 ))}

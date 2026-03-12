@@ -22,12 +22,12 @@ interface AgendaEvent {
 }
 
 const TYPE_CONFIG = {
-  MEDICAL:    { emoji: '🩺', color: 'bg-red-100 text-red-700 border-red-200',       label: 'Médical' },
-  FEEDING:    { emoji: '🌿', color: 'bg-green-100 text-green-700 border-green-200', label: 'Alimentation' },
-  CLEANING:   { emoji: '🧹', color: 'bg-blue-100 text-blue-700 border-blue-200',    label: 'Nettoyage' },
-  TRAINING:   { emoji: '📚', color: 'bg-purple-100 text-purple-700 border-purple-200', label: 'Formation' },
-  INSPECTION: { emoji: '🔍', color: 'bg-orange-100 text-orange-700 border-orange-200', label: 'Inspection' },
-  OTHER:      { emoji: '📌', color: 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-border',    label: 'Autre' },
+  MEDICAL:    { icon: '/icons/section-medical.png', color: 'bg-red-100 text-red-700 border-red-200',       label: 'Médical' },
+  FEEDING:    { icon: '/icons/section-animaux.png', color: 'bg-green-100 text-green-700 border-green-200', label: 'Alimentation' },
+  CLEANING:   { icon: '/icons/section-admin.png', color: 'bg-blue-100 text-blue-700 border-blue-200',    label: 'Nettoyage' },
+  TRAINING:   { icon: '/icons/section-formation.png', color: 'bg-purple-100 text-purple-700 border-purple-200', label: 'Formation' },
+  INSPECTION: { icon: '/icons/section-documents.png', color: 'bg-orange-100 text-orange-700 border-orange-200', label: 'Inspection' },
+  OTHER:      { icon: '/icons/section-admin.png', color: 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-border',    label: 'Autre' },
 };
 
 const PRIORITY_CONFIG = {
@@ -136,7 +136,7 @@ export default function AgendaPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">📅 Agenda des soins</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Agenda des soins</h1>
           <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Planning des soins, visites et événements</p>
         </div>
         <div className="flex gap-2">
@@ -144,7 +144,7 @@ export default function AgendaPage() {
             href={`/api/v1/agenda/export/ical?startDate=${monthStart}&endDate=${monthEnd}`}
             className="px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 dark:bg-muted/20 transition-colors flex items-center gap-2"
           >
-            <span>📥</span> Export iCal
+            <span></span> Export iCal
           </a>
           <button
             onClick={() => setShowModal(true)}
@@ -183,7 +183,7 @@ export default function AgendaPage() {
                 onClick={() => setFilterType(type)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${filterType === type ? config.color + ' border-current' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-border hover:bg-gray-50'}`}
               >
-                {config.emoji} {config.label} {count > 0 && `(${count})`}
+                {config.icon ? <img src={config.icon} alt="" className="w-3.5 h-3.5 object-cover rounded inline-block mr-1" /> : null}{config.label} {count > 0 && `(${count})`}
               </button>
             );
           })}
@@ -246,7 +246,7 @@ export default function AgendaPage() {
                               key={event.id}
                               className={`text-xs px-1.5 py-0.5 rounded truncate border ${TYPE_CONFIG[event.type]?.color || 'bg-gray-100 dark:bg-gray-800 text-gray-700'}`}
                             >
-                              {TYPE_CONFIG[event.type]?.emoji} {event.title.substring(0, 15)}
+                              {event.title.substring(0, 15)}
                             </div>
                           ))}
                           {dayEvents.length > 2 && (
@@ -272,7 +272,7 @@ export default function AgendaPage() {
             <div className="p-4 space-y-3 max-h-[500px] overflow-y-auto">
               {selectedDayEvents.length === 0 ? (
                 <div className="text-center py-8 text-gray-400">
-                  <div className="text-3xl mb-2">📅</div>
+                  <img src="/icons/section-animaux.png" alt="" className="w-8 h-8 object-cover rounded-xl mx-auto mb-2" />
                   <p className="text-sm">Aucun événement ce jour</p>
                   <button onClick={() => setShowModal(true)} className="mt-3 text-xs text-forest-600 hover:text-forest-700 font-medium">
                     + Ajouter un événement
@@ -283,11 +283,11 @@ export default function AgendaPage() {
                   <div key={event.id} className={`p-3 rounded-xl border ${TYPE_CONFIG[event.type]?.color || 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-border'}`}>
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="text-lg">{TYPE_CONFIG[event.type]?.emoji}</span>
+                        <span className="text-lg">{TYPE_CONFIG[event.type]?.icon ? <img src={TYPE_CONFIG[event.type]!.icon} alt="" className="w-5 h-5 object-cover rounded" /> : null}</span>
                         <div>
                           <div className="font-medium text-sm">{event.title}</div>
                           <div className="text-xs opacity-70">
-                            🕐 {new Date(event.startDate).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                            {new Date(event.startDate).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                           </div>
                         </div>
                       </div>
@@ -296,11 +296,11 @@ export default function AgendaPage() {
                       </span>
                     </div>
                     <div className="mt-2 space-y-0.5 text-xs opacity-80">
-                      {event.animal && <div>🦜 {event.animal.name}</div>}
-                      {event.enclosure && <div>🏠 {event.enclosure.name} ({event.enclosure.code})</div>}
-                      {event.assignedTo && <div>👤 {event.assignedTo.firstName} {event.assignedTo.lastName}</div>}
+                      {event.animal && <div>{event.animal.name}</div>}
+                      {event.enclosure && <div>{event.enclosure.name} ({event.enclosure.code})</div>}
+                      {event.assignedTo && <div>{event.assignedTo.firstName} {event.assignedTo.lastName}</div>}
                       {event.recurrence && event.recurrence !== 'NONE' && (
-                        <div>🔄 {event.recurrence === 'DAILY' ? 'Quotidien' : event.recurrence === 'WEEKLY' ? 'Hebdomadaire' : 'Mensuel'}</div>
+                        <div>{event.recurrence === 'DAILY' ? 'Quotidien' : event.recurrence === 'WEEKLY' ? 'Hebdomadaire' : 'Mensuel'}</div>
                       )}
                     </div>
                     <div className="mt-2 flex gap-2">
@@ -338,7 +338,7 @@ export default function AgendaPage() {
           </div>
           {events.length === 0 ? (
             <div className="text-center py-12 text-gray-400">
-              <div className="text-4xl mb-3">📅</div>
+              <img src="/icons/section-animaux.png" alt="" className="w-10 h-10 object-cover rounded-xl mx-auto mb-3" />
               <p>Aucun événement ce mois-ci</p>
             </div>
           ) : (
@@ -346,7 +346,7 @@ export default function AgendaPage() {
               {[...events].sort((a, b) => a.startDate.localeCompare(b.startDate)).map(event => (
                 <div key={event.id} className="flex items-center gap-4 p-4 hover:bg-gray-50 dark:bg-muted/20 transition-colors">
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg border ${TYPE_CONFIG[event.type]?.color || 'bg-gray-100 dark:bg-gray-800 border-gray-200 dark:border-border'}`}>
-                    {TYPE_CONFIG[event.type]?.emoji}
+                    {TYPE_CONFIG[event.type]?.icon ? <img src={TYPE_CONFIG[event.type]!.icon} alt="" className="w-5 h-5 object-cover rounded" /> : null}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="font-medium text-sm text-gray-900 dark:text-foreground truncate">{event.title}</div>
@@ -354,8 +354,8 @@ export default function AgendaPage() {
                       {new Date(event.startDate).toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric', month: 'short' })}
                       {' à '}
                       {new Date(event.startDate).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
-                      {event.animal && ` · 🦜 ${event.animal.name}`}
-                      {event.assignedTo && ` · 👤 ${event.assignedTo.firstName}`}
+                      {event.animal && ` · ${event.animal.name}`}
+                      {event.assignedTo && ` · ${event.assignedTo.firstName}`}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -381,7 +381,7 @@ export default function AgendaPage() {
             {urgentEvents.slice(0, 5).map(event => (
               <div key={event.id} className="flex items-center justify-between p-3 bg-red-50 rounded-xl border border-red-100">
                 <div className="flex items-center gap-3">
-                  <span className="text-xl">{TYPE_CONFIG[event.type]?.emoji}</span>
+                  <span className="text-xl">{TYPE_CONFIG[event.type]?.icon ? <img src={TYPE_CONFIG[event.type]!.icon} alt="" className="w-5 h-5 object-cover rounded" /> : null}</span>
                   <div>
                     <div className="font-medium text-sm text-gray-900">{event.title}</div>
                     <div className="text-xs text-gray-500">
@@ -429,7 +429,7 @@ export default function AgendaPage() {
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-forest-500"
                   >
                     {Object.entries(TYPE_CONFIG).map(([type, config]) => (
-                      <option key={type} value={type}>{config.emoji} {config.label}</option>
+                      <option key={type} value={type}>{config.icon ? <img src={config.icon} alt="" className="w-3.5 h-3.5 object-cover rounded inline-block mr-1" /> : null}{config.label}</option>
                     ))}
                   </select>
                 </div>

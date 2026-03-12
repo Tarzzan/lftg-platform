@@ -1,4 +1,8 @@
-import { Controller, Get, Post, Patch, Delete, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Delete, Body, Param, Query, UseGuards, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname, join } from 'path';
+import { ApiConsumes } from '@nestjs/swagger';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { StockService } from './stock.service';
 import { JwtAuthGuard } from '../../../apps/backend/src/common/guards/jwt-auth.guard';
@@ -28,6 +32,35 @@ export class StockController {
 
   @Patch('items/:id')
   update(@Param('id') id: string, @Body() body: any) { return this.service.updateItem(id, body); }
+
+
+  @Post('items/:id/image')
+  @ApiOperation({ summary: 'Upload une image pour un article de stock' })
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: join(process.cwd(), 'uploads', 'stock'),
+      filename: (_req: any, file: any, cb: any) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        cb(null, `stock-${uniqueSuffix}${extname(file.originalname)}`);
+      },
+    }),
+    fileFilter: (_req: any, file: any, cb: any) => {
+      if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
+        return cb(new BadRequestException('Seules les images sont acceptées'), false);
+      }
+      cb(null, true);
+    },
+    limits: { fileSize: 10 * 1024 * 1024 },
+  }))
+  async uploadItemImage(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) throw new BadRequestException('Aucun fichier fourni');
+    const imageUrl = `/uploads/stock/${file.filename}`;
+    return this.service.updateItem(id, { imageUrl });
+  }
 
   @Delete('items/:id')
   @ApiOperation({ summary: 'Supprime un article' })

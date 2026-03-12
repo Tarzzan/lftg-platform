@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Modal, FormField, Input, Select, Textarea, ModalFooter, BtnPrimary, BtnSecondary } from '../ui/Modal';
 import { formationApi } from '@/lib/api';
+import { ImageUpload } from '../ui/ImageUpload';
 
 interface CourseModalProps {
   isOpen: boolean;
@@ -132,31 +133,43 @@ export function CourseModal({ isOpen, onClose, course }: CourseModalProps) {
             </Select>
           </FormField>
         </div>
-        <div className="grid grid-cols-2 gap-4">
-          <FormField label="URL de la miniature (liste admin)">
-            <Input value={form.thumbnailUrl} onChange={set('thumbnailUrl')} placeholder="https://..." />
-          </FormField>
-          <FormField label="Image de fond (page publique)">
-            <Input value={form.coverImage} onChange={set('coverImage')} placeholder="https://..." />
-          </FormField>
-        </div>
-        {/* Aperçu de l'image de fond */}
-        {form.coverImage && (
-          <div className="rounded-xl overflow-hidden border border-forest-200">
-            <div className="bg-forest-50 px-3 py-1.5 text-xs font-medium text-forest-600 border-b border-forest-200">
-              Aperçu de l'image de fond
+        {isEdit && course?.id ? (
+          <div className="grid grid-cols-2 gap-4">
+            <ImageUpload
+              currentImageUrl={form.thumbnailUrl || null}
+              uploadUrl={`/plugins/formation/courses/${course.id}/image`}
+              onSuccess={(url) => setForm((f) => ({ ...f, thumbnailUrl: url, coverImage: url }))}
+              label="Image de couverture (miniature + fond)"
+            />
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium text-foreground">Aperçu actuel</label>
+              {form.coverImage ? (
+                <div className="relative h-32 rounded-xl overflow-hidden border border-border">
+                  <img
+                    src={form.coverImage.startsWith('http') ? form.coverImage : `http://51.210.15.92${form.coverImage}`}
+                    alt="Aperçu"
+                    className="w-full h-full object-cover"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end p-3">
+                    <span className="text-white text-xs font-semibold truncate">{form.title || 'Titre de la formation'}</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="h-32 rounded-xl border border-dashed border-border flex items-center justify-center text-muted-foreground text-xs">
+                  Aucune image
+                </div>
+              )}
             </div>
-            <div className="relative h-28 bg-forest-100">
-              <img
-                src={form.coverImage}
-                alt="Aperçu"
-                className="w-full h-full object-cover"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end p-3">
-                <span className="text-white text-xs font-semibold truncate">{form.title || 'Titre de la formation'}</span>
-              </div>
-            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-4">
+            <FormField label="URL de la miniature (liste admin)">
+              <Input value={form.thumbnailUrl} onChange={set('thumbnailUrl')} placeholder="https://..." />
+            </FormField>
+            <FormField label="Image de fond (page publique)">
+              <Input value={form.coverImage} onChange={set('coverImage')} placeholder="https://..." />
+            </FormField>
           </div>
         )}
         {/* Badge isPublic */}

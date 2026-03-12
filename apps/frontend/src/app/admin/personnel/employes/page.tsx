@@ -5,6 +5,7 @@ import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, Search, Trash2, Edit2, User } from 'lucide-react';
 import { personnelApi, usersApi } from '@/lib/api';
+import { ImageUpload } from '@/components/ui/ImageUpload';
 
 const DEPT_COLORS: Record<string, string> = {
   Direction: 'bg-purple-100 text-purple-800',
@@ -121,9 +122,17 @@ export default function EmployesPage() {
               <tr key={emp.id} className="border-b border-gray-100 dark:border-gray-700 last:border-0 hover:bg-gray-50 dark:bg-muted/20 dark:hover:bg-gray-700/30 transition-colors">
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 bg-forest-100 dark:bg-forest-900 rounded-full flex items-center justify-center text-sm font-semibold text-forest-700 dark:text-forest-300">
-                      {(emp.firstName?.[0] ?? '').toUpperCase()}{(emp.lastName?.[0] ?? '').toUpperCase()}
-                    </div>
+                    {emp.avatarUrl ? (
+                      <img
+                        src={emp.avatarUrl.startsWith('http') ? emp.avatarUrl : `http://51.210.15.92${emp.avatarUrl}`}
+                        alt={`${emp.firstName} ${emp.lastName}`}
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 bg-forest-100 dark:bg-forest-900 rounded-full flex items-center justify-center text-sm font-semibold text-forest-700 dark:text-forest-300">
+                        {(emp.firstName?.[0] ?? '').toUpperCase()}{(emp.lastName?.[0] ?? '').toUpperCase()}
+                      </div>
+                    )}
                     <div>
                       <p className="text-sm font-medium text-gray-900 dark:text-foreground dark:text-gray-100">{emp.firstName} {emp.lastName}</p>
                     </div>
@@ -197,6 +206,7 @@ function EmployeeModal({ employee, users, onClose, onSuccess }: { employee: any;
     jobTitle: employee?.jobTitle ?? '',
     department: employee?.department ?? '',
     hireDate: employee?.hireDate ? new Date(employee.hireDate).toISOString().split('T')[0] : '',
+    avatarUrl: employee?.avatarUrl ?? '',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -241,6 +251,14 @@ function EmployeeModal({ employee, users, onClose, onSuccess }: { employee: any;
           <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 text-2xl leading-none">&times;</button>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {isEdit && employee?.id && (
+            <ImageUpload
+              currentImageUrl={form.avatarUrl || null}
+              uploadUrl={`/plugins/personnel/employees/${employee.id}/avatar`}
+              onSuccess={(url) => setForm(f => ({ ...f, avatarUrl: url }))}
+              label="Photo de profil"
+            />
+          )}
           {!isEdit && (
             <div>
               <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Utilisateur lié (optionnel)</label>

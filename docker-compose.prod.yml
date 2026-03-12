@@ -13,7 +13,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-lftg_secret}
       POSTGRES_DB: ${POSTGRES_DB:-lftg_platform}
     volumes:
-      - lftg_db_data:/var/lib/postgresql/data
+      - postgres_data_prod:/var/lib/postgresql/data
     networks:
       - lftg-network
     healthcheck:
@@ -67,6 +67,9 @@ services:
       - "3001:3001"
     networks:
       - lftg-network
+    volumes:
+      - ./uploads:/app/uploads
+      - ./apps/backend/dist:/app/apps/backend/dist
     healthcheck:
       test: ["CMD", "node", "-e", "require('http').get('http://localhost:3001/health', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
       interval: 15s
@@ -118,7 +121,7 @@ volumes:
   postgres_data_prod:
     driver: local
   lftg_db_data:
-    external: true
+    driver: local
   redis_data_prod:
     driver: local
 

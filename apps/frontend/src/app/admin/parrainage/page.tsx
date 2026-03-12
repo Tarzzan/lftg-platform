@@ -139,7 +139,7 @@ export default function ParrainagePage() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="bg-slate-800 rounded-xl p-12 text-center">
-          <p className="text-4xl mb-3">🤝</p>
+          <img src="/icons/section-rh.png" alt="" className="w-10 h-10 object-cover rounded-xl mx-auto mb-3" />
           <p className="text-slate-300 font-semibold">Aucun parrainage trouvé</p>
         </div>
       ) : (

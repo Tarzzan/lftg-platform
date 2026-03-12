@@ -111,15 +111,15 @@ export default function PlanningPage() {
 
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-forest-600" />
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-forest-600"/>
           <span className="ml-3 text-gray-500">Chargement du planning...</span>
         </div>
       ) : filteredEmployees.length === 0 ? (
         <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-12 text-center">
-          <p className="text-4xl mb-3">👥</p>
+          <p className="text-4xl mb-3"></p>
           <p className="text-gray-500">Aucun employé trouvé.</p>
         </div>
-      ) : view === 'semaine' ? (
+      ) : view ==='semaine'? (
         <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -127,9 +127,9 @@ export default function PlanningPage() {
                 <tr className="bg-gray-50 dark:bg-muted/20 border-b border-gray-200 dark:border-border">
                   <th className="text-left py-3 px-4 text-gray-600 dark:text-gray-400 font-medium w-48">Employé</th>
                   {weekDates.map((date, i) => (
-                    <th key={i} className={`text-center py-3 px-2 text-gray-600 dark:text-gray-400 font-medium min-w-24 ${isWeekend(date) ? 'bg-gray-100' : ''}`}>
+                    <th key={i} className={`text-center py-3 px-2 text-gray-600 dark:text-gray-400 font-medium min-w-24 ${isWeekend(date) ?'bg-gray-100':''}`}>
                       <div className="font-medium">{DAYS[i]}</div>
-                      <div className="text-xs text-gray-400">{date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })}</div>
+                      <div className="text-xs text-gray-400">{date.toLocaleDateString('fr-FR', { day:'2-digit', month:'2-digit'})}</div>
                     </th>
                   ))}
                 </tr>
@@ -140,12 +140,12 @@ export default function PlanningPage() {
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-2">
                         <div className="w-7 h-7 rounded-full bg-forest-100 flex items-center justify-center text-xs font-bold text-forest-700">
-                          {(emp.firstName || emp.lastName || '?')[0].toUpperCase()}
+                          {(emp.firstName || emp.lastName ||'?')[0].toUpperCase()}
                         </div>
                         <div>
                           <div className="font-medium text-gray-900 dark:text-foreground text-xs">{emp.firstName} {emp.lastName}</div>
-                          <span className={`text-xs px-1.5 py-0.5 rounded ${DEPT_COLORS[emp.department] || 'bg-gray-100 dark:bg-gray-800 text-gray-600'}`}>
-                            {emp.department || 'N/A'}
+                          <span className={`text-xs px-1.5 py-0.5 rounded ${DEPT_COLORS[emp.department] ||'bg-gray-100 dark:bg-gray-800 text-gray-600'}`}>
+                            {emp.department ||'N/A'}
                           </span>
                         </div>
                       </div>
@@ -154,7 +154,7 @@ export default function PlanningPage() {
                       const onLeave = isOnLeave(emp.id, date);
                       const weekend = isWeekend(date);
                       return (
-                        <td key={i} className={`py-2 px-1 text-center ${weekend ? 'bg-gray-50' : ''}`}>
+                        <td key={i} className={`py-2 px-1 text-center ${weekend ?'bg-gray-50':''}`}>
                           {onLeave ? (
                             <span className="text-xs bg-amber-100 text-amber-700 px-2 py-1 rounded border border-amber-200">
                               Congé
@@ -183,7 +183,7 @@ export default function PlanningPage() {
               <div key={emp.id} className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-4">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-9 h-9 rounded-full bg-forest-100 flex items-center justify-center text-sm font-bold text-forest-700">
-                    {(emp.firstName || '?')[0].toUpperCase()}
+                    {(emp.firstName ||'?')[0].toUpperCase()}
                   </div>
                   <div>
                     <div className="font-semibold text-gray-900">{emp.firstName} {emp.lastName}</div>
@@ -196,12 +196,12 @@ export default function PlanningPage() {
                     <p className="text-xs font-medium text-gray-500">Congés / Absences :</p>
                     {empLeaves.map((leave: any) => (
                       <div key={leave.id} className="flex items-center gap-2 text-xs bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
-                        <span className="font-medium text-amber-700">{leave.type || 'Congé'}</span>
+                        <span className="font-medium text-amber-700">{leave.type ||'Congé'}</span>
                         <span className="text-gray-500">
                           {new Date(leave.startDate).toLocaleDateString('fr-FR')} → {new Date(leave.endDate).toLocaleDateString('fr-FR')}
                         </span>
-                        <span className={`ml-auto px-2 py-0.5 rounded font-medium ${leave.status === 'APPROVED' ? 'bg-green-100 text-green-700' : leave.status === 'PENDING' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 dark:bg-gray-800 text-gray-600'}`}>
-                          {leave.status === 'APPROVED' ? 'Approuvé' : leave.status === 'PENDING' ? 'En attente' : leave.status}
+                        <span className={`ml-auto px-2 py-0.5 rounded font-medium ${leave.status ==='APPROVED'?'bg-green-100 text-green-700': leave.status ==='PENDING'?'bg-yellow-100 text-yellow-700':'bg-gray-100 dark:bg-gray-800 text-gray-600'}`}>
+                          {leave.status ==='APPROVED'?'Approuvé': leave.status ==='PENDING'?'En attente' : leave.status}
                         </span>
                       </div>
                     ))}

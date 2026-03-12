@@ -189,7 +189,7 @@ export default function RecompensesPage() {
           <div className="flex flex-col items-center py-10 rounded-2xl bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-100">
             <img src={CAPI_NO_DATA} alt="Capi" className="w-24 h-24 object-contain mb-3" style={{ animation: 'mascotFloat 3s ease-in-out infinite' }} />
             <p className="text-sm font-semibold text-amber-700">Aucun certificat pour le moment</p>
-            <p className="text-xs text-amber-500 mt-1">Terminez une formation pour obtenir votre premier certificat 🎓</p>
+            <p className="text-xs text-amber-500 mt-1">Terminez une formation pour obtenir votre premier certificat</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

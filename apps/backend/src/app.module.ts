@@ -44,6 +44,8 @@ import { WebsocketModule } from './modules/websocket/websocket.module';
 import { TourismeModule } from './modules/tourisme/tourisme.module';
 import { KiosqueModule } from './modules/kiosque/kiosque.module';
 import { QuizModule } from './modules/quiz/quiz.module';
+import { MonitoringModule } from './modules/monitoring/monitoring.module';
+import { BackupModule } from './modules/backup/backup.module';
 import { PrevisionsModule } from './modules/previsions/previsions.module';
 import { CitesApiModule } from './modules/cites-api/cites-api.module';
 // Phase 9
@@ -139,6 +141,8 @@ import { ContactMessagesModule } from './modules/contact-messages/contact-messag
     TourismeModule,
     KiosqueModule,
     QuizModule,
+    MonitoringModule,
+    BackupModule,
     PrevisionsModule,
     CitesApiModule,
     // Phase 9

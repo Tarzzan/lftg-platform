@@ -34,13 +34,26 @@ export class CreatePermissionDto {
 }
 
 export class AssignRoleDto {
-  @ApiProperty({ description: "ID de l\'utilisateur" })
+  @ApiProperty({ description: "ID de l'utilisateur" })
   @IsString()
   userId: string;
 
   @ApiProperty({ description: 'ID du rôle' })
   @IsString()
   roleId: string;
+}
+
+export class SetPermissionsDto {
+  @ApiProperty({ type: [String], description: 'Liste complète des IDs de permissions à assigner au rôle (remplace les permissions existantes)' })
+  @IsArray()
+  @IsString({ each: true })
+  permissionIds: string[];
+}
+
+export class TogglePermissionDto {
+  @ApiProperty({ description: 'ID de la permission à ajouter ou retirer' })
+  @IsString()
+  permissionId: string;
 }
 
 export class RoleResponseDto {

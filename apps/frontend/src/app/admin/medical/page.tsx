@@ -16,7 +16,7 @@ interface MedicalVisit {
   vetName: string;
   diagnosis?: string;
   nextVisitDate?: string;
-  animal: { id: string; name: string; species: { name: string } };
+  animal: { id: string; name: string; imageUrl?: string; species: { name: string; scientificName?: string; imageUrl?: string } };
 }
 interface MedicalDashboard {
   totalVisits: number;
@@ -46,6 +46,33 @@ const visitTypeColors: Record<string, string> = {
   CHECKUP: 'bg-teal-100 text-teal-700',
   FOLLOWUP: 'bg-amber-100 text-amber-700',
 };
+
+
+function getAnimalIcon(species?: any): string {
+  const name = (species?.name ?? species?.commonName ?? '').toLowerCase();
+  const sci = (species?.scientificName ?? '').toLowerCase();
+  if (name.includes('ara') || name.includes('perroquet') || name.includes('toucan') || sci.includes('ara ')) return '/icons/animal-ara.png';
+  if (name.includes('amazone') || sci.includes('amazona')) return '/icons/animal-amazone.png';
+  if (name.includes('tinamou') || sci.includes('tinamus') || sci.includes('crypturellus')) return '/icons/animal-tinamou.png';
+  if (name.includes('hocco') || name.includes('crax') || sci.includes('crax')) return '/icons/animal-hocco.png';
+  if (name.includes('tocro') || sci.includes('odontophorus')) return '/icons/animal-tocro.png';
+  if (name.includes('caïman') || name.includes('crocodil') || sci.includes('caiman') || sci.includes('crocodylus')) return '/icons/animal-caiman.png';
+  if (name.includes('iguane') || sci.includes('iguana')) return '/icons/animal-iguane.png';
+  if (name.includes('matamata') || sci.includes('chelus')) return '/icons/animal-matamata.png';
+  if (name.includes('tortue') || sci.includes('testudo') || sci.includes('chelonoidis') || sci.includes('podocnemis')) return '/icons/animal-tortue.png';
+  if (name.includes('anaconda') || sci.includes('eunectes')) return '/icons/animal-serpent.png';
+  if (name.includes('boa bordé') || sci.includes('corallus')) return '/icons/animal-boa-borde.png';
+  if (name.includes('boa constricteur') || sci.includes('boa constrictor')) return '/icons/animal-boa-constricteur.png';
+  if (name.includes('serpent') || name.includes('boa') || name.includes('python')) return '/icons/animal-serpent.png';
+  if (name.includes('agouti') || sci.includes('dasyprocta')) return '/icons/animal-agouti.png';
+  if (name.includes('capybara') || name.includes('cabiai') || sci.includes('hydrochoerus')) return '/icons/animal-capybara.png';
+  if (name.includes('pécari') || name.includes('pecari') || sci.includes('tayassu') || sci.includes('pecari')) return '/icons/animal-pecari.png';
+  if (name.includes('tapir') || sci.includes('tapirus')) return '/icons/animal-tapir.png';
+  if (name.includes('paresseux') || sci.includes('bradypus') || sci.includes('choloepus')) return '/icons/animal-paresseux.png';
+  if (name.includes('loutre') || sci.includes('pteronura') || sci.includes('lontra')) return '/icons/animal-loutre.png';
+  if (name.includes('singe') || name.includes('primate') || sci.includes('alouatta') || sci.includes('ateles') || sci.includes('cebus') || sci.includes('saimiri')) return '/icons/animal-singe.png';
+  return '/icons/animal-lezard.png';
+}
 
 export default function MedicalPage() {
   const [search, setSearch] = useState('');
@@ -210,10 +237,23 @@ export default function MedicalPage() {
               {filtered.map(visit => (
                 <tr key={visit.id} className="hover:bg-muted/30 transition-colors">
                   <td className="px-4 py-3">
-                    <Link href={`/admin/animaux/${visit.animal.id}`} className="font-medium text-foreground hover:text-forest-600 transition-colors">
-                      {visit.animal.name}
-                    </Link>
-                    <p className="text-xs text-muted-foreground">{visit.animal.species.name}</p>
+                    <div className="flex items-center gap-3">
+                      <div className="flex-shrink-0 w-9 h-9 rounded-full overflow-hidden border border-border bg-forest-50">
+                        <img
+                          src={visit.animal.imageUrl
+                            ? (visit.animal.imageUrl.startsWith('http') ? visit.animal.imageUrl : `http://51.210.15.92${visit.animal.imageUrl}`)
+                            : getAnimalIcon(visit.animal.species)}
+                          alt={visit.animal.name}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div>
+                        <Link href={`/admin/animaux/${visit.animal.id}`} className="font-medium text-foreground hover:text-forest-600 transition-colors">
+                          {visit.animal.name}
+                        </Link>
+                        <p className="text-xs text-muted-foreground">{visit.animal.species.name}</p>
+                      </div>
+                    </div>
                   </td>
                   <td className="px-4 py-3">
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${visitTypeColors[visit.type] || 'bg-gray-100 dark:bg-gray-800 text-gray-700'}`}>

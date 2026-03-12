@@ -77,9 +77,7 @@ export default function MLPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Prédictions de reproduction */}
           <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
-            <h2 className="text-white font-semibold mb-4 flex items-center gap-2">
-              🧬 Prédictions de reproduction
-              <span className="bg-indigo-900/50 text-indigo-300 text-xs px-2 py-0.5 rounded">{breedingPredictions.length}</span>
+            <h2 className="text-white font-semibold mb-4 flex items-center gap-2">Prédictions de reproduction<span className="bg-indigo-900/50 text-indigo-300 text-xs px-2 py-0.5 rounded">{breedingPredictions.length}</span>
             </h2>
             {breedingPredictions.length === 0 ? (
               <p className="text-slate-400 text-sm">Aucune prédiction disponible</p>
@@ -112,15 +110,13 @@ export default function MLPage() {
 
           {/* Anomalies comportementales */}
           <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
-            <h2 className="text-white font-semibold mb-4 flex items-center gap-2">
-              ⚠️ Anomalies comportementales
-              <span className={`text-xs px-2 py-0.5 rounded ${anomalies.length > 0 ? 'bg-red-900/50 text-red-300' : 'bg-green-900/50 text-green-300'}`}>
+            <h2 className="text-white font-semibold mb-4 flex items-center gap-2">️ Anomalies comportementales<span className={`text-xs px-2 py-0.5 rounded ${anomalies.length > 0 ? 'bg-red-900/50 text-red-300' : 'bg-green-900/50 text-green-300'}`}>
                 {anomalies.length}
               </span>
             </h2>
             {anomalies.length === 0 ? (
               <div className="text-center py-6">
-                <p className="text-4xl mb-2">✅</p>
+                <p className="text-4xl mb-2"></p>
                 <p className="text-green-400 text-sm">Aucune anomalie détectée</p>
               </div>
             ) : (
@@ -147,9 +143,7 @@ export default function MLPage() {
 
           {/* Recommandations nutritionnelles */}
           <div className="bg-slate-800 rounded-xl p-5 border border-slate-700 lg:col-span-2">
-            <h2 className="text-white font-semibold mb-4 flex items-center gap-2">
-              🥗 Recommandations nutritionnelles
-              <span className="bg-cyan-900/50 text-cyan-300 text-xs px-2 py-0.5 rounded">{nutritionRecs.length}</span>
+            <h2 className="text-white font-semibold mb-4 flex items-center gap-2">Recommandations nutritionnelles<span className="bg-cyan-900/50 text-cyan-300 text-xs px-2 py-0.5 rounded">{nutritionRecs.length}</span>
             </h2>
             {nutritionRecs.length === 0 ? (
               <p className="text-slate-400 text-sm">Aucune recommandation disponible</p>

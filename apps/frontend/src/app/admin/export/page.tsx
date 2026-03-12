@@ -19,7 +19,7 @@ const EXPORTS: ExportOption[] = [
     description: 'Export complet de tous les animaux avec leurs données',
     endpoint: '/export/animaux/csv',
     filename: 'animaux.csv',
-    icon: '🦜',
+    icon: '',
     color: 'border-indigo-700',
   },
   {
@@ -28,7 +28,7 @@ const EXPORTS: ExportOption[] = [
     description: 'Inventaire complet du stock avec quantités et alertes',
     endpoint: '/export/stock/csv',
     filename: 'stock.csv',
-    icon: '📦',
+    icon: '',
     color: 'border-green-700',
   },
   {
@@ -37,7 +37,7 @@ const EXPORTS: ExportOption[] = [
     description: 'Liste du personnel avec postes et informations de contact',
     endpoint: '/export/personnel/csv',
     filename: 'personnel.csv',
-    icon: '👥',
+    icon: '',
     color: 'border-blue-700',
   },
   {
@@ -46,25 +46,25 @@ const EXPORTS: ExportOption[] = [
     description: 'Catalogue des formations et inscriptions',
     endpoint: '/export/formation/csv',
     filename: 'formations.csv',
-    icon: '🎓',
+    icon: '',
     color: 'border-yellow-700',
   },
   {
     id: 'audit',
     label: 'Audit (CSV)',
     description: 'Journal d\'audit complet des actions utilisateurs',
-    endpoint: '/export/audit/csv',
-    filename: 'audit.csv',
-    icon: '🔍',
-    color: 'border-purple-700',
+    endpoint:'/export/audit/csv',
+    filename:'audit.csv',
+    icon:'',
+    color:'border-purple-700',
   },
   {
-    id: 'stock-report',
-    label: 'Rapport stock (PDF)',
-    description: 'Rapport PDF complet de l\'inventaire avec alertes et valorisation',
+    id:'stock-report',
+    label:'Rapport stock (PDF)',
+    description:'Rapport PDF complet de l\'inventaire avec alertes et valorisation',
     endpoint: '/export/stock/report',
     filename: 'rapport-stock.pdf',
-    icon: '📄',
+    icon: '',
     color: 'border-red-700',
   },
 ];
@@ -119,7 +119,7 @@ export default function ExportPage() {
                     <p className="text-red-400 text-xs mt-2">{errors[option.id]}</p>
                   )}
                   {successes[option.id] && (
-                    <p className="text-green-400 text-xs mt-2">✅ Téléchargement démarré</p>
+                    <p className="text-green-400 text-xs mt-2">Téléchargement démarré</p>
                   )}
                 </div>
               </div>
@@ -143,9 +143,7 @@ export default function ExportPage() {
       </div>
 
       <div className="bg-slate-800 rounded-xl p-4 border border-slate-700">
-        <p className="text-slate-400 text-sm">
-          💡 Les exports CSV sont compatibles avec Excel, LibreOffice et Google Sheets. Les exports PDF sont générés avec les données en temps réel.
-        </p>
+        <p className="text-slate-400 text-sm">Les exports CSV sont compatibles avec Excel, LibreOffice et Google Sheets. Les exports PDF sont générés avec les données en temps réel.</p>
       </div>
     </div>
   );

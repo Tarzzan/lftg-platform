@@ -59,11 +59,11 @@ export default function SitesPage() {
   });
 
   const typeConfig: Record<string, { label: string; icon: string; color: string }> = {
-    PRINCIPAL: { label: 'Site principal', icon: '🏛️', color: 'text-indigo-400' },
-    ANNEXE: { label: 'Annexe', icon: '🏠', color: 'text-blue-400' },
-    QUARANTAINE: { label: 'Quarantaine', icon: '🏥', color: 'text-red-400' },
-    ELEVAGE: { label: 'Élevage', icon: '🌿', color: 'text-green-400' },
-    STOCKAGE: { label: 'Stockage', icon: '📦', color: 'text-yellow-400' },
+    PRINCIPAL: { label: 'Site principal', icon: '️', color: 'text-indigo-400' },
+    ANNEXE: { label: 'Annexe', icon: '', color: 'text-blue-400' },
+    QUARANTAINE: { label: 'Quarantaine', icon: '', color: 'text-red-400' },
+    ELEVAGE: { label: 'Élevage', icon: '', color: 'text-green-400' },
+    STOCKAGE: { label: 'Stockage', icon: '', color: 'text-yellow-400' },
   };
 
   return (
@@ -113,18 +113,18 @@ export default function SitesPage() {
             <input type="number" placeholder="Capacité (animaux)" value={form.capacity || ''}
               onChange={(e) => setForm({ ...form, capacity: parseInt(e.target.value) || 0 })}
               className="bg-slate-700 text-white rounded-lg px-4 py-2 border border-slate-600 focus:outline-none focus:border-indigo-500" />
-            <input type="text" placeholder="Horaires d'ouverture" value={form.openingHours}
+            <input type="text" placeholder="Horaires d'ouverture"value={form.openingHours}
               onChange={(e) => setForm({ ...form, openingHours: e.target.value })}
-              className="col-span-2 bg-slate-700 text-white rounded-lg px-4 py-2 border border-slate-600 focus:outline-none focus:border-indigo-500" />
-            <textarea placeholder="Description" value={form.description}
+              className="col-span-2 bg-slate-700 text-white rounded-lg px-4 py-2 border border-slate-600 focus:outline-none focus:border-indigo-500"/>
+            <textarea placeholder="Description"value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               rows={2}
-              className="col-span-2 bg-slate-700 text-white rounded-lg px-4 py-2 border border-slate-600 focus:outline-none focus:border-indigo-500" />
+              className="col-span-2 bg-slate-700 text-white rounded-lg px-4 py-2 border border-slate-600 focus:outline-none focus:border-indigo-500"/>
           </div>
           <div className="flex gap-3 mt-4">
             <button onClick={() => createMutation.mutate(form)} disabled={createMutation.isPending || !form.name}
               className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50">
-              {createMutation.isPending ? 'Ajout...' : 'Ajouter'}
+              {createMutation.isPending ?'Ajout...':'Ajouter'}
             </button>
             <button onClick={() => setShowForm(false)}
               className="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg font-semibold transition-colors">
@@ -138,10 +138,8 @@ export default function SitesPage() {
       {selectedSite && (
         <div className="bg-slate-800 rounded-xl p-6 border border-indigo-700">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-white font-semibold text-lg">
-              {typeConfig[selectedSite.type || 'PRINCIPAL']?.icon || '🏛️'} {selectedSite.name}
-            </h2>
-            <button onClick={() => setSelectedSite(null)} className="text-slate-400 hover:text-white text-xl">✕</button>
+            <h2 className="text-white font-semibold text-lg">{typeConfig[selectedSite.type ||'PRINCIPAL']?.icon ||'️'} {selectedSite.name}</h2>
+            <button onClick={() => setSelectedSite(null)} className="text-slate-400 hover:text-white text-xl"></button>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
             {selectedSite.location && <div><p className="text-slate-400">Localisation</p><p className="text-white">{selectedSite.location}</p></div>}
@@ -159,17 +157,17 @@ export default function SitesPage() {
       {/* Liste des sites */}
       {isLoading ? (
         <div className="flex items-center justify-center h-40">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500" />
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"/>
         </div>
       ) : sites.length === 0 ? (
         <div className="bg-slate-800 rounded-xl p-12 text-center border border-slate-700">
-          <p className="text-4xl mb-3">🏛️</p>
+          <p className="text-4xl mb-3">️</p>
           <p className="text-slate-300 font-semibold">Aucun site enregistré</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {sites.map((site) => {
-            const tCfg = typeConfig[site.type || 'PRINCIPAL'] || typeConfig.PRINCIPAL;
+            const tCfg = typeConfig[site.type ||'PRINCIPAL'] || typeConfig.PRINCIPAL;
             return (
               <div key={site.id} onClick={() => setSelectedSite(site)}
                 className="bg-slate-800 rounded-xl p-5 border border-slate-700 cursor-pointer hover:border-indigo-600 transition-colors">
@@ -180,11 +178,11 @@ export default function SitesPage() {
                       <h3 className="text-white font-semibold">{site.name}</h3>
                       <span className={`text-xs font-semibold ${tCfg.color}`}>{tCfg.label}</span>
                     </div>
-                    {site.location && <p className="text-slate-400 text-sm mt-0.5">📍 {site.location}</p>}
-                    {site.manager && <p className="text-slate-400 text-sm">👤 {site.manager}</p>}
-                    {site.phone && <p className="text-slate-400 text-sm">📞 {site.phone}</p>}
+                    {site.location && <p className="text-slate-400 text-sm mt-0.5">{site.location}</p>}
+                    {site.manager && <p className="text-slate-400 text-sm">{site.manager}</p>}
+                    {site.phone && <p className="text-slate-400 text-sm">{site.phone}</p>}
                     {site.capacity && (
-                      <p className="text-slate-400 text-sm">🐾 Capacité : {site.capacity} animaux</p>
+                      <p className="text-slate-400 text-sm">Capacité : {site.capacity} animaux</p>
                     )}
                   </div>
                 </div>

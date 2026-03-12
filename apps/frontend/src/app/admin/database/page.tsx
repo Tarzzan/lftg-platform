@@ -60,9 +60,7 @@ export default function DatabasePage() {
             target="_blank"
             rel="noopener noreferrer"
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
-          >
-            📚 Swagger Docs
-          </a>
+          >Swagger Docs</a>
         </div>
       </div>
 
@@ -98,11 +96,11 @@ export default function DatabasePage() {
       {stats && !loading && (
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {[
-            { label: 'Espèces', value: stats.animals?.species ?? 0, icon: '🦜' },
-            { label: 'Couvées actives', value: stats.animals?.activeBroods ?? 0, icon: '🥚' },
-            { label: 'Stock faible', value: stats.stock?.lowStock ?? 0, icon: '⚠️' },
-            { label: 'Employés', value: stats.hr?.employees ?? 0, icon: '👥' },
-            { label: 'Formations', value: stats.formation?.courses ?? 0, icon: '🎓' },
+            { label: 'Espèces', value: stats.animals?.species ?? 0, icon: '' },
+            { label: 'Couvées actives', value: stats.animals?.activeBroods ?? 0, icon: '' },
+            { label: 'Stock faible', value: stats.stock?.lowStock ?? 0, icon: '️' },
+            { label: 'Employés', value: stats.hr?.employees ?? 0, icon: '' },
+            { label: 'Formations', value: stats.formation?.courses ?? 0, icon: '' },
           ].map((s) => (
             <div key={s.label} className="bg-white dark:bg-card rounded-xl p-3 border border-gray-200 dark:border-border text-center">
               <div className="text-2xl mb-1">{s.icon}</div>
@@ -142,9 +140,7 @@ export default function DatabasePage() {
                   <tr key={model} className="hover:bg-gray-50 dark:bg-gray-900">
                     <td className="px-4 py-3 font-mono text-sm font-medium text-blue-700">{model}</td>
                     <td className="px-4 py-3">
-                      <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-medium">
-                        ✓ Actif
-                      </span>
+                      <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-medium">Actif</span>
                     </td>
                   </tr>
                 ))}
@@ -156,20 +152,18 @@ export default function DatabasePage() {
         {tab === 'seed' && (
           <div className="p-6">
             <div className="bg-gray-900 rounded-lg p-4 font-mono text-sm space-y-2">
-              <p className="text-green-400 font-bold">🌱 Seeding LFTG Platform database...</p>
-              {[
-                { step: '✅ Rôles créés', count: 3, time: '0.12s' },
-                { step: '✅ Utilisateurs créés', count: 5, time: '0.34s' },
-                { step: '✅ Espèces créées', count: 12, time: '0.08s' },
-                { step: '✅ Enclos créés', count: 8, time: '0.06s' },
-                { step: `✅ ${stats?.animals?.alive ?? 9} animaux présents`, count: stats?.animals?.alive ?? 9, time: '1.24s' },
-                { step: `✅ ${stats?.animals?.activeBroods ?? 8} couvées actives`, count: stats?.animals?.activeBroods ?? 8, time: '0.42s' },
-                { step: `✅ ${stats?.stock?.total ?? 20} articles en stock`, count: stats?.stock?.total ?? 20, time: '0.18s' },
-                { step: `✅ ${stats?.hr?.employees ?? 1} employé(s)`, count: stats?.hr?.employees ?? 1, time: '0.22s' },
-                { step: `✅ ${stats?.formation?.courses ?? 7} formations`, count: stats?.formation?.courses ?? 7, time: '0.15s' },
-                { step: '🎉 Seed terminé avec succès !', count: totalRecords, time: '2.71s' },
-              ].map((log, i) => (
-                <div key={i} className="flex justify-between">
+              <p className="text-green-400 font-bold">Seeding LFTG Platform database...</p>{[
+                { step: 'Rôles créés', count: 3, time: '0.12s' },
+                { step: 'Utilisateurs créés', count: 5, time: '0.34s' },
+                { step: 'Espèces créées', count: 12, time: '0.08s' },
+                { step: 'Enclos créés', count: 8, time: '0.06s' },
+                { step: ` ${stats?.animals?.alive ?? 9} animaux présents`, count: stats?.animals?.alive ?? 9, time: '1.24s' },
+                { step: ` ${stats?.animals?.activeBroods ?? 8} couvées actives`, count: stats?.animals?.activeBroods ?? 8, time: '0.42s' },
+                { step: ` ${stats?.stock?.total ?? 20} articles en stock`, count: stats?.stock?.total ?? 20, time: '0.18s' },
+                { step: ` ${stats?.hr?.employees ?? 1} employé(s)`, count: stats?.hr?.employees ?? 1, time: '0.22s' },
+                { step: ` ${stats?.formation?.courses ?? 7} formations`, count: stats?.formation?.courses ?? 7, time: '0.15s' },
+                { step: 'Seed terminé avec succès !', count: totalRecords, time: '2.71s' },
+              ].map((log, i) => (<div key={i} className="flex justify-between">
                   <span className="text-gray-300">{log.step}</span>
                   <div className="flex gap-4 text-gray-500 dark:text-gray-400 text-xs">
                     <span>{log.count} enr.</span>
@@ -189,7 +183,7 @@ export default function DatabasePage() {
             <div className="space-y-2">
               {MIGRATIONS.map((m) => (
                 <div key={m.name} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-muted/20 rounded-lg">
-                  <span className="text-green-500 font-bold">✓</span>
+                  <span className="text-green-500 font-bold"></span>
                   <span className="font-mono text-sm text-gray-700">{m.name}</span>
                   <span className="ml-auto text-xs text-gray-400">{m.date}</span>
                   <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">Appliquée</span>

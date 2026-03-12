@@ -45,7 +45,7 @@ const statusConfig: Record<string, { label: string; color: string; bg: string; b
   COMPLETED: { label: 'Terminé', color: 'text-slate-400', bg: 'bg-slate-800', border: 'border-slate-600' },
 };
 
-const typeIcons: Record<string, string> = { GUIDED: '🎤', SCHOOL: '🏫', PRIVATE: '👨‍👩‍👧', SPECIAL: '⭐', GROUP: '👥' };
+const typeIcons: Record<string, string> = { GUIDED: '', SCHOOL: '', PRIVATE: '‍‍', SPECIAL: '⭐', GROUP: '' };
 
 export default function TourismePage() {
   const queryClient = useQueryClient();
@@ -209,7 +209,7 @@ export default function TourismePage() {
             </div>
           ) : visites.length === 0 ? (
             <div className="bg-slate-800 rounded-xl p-12 text-center border border-slate-700">
-              <p className="text-4xl mb-3">🗓️</p>
+              <p className="text-4xl mb-3">️</p>
               <p className="text-slate-300 font-semibold">Aucune visite programmée</p>
             </div>
           ) : (
@@ -220,7 +220,7 @@ export default function TourismePage() {
                 <div key={visite.id} className="bg-slate-800 rounded-xl p-4 border border-slate-700">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3 flex-1">
-                      <span className="text-2xl">{typeIcons[visite.type || ''] || '🎤'}</span>
+                      <span className="text-2xl">{typeIcons[visite.type || ''] || ''}</span>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
                           <h3 className="text-white font-semibold">{visite.title}</h3>
@@ -229,11 +229,11 @@ export default function TourismePage() {
                           </span>
                         </div>
                         <div className="flex items-center gap-3 mt-1 text-slate-400 text-sm flex-wrap">
-                          <span>📅 {new Date(visite.date).toLocaleDateString('fr-FR')}</span>
-                          {visite.time && <span>🕐 {visite.time}</span>}
-                          {visite.guide && <span>👤 {visite.guide}</span>}
+                          <span>{new Date(visite.date).toLocaleDateString('fr-FR')}</span>
+                          {visite.time && <span>{visite.time}</span>}
+                          {visite.guide && <span>{visite.guide}</span>}
                           {visite.duration && <span>⏱ {visite.duration} min</span>}
-                          {visite.price !== undefined && <span>💶 {visite.price} €/pers</span>}
+                          {visite.price !== undefined && <span>{visite.price} €/pers</span>}
                         </div>
                         {visite.max && (
                           <div className="mt-2">
@@ -275,7 +275,7 @@ export default function TourismePage() {
             </div>
           ) : reservations.length === 0 ? (
             <div className="p-12 text-center">
-              <p className="text-4xl mb-3">📋</p>
+              <p className="text-4xl mb-3"></p>
               <p className="text-slate-300 font-semibold">Aucune réservation</p>
             </div>
           ) : (

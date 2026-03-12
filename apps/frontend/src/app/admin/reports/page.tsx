@@ -76,12 +76,12 @@ export default function ReportsPage() {
   };
 
   const reportIcons: Record<string, string> = {
-    monthly_summary: '📊',
-    animal_medical: '🏥',
-    stock_inventory: '📦',
-    cites_compliance: '🌿',
-    financial: '💰',
-    genealogy: '🧬',
+    monthly_summary: '',
+    animal_medical: '',
+    stock_inventory: '',
+    cites_compliance: '',
+    financial: '',
+    genealogy: '',
   };
 
   const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
@@ -117,7 +117,7 @@ export default function ReportsPage() {
                   className={`w-full text-left p-4 rounded-xl border transition-all ${selectedType === rt.type ? 'bg-indigo-900/30 border-indigo-500' : 'bg-slate-800 border-slate-700 hover:border-slate-500'}`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">{rt.icon || reportIcons[rt.type] || '📄'}</span>
+                    <span className="text-2xl">{rt.icon || reportIcons[rt.type] || ''}</span>
                     <div>
                       <p className="text-white font-semibold">{rt.label}</p>
                       {rt.description && <p className="text-slate-400 text-sm">{rt.description}</p>}
@@ -167,9 +167,7 @@ export default function ReportsPage() {
                   <div>
                     <label className="text-slate-400 text-sm block mb-1">ID de l'animal (optionnel)</label>
                     <input
-                      type="text"
-                      placeholder="Laisser vide pour tous les animaux"
-                      value={params.animalId || ''}
+                      type="text"placeholder="Laisser vide pour tous les animaux"value={params.animalId ||''}
                       onChange={(e) => setParams({ ...params, animalId: e.target.value })}
                       className="w-full bg-slate-700 text-white rounded-lg px-4 py-2 border border-slate-600 focus:outline-none focus:border-indigo-500"
                     />
@@ -186,7 +184,7 @@ export default function ReportsPage() {
                 {/* Succès */}
                 {generatedUrl && (
                   <div className="bg-green-900/20 border border-green-700 rounded-lg p-3">
-                    <p className="text-green-400 text-sm">✅ Rapport généré et téléchargé</p>
+                    <p className="text-green-400 text-sm">Rapport généré et téléchargé</p>
                   </div>
                 )}
 
@@ -201,7 +199,7 @@ export default function ReportsPage() {
                       Génération en cours...
                     </>
                   ) : (
-                    <>📄 Générer le rapport PDF</>
+                    <>Générer le rapport PDF</>
                   )}
                 </button>
               </div>

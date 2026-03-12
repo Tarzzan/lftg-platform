@@ -6,9 +6,9 @@ export default function NotFound() {
       <div className="text-center max-w-md">
         {/* Illustration */}
         <div className="relative mb-8">
-          <div className="text-8xl mb-4 animate-bounce">🦜</div>
-          <div className="absolute -top-2 -right-4 text-4xl opacity-50 rotate-12">🌿</div>
-          <div className="absolute -bottom-2 -left-4 text-3xl opacity-40 -rotate-12">🌺</div>
+          <img src="/icons/animal-ara.png" alt="" className="w-24 h-24 object-cover rounded-3xl mx-auto mb-4 animate-bounce" />
+          
+          
         </div>
 
         {/* Code d'erreur */}

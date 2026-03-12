@@ -26,7 +26,7 @@ interface KiosqueAlert {
   createdAt?: string;
 }
 
-const typeIcons: Record<string, string> = { FEEDING: '🍎', MEDICAL: '💊', CLEANING: '🧹', OBSERVATION: '🔭', TREATMENT: '💉', OTHER: '📋' };
+const typeIcons: Record<string, string> = { FEEDING: '', MEDICAL: '', CLEANING: '', OBSERVATION: '', TREATMENT: '', OTHER: '' };
 const typeLabels: Record<string, string> = { FEEDING: 'Nourrissage', MEDICAL: 'Médical', CLEANING: 'Nettoyage', OBSERVATION: 'Observation', TREATMENT: 'Traitement', OTHER: 'Autre' };
 const statusConfig: Record<string, { label: string; color: string; bg: string; border: string }> = {
   COMPLETED: { label: 'Terminé', color: 'text-green-400', bg: 'bg-green-900/20', border: 'border-green-700' },
@@ -119,7 +119,7 @@ export default function KiosquePage() {
 
       {/* Scanner QR */}
       <div className="bg-slate-800 rounded-xl p-4 border border-slate-700">
-        <h2 className="text-white font-semibold mb-3">📷 Scanner QR / Badge</h2>
+        <h2 className="text-white font-semibold mb-3">Scanner QR / Badge</h2>
         <div className="flex gap-3">
           <input
             type="text"
@@ -164,18 +164,18 @@ export default function KiosquePage() {
             </div>
           ) : tasks.length === 0 ? (
             <div className="bg-slate-800 rounded-xl p-12 text-center border border-slate-700">
-              <p className="text-4xl mb-3">✅</p>
+              <p className="text-4xl mb-3"></p>
               <p className="text-slate-300 font-semibold">Aucune tâche pour aujourd'hui</p>
             </div>
           ) : (
             tasks.map((task) => {
               const sCfg = statusConfig[task.status] || statusConfig.PENDING;
-              const pCfg = priorityConfig[task.priority || 'NORMAL'] || priorityConfig.NORMAL;
+              const pCfg = priorityConfig[task.priority ||'NORMAL'] || priorityConfig.NORMAL;
               return (
                 <div key={task.id} className={`bg-slate-800 rounded-xl p-4 border ${sCfg.border} transition-all`}>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3 flex-1">
-                      <span className="text-2xl">{typeIcons[task.type] || '📋'}</span>
+                      <span className="text-2xl">{typeIcons[task.type] ||''}</span>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
                           <h3 className="text-white font-semibold">{task.title}</h3>
@@ -185,9 +185,9 @@ export default function KiosquePage() {
                           <span className={`text-xs font-semibold ${pCfg.color}`}>{pCfg.label}</span>
                         </div>
                         <div className="flex items-center gap-3 mt-1 text-slate-400 text-sm flex-wrap">
-                          {task.time && <span>🕐 {task.time}</span>}
-                          {task.enclos && <span>📍 {task.enclos}</span>}
-                          {task.animal && <span>🦜 {task.animal}</span>}
+                          {task.time && <span> {task.time}</span>}
+                          {task.enclos && <span> {task.enclos}</span>}
+                          {task.animal && <span> {task.animal}</span>}
                           {task.duration && <span>⏱ {task.duration} min</span>}
                         </div>
                         {task.notes && <p className="text-slate-400 text-sm mt-1 italic">{task.notes}</p>}
@@ -205,22 +205,22 @@ export default function KiosquePage() {
       )}
 
       {/* Alertes */}
-      {activeTab === 'alerts' && (
+      {activeTab ==='alerts'&& (
         <div className="space-y-3">
           {loadingAlerts ? (
             <div className="flex items-center justify-center h-40">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500" />
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"/>
             </div>
           ) : alerts.length === 0 ? (
             <div className="bg-slate-800 rounded-xl p-12 text-center border border-slate-700">
-              <p className="text-4xl mb-3">✅</p>
+              <p className="text-4xl mb-3"></p>
               <p className="text-slate-300 font-semibold">Aucune alerte active</p>
             </div>
           ) : (
             alerts.map((alert) => (
-              <div key={alert.id} className={`bg-slate-800 rounded-xl p-4 border ${alert.severity === 'HIGH' ? 'border-red-700' : alert.severity === 'MEDIUM' ? 'border-yellow-700' : 'border-slate-700'}`}>
+              <div key={alert.id} className={`bg-slate-800 rounded-xl p-4 border ${alert.severity ==='HIGH'?'border-red-700': alert.severity ==='MEDIUM'?'border-yellow-700':'border-slate-700'}`}>
                 <div className="flex items-center gap-3">
-                  <span className="text-2xl">{alert.severity === 'HIGH' ? '🚨' : alert.severity === 'MEDIUM' ? '⚠️' : 'ℹ️'}</span>
+                  <span className="text-2xl">{alert.severity ==='HIGH'?'': alert.severity ==='MEDIUM'?'️':'ℹ️'}</span>
                   <div>
                     <p className="text-white font-semibold">{alert.message}</p>
                     {alert.createdAt && (

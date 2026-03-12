@@ -276,7 +276,7 @@ function ChapterSection({ chapter, courseId }: { chapter: any; courseId: string 
                         </span>
                       )}
                       {lesson.quizzes?.length > 0 && (
-                        <span className="text-xs text-amber-600">🎯 {lesson.quizzes.length} quiz</span>
+                        <span className="text-xs text-amber-600">{lesson.quizzes.length} quiz</span>
                       )}
                     </div>
                   </div>

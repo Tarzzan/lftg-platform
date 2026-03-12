@@ -50,11 +50,10 @@ export default function TicketsPage() {
   // L'API peut retourner un objet ou un tableau
   const tickets: Ticket[] = Array.isArray(rawTickets)
     ? rawTickets
-    : rawTickets && typeof rawTickets === 'object'
-    ? Object.values(rawTickets).flat() as Ticket[]
+    : rawTickets && typeof rawTickets ==='object'? Object.values(rawTickets).flat() as Ticket[]
     : [];
 
-  const filteredTickets = statusFilter === 'all' ? tickets : tickets.filter((t) => t.status === statusFilter);
+  const filteredTickets = statusFilter ==='all'? tickets : tickets.filter((t) => t.status === statusFilter);
 
   const createMutation = useMutation({
     mutationFn: async (data: typeof newTicket) => {
@@ -65,7 +64,7 @@ export default function TicketsPage() {
       toast.success('Opération réussie avec succès');
       queryClient.invalidateQueries({ queryKey: ['tickets'] });
       setShowCreate(false);
-      setNewTicket({ title: '', description: '', priority: 'medium', category: 'GENERAL' });
+      setNewTicket({ title:'', description:'', priority:'medium', category:'GENERAL'});
     },
   });
 
@@ -88,8 +87,7 @@ export default function TicketsPage() {
         </div>
         <button
           onClick={() => setShowCreate(!showCreate)}
-          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-medium transition-colors"
-        >
+          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-medium transition-colors">
           + Nouveau ticket
         </button>
       </div>
@@ -102,20 +100,16 @@ export default function TicketsPage() {
             <div>
               <label className="text-slate-400 text-sm block mb-1">Titre *</label>
               <input
-                type="text"
-                value={newTicket.title}
+                type="text"value={newTicket.title}
                 onChange={(e) => setNewTicket({ ...newTicket, title: e.target.value })}
-                className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-indigo-500"
-                placeholder="Titre du ticket"
-              />
+                className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-indigo-500"placeholder="Titre du ticket"/>
             </div>
             <div>
               <label className="text-slate-400 text-sm block mb-1">Priorité</label>
               <select
                 value={newTicket.priority}
                 onChange={(e) => setNewTicket({ ...newTicket, priority: e.target.value })}
-                className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-indigo-500"
-              >
+                className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-indigo-500">
                 <option value="low">Faible</option>
                 <option value="medium">Normale</option>
                 <option value="high">Haute</option>
@@ -127,23 +121,19 @@ export default function TicketsPage() {
               <textarea
                 value={newTicket.description}
                 onChange={(e) => setNewTicket({ ...newTicket, description: e.target.value })}
-                className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-indigo-500 h-24 resize-none"
-                placeholder="Description détaillée..."
-              />
+                className="w-full bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-indigo-500 h-24 resize-none"placeholder="Description détaillée..."/>
             </div>
           </div>
           <div className="flex gap-3">
             <button
               onClick={() => createMutation.mutate(newTicket)}
               disabled={!newTicket.title || createMutation.isPending}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-colors"
-            >
-              {createMutation.isPending ? 'Création...' : 'Créer le ticket'}
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-lg text-sm font-medium transition-colors">
+              {createMutation.isPending ?'Création...':'Créer le ticket'}
             </button>
             <button
               onClick={() => setShowCreate(false)}
-              className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-sm transition-colors"
-            >
+              className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg text-sm transition-colors">
               Annuler
             </button>
           </div>
@@ -152,7 +142,7 @@ export default function TicketsPage() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {(['OPEN', 'IN_PROGRESS', 'RESOLVED', 'CLOSED'] as const).map((s) => {
+        {(['OPEN','IN_PROGRESS','RESOLVED','CLOSED'] as const).map((s) => {
           const cfg = statusConfig[s];
           return (
             <div key={s} className={`rounded-xl p-4 border ${cfg.bg} ${cfg.border}`}>
@@ -165,13 +155,12 @@ export default function TicketsPage() {
 
       {/* Filtres */}
       <div className="flex gap-2 flex-wrap">
-        {[['all', 'Tous'], ['OPEN', 'Ouverts'], ['IN_PROGRESS', 'En cours'], ['RESOLVED', 'Résolus'], ['CLOSED', 'Fermés']].map(([val, label]) => (
+        {[['all','Tous'], ['OPEN','Ouverts'], ['IN_PROGRESS','En cours'], ['RESOLVED','Résolus'], ['CLOSED','Fermés']].map(([val, label]) => (
           <button
             key={val}
             onClick={() => setStatusFilter(val)}
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              statusFilter === val ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
-            }`}
+              statusFilter === val ?'bg-indigo-600 text-white':'bg-slate-800 text-slate-400 hover:bg-slate-700'}`}
           >
             {label}
           </button>
@@ -181,7 +170,7 @@ export default function TicketsPage() {
       {/* Liste */}
       {isLoading ? (
         <div className="flex items-center justify-center h-40">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500" />
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"/>
         </div>
       ) : isError ? (
         <div className="bg-red-900/20 border border-red-700 rounded-xl p-6 text-center text-red-400">
@@ -189,7 +178,7 @@ export default function TicketsPage() {
         </div>
       ) : filteredTickets.length === 0 ? (
         <div className="bg-slate-800 rounded-xl p-12 text-center">
-          <p className="text-4xl mb-3">🎫</p>
+          <p className="text-4xl mb-3"></p>
           <p className="text-slate-300 font-semibold">Aucun ticket</p>
         </div>
       ) : (
@@ -217,19 +206,18 @@ export default function TicketsPage() {
                       </p>
                     )}
                   </div>
-                  {ticket.status !== 'CLOSED' && (
+                  {ticket.status !=='CLOSED'&& (
                     <div className="flex gap-2 flex-shrink-0">
-                      {ticket.status === 'OPEN' && (
+                      {ticket.status ==='OPEN'&& (
                         <button
-                          onClick={() => updateStatusMutation.mutate({ id: ticket.id, status: 'IN_PROGRESS' })}
-                          className="px-3 py-1.5 text-xs bg-yellow-800 hover:bg-yellow-700 text-yellow-300 rounded-lg transition-colors"
-                        >
+                          onClick={() => updateStatusMutation.mutate({ id: ticket.id, status:'IN_PROGRESS'})}
+                          className="px-3 py-1.5 text-xs bg-yellow-800 hover:bg-yellow-700 text-yellow-300 rounded-lg transition-colors">
                           Prendre en charge
                         </button>
                       )}
-                      {ticket.status === 'IN_PROGRESS' && (
+                      {ticket.status ==='IN_PROGRESS'&& (
                         <button
-                          onClick={() => updateStatusMutation.mutate({ id: ticket.id, status: 'RESOLVED' })}
+                          onClick={() => updateStatusMutation.mutate({ id: ticket.id, status:'RESOLVED' })}
                           className="px-3 py-1.5 text-xs bg-green-800 hover:bg-green-700 text-green-300 rounded-lg transition-colors"
                         >
                           Résoudre

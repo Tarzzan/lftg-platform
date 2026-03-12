@@ -329,9 +329,7 @@ function QuizBlock({ quiz, enrollmentId }: { quiz: any; enrollmentId: string }) 
       {submitted && (
         <div className={`mt-3 flex items-center gap-2 text-sm font-semibold px-4 py-2.5 rounded-xl ${
           isCorrect ? 'bg-forest-50 text-forest-700' : 'bg-red-50 text-red-700'
-        }`}>
-          {isCorrect ? '✅ Excellente réponse !' : `❌ La bonne réponse était : "${quiz.answer}"`}
-        </div>
+        }`}>{isCorrect ? 'Excellente réponse !' : ` La bonne réponse était : "${quiz.answer}"`}</div>
       )}
     </div>
   );
@@ -654,14 +652,14 @@ export default function EnrollmentDetailPage() {
 
   if (isLoading) return (
     <div className="flex flex-col items-center justify-center h-64 gap-3">
-      <div className="w-10 h-10 border-3 border-forest-500 border-t-transparent rounded-full animate-spin" />
+      <div className="w-10 h-10 border-3 border-forest-500 border-t-transparent rounded-full animate-spin"/>
       <p className="text-sm text-gray-500">Chargement de votre formation...</p>
     </div>
   );
 
   if (!progressData) return (
     <div className="text-center py-12">
-      <BookOpen className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+      <BookOpen className="w-10 h-10 text-gray-300 mx-auto mb-3"/>
       <p className="text-gray-500">Inscription introuvable</p>
     </div>
   );
@@ -679,9 +677,8 @@ export default function EnrollmentDetailPage() {
         <div className="p-4 border-b border-gray-100">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 dark:text-gray-400 mb-3 transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" /> Retour au parcours
+            className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 dark:text-gray-400 mb-3 transition-colors">
+            <ArrowLeft className="w-3.5 h-3.5"/> Retour au parcours
           </button>
           <h2 className="font-bold text-gray-800 text-sm leading-tight line-clamp-2">{course?.title}</h2>
           <p className="text-xs text-gray-400 mt-0.5">{progressData?.cohort?.name}</p>
@@ -695,8 +692,7 @@ export default function EnrollmentDetailPage() {
             <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2 overflow-hidden">
               <div
                 className={`h-2 rounded-full transition-all duration-700 ${
-                  progress >= 80 ? 'bg-forest-500' : progress >= 50 ? 'bg-gold-500' : 'bg-maroni-500'
-                }`}
+                  progress >= 80 ?'bg-forest-500': progress >= 50 ?'bg-gold-500':'bg-maroni-500'}`}
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -720,8 +716,7 @@ export default function EnrollmentDetailPage() {
                     if (next.has(chapter.id)) next.delete(chapter.id); else next.add(chapter.id);
                     setExpandedChapters(next);
                   }}
-                  className="flex items-center gap-2 w-full p-2.5 rounded-lg hover:bg-gray-50 dark:bg-muted/20 transition-colors text-left"
-                >
+                  className="flex items-center gap-2 w-full p-2.5 rounded-lg hover:bg-gray-50 dark:bg-muted/20 transition-colors text-left">
                   <span className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0 text-xs font-bold bg-gray-100 dark:bg-gray-800 text-gray-500">
                     {chIdx + 1}
                   </span>
@@ -730,10 +725,10 @@ export default function EnrollmentDetailPage() {
                     <p className="text-xs text-gray-400">{chCompleted}/{chLessons.length}</p>
                   </div>
                   {chDone
-                    ? <CheckCircle className="w-3.5 h-3.5 text-forest-500 flex-shrink-0" />
+                    ? <CheckCircle className="w-3.5 h-3.5 text-forest-500 flex-shrink-0"/>
                     : isExpanded
-                    ? <ChevronDown className="w-3.5 h-3.5 text-gray-300 flex-shrink-0" />
-                    : <ChevronRight className="w-3.5 h-3.5 text-gray-300 flex-shrink-0" />
+                    ? <ChevronDown className="w-3.5 h-3.5 text-gray-300 flex-shrink-0"/>
+                    : <ChevronRight className="w-3.5 h-3.5 text-gray-300 flex-shrink-0"/>
                   }
                 </button>
 
@@ -748,21 +743,19 @@ export default function EnrollmentDetailPage() {
                           onClick={() => setActiveLesson(lesson)}
                           className={`flex items-center gap-2.5 w-full px-3 py-2 rounded-lg text-left transition-all ${
                             isActive
-                              ? 'bg-forest-50 border border-forest-200'
-                              : 'hover:bg-gray-50 dark:bg-muted/20 border border-transparent'
-                          }`}
+                              ?'bg-forest-50 border border-forest-200':'hover:bg-gray-50 dark:bg-muted/20 border border-transparent'}`}
                         >
                           <div className="flex-shrink-0 w-4 h-4 flex items-center justify-center">
                             {isDone
-                              ? <CheckCircle className="w-4 h-4 text-forest-500" />
+                              ? <CheckCircle className="w-4 h-4 text-forest-500"/>
                               : isActive
-                              ? <Play className="w-3.5 h-3.5 text-forest-600" />
-                              : <Circle className="w-3.5 h-3.5 text-gray-200" />
+                              ? <Play className="w-3.5 h-3.5 text-forest-600"/>
+                              : <Circle className="w-3.5 h-3.5 text-gray-200"/>
                             }
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className={`text-xs font-medium truncate ${
-                              isActive ? 'text-forest-800' : isDone ? 'text-gray-500' : 'text-gray-700'
+                              isActive ?'text-forest-800': isDone ?'text-gray-500':'text-gray-700'
                             }`}>{lesson.title}</p>
                             {lesson.duration && (
                               <p className="text-xs text-gray-400 flex items-center gap-0.5 mt-0.5">
@@ -771,7 +764,7 @@ export default function EnrollmentDetailPage() {
                             )}
                           </div>
                           {lesson.documents?.length > 0 && (
-                            <span className="text-xs text-gray-300 flex-shrink-0">{lesson.documents.length}📎</span>
+                            <span className="text-xs text-gray-300 flex-shrink-0">{lesson.documents.length}</span>
                           )}
                         </button>
                       );

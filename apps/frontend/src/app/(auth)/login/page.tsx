@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,15 +18,66 @@ type LoginForm = z.infer<typeof loginSchema>;
 
 // Particules flottantes (feuilles, lucioles)
 const PARTICLES = [
-  { emoji: '🍃', x: 8, y: 15, delay: 0, duration: 6 },
-  { emoji: '✨', x: 85, y: 25, delay: 1.2, duration: 5 },
-  { emoji: '🦋', x: 15, y: 70, delay: 2.5, duration: 7 },
-  { emoji: '🍃', x: 90, y: 60, delay: 0.8, duration: 8 },
-  { emoji: '✨', x: 50, y: 10, delay: 3, duration: 6 },
-  { emoji: '🌿', x: 75, y: 80, delay: 1.5, duration: 9 },
-  { emoji: '✨', x: 25, y: 90, delay: 4, duration: 5 },
-  { emoji: '🍃', x: 60, y: 45, delay: 2, duration: 7 },
+  { emoji: '', x: 8, y: 15, delay: 0, duration: 6 },
+  { emoji: '', x: 85, y: 25, delay: 1.2, duration: 5 },
+  { emoji: '', x: 15, y: 70, delay: 2.5, duration: 7 },
+  { emoji: '', x: 90, y: 60, delay: 0.8, duration: 8 },
+  { emoji: '', x: 50, y: 10, delay: 3, duration: 6 },
+  { emoji: '', x: 75, y: 80, delay: 1.5, duration: 9 },
+  { emoji: '', x: 25, y: 90, delay: 4, duration: 5 },
+  { emoji: '', x: 60, y: 45, delay: 2, duration: 7 },
 ];
+
+// Les 4 logos LFTG
+const LOGOS = [
+  { src: '/logo-original-web.png', alt: 'LFTG Logo Original' },
+  { src: '/logo-c-web.png', alt: 'LFTG Logo Médaillon' },
+  { src: '/logo-d-web.png', alt: 'LFTG Logo Tech' },
+  { src: '/logo-e-web.png', alt: 'LFTG Logo Tropical' },
+];
+
+// Composant logo tournoyant
+function RotatingLogo({ size = 180 }: { size?: number }) {
+  const [current, setCurrent] = useState(0);
+  const [phase, setPhase] = useState<'idle' | 'out' | 'in'>('idle');
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setPhase('out');
+      setTimeout(() => {
+        setCurrent(prev => (prev + 1) % LOGOS.length);
+        setPhase('in');
+      }, 420);
+      setTimeout(() => {
+        setPhase('idle');
+      }, 840);
+    }, 2800);
+    return () => clearInterval(timer);
+  }, []);
+
+  const animClass =
+    phase === 'out' ? 'logo-flip-out' :
+    phase === 'in'  ? 'logo-flip-in'  :
+    'logo-idle';
+
+  return (
+    <div style={{ width: size, height: size, perspective: '700px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <img
+        key={current}
+        src={LOGOS[current].src}
+        alt={LOGOS[current].alt}
+        width={size}
+        height={size}
+        className={animClass}
+        style={{
+          objectFit: 'contain',
+          borderRadius: '50%',
+          filter: 'drop-shadow(0 6px 24px rgba(0,0,0,0.55)) drop-shadow(0 0 12px rgba(193,127,58,0.25))',
+        }}
+      />
+    </div>
+  );
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -95,19 +146,22 @@ export default function LoginPage() {
       {/* Contenu principal */}
       <div className="relative z-10 w-full max-w-md">
 
-        {/* Logo & Brand */}
+        {/* Logo tournoyant & Brand */}
         <div className="text-center mb-8">
-          <div
-            className="inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-5 relative"
-            style={{
-              background: 'linear-gradient(135deg, rgba(193,127,58,0.25), rgba(232,168,78,0.15))',
-              border: '1px solid rgba(193,127,58,0.4)',
-              backdropFilter: 'blur(12px)',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.4), 0 0 20px rgba(193,127,58,0.15)',
-            }}
-          >
-            <span className="text-4xl" style={{ filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.5))' }}>🦜</span>
+          {/* Halo lumineux derrière le logo */}
+          <div className="flex items-center justify-center mb-4 relative">
+            <div
+              className="absolute rounded-full pointer-events-none"
+              style={{
+                width: 200,
+                height: 200,
+                background: 'radial-gradient(circle, rgba(193,127,58,0.18) 0%, rgba(26,71,49,0.12) 60%, transparent 80%)',
+                filter: 'blur(12px)',
+              }}
+            />
+            {mounted && <RotatingLogo size={180} />}
           </div>
+
           <h1
             className="text-3xl font-bold text-white mb-1"
             style={{
@@ -155,7 +209,7 @@ export default function LoginPage() {
                 color: '#fca5a5',
               }}
             >
-              <span className="text-base">⚠️</span>
+              <span className="text-base">️</span>
               {error}
             </div>
           )}
@@ -304,6 +358,27 @@ export default function LoginPage() {
           0%, 100% { transform: translateY(0px) rotate(0deg); }
           33% { transform: translateY(-10px) rotate(2deg); }
           66% { transform: translateY(-5px) rotate(-1deg); }
+        }
+        @keyframes flipOut {
+          0%   { transform: rotateY(0deg) scale(1);    opacity: 1; }
+          100% { transform: rotateY(90deg) scale(0.85); opacity: 0; }
+        }
+        @keyframes flipIn {
+          0%   { transform: rotateY(-90deg) scale(0.85); opacity: 0; }
+          100% { transform: rotateY(0deg) scale(1);     opacity: 1; }
+        }
+        @keyframes floatLogo {
+          0%, 100% { transform: translateY(0px) scale(1); }
+          50%       { transform: translateY(-10px) scale(1.02); }
+        }
+        .logo-idle {
+          animation: floatLogo 3.5s ease-in-out infinite;
+        }
+        .logo-flip-out {
+          animation: flipOut 0.42s cubic-bezier(0.4, 0, 1, 1) forwards;
+        }
+        .logo-flip-in {
+          animation: flipIn 0.42s cubic-bezier(0, 0, 0.6, 1) forwards;
         }
       `}</style>
     </div>

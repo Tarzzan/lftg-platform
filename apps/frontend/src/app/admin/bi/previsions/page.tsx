@@ -114,7 +114,7 @@ export default function PrevisionsPage() {
           {/* Graphique revenus */}
           {revenue && (
             <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
-              <h2 className="text-white font-semibold mb-4">📈 Prévisions de revenus</h2>
+              <h2 className="text-white font-semibold mb-4">Prévisions de revenus</h2>
               <div className="flex items-end gap-1 h-40">
                 {revenue.historical?.map((p) => (
                   <div key={`h-${p.month}`} className="flex-1 flex flex-col items-center gap-1">
@@ -147,7 +147,7 @@ export default function PrevisionsPage() {
           {/* Graphique population */}
           {population && (
             <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
-              <h2 className="text-white font-semibold mb-4">🦜 Évolution de la population animale</h2>
+              <h2 className="text-white font-semibold mb-4">Évolution de la population animale</h2>
               <div className="flex items-end gap-1 h-32">
                 {population.historical?.map((p) => (
                   <div key={`h-${p.month}`} className="flex-1 flex flex-col items-center gap-1">
@@ -175,7 +175,7 @@ export default function PrevisionsPage() {
 
           {/* Alertes stock */}
           <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
-            <h2 className="text-white font-semibold mb-4">📦 Prévisions de stock</h2>
+            <h2 className="text-white font-semibold mb-4">Prévisions de stock</h2>
             {stockAlerts.length === 0 ? (
               <p className="text-slate-400 text-center py-4">Aucune alerte de stock prévue</p>
             ) : (

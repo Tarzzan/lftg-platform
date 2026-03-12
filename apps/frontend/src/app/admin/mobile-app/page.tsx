@@ -31,7 +31,7 @@ export default function MobileAppPage() {
     <div className="bg-gradient-to-b from-green-700 to-green-900 h-full flex flex-col">
       <div className="px-4 pt-8 pb-4">
         <div className="flex items-center gap-2 mb-1">
-          <span className="text-2xl">🦜</span>
+          <span className="text-2xl"></span>
           <span className="text-white font-bold text-lg">LFTG Mobile</span>
         </div>
         <p className="text-green-200 text-xs">Données en temps réel</p>
@@ -49,10 +49,10 @@ export default function MobileAppPage() {
         ) : (
           <div className="grid grid-cols-2 gap-3 mb-4">
             {[
-              { icon: '🐾', label: 'Animaux vivants', count: stats?.animals?.alive ?? 0, color: 'bg-blue-50 border-blue-100' },
-              { icon: '🥚', label: 'Couvées actives', count: stats?.animals?.activeBroods ?? 0, color: 'bg-green-50 border-green-100' },
-              { icon: '⚠️', label: 'Stock faible', count: stats?.stock?.lowStock ?? 0, color: 'bg-red-50 border-red-100' },
-              { icon: '🎓', label: 'Formations', count: stats?.formation?.courses ?? 0, color: 'bg-purple-50 border-purple-100' },
+              { icon: '', label: 'Animaux vivants', count: stats?.animals?.alive ?? 0, color: 'bg-blue-50 border-blue-100' },
+              { icon: '', label: 'Couvées actives', count: stats?.animals?.activeBroods ?? 0, color: 'bg-green-50 border-green-100' },
+              { icon: '️', label: 'Stock faible', count: stats?.stock?.lowStock ?? 0, color: 'bg-red-50 border-red-100' },
+              { icon: '', label: 'Formations', count: stats?.formation?.courses ?? 0, color: 'bg-purple-50 border-purple-100' },
             ].map((item) => (
               <div key={item.label} className={`${item.color} border rounded-xl p-3 text-center`}>
                 <div className="text-2xl mb-1">{item.icon}</div>
@@ -64,7 +64,7 @@ export default function MobileAppPage() {
         )}
         {error && (
           <div className="bg-red-50 border border-red-200 rounded-xl p-3 mb-3">
-            <p className="text-xs font-semibold text-red-500">⚠️ ERREUR</p>
+            <p className="text-xs font-semibold text-red-500">️ ERREUR</p>
             <p className="text-sm text-gray-700">{error}</p>
           </div>
         )}
@@ -97,7 +97,7 @@ export default function MobileAppPage() {
       </div>
       <div className="flex-1 p-4 flex items-center justify-center">
         <div className="text-center text-gray-400">
-          <p className="text-4xl mb-3">🐾</p>
+          <p className="text-4xl mb-3"></p>
           <p className="font-medium text-gray-600">Liste des animaux</p>
           <p className="text-xs mt-1">Disponible dans l&apos;interface admin</p>
         </div>
@@ -114,13 +114,13 @@ export default function MobileAppPage() {
       <div className="flex-1 p-4">
         {(stats?.stock?.lowStock ?? 0) > 0 ? (
           <div className="bg-red-50 border border-red-200 rounded-xl p-3">
-            <p className="text-xs font-semibold text-red-500 mb-1">⚠️ STOCK FAIBLE</p>
+            <p className="text-xs font-semibold text-red-500 mb-1">️ STOCK FAIBLE</p>
             <p className="text-sm font-medium text-gray-800">{stats?.stock?.lowStock} article(s) en rupture imminente</p>
             <p className="text-xs text-gray-500">Vérifiez le module Stock</p>
           </div>
         ) : (
           <div className="text-center py-8 text-gray-400">
-            <p className="text-4xl mb-3">✅</p>
+            <p className="text-4xl mb-3"></p>
             <p className="font-medium text-gray-600">Aucune alerte active</p>
           </div>
         )}
@@ -135,7 +135,7 @@ export default function MobileAppPage() {
       </div>
       <div className="flex-1 p-4 flex items-center justify-center">
         <div className="text-center text-gray-400">
-          <p className="text-4xl mb-3">👤</p>
+          <p className="text-4xl mb-3"></p>
           <p className="font-medium text-gray-600">Profil utilisateur</p>
           <p className="text-xs mt-1">Gérez votre compte depuis l&apos;interface admin</p>
         </div>
@@ -198,10 +198,10 @@ export default function MobileAppPage() {
               {/* Barre de navigation */}
               <div className="bg-white dark:bg-card border-t border-gray-200 dark:border-border h-14 flex items-center justify-around px-4">
                 {[
-                  { screen: 'home' as Screen, icon: '🏠', label: 'Accueil' },
-                  { screen: 'animals' as Screen, icon: '🐾', label: 'Animaux' },
-                  { screen: 'alerts' as Screen, icon: '🔔', label: 'Alertes' },
-                  { screen: 'profile' as Screen, icon: '👤', label: 'Profil' },
+                  { screen: 'home' as Screen, icon: '', label: 'Accueil' },
+                  { screen: 'animals' as Screen, icon: '', label: 'Animaux' },
+                  { screen: 'alerts' as Screen, icon: '', label: 'Alertes' },
+                  { screen: 'profile' as Screen, icon: '', label: 'Profil' },
                 ].map(({ screen, icon, label }) => (
                   <button
                     key={screen}
@@ -241,12 +241,12 @@ export default function MobileAppPage() {
             <h3 className="font-semibold text-gray-900 dark:text-foreground mb-3">Fonctionnalités prévues</h3>
             <div className="space-y-2">
               {[
-                '✅ Consultation des animaux en temps réel',
-                '✅ Alertes push (stock faible, santé animaux)',
-                '✅ Suivi des couvées',
-                '🔄 Scan QR code pour identification animaux',
-                '🔄 Saisie des soins depuis le terrain',
-                '🔄 Mode hors-ligne avec synchronisation',
+                'Consultation des animaux en temps réel',
+                'Alertes push (stock faible, santé animaux)',
+                'Suivi des couvées',
+                'Scan QR code pour identification animaux',
+                'Saisie des soins depuis le terrain',
+                'Mode hors-ligne avec synchronisation',
               ].map((f) => (
                 <p key={f} className="text-sm text-gray-700">{f}</p>
               ))}

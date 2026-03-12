@@ -25,11 +25,11 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const EVENT_ICONS: Record<string, string> = {
-  CANDLING: '🕯️',
-  TURNING: '🔄',
-  TEMPERATURE_CHECK: '🌡️',
-  HATCHING: '🐣',
-  NOTE: '📝',
+  CANDLING: '️',
+  TURNING: '',
+  TEMPERATURE_CHECK: '️',
+  HATCHING: '',
+  NOTE: '',
 };
 
 export default function BroodDetailPage() {
@@ -124,7 +124,7 @@ export default function BroodDetailPage() {
           </button>
           <div>
             <div className="flex items-center gap-3">
-              <span className="text-3xl">🥚</span>
+              <img src="/icons/section-animaux.png" alt="" className="w-8 h-8 object-cover rounded-xl" />
               <div>
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground dark:text-white">
                   Couvée {brood.reference || `#${id.slice(-6)}`}
@@ -150,14 +150,13 @@ export default function BroodDetailPage() {
                 onClick={() => updateStatusMutation.mutate('ECLOSION')}
                 className="px-3 py-1.5 bg-amber-500 text-white rounded-lg text-sm hover:bg-amber-600 transition-colors"
               >
-                🐣 Début éclosion
+                Début éclosion
               </button>
               <button
-                onClick={() => updateStatusMutation.mutate('TERMINEE')}
+                onClick={() =>updateStatusMutation.mutate('TERMINEE')}
                 className="px-3 py-1.5 bg-forest-600 text-white rounded-lg text-sm hover:bg-forest-700 transition-colors"
               >
-                ✓ Terminer
-              </button>
+                 Terminer</button>
             </div>
           )}
         </div>
@@ -166,10 +165,10 @@ export default function BroodDetailPage() {
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { label: 'Œufs total', value: brood.eggCount, icon: '🥚', color: 'blue' },
-          { label: 'Fertilisés', value: brood.fertilizedCount ?? '—', icon: '🔬', color: 'purple' },
-          { label: 'Éclos', value: brood.hatchedCount ?? 0, icon: '🐣', color: 'green' },
-          { label: 'Taux de réussite', value: `${successRate}%`, icon: '📊', color: 'amber' },
+          { label: 'Œufs total', value: brood.eggCount, icon: '/icons/section-animaux.png', color: 'blue' },
+          { label: 'Fertilisés', value: brood.fertilizedCount ?? '—', icon: '/icons/section-medical.png', color: 'purple' },
+          { label: 'Éclos', value: brood.hatchedCount ?? 0, icon: '/icons/section-animaux.png', color: 'green' },
+          { label: 'Taux de réussite', value: `${successRate}%`, icon: '/icons/section-dashboard.png', color: 'amber' },
         ].map(kpi => (
           <div key={kpi.label} className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-4 text-center">
             <div className="text-2xl mb-1">{kpi.icon}</div>
@@ -190,13 +189,12 @@ export default function BroodDetailPage() {
           </div>
           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
             <div
-              className="bg-forest-500 h-3 rounded-full transition-all duration-500"
-              style={{ width: `${progressPercent}%` }}
+              className="bg-forest-500 h-3 rounded-full transition-all duration-500"style={{ width: `${progressPercent}%` }}
             />
           </div>
           <div className="flex justify-between text-xs text-gray-400 mt-1">
-            <span>Début : {brood.incubationStartDate ? new Date(brood.incubationStartDate).toLocaleDateString('fr-FR') : '—'}</span>
-            <span>Éclosion prévue : {brood.expectedHatchDate ? new Date(brood.expectedHatchDate).toLocaleDateString('fr-FR') : '—'}</span>
+            <span>Début : {brood.incubationStartDate ? new Date(brood.incubationStartDate).toLocaleDateString('fr-FR') :'—'}</span>
+            <span>Éclosion prévue : {brood.expectedHatchDate ? new Date(brood.expectedHatchDate).toLocaleDateString('fr-FR') :'—'}</span>
           </div>
         </div>
       )}
@@ -204,41 +202,39 @@ export default function BroodDetailPage() {
       {/* Onglets */}
       <div className="border-b border-gray-200 dark:border-border dark:border-gray-700">
         <nav className="flex gap-1">
-          {(['overview', 'events', 'stats'] as const).map(tab => (
+          {(['overview','events','stats'] as const).map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-4 py-2 text-sm font-medium rounded-t-lg transition-colors ${
                 activeTab === tab
-                  ? 'bg-white dark:bg-gray-800 border border-b-white dark:border-gray-700 dark:border-b-gray-800 text-forest-600 -mb-px'
-                  : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-300'
-              }`}
+                  ?'bg-white dark:bg-gray-800 border border-b-white dark:border-gray-700 dark:border-b-gray-800 text-forest-600 -mb-px':'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-300'}`}
             >
-              {tab === 'overview' ? '📋 Fiche' : tab === 'events' ? '📅 Événements' : '📊 Statistiques'}
+              {tab ==='overview'?'Fiche': tab ==='events'?'Événements':'Statistiques'}
             </button>
           ))}
         </nav>
       </div>
 
       {/* Contenu des onglets */}
-      {activeTab === 'overview' && (
+      {activeTab ==='overview'&& (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-5">
             <h3 className="font-semibold text-gray-900 dark:text-foreground dark:text-white mb-4">Informations générales</h3>
             <dl className="space-y-3">
               {[
-                { label: 'Espèce', value: brood.species?.name },
-                { label: 'Référence', value: brood.reference || '—' },
-                { label: 'Incubateur', value: brood.incubatorId || '—' },
-                { label: 'Température cible', value: brood.temperature ? `${brood.temperature}°C` : '—' },
-                { label: 'Humidité cible', value: brood.humidity ? `${brood.humidity}%` : '—' },
-                { label: 'Début incubation', value: brood.incubationStartDate ? new Date(brood.incubationStartDate).toLocaleDateString('fr-FR') : '—' },
-                { label: 'Éclosion prévue', value: brood.expectedHatchDate ? new Date(brood.expectedHatchDate).toLocaleDateString('fr-FR') : '—' },
-                { label: 'Éclosion réelle', value: brood.hatchDate ? new Date(brood.hatchDate).toLocaleDateString('fr-FR') : '—' },
+                { label:'Espèce', value: brood.species?.name },
+                { label:'Référence', value: brood.reference ||'—'},
+                { label:'Incubateur', value: brood.incubatorId ||'—'},
+                { label:'Température cible', value: brood.temperature ? `${brood.temperature}°C` :'—'},
+                { label:'Humidité cible', value: brood.humidity ? `${brood.humidity}%` :'—'},
+                { label:'Début incubation', value: brood.incubationStartDate ? new Date(brood.incubationStartDate).toLocaleDateString('fr-FR') :'—'},
+                { label:'Éclosion prévue', value: brood.expectedHatchDate ? new Date(brood.expectedHatchDate).toLocaleDateString('fr-FR') :'—'},
+                { label:'Éclosion réelle', value: brood.hatchDate ? new Date(brood.hatchDate).toLocaleDateString('fr-FR') :'—'},
               ].map(item => (
                 <div key={item.label} className="flex justify-between">
                   <dt className="text-sm text-gray-500">{item.label}</dt>
-                  <dd className="text-sm font-medium text-gray-900 dark:text-foreground dark:text-white">{item.value || '—'}</dd>
+                  <dd className="text-sm font-medium text-gray-900 dark:text-foreground dark:text-white">{item.value ||'—'}</dd>
                 </div>
               ))}
             </dl>
@@ -247,17 +243,14 @@ export default function BroodDetailPage() {
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-5">
             <h3 className="font-semibold text-gray-900 dark:text-foreground dark:text-white mb-4">Répartition des œufs</h3>
             {eggData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={200}>
+              <ResponsiveContainer width="100%"height={200}>
                 <PieChart>
                   <Pie
                     data={eggData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={50}
+                    cx="50%"cy="50%"innerRadius={50}
                     outerRadius={80}
                     paddingAngle={3}
-                    dataKey="value"
-                    label={({ name, value }) => `${name}: ${value}`}
+                    dataKey="value"label={({ name, value }) => `${name}: ${value}`}
                   >
                     {eggData.map((entry, index) => (
                       <Cell key={index} fill={entry.color} />
@@ -275,14 +268,14 @@ export default function BroodDetailPage() {
 
           {brood.notes && (
             <div className="md:col-span-2 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl p-4">
-              <h3 className="font-semibold text-amber-800 dark:text-amber-300 mb-2">📝 Notes</h3>
+              <h3 className="font-semibold text-amber-800 dark:text-amber-300 mb-2"> Notes</h3>
               <p className="text-sm text-amber-700 dark:text-amber-400">{brood.notes}</p>
             </div>
           )}
         </div>
       )}
 
-      {activeTab === 'events' && (
+      {activeTab ==='events'&& (
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="font-semibold text-gray-900 dark:text-foreground dark:text-white">
@@ -290,8 +283,7 @@ export default function BroodDetailPage() {
             </h3>
             <button
               onClick={() => setShowAddEvent(true)}
-              className="px-4 py-2 bg-forest-600 text-white rounded-lg text-sm hover:bg-forest-700 transition-colors"
-            >
+              className="px-4 py-2 bg-forest-600 text-white rounded-lg text-sm hover:bg-forest-700 transition-colors">
               + Ajouter un événement
             </button>
           </div>
@@ -305,36 +297,27 @@ export default function BroodDetailPage() {
                   <select
                     value={newEvent.type}
                     onChange={e => setNewEvent(p => ({ ...p, type: e.target.value }))}
-                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"
-                  >
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white">
                     {Object.entries(EVENT_ICONS).map(([key, icon]) => (
                       <option key={key} value={key}>{icon} {key}</option>
                     ))}
                   </select>
                 </div>
-                {(newEvent.type === 'TEMPERATURE_CHECK') && (
+                {(newEvent.type ==='TEMPERATURE_CHECK') && (
                   <>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Température (°C)</label>
                       <input
-                        type="number"
-                        step="0.1"
-                        value={newEvent.temperature}
+                        type="number"step="0.1"value={newEvent.temperature}
                         onChange={e => setNewEvent(p => ({ ...p, temperature: e.target.value }))}
-                        className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"
-                        placeholder="37.5"
-                      />
+                        className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"placeholder="37.5"/>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 dark:text-gray-300 mb-1">Humidité (%)</label>
                       <input
-                        type="number"
-                        step="1"
-                        value={newEvent.humidity}
+                        type="number"step="1"value={newEvent.humidity}
                         onChange={e => setNewEvent(p => ({ ...p, humidity: e.target.value }))}
-                        className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"
-                        placeholder="60"
-                      />
+                        className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"placeholder="60"/>
                     </div>
                   </>
                 )}
@@ -344,9 +327,7 @@ export default function BroodDetailPage() {
                     value={newEvent.notes}
                     onChange={e => setNewEvent(p => ({ ...p, notes: e.target.value }))}
                     rows={2}
-                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"
-                    placeholder="Observations..."
-                  />
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"placeholder="Observations..."/>
                 </div>
               </div>
               <div className="flex gap-2 mt-4">
@@ -360,14 +341,12 @@ export default function BroodDetailPage() {
                     } : undefined,
                   })}
                   disabled={addEventMutation.isPending}
-                  className="px-4 py-2 bg-forest-600 text-white rounded-lg text-sm hover:bg-forest-700 disabled:opacity-50 transition-colors"
-                >
-                  {addEventMutation.isPending ? 'Enregistrement...' : 'Enregistrer'}
+                  className="px-4 py-2 bg-forest-600 text-white rounded-lg text-sm hover:bg-forest-700 disabled:opacity-50 transition-colors">
+                  {addEventMutation.isPending ?'Enregistrement...':'Enregistrer'}
                 </button>
                 <button
                   onClick={() => setShowAddEvent(false)}
-                  className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 dark:text-gray-300 hover:bg-gray-50 dark:bg-muted/20 dark:hover:bg-gray-700 transition-colors"
-                >
+                  className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-700 dark:text-gray-300 dark:text-gray-300 hover:bg-gray-50 dark:bg-muted/20 dark:hover:bg-gray-700 transition-colors">
                   Annuler
                 </button>
               </div>
@@ -376,19 +355,17 @@ export default function BroodDetailPage() {
 
           {/* Timeline */}
           <div className="relative">
-            <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700" />
+            <div className="absolute left-6 top-0 bottom-0 w-0.5 bg-gray-200 dark:bg-gray-700"/>
             <div className="space-y-4">
               {(brood.events || []).length === 0 ? (
                 <div className="text-center py-12 text-gray-400">
-                  <p className="text-4xl mb-2">📅</p>
+                  <img src="/icons/section-animaux.png"alt=""className="w-10 h-10 object-cover rounded-xl mx-auto mb-2"/>
                   <p>Aucun événement enregistré</p>
                 </div>
               ) : (
                 (brood.events || []).map((event: any, index: number) => (
                   <div key={event.id || index} className="relative flex gap-4 pl-12">
-                    <div className="absolute left-3.5 w-5 h-5 rounded-full bg-white dark:bg-gray-800 border-2 border-forest-500 flex items-center justify-center text-xs">
-                      {EVENT_ICONS[event.type] || '📌'}
-                    </div>
+                    <div className="absolute left-3.5 w-5 h-5 rounded-full bg-white dark:bg-gray-800 border-2 border-forest-500 flex items-center justify-center text-xs">{EVENT_ICONS[event.type] ||''}</div>
                     <div className="flex-1 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-4">
                       <div className="flex justify-between items-start">
                         <div>
@@ -400,14 +377,14 @@ export default function BroodDetailPage() {
                           )}
                           {event.data?.temperature && (
                             <div className="flex gap-4 mt-2 text-xs text-gray-500">
-                              <span>🌡️ {event.data.temperature}°C</span>
-                              {event.data.humidity && <span>💧 {event.data.humidity}%</span>}
+                              <span>️ {event.data.temperature}°C</span>
+                              {event.data.humidity && <span> {event.data.humidity}%</span>}
                             </div>
                           )}
                         </div>
                         <span className="text-xs text-gray-400 whitespace-nowrap ml-4">
                           {new Date(event.timestamp).toLocaleDateString('fr-FR', {
-                            day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
+                            day:'numeric', month:'short', hour:'2-digit', minute:'2-digit',
                           })}
                         </span>
                       </div>
@@ -420,22 +397,22 @@ export default function BroodDetailPage() {
         </div>
       )}
 
-      {activeTab === 'stats' && (
+      {activeTab ==='stats'&& (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Graphique température */}
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-5">
             <h3 className="font-semibold text-gray-900 dark:text-foreground dark:text-white mb-4">Évolution température & humidité</h3>
             {tempData.length > 0 ? (
-              <ResponsiveContainer width="100%" height={220}>
+              <ResponsiveContainer width="100%"height={220}>
                 <LineChart data={tempData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                  <XAxis dataKey="day" tick={{ fontSize: 11 }} />
-                  <YAxis yAxisId="temp" domain={[30, 45]} tick={{ fontSize: 11 }} />
-                  <YAxis yAxisId="hum" orientation="right" domain={[0, 100]} tick={{ fontSize: 11 }} />
+                  <CartesianGrid strokeDasharray="3 3"stroke="#f0f0f0"/>
+                  <XAxis dataKey="day"tick={{ fontSize: 11 }} />
+                  <YAxis yAxisId="temp"domain={[30, 45]} tick={{ fontSize: 11 }} />
+                  <YAxis yAxisId="hum"orientation="right"domain={[0, 100]} tick={{ fontSize: 11 }} />
                   <Tooltip />
                   <Legend />
-                  <Line yAxisId="temp" type="monotone" dataKey="temperature" stroke="#ef4444" name="Temp (°C)" dot={{ r: 3 }} />
-                  <Line yAxisId="hum" type="monotone" dataKey="humidity" stroke="#3b82f6" name="Humidité (%)" dot={{ r: 3 }} />
+                  <Line yAxisId="temp"type="monotone"dataKey="temperature"stroke="#ef4444"name="Temp (°C)"dot={{ r: 3 }} />
+                  <Line yAxisId="hum"type="monotone"dataKey="humidity"stroke="#3b82f6"name="Humidité (%)"dot={{ r: 3 }} />
                 </LineChart>
               </ResponsiveContainer>
             ) : (
@@ -448,19 +425,19 @@ export default function BroodDetailPage() {
           {/* Graphique résultats */}
           <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-5">
             <h3 className="font-semibold text-gray-900 dark:text-foreground dark:text-white mb-4">Résultats de la couvée</h3>
-            <ResponsiveContainer width="100%" height={220}>
+            <ResponsiveContainer width="100%"height={220}>
               <BarChart data={[
-                { name: 'Œufs', total: brood.eggCount, fertilisés: brood.fertilizedCount || 0, éclos: brood.hatchedCount || 0, morts: brood.deadCount || 0 },
+                { name:'Œufs', total: brood.eggCount, fertilisés: brood.fertilizedCount || 0, éclos: brood.hatchedCount || 0, morts: brood.deadCount || 0 },
               ]}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+                <CartesianGrid strokeDasharray="3 3"stroke="#f0f0f0"/>
+                <XAxis dataKey="name"tick={{ fontSize: 11 }} />
                 <YAxis tick={{ fontSize: 11 }} />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="total" fill="#94a3b8" name="Total" />
-                <Bar dataKey="fertilisés" fill="#a78bfa" name="Fertilisés" />
-                <Bar dataKey="éclos" fill="#22c55e" name="Éclos" />
-                <Bar dataKey="morts" fill="#ef4444" name="Morts" />
+                <Bar dataKey="total"fill="#94a3b8"name="Total"/>
+                <Bar dataKey="fertilisés"fill="#a78bfa"name="Fertilisés"/>
+                <Bar dataKey="éclos"fill="#22c55e"name="Éclos"/>
+                <Bar dataKey="morts"fill="#ef4444"name="Morts"/>
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -471,14 +448,14 @@ export default function BroodDetailPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {[
                 {
-                  label: 'Taux de fertilisation',
+                  label:'Taux de fertilisation',
                   value: brood.fertilizedCount && brood.eggCount
                     ? `${Math.round((brood.fertilizedCount / brood.eggCount) * 100)}%`
-                    : '—',
-                  color: 'purple',
+                    :'—',
+                  color:'purple',
                 },
                 {
-                  label: 'Taux d\'éclosion',
+                  label:'Taux d\'éclosion',
                   value: `${successRate}%`,
                   color: successRate >= 70 ? 'green' : successRate >= 40 ? 'amber' : 'red',
                 },

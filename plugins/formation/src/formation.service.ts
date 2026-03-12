@@ -582,4 +582,36 @@ export class FormationService {
       .slice(0, 20);
   }
 
+
+  // ─── Gestion admin des inscriptions ──────────────────────────────────────
+  async enrollUserAdmin(cohortId: string, userId: string) {
+    const existing = await this.prisma.enrollment.findFirst({ where: { cohortId, userId } });
+    if (existing) return existing;
+    return this.prisma.enrollment.create({ data: { cohortId, userId } });
+  }
+
+  async getCohortEnrollments(cohortId: string) {
+    return this.prisma.enrollment.findMany({
+      where: { cohortId },
+      include: {
+        cohort: { include: { course: { select: { id: true, title: true } } } },
+      },
+      orderBy: { enrolledAt: "desc" },
+    });
+  }
+
+  async getUserCourseAccess(userId: string) {
+    return this.prisma.enrollment.findMany({
+      where: { userId },
+      include: {
+        cohort: {
+          include: {
+            course: { select: { id: true, title: true, category: true, level: true } },
+          },
+        },
+      },
+      orderBy: { enrolledAt: "desc" },
+    });
+  }
+
 }

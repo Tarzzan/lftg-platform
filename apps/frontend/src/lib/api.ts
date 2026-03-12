@@ -195,6 +195,9 @@ export const formationApi = {
 
   // Enrollments
   enroll: (cohortId: string) => api.post(`/plugins/formation/cohorts/${cohortId}/enroll`, {}).then((r) => r.data),
+  adminEnroll: (cohortId: string, userId: string) => api.post(`/plugins/formation/cohorts/${cohortId}/admin-enroll`, { userId }).then((r) => r.data),
+  getCohortEnrollments: (cohortId: string) => api.get(`/plugins/formation/cohorts/${cohortId}/enrollments`).then((r) => r.data),
+  getUserAccess: (userId: string) => api.get(`/plugins/formation/users/${userId}/access`).then((r) => r.data),
   unenroll: (enrollmentId: string) => api.delete(`/plugins/formation/enrollments/${enrollmentId}`).then((r) => r.data),
   myEnrollments: () => api.get('/plugins/formation/my-enrollments').then((r) => r.data),
   getEnrollmentProgress: (enrollmentId: string) => api.get(`/plugins/formation/enrollments/${enrollmentId}/progress`).then((r) => r.data),

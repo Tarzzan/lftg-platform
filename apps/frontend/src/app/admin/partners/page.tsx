@@ -18,12 +18,12 @@ interface Partner {
 }
 
 const typeConfig: Record<string, { label: string; icon: string; color: string }> = {
-  VETERINAIRE: { label: 'Vétérinaire', icon: '🏥', color: 'text-red-400' },
-  FOURNISSEUR: { label: 'Fournisseur', icon: '🏭', color: 'text-blue-400' },
-  ASSOCIATION: { label: 'Association', icon: '🤝', color: 'text-green-400' },
-  INSTITUTION: { label: 'Institution', icon: '🏛️', color: 'text-purple-400' },
-  MEDIA: { label: 'Média', icon: '📺', color: 'text-yellow-400' },
-  AUTRE: { label: 'Autre', icon: '🔗', color: 'text-slate-400' },
+  VETERINAIRE: { label: 'Vétérinaire', icon: '', color: 'text-red-400' },
+  FOURNISSEUR: { label: 'Fournisseur', icon: '', color: 'text-blue-400' },
+  ASSOCIATION: { label: 'Association', icon: '', color: 'text-green-400' },
+  INSTITUTION: { label: 'Institution', icon: '️', color: 'text-purple-400' },
+  MEDIA: { label: 'Média', icon: '', color: 'text-yellow-400' },
+  AUTRE: { label: 'Autre', icon: '', color: 'text-slate-400' },
 };
 
 const statusConfig: Record<string, { label: string; color: string; border: string }> = {
@@ -186,7 +186,7 @@ export default function PartnersPage() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="bg-slate-800 rounded-xl p-12 text-center border border-slate-700">
-          <p className="text-4xl mb-3">🤝</p>
+          <p className="text-4xl mb-3"></p>
           <p className="text-slate-300 font-semibold">Aucun partenaire trouvé</p>
         </div>
       ) : (
@@ -206,12 +206,10 @@ export default function PartnersPage() {
                         <span className={`text-xs font-semibold ${sCfg.color}`}>{sCfg.label}</span>
                       </div>
                       <div className="flex items-center gap-3 mt-1 text-slate-400 text-sm flex-wrap">
-                        {partner.email && <a href={`mailto:${partner.email}`} className="hover:text-indigo-400 transition-colors">✉️ {partner.email}</a>}
-                        {partner.phone && <span>📞 {partner.phone}</span>}
+                        {partner.email && <a href={`mailto:${partner.email}`} className="hover:text-indigo-400 transition-colors">️ {partner.email}</a>}
+                        {partner.phone && <span>{partner.phone}</span>}
                         {partner.website && (
-                          <a href={partner.website} target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 transition-colors">
-                            🌐 Site web
-                          </a>
+                          <a href={partner.website} target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 transition-colors">Site web</a>
                         )}
                       </div>
                       {partner.notes && <p className="text-slate-400 text-sm mt-1 italic">{partner.notes}</p>}

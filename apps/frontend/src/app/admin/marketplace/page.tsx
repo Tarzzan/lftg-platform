@@ -132,7 +132,7 @@ export default function MarketplacePage() {
             <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-600 text-sm">{error}</div>
           ) : filteredAnimals.length === 0 ? (
             <div className="text-center py-12 text-gray-400">
-              <p className="text-4xl mb-3">🔍</p>
+              <p className="text-4xl mb-3"></p>
               <p className="font-medium text-gray-600">Aucun animal trouvé</p>
             </div>
           ) : (
@@ -141,7 +141,7 @@ export default function MarketplacePage() {
                 <div key={animal.id} className="bg-white dark:bg-card rounded-xl border-2 border-gray-200 dark:border-border hover:border-green-300 p-4 transition-all">
                   <div className="flex justify-between items-start mb-3">
                     <div className="flex items-center gap-3">
-                      <span className="text-3xl">🦜</span>
+                      <span className="text-3xl"></span>
                       <div>
                         <h3 className="font-semibold text-gray-900">{animal.name}</h3>
                         <p className="text-xs text-gray-500 dark:text-gray-400 italic">
@@ -156,8 +156,8 @@ export default function MarketplacePage() {
                     )}
                   </div>
                   <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-400 mb-3">
-                    <span>📍 {animal.enclosure?.name ?? 'Enclos non assigné'}</span>
-                    <span>{animal.sex === 'M' ? '♂ Mâle' : animal.sex === 'F' ? '♀ Femelle' : '— Sexe inconnu'}</span>
+                    <span>{animal.enclosure?.name ?? 'Enclos non assigné'}</span>
+                    <span>{animal.sex === 'M' ? 'Mâle' : animal.sex === 'F' ? 'Femelle' : '— Sexe inconnu'}</span>
                   </div>
                   <div className="flex justify-between items-center pt-3 border-t border-gray-100">
                     <span className="text-xs bg-green-50 text-green-600 px-2 py-0.5 rounded">
@@ -177,7 +177,7 @@ export default function MarketplacePage() {
       {/* Messages Tab */}
       {activeTab === 'messages' && (
         <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-8 text-center text-gray-400">
-          <p className="text-4xl mb-3">💬</p>
+          <p className="text-4xl mb-3"></p>
           <p className="font-medium text-gray-600">Aucun message</p>
           <p className="text-sm mt-1">Vos échanges avec d&apos;autres éleveurs apparaîtront ici</p>
         </div>
@@ -186,7 +186,7 @@ export default function MarketplacePage() {
       {/* My Listings Tab */}
       {activeTab === 'my-listings' && (
         <div className="text-center py-12 text-gray-400">
-          <div className="text-5xl mb-4">📌</div>
+          <div className="text-5xl mb-4"></div>
           <h3 className="text-lg font-medium text-gray-600 dark:text-gray-400 mb-2">Aucune annonce publiée</h3>
           <p className="text-sm mb-4">Publiez votre première annonce pour vendre ou échanger des animaux</p>
           <button className="bg-green-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-green-700">

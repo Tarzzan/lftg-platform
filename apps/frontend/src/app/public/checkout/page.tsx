@@ -4,11 +4,11 @@ import { useState } from 'react';
 const API = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
 
 const products = [
-  { id: 'prod-1', name: 'Visite guidée standard', price: 15, description: '1h30 de visite avec guide expert', icon: '🦜', category: 'visite' },
+  { id: 'prod-1', name: 'Visite guidée standard', price: 15, description: '1h30 de visite avec guide expert', icon: '', category: 'visite' },
   { id: 'prod-2', name: 'Visite guidée premium', price: 35, description: 'Visite privée + interaction avec les animaux', icon: '⭐', category: 'visite' },
-  { id: 'prod-3', name: 'Parrainage mensuel — Ara', price: 25, description: 'Parrainez un Ara pendant 1 mois', icon: '❤️', category: 'parrainage' },
-  { id: 'prod-4', name: 'Parrainage mensuel — Dendrobate', price: 15, description: 'Parrainez une grenouille venimeuse', icon: '💚', category: 'parrainage' },
-  { id: 'prod-5', name: 'Don libre', price: 10, description: 'Soutenir la conservation des espèces', icon: '🌿', category: 'don' },
+  { id: 'prod-3', name: 'Parrainage mensuel — Ara', price: 25, description: 'Parrainez un Ara pendant 1 mois', icon: '️', category: 'parrainage' },
+  { id: 'prod-4', name: 'Parrainage mensuel — Dendrobate', price: 15, description: 'Parrainez une grenouille venimeuse', icon: '', category: 'parrainage' },
+  { id: 'prod-5', name: 'Don libre', price: 10, description: 'Soutenir la conservation des espèces', icon: '', category: 'don' },
 ];
 
 export default function CheckoutPage() {
@@ -82,7 +82,7 @@ export default function CheckoutPage() {
       setOrderRef(data.id || `CMD-${Date.now().toString(36).toUpperCase()}`);
       setStep('success');
     } catch (err: any) {
-      setError(err.message || 'Une erreur est survenue.');
+      setError(err.message ||'Une erreur est survenue.');
     } finally {
       setLoading(false);
     }
@@ -94,14 +94,14 @@ export default function CheckoutPage() {
       <div className="bg-white border-b border-gray-100 px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="text-2xl">🌿</span>
+            <span className="text-2xl"></span>
             <div>
               <h1 className="font-bold text-gray-900">La Ferme Tropicale de Guyane</h1>
               <p className="text-xs text-gray-500">Boutique & Dons</p>
             </div>
           </div>
           <div className="flex items-center gap-2 text-xs text-gray-400">
-            <span>🔒</span>
+            <span></span>
             <span>Sécurisé par Stripe</span>
           </div>
         </div>
@@ -110,28 +110,25 @@ export default function CheckoutPage() {
       {/* Stepper */}
       <div className="max-w-4xl mx-auto px-6 py-6">
         <div className="flex items-center gap-2 mb-8">
-          {(['products', 'cart', 'payment', 'success'] as const).map((s, i) => {
-            const labels = ['Produits', 'Panier', 'Paiement', 'Confirmation'];
-            const steps = ['products', 'cart', 'payment', 'success'];
+          {(['products','cart','payment','success'] as const).map((s, i) => {
+            const labels = ['Produits','Panier','Paiement','Confirmation'];
+            const steps = ['products','cart','payment','success'];
             const currentIdx = steps.indexOf(step);
             const isActive = s === step;
             const isDone = steps.indexOf(s) < currentIdx;
             return (
               <div key={s} className="flex items-center gap-2">
                 <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors ${
-                  isDone ? 'bg-forest-600 text-white' : isActive ? 'bg-forest-600 text-white ring-2 ring-forest-200' : 'bg-gray-100 text-gray-400'
-                }`}>
-                  {isDone ? '✓' : i + 1}
-                </div>
-                <span className={`text-sm ${isActive ? 'font-semibold text-forest-700' : 'text-gray-400'}`}>{labels[i]}</span>
-                {i < 3 && <div className="w-8 h-px bg-gray-200 mx-1" />}
+                  isDone ?'bg-forest-600 text-white': isActive ?'bg-forest-600 text-white ring-2 ring-forest-200':'bg-gray-100 text-gray-400'}`}>{isDone ?'': i + 1}</div>
+                <span className={`text-sm ${isActive ?'font-semibold text-forest-700':'text-gray-400'}`}>{labels[i]}</span>
+                {i < 3 && <div className="w-8 h-px bg-gray-200 mx-1"/>}
               </div>
             );
           })}
         </div>
 
         {/* Étape 1 : Produits */}
-        {step === 'products' && (
+        {step ==='products'&& (
           <div>
             <h2 className="text-xl font-bold text-gray-900 mb-6">Choisissez vos produits</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
@@ -172,12 +169,12 @@ export default function CheckoutPage() {
         )}
 
         {/* Étape 2 : Panier */}
-        {step === 'cart' && (
+        {step ==='cart'&& (
           <div className="max-w-lg mx-auto">
             <h2 className="text-xl font-bold text-gray-900 mb-6">Votre panier</h2>
             {cartItems.length === 0 ? (
               <div className="text-center py-12 text-gray-400">
-                <div className="text-4xl mb-3">🛒</div>
+                <div className="text-4xl mb-3"></div>
                 <p>Votre panier est vide</p>
                 <button onClick={() => setStep('products')} className="mt-4 text-forest-600 underline text-sm">Retour aux produits</button>
               </div>
@@ -197,7 +194,7 @@ export default function CheckoutPage() {
                         <button onClick={() => updateQty(item.id, item.qty + 1)} className="w-6 h-6 rounded-full bg-forest-100 flex items-center justify-center text-xs text-forest-700">+</button>
                       </div>
                       <span className="text-sm font-semibold text-gray-900 w-12 text-right">{item.product.price * item.qty}€</span>
-                      <button onClick={() => removeFromCart(item.id)} className="text-gray-300 hover:text-red-400 ml-1">✕</button>
+                      <button onClick={() => removeFromCart(item.id)} className="text-gray-300 hover:text-red-400 ml-1"></button>
                     </div>
                   ))}
                 </div>
@@ -217,32 +214,26 @@ export default function CheckoutPage() {
         )}
 
         {/* Étape 3 : Paiement */}
-        {step === 'payment' && (
+        {step ==='payment'&& (
           <div className="max-w-md mx-auto">
             <h2 className="text-xl font-bold text-gray-900 mb-6">Paiement sécurisé</h2>
             <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-4 mb-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nom complet *</label>
                 <input
-                  type="text"
-                  value={form.name}
+                  type="text"value={form.name}
                   onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-forest-400"
-                  placeholder="Jean Dupont"
-                />
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-forest-400"placeholder="Jean Dupont"/>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
                 <input
-                  type="email"
-                  value={form.email}
+                  type="email"value={form.email}
                   onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-forest-400"
-                  placeholder="jean@email.fr"
-                />
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-forest-400"placeholder="jean@email.fr"/>
               </div>
               <div className="bg-blue-50 rounded-lg p-3 text-xs text-blue-700">
-                💳 Vous serez redirigé vers la page de paiement sécurisée Stripe pour finaliser votre commande.
+                 Vous serez redirigé vers la page de paiement sécurisée Stripe pour finaliser votre commande.
               </div>
             </div>
             {error && (
@@ -257,12 +248,11 @@ export default function CheckoutPage() {
               <button
                 onClick={handlePayment}
                 disabled={loading}
-                className="flex-1 py-3 bg-forest-600 text-white rounded-xl font-medium hover:bg-forest-700 flex items-center justify-center gap-2 disabled:opacity-60"
-              >
+                className="flex-1 py-3 bg-forest-600 text-white rounded-xl font-medium hover:bg-forest-700 flex items-center justify-center gap-2 disabled:opacity-60">
                 {loading ? (
                   <><span className="animate-spin">⏳</span> Traitement...</>
                 ) : (
-                  <>🔒 Payer {total}€</>
+                  <> Payer {total}€</>
                 )}
               </button>
             </div>
@@ -271,9 +261,9 @@ export default function CheckoutPage() {
         )}
 
         {/* Étape 4 : Succès */}
-        {step === 'success' && (
+        {step ==='success'&& (
           <div className="text-center py-16">
-            <div className="text-6xl mb-6">🎉</div>
+            <div className="text-6xl mb-6"></div>
             <h2 className="text-2xl font-bold text-gray-900 mb-3">Paiement confirmé !</h2>
             <p className="text-gray-500 mb-2">Merci pour votre soutien à la Ferme Tropicale de Guyane.</p>
             {form.email && <p className="text-sm text-gray-400 mb-2">Un email de confirmation a été envoyé à <strong>{form.email}</strong></p>}
@@ -292,7 +282,7 @@ export default function CheckoutPage() {
               </div>
             </div>
             <button
-              onClick={() => { setCart([]); setStep('products'); setForm({ name: '', email: '' }); setOrderRef(null); }}
+              onClick={() => { setCart([]); setStep('products'); setForm({ name:'', email:'' }); setOrderRef(null); }}
               className="px-6 py-3 bg-forest-600 text-white rounded-xl font-medium hover:bg-forest-700"
             >
               Retour à la boutique

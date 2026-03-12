@@ -13,7 +13,7 @@ import { formationApi } from '@/lib/api';
 const QUALIOPI_INDICATORS = [
   {
     id: 'I10', label: 'Indicateur 10', title: 'Suivi de l\'assiduité',
-    description: 'Feuilles d\'émargement numériques signées par les apprenants et les formateurs',
+    description:'Feuilles d\'émargement numériques signées par les apprenants et les formateurs',
     icon: FileSignature, color: 'blue', criterion: 'Critère 3',
   },
   {
@@ -320,15 +320,12 @@ function GlobalQualiopiScore({ data }: { data: any }) {
         <div>
           <p className="text-blue-200 text-sm font-medium">Score de conformité global</p>
           <p className="text-5xl font-display font-bold mt-1">{globalScore}%</p>
-          <p className="text-blue-100 text-sm mt-2">
-            {globalScore >= 80 ? '✅ Prêt pour l\'audit Qualiopi' :
-             globalScore >= 60 ? '⚠️ Quelques points à améliorer' :
-             '❌ Actions correctives nécessaires'}
-          </p>
+          <p className="text-blue-100 text-sm mt-2">{globalScore >= 80 ? 'Prêt pour l\'audit Qualiopi':
+             globalScore >= 60 ?'️ Quelques points à améliorer':' Actions correctives nécessaires'}</p>
         </div>
         <div className="flex flex-col items-center gap-1">
           <div className="w-24 h-24 rounded-2xl bg-white/10 backdrop-blur flex items-center justify-center">
-            <Shield className="w-12 h-12 text-white" />
+            <Shield className="w-12 h-12 text-white"/>
           </div>
           <p className="text-xs text-blue-200 font-medium">Qualiopi</p>
         </div>
@@ -338,8 +335,7 @@ function GlobalQualiopiScore({ data }: { data: any }) {
       <div className="relative z-10 mt-4">
         <div className="h-2 bg-white/20 rounded-full overflow-hidden">
           <div
-            className="h-full bg-white dark:bg-card rounded-full transition-all duration-1000"
-            style={{ width: `${globalScore}%` }}
+            className="h-full bg-white dark:bg-card rounded-full transition-all duration-1000"style={{ width: `${globalScore}%` }}
           />
         </div>
         <div className="flex justify-between text-xs text-blue-200 mt-1">
@@ -378,7 +374,7 @@ export default function QualiopiPage() {
       <div className="page-header">
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-sm">
-            <Shield className="w-6 h-6 text-white" />
+            <Shield className="w-6 h-6 text-white"/>
           </div>
           <div>
             <h1 className="page-title">Tableau de bord Qualiopi</h1>
@@ -389,7 +385,7 @@ export default function QualiopiPage() {
         </div>
         {dashboard && (
           <button className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
-            <Download className="w-4 h-4" />
+            <Download className="w-4 h-4"/>
             Exporter le rapport PDF
           </button>
         )}
@@ -397,7 +393,7 @@ export default function QualiopiPage() {
 
       {/* Bandeau info organisme */}
       <div className="flex items-start gap-3 p-4 bg-blue-50 border border-blue-100 rounded-xl">
-        <Info className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5" />
+        <Info className="w-4 h-4 text-blue-500 flex-shrink-0 mt-0.5"/>
         <p className="text-xs text-blue-700">
           <strong>La Ferme Tropicale de Guyane (LFTG)</strong> — Organisme de formation certifié Qualiopi —
           PK 20,5 Route du Dégrad Saramacca, 97310 Kourou, Guyane Française —
@@ -408,14 +404,13 @@ export default function QualiopiPage() {
       {/* Sélecteur de cohorte */}
       <div className="lftg-card p-5">
         <label className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 block flex items-center gap-2">
-          <GraduationCap className="w-4 h-4 text-forest-600" />
+          <GraduationCap className="w-4 h-4 text-forest-600"/>
           Sélectionner une cohorte à analyser
         </label>
         <select
           value={selectedCohort}
           onChange={(e) => setSelectedCohort(e.target.value)}
-          className="w-full max-w-lg px-3 py-2.5 border border-gray-200 dark:border-border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800"
-        >
+          className="w-full max-w-lg px-3 py-2.5 border border-gray-200 dark:border-border rounded-xl text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800">
           <option value="">— Choisir une cohorte —</option>
           {(cohorts as any[]).map((c: any) => (
             <option key={c.id} value={c.id}>{c.course?.title} — {c.name}</option>
@@ -427,7 +422,7 @@ export default function QualiopiPage() {
       {!selectedCohort && (
         <div className="text-center py-20">
           <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center mx-auto mb-4">
-            <Shield className="w-10 h-10 text-blue-500" />
+            <Shield className="w-10 h-10 text-blue-500"/>
           </div>
           <h3 className="font-bold text-gray-800 text-lg">Sélectionnez une cohorte</h3>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-sm mx-auto">
@@ -439,7 +434,7 @@ export default function QualiopiPage() {
       {/* Chargement */}
       {selectedCohort && isLoading && (
         <div className="flex flex-col items-center justify-center h-40 gap-3">
-          <div className="w-10 h-10 border-3 border-blue-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-10 h-10 border-3 border-blue-500 border-t-transparent rounded-full animate-spin"/>
           <p className="text-sm text-gray-500">Calcul des indicateurs Qualiopi...</p>
         </div>
       )}
@@ -453,7 +448,7 @@ export default function QualiopiPage() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="lftg-card p-4 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-forest-50 flex items-center justify-center flex-shrink-0">
-                <Users className="w-5 h-5 text-forest-600" />
+                <Users className="w-5 h-5 text-forest-600"/>
               </div>
               <div>
                 <p className="text-2xl font-bold text-gray-800">{dashboard.totalEnrollments || 0}</p>
@@ -462,7 +457,7 @@ export default function QualiopiPage() {
             </div>
             <div className="lftg-card p-4 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center flex-shrink-0">
-                <Activity className="w-5 h-5 text-green-600" />
+                <Activity className="w-5 h-5 text-green-600"/>
               </div>
               <div>
                 <p className="text-2xl font-bold text-gray-800">{avgProgress}%</p>
@@ -471,19 +466,19 @@ export default function QualiopiPage() {
             </div>
             <div className="lftg-card p-4 flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
-                <PenLine className="w-5 h-5 text-blue-600" />
+                <PenLine className="w-5 h-5 text-blue-600"/>
               </div>
               <div>
                 <p className="text-2xl font-bold text-gray-800">{dashboard.attendanceRate || 0}%</p>
                 <p className="text-xs text-gray-500">Assiduité</p>
               </div>
             </div>
-            <div className={`lftg-card p-4 flex items-center gap-3 ${atRiskCount > 0 ? 'border-red-200 bg-red-50/30' : ''}`}>
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${atRiskCount > 0 ? 'bg-red-100' : 'bg-gray-100'}`}>
-                <AlertTriangle className={`w-5 h-5 ${atRiskCount > 0 ? 'text-red-600' : 'text-gray-400'}`} />
+            <div className={`lftg-card p-4 flex items-center gap-3 ${atRiskCount > 0 ?'border-red-200 bg-red-50/30':''}`}>
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${atRiskCount > 0 ?'bg-red-100':'bg-gray-100'}`}>
+                <AlertTriangle className={`w-5 h-5 ${atRiskCount > 0 ?'text-red-600':'text-gray-400'}`} />
               </div>
               <div>
-                <p className={`text-2xl font-bold ${atRiskCount > 0 ? 'text-red-600' : 'text-gray-800'}`}>{atRiskCount}</p>
+                <p className={`text-2xl font-bold ${atRiskCount > 0 ?'text-red-600':'text-gray-800'}`}>{atRiskCount}</p>
                 <p className="text-xs text-gray-500">À risque</p>
               </div>
             </div>
@@ -492,7 +487,7 @@ export default function QualiopiPage() {
           {/* Indicateurs Qualiopi */}
           <div>
             <h2 className="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <Award className="w-5 h-5 text-blue-600" />
+              <Award className="w-5 h-5 text-blue-600"/>
               Indicateurs de conformité Qualiopi
               <span className="ml-2 text-xs font-normal text-gray-400">Référentiel national de certification</span>
             </h2>
@@ -507,7 +502,7 @@ export default function QualiopiPage() {
           <div>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-base font-bold text-gray-800 flex items-center gap-2">
-                <BarChart3 className="w-5 h-5 text-forest-600" />
+                <BarChart3 className="w-5 h-5 text-forest-600"/>
                 Suivi individuel des apprenants
               </h2>
               <span className="text-sm text-gray-400 font-medium">{dashboard.course?.title}</span>
@@ -515,10 +510,10 @@ export default function QualiopiPage() {
 
             {atRiskCount > 0 && (
               <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-xl mb-4">
-                <AlertTriangle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                <AlertTriangle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5"/>
                 <div>
                   <p className="text-sm font-bold text-red-800">
-                    {atRiskCount} apprenant{atRiskCount > 1 ? 's' : ''} à risque de décrochage
+                    {atRiskCount} apprenant{atRiskCount > 1 ?'s':''} à risque de décrochage
                   </p>
                   <p className="text-xs text-red-600 mt-0.5">
                     Action requise pour la conformité Qualiopi I16 : contactez ces apprenants pour un entretien de suivi.

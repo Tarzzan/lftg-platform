@@ -103,9 +103,7 @@ export default function SaleDetailPage() {
           <button
             onClick={handleDownloadPdf}
             className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-600 dark:text-gray-400 dark:text-gray-400 hover:bg-gray-50 dark:bg-muted/20 dark:hover:bg-gray-700 transition-colors"
-          >
-            📄 PDF
-          </button>
+          >PDF</button>
           {transitions.map(status => (
             <button
               key={status}
@@ -130,7 +128,7 @@ export default function SaleDetailPage() {
         <div className="flex justify-between items-start mb-8">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-3xl">🦜</span>
+              <span className="text-3xl"></span>
               <div>
                 <p className="font-bold text-gray-900 dark:text-foreground dark:text-white text-lg">La Ferme Tropicale de Guyane</p>
                 <p className="text-xs text-gray-500">LFTG Platform v4.0.0</p>

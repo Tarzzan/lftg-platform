@@ -101,17 +101,17 @@ export default function ElevagePage() {
         <div className="bg-red-900/20 border border-red-700 rounded-xl p-6 text-center text-red-400">
           Erreur lors du chargement des données d'élevage
         </div>
-      ) : activeTab === 'stats' && stats ? (
+      ) : activeTab ==='stats'&& stats ? (
         <div className="space-y-6">
           {/* KPIs */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {[
-              { label: 'Animaux total', value: stats.totalAnimals, color: 'text-slate-300' },
-              { label: 'Avec généalogie', value: stats.withGenealogy, color: 'text-indigo-400' },
-              { label: 'Couples actifs', value: stats.breedingPairs, color: 'text-blue-400' },
-              { label: 'Reproductions', value: stats.activeBreedings, color: 'text-green-400' },
-              { label: 'Consanguinité moy.', value: `${(stats.avgConsanguinity * 100).toFixed(1)}%`, color: 'text-yellow-400' },
-              { label: 'Paires à risque', value: stats.highRiskPairs, color: 'text-red-400' },
+              { label:'Animaux total', value: stats.totalAnimals, color:'text-slate-300'},
+              { label:'Avec généalogie', value: stats.withGenealogy, color:'text-indigo-400'},
+              { label:'Couples actifs', value: stats.breedingPairs, color:'text-blue-400'},
+              { label:'Reproductions', value: stats.activeBreedings, color:'text-green-400'},
+              { label:'Consanguinité moy.', value: `${(stats.avgConsanguinity * 100).toFixed(1)}%`, color:'text-yellow-400'},
+              { label:'Paires à risque', value: stats.highRiskPairs, color:'text-red-400'},
             ].map((kpi) => (
               <div key={kpi.label} className="bg-slate-800 rounded-xl p-4 border border-slate-700">
                 <p className="text-slate-400 text-xs">{kpi.label}</p>
@@ -141,12 +141,12 @@ export default function ElevagePage() {
                       <td className="p-4 text-white font-medium">{s.species}</td>
                       <td className="p-4 text-center text-slate-300">{s.count}</td>
                       <td className="p-4 text-center">
-                        <span className={`font-semibold ${s.avgConsanguinity > 0.05 ? 'text-red-400' : s.avgConsanguinity > 0.03 ? 'text-yellow-400' : 'text-green-400'}`}>
+                        <span className={`font-semibold ${s.avgConsanguinity > 0.05 ?'text-red-400': s.avgConsanguinity > 0.03 ?'text-yellow-400':'text-green-400'}`}>
                           {(s.avgConsanguinity * 100).toFixed(1)}%
                         </span>
                       </td>
                       <td className="p-4 text-center">
-                        <span className={`text-sm font-semibold ${diversityConfig[s.diversity]?.color || 'text-slate-400'}`}>
+                        <span className={`text-sm font-semibold ${diversityConfig[s.diversity]?.color ||'text-slate-400'}`}>
                           {diversityConfig[s.diversity]?.label || s.diversity}
                         </span>
                       </td>
@@ -157,11 +157,11 @@ export default function ElevagePage() {
             </div>
           </div>
         </div>
-      ) : activeTab === 'pairs' ? (
+      ) : activeTab ==='pairs' ? (
         <div className="space-y-3">
           {pairs.length === 0 ? (
             <div className="bg-slate-800 rounded-xl p-12 text-center">
-              <p className="text-4xl mb-3">🐦</p>
+              <p className="text-4xl mb-3"></p>
               <p className="text-slate-300 font-semibold">Aucun couple reproducteur</p>
             </div>
           ) : (
@@ -174,12 +174,12 @@ export default function ElevagePage() {
                     <div className="flex items-center gap-4">
                       <div className="text-center">
                         <p className="text-blue-400 font-semibold">{pair.male.name}</p>
-                        <p className="text-slate-500 text-xs">♂ Mâle</p>
+                        <p className="text-slate-500 text-xs">Mâle</p>
                       </div>
                       <span className="text-slate-400 text-lg">×</span>
                       <div className="text-center">
                         <p className="text-pink-400 font-semibold">{pair.female.name}</p>
-                        <p className="text-slate-500 text-xs">♀ Femelle</p>
+                        <p className="text-slate-500 text-xs">Femelle</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">

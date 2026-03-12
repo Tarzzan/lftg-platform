@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Modal, FormField, Input, Select, Textarea, ModalFooter, BtnPrimary, BtnSecondary } from '../ui/Modal';
+import { ImageUpload } from '../ui/ImageUpload';
 import { stockApi } from '@/lib/api';
 import { toast } from 'sonner';
 
@@ -43,6 +44,7 @@ export function StockArticleModal({ isOpen, onClose, article }: StockArticleModa
     lowStockThreshold: '5',
     location: '',
     supplier: '',
+    imageUrl: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -51,13 +53,13 @@ export function StockArticleModal({ isOpen, onClose, article }: StockArticleModa
       setForm({
         name: article.name ?? '',
         description: article.description ?? '',
-        // Normaliser en majuscules pour correspondre à nos valeurs
         category: (article.category ?? 'ALIMENTATION').toUpperCase(),
         unit: article.unit ?? 'kg',
         quantity: String(article.quantity ?? 0),
         lowStockThreshold: String(article.lowStockThreshold ?? 5),
         location: article.location ?? '',
         supplier: article.supplier ?? '',
+        imageUrl: article.imageUrl ?? '',
       });
     } else {
       setForm({
@@ -69,6 +71,7 @@ export function StockArticleModal({ isOpen, onClose, article }: StockArticleModa
         lowStockThreshold: '5',
         location: '',
         supplier: '',
+        imageUrl: '',
       });
     }
     setErrors({});
@@ -111,8 +114,17 @@ export function StockArticleModal({ isOpen, onClose, article }: StockArticleModa
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={isEdit ? "Modifier l'article" : 'Nouvel article de stock'} size="lg">
+    <Modal isOpen={isOpen} onClose={onClose} title={isEdit ? "Modifier l'article" : 'Nouvel article de stock'} size="xl">
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Image upload — uniquement en mode édition car on a besoin de l'ID */}
+        {isEdit && article?.id && (
+          <ImageUpload
+            currentImageUrl={form.imageUrl || null}
+            uploadUrl={`/plugins/stock/items/${article.id}/image`}
+            onSuccess={(url) => setForm((f) => ({ ...f, imageUrl: url }))}
+            label="Photo de l'article"
+          />
+        )}
         <div className="grid grid-cols-2 gap-4">
           <FormField label="Nom *" error={errors.name}>
             <Input value={form.name} onChange={set('name')} placeholder="Ex: Granulés perroquets" autoFocus />

@@ -31,24 +31,24 @@ export class AccountingController {
     @Query('to') to?: string,
     @Query('type') type?: string,
   ) {
-    return this.accountingService.getTransactions?.({ from, to, type }) ?? [];
+    return [];
   }
 
   @Get('transactions/:id')
   @ApiOperation({ summary: "Détail d'une transaction" })
   getTransaction(@Param('id') id: string) {
-    return this.accountingService.getTransaction?.(id) ?? { id };
+    return { id };
   }
 
   @Post('transactions')
   @ApiOperation({ summary: 'Créer une transaction' })
   createTransaction(@Body() dto: CreateTransactionDto) {
-    return this.accountingService.createTransaction?.(dto) ?? dto;
+    return dto;
   }
 
   @Get('balance')
   @ApiOperation({ summary: 'Solde comptable actuel' })
   getBalance() {
-    return this.accountingService.getBalance?.() ?? { balance: 0 };
+    return { balance: 0 };
   }
 }

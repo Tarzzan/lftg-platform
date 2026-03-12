@@ -65,7 +65,7 @@ export default function NutritionPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">🌿 Nutrition & Alimentation</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Nutrition & Alimentation</h1>
           <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Plans nutritionnels et suivi des repas</p>
         </div>
       </div>
@@ -97,9 +97,9 @@ export default function NutritionPage() {
       {/* Onglets */}
       <div className="flex border-b border-gray-200 dark:border-border">
         {[
-          { key: 'schedule', label: '📋 Planning du jour' },
-          { key: 'plans', label: '📖 Plans nutritionnels' },
-          { key: 'stats', label: '📊 Statistiques' },
+          { key: 'schedule', label: 'Planning du jour' },
+          { key: 'plans', label: 'Plans nutritionnels' },
+          { key: 'stats', label: 'Statistiques' },
         ].map(tab => (
           <button
             key={tab.key}
@@ -129,7 +129,7 @@ export default function NutritionPage() {
           </div>
           {schedule.length === 0 ? (
             <div className="text-center py-12 text-gray-400">
-              <div className="text-4xl mb-3">🌿</div>
+              <img src="/icons/section-animaux.png" alt="" className="w-10 h-10 object-cover rounded-xl mx-auto mb-3" />
               <p>Aucun plan nutritionnel configuré</p>
               <p className="text-sm mt-1">Créez des plans nutritionnels pour les espèces de votre collection</p>
             </div>
@@ -140,12 +140,12 @@ export default function NutritionPage() {
                   <div className="flex-shrink-0 w-16 text-center">
                     <div className="text-sm font-bold text-gray-900">{item.time}</div>
                     <div className={`text-xs mt-1 ${item.done ? 'text-green-600' : 'text-gray-400'}`}>
-                      {item.done ? '✓ Fait' : 'À faire'}
+                      {item.done ? 'Fait' : 'À faire'}
                     </div>
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="font-medium text-sm text-gray-900">{item.mealName}</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">🦎 {item.speciesName}</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{item.speciesName}</div>
                     <div className="mt-2 flex flex-wrap gap-1">
                       {item.items.map((food, fi) => (
                         <span key={fi} className="text-xs bg-green-50 text-green-700 border border-green-200 rounded-full px-2 py-0.5">
@@ -171,7 +171,7 @@ export default function NutritionPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {plans.length === 0 ? (
             <div className="col-span-2 text-center py-12 text-gray-400 bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border">
-              <div className="text-4xl mb-3">📖</div>
+              <div className="text-4xl mb-3"></div>
               <p>Aucun plan nutritionnel créé</p>
             </div>
           ) : (
@@ -186,7 +186,7 @@ export default function NutritionPage() {
                     <div>
                       <h3 className="font-semibold text-gray-900">{plan.name}</h3>
                       <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-                        🦎 {plan.species.name}
+                        {plan.species.name}
                         {plan.species.scientificName && (
                           <span className="italic ml-1">({plan.species.scientificName})</span>
                         )}
@@ -197,7 +197,7 @@ export default function NutritionPage() {
                     </span>
                   </div>
                   <div className="mt-3 flex gap-4 text-sm text-gray-600">
-                    <span>🍽️ {plan.meals.length} repas/jour</span>
+                    <span>️ {plan.meals.length} repas/jour</span>
                   </div>
                   {plan.description && (
                     <p className="mt-2 text-xs text-gray-500">{plan.description}</p>

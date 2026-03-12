@@ -4,7 +4,7 @@ export default function OfflinePage() {
   return (
     <div className="min-h-screen bg-forest-50 flex items-center justify-center p-6">
       <div className="text-center max-w-md">
-        <div className="text-6xl mb-6">🦜</div>
+        <div className="text-6xl mb-6"></div>
         <h1 className="text-2xl font-display font-bold text-forest-800 mb-3">
           Vous êtes hors ligne
         </h1>

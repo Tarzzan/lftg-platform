@@ -351,24 +351,22 @@ function ApparenceSection() {
   return (
     <div className="space-y-4">
       {/* ─── Mode clair/sombre ─── */}
-      <SectionCard title="Mode d'affichage" description="Clair, sombre ou selon votre système" icon={Sun}>
+      <SectionCard title="Mode d'affichage"description="Clair, sombre ou selon votre système"icon={Sun}>
         <div className="grid grid-cols-3 gap-3">
           {themeOptions.map((opt) => {
             const Icon = opt.icon;
-            const isActive = theme === opt.value || (opt.value === 'system' && !['light', 'dark'].includes(theme));
+            const isActive = theme === opt.value || (opt.value ==='system'&& !['light','dark'].includes(theme));
             return (
               <button
                 key={opt.value}
                 onClick={() => setTheme(opt.value as any)}
                 className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${
                   isActive
-                    ? 'border-forest-500 bg-forest-50 dark:bg-forest-900/20'
-                    : 'border-gray-200 dark:border-border bg-white dark:bg-card hover:border-forest-300'
-                }`}
+                    ?'border-forest-500 bg-forest-50 dark:bg-forest-900/20':'border-gray-200 dark:border-border bg-white dark:bg-card hover:border-forest-300'}`}
               >
-                <Icon className={`w-5 h-5 ${isActive ? 'text-forest-600 dark:text-forest-400' : 'text-gray-400'}`} />
-                <span className={`text-xs font-semibold ${isActive ? 'text-forest-700 dark:text-forest-400' : 'text-gray-600 dark:text-gray-400'}`}>{opt.label}</span>
-                {isActive && <Check className="w-3.5 h-3.5 text-forest-500" />}
+                <Icon className={`w-5 h-5 ${isActive ?'text-forest-600 dark:text-forest-400':'text-gray-400'}`} />
+                <span className={`text-xs font-semibold ${isActive ?'text-forest-700 dark:text-forest-400':'text-gray-600 dark:text-gray-400'}`}>{opt.label}</span>
+                {isActive && <Check className="w-3.5 h-3.5 text-forest-500"/>}
               </button>
             );
           })}
@@ -376,12 +374,12 @@ function ApparenceSection() {
       </SectionCard>
 
       {/* ─── Palette de couleurs ─── */}
-      <SectionCard title="Palette de couleurs" description="Personnalisez les couleurs de la plateforme en temps réel" icon={Palette}>
+      <SectionCard title="Palette de couleurs"description="Personnalisez les couleurs de la plateforme en temps réel"icon={Palette}>
 
         {/* Thème actif */}
         <div className="flex items-center gap-3 p-3 rounded-xl bg-gradient-to-r from-forest-50 to-transparent dark:from-forest-900/20 border border-forest-200 dark:border-forest-700/40">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0 shadow-sm" style={{ background: rgbStringToHex(currentPalette.primary) }}>
-            {currentPalette.emoji}
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0 shadow-sm"style={{ background: rgbStringToHex(currentPalette.primary) }}>
+            
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold text-gray-900 dark:text-foreground">{currentPalette.name}</p>
@@ -397,27 +395,21 @@ function ApparenceSection() {
           <button
             onClick={() => setActiveTab('presets')}
             className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
-              activeTab === 'presets'
-                ? 'bg-white dark:bg-card shadow-sm text-gray-900 dark:text-foreground'
-                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'
-            }`}
+              activeTab ==='presets'?'bg-white dark:bg-card shadow-sm text-gray-900 dark:text-foreground':'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}
           >
-            🎨 Thèmes prédéfinis
+             Thèmes prédéfinis
           </button>
           <button
             onClick={() => setActiveTab('custom')}
             className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all ${
-              activeTab === 'custom'
-                ? 'bg-white dark:bg-card shadow-sm text-gray-900 dark:text-foreground'
-                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'
-            }`}
+              activeTab ==='custom'?'bg-white dark:bg-card shadow-sm text-gray-900 dark:text-foreground':'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}
           >
-            🖌️ Personnaliser
+            ️ Personnaliser
           </button>
         </div>
 
         {/* Thèmes prédéfinis */}
-        {activeTab === 'presets' && (
+        {activeTab ==='presets'&& (
           <div className="grid grid-cols-2 gap-3">
             {PRESET_THEMES.map((preset) => {
               const isActive = currentPalette.id === preset.id;
@@ -427,18 +419,16 @@ function ApparenceSection() {
                   onClick={() => applyPreset(preset)}
                   className={`relative flex flex-col gap-2 p-3 rounded-xl border-2 text-left transition-all ${
                     isActive
-                      ? 'border-forest-500 shadow-md'
-                      : 'border-gray-200 dark:border-border hover:border-gray-300 dark:hover:border-border'
-                  }`}
+                      ?'border-forest-500 shadow-md':'border-gray-200 dark:border-border hover:border-gray-300 dark:hover:border-border'}`}
                 >
                   {isActive && (
                     <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-forest-500 flex items-center justify-center">
-                      <Check className="w-3 h-3 text-white" />
+                      <Check className="w-3 h-3 text-white"/>
                     </div>
                   )}
                   <PreviewMini palette={preset} />
                   <div className="flex items-center gap-2">
-                    <span className="text-base">{preset.emoji}</span>
+                    
                     <div>
                       <p className="text-xs font-bold text-gray-800 dark:text-foreground">{preset.name}</p>
                       <p className="text-xs text-gray-400 truncate">{preset.description}</p>
@@ -451,7 +441,7 @@ function ApparenceSection() {
         )}
 
         {/* Personnalisation avancée */}
-        {activeTab === 'custom' && (
+        {activeTab ==='custom'&& (
           <div className="space-y-4">
             {/* Prévisualisation live */}
             <div className="space-y-1.5">
@@ -463,7 +453,7 @@ function ApparenceSection() {
             {groups.map((group) => (
               <div key={group} className="space-y-3">
                 <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wide flex items-center gap-2">
-                  <span className="w-3 h-0.5 bg-gray-300 dark:bg-gray-600 rounded" />
+                  <span className="w-3 h-0.5 bg-gray-300 dark:bg-gray-600 rounded"/>
                   {group}
                 </p>
                 <div className="grid grid-cols-1 gap-2">
@@ -489,15 +479,13 @@ function ApparenceSection() {
             <div className="flex gap-2 pt-2 border-t border-gray-100 dark:border-border">
               <button
                 onClick={() => { saveCustom(); toast.success('Palette personnalisée sauvegardée !'); }}
-                className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-semibold bg-forest-600 text-white rounded-xl hover:bg-forest-700 transition-colors"
-              >
-                <Save className="w-3.5 h-3.5" /> Sauvegarder
+                className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-semibold bg-forest-600 text-white rounded-xl hover:bg-forest-700 transition-colors">
+                <Save className="w-3.5 h-3.5"/> Sauvegarder
               </button>
               <button
                 onClick={() => { resetToDefault(); toast.success('Thème réinitialisé'); }}
-                className="flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-semibold bg-gray-100 dark:bg-muted/30 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-200 dark:hover:bg-muted/50 transition-colors"
-              >
-                <RefreshCw className="w-3.5 h-3.5" /> Réinitialiser
+                className="flex items-center justify-center gap-2 px-3 py-2.5 text-xs font-semibold bg-gray-100 dark:bg-muted/30 text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-200 dark:hover:bg-muted/50 transition-colors">
+                <RefreshCw className="w-3.5 h-3.5"/> Réinitialiser
               </button>
             </div>
           </div>
@@ -505,21 +493,19 @@ function ApparenceSection() {
       </SectionCard>
 
       {/* ─── Densité et langue ─── */}
-      <SectionCard title="Interface" description="Densité d'affichage et langue" icon={Globe}>
+      <SectionCard title="Interface"description="Densité d'affichage et langue" icon={Globe}>
         <div className="space-y-3">
           <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">Densité d'affichage</p>
           <div className="flex gap-2">
-            {(['compact', 'normal', 'spacious'] as const).map((d) => (
+            {(['compact','normal','spacious'] as const).map((d) => (
               <button
                 key={d}
                 onClick={() => setDensity(d)}
                 className={`flex-1 py-2 text-xs font-medium rounded-lg border transition-all ${
                   density === d
-                    ? 'border-forest-500 bg-forest-50 dark:bg-forest-900/20 text-forest-700 dark:text-forest-400'
-                    : 'border-gray-200 dark:border-border text-gray-600 dark:text-gray-400 hover:border-forest-300'
-                }`}
+                    ?'border-forest-500 bg-forest-50 dark:bg-forest-900/20 text-forest-700 dark:text-forest-400':'border-gray-200 dark:border-border text-gray-600 dark:text-gray-400 hover:border-forest-300'}`}
               >
-                {d === 'compact' ? 'Compact' : d === 'normal' ? 'Normal' : 'Aéré'}
+                {d ==='compact'?'Compact': d ==='normal'?'Normal':'Aéré'}
               </button>
             ))}
           </div>
@@ -608,7 +594,7 @@ function PlateformeSection() {
   });
 
   return (
-    <SectionCard title="Informations plateforme" description="Données de l'organisme de formation LFTG" icon={Building2}>
+    <SectionCard title="Informations plateforme" description="Données de l'organisme de formation LFTG"icon={Building2}>
       <div className="grid grid-cols-2 gap-4">
         <FormField label="Nom complet">
           <Input value={info.name} onChange={(v) => setInfo(p => ({ ...p, name: v }))} />
@@ -627,7 +613,7 @@ function PlateformeSection() {
           <Input value={info.phone} onChange={(v) => setInfo(p => ({ ...p, phone: v }))} />
         </FormField>
         <FormField label="Email de contact">
-          <Input value={info.email} onChange={(v) => setInfo(p => ({ ...p, email: v }))} type="email" />
+          <Input value={info.email} onChange={(v) => setInfo(p => ({ ...p, email: v }))} type="email"/>
         </FormField>
       </div>
 
@@ -699,10 +685,10 @@ function IASection() {
   ];
 
   const personalities = [
-    { value: 'pedagogique', label: '🎓 Pédagogique', desc: 'Explications claires et structurées' },
-    { value: 'socratique',  label: '🤔 Socratique',  desc: 'Guide par les questions' },
-    { value: 'bienveillant', label: '🌿 Bienveillant', desc: 'Encourageant et positif' },
-    { value: 'expert',      label: '🔬 Expert',      desc: 'Technique et précis' },
+    { value: 'pedagogique', label: 'Pédagogique', desc: 'Explications claires et structurées' },
+    { value: 'socratique',  label: 'Socratique',  desc: 'Guide par les questions' },
+    { value: 'bienveillant', label: 'Bienveillant', desc: 'Encourageant et positif' },
+    { value: 'expert',      label: 'Expert',      desc: 'Technique et précis' },
   ];
 
   return (
@@ -736,7 +722,7 @@ function IASection() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
                   <p className={`text-xs font-bold truncate ${llmModel === m.value ? 'text-purple-800 dark:text-purple-300' : 'text-gray-700 dark:text-gray-300'}`}>{m.label}</p>
-                  {m.recommended && <span className="text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-semibold flex-shrink-0">✨</span>}
+                  {m.recommended && <span className="text-xs bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full font-semibold flex-shrink-0"></span>}
                 </div>
                 <p className="text-xs text-gray-400 mt-0.5">{m.provider} · {m.desc}</p>
               </div>
@@ -795,7 +781,7 @@ function IASection() {
             toast.success(`Configuration IA sauvegardée — Modèle : ${llmModel}`);
             setShowKey(false);
           } catch (err: any) {
-            toast.error('Erreur lors de la sauvegarde : ' + (err?.response?.data?.message || err?.message || 'Erreur inconnue'));
+            toast.error('Erreur lors de la sauvegarde :' + (err?.response?.data?.message || err?.message || 'Erreur inconnue'));
           } finally {
             setIsSaving(false);
           }
@@ -847,16 +833,13 @@ export default function SettingsPage() {
                   key={section.id}
                   onClick={() => setActiveSection(section.id)}
                   className={`flex items-center gap-3 w-full px-4 py-3.5 text-left transition-all ${
-                    idx > 0 ? 'border-t border-gray-50 dark:border-border/50' : ''
-                  } ${
+                    idx > 0 ?'border-t border-gray-50 dark:border-border/50':''} ${
                     isActive
-                      ? 'bg-forest-50 dark:bg-forest-900/20 border-l-2 border-l-forest-500'
-                      : 'hover:bg-gray-50 dark:hover:bg-muted/20 border-l-2 border-l-transparent'
-                  }`}
+                      ?'bg-forest-50 dark:bg-forest-900/20 border-l-2 border-l-forest-500':'hover:bg-gray-50 dark:hover:bg-muted/20 border-l-2 border-l-transparent'}`}
                 >
-                  <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-forest-600 dark:text-forest-400' : 'text-gray-400'}`} />
+                  <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ?'text-forest-600 dark:text-forest-400':'text-gray-400'}`} />
                   <div className="flex-1 min-w-0">
-                    <p className={`text-sm font-semibold ${isActive ? 'text-forest-800 dark:text-forest-300' : 'text-gray-700 dark:text-gray-300'}`}>
+                    <p className={`text-sm font-semibold ${isActive ?'text-forest-800 dark:text-forest-300':'text-gray-700 dark:text-gray-300'}`}>
                       {section.label}
                     </p>
                     <p className="text-xs text-gray-400 truncate">{section.description}</p>

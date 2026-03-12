@@ -8,6 +8,32 @@ import {
 } from 'recharts';
 import { statsApi, exportApi, api } from '@/lib/api';
 
+function getAnimalIcon(species?: any): string {
+  const name = (species?.name ?? species?.commonName ?? '').toLowerCase();
+  const sci = (species?.scientificName ?? '').toLowerCase();
+  if (name.includes('ara') || name.includes('perroquet') || name.includes('toucan') || sci.includes('ara ')) return '/icons/animal-ara.png';
+  if (name.includes('amazone') || sci.includes('amazona')) return '/icons/animal-amazone.png';
+  if (name.includes('tinamou') || sci.includes('tinamus') || sci.includes('crypturellus')) return '/icons/animal-tinamou.png';
+  if (name.includes('hocco') || name.includes('crax') || sci.includes('crax')) return '/icons/animal-hocco.png';
+  if (name.includes('tocro') || sci.includes('odontophorus')) return '/icons/animal-tocro.png';
+  if (name.includes('caïman') || name.includes('crocodil') || sci.includes('caiman') || sci.includes('crocodylus')) return '/icons/animal-caiman.png';
+  if (name.includes('iguane') || sci.includes('iguana')) return '/icons/animal-iguane.png';
+  if (name.includes('matamata') || sci.includes('chelus')) return '/icons/animal-matamata.png';
+  if (name.includes('tortue') || sci.includes('testudo') || sci.includes('chelonoidis') || sci.includes('podocnemis')) return '/icons/animal-tortue.png';
+  if (name.includes('anaconda') || sci.includes('eunectes')) return '/icons/animal-serpent.png';
+  if (name.includes('boa bordé') || sci.includes('corallus')) return '/icons/animal-boa-borde.png';
+  if (name.includes('boa constricteur') || sci.includes('boa constrictor')) return '/icons/animal-boa-constricteur.png';
+  if (name.includes('serpent') || name.includes('boa') || name.includes('python')) return '/icons/animal-serpent.png';
+  if (name.includes('agouti') || sci.includes('dasyprocta')) return '/icons/animal-agouti.png';
+  if (name.includes('capybara') || name.includes('cabiai') || sci.includes('hydrochoerus')) return '/icons/animal-capybara.png';
+  if (name.includes('pécari') || name.includes('pecari') || sci.includes('tayassu') || sci.includes('pecari')) return '/icons/animal-pecari.png';
+  if (name.includes('tapir') || sci.includes('tapirus')) return '/icons/animal-tapir.png';
+  if (name.includes('paresseux') || sci.includes('bradypus') || sci.includes('choloepus')) return '/icons/animal-paresseux.png';
+  if (name.includes('loutre') || sci.includes('pteronura') || sci.includes('lontra')) return '/icons/animal-loutre.png';
+  if (name.includes('singe') || name.includes('primate') || sci.includes('alouatta') || sci.includes('ateles') || sci.includes('cebus') || sci.includes('saimiri')) return '/icons/animal-singe.png';
+  return '/icons/animal-lezard.png';
+}
+
 // ─── Assets CDN ───────────────────────────────────────────────────────────────
 const DASHBOARD_BG = 'https://files.manuscdn.com/user_upload_by_module/session_file/92503813/dtXQDxZrjcLkaVkq.webp';
 const CAPI_WELCOME = 'https://files.manuscdn.com/user_upload_by_module/session_file/92503813/CQYNgMGdtFUmmTQU.webp';
@@ -24,14 +50,14 @@ interface Widget {
 }
 
 const ALL_WIDGETS: Widget[] = [
-  { id: 'kpis', title: 'Indicateurs clés', icon: '📊', cols: 3 },
-  { id: 'revenue', title: 'Revenus (7 jours)', icon: '💰', cols: 2 },
-  { id: 'animals', title: 'Animaux par espèce', icon: '🦜', cols: 1 },
-  { id: 'stockEvolution', title: 'Mouvements stock', icon: '📦', cols: 2 },
-  { id: 'workflows', title: 'Workflows par état', icon: '⚙️', cols: 1 },
-  { id: 'broods', title: 'Couvées actives', icon: '🥚', cols: 1 },
-  { id: 'medical', title: 'Actes médicaux récents', icon: '🏥', cols: 1 },
-  { id: 'sales', title: 'Dernières ventes', icon: '🛒', cols: 1 },
+  { id: 'kpis', title: 'Indicateurs clés', icon: '/icons/section-dashboard.png', cols: 3 },
+  { id: 'revenue', title: 'Revenus (7 jours)', icon: '/icons/section-finance.png', cols: 2 },
+  { id: 'animals', title: 'Animaux par espèce', icon: '/icons/section-animaux.png', cols: 1 },
+  { id: 'stockEvolution', title: 'Mouvements stock', icon: '/icons/section-stock.png', cols: 2 },
+  { id: 'workflows', title: 'Workflows par état', icon: '/icons/section-admin.png', cols: 1 },
+  { id: 'broods', title: 'Couvées actives', icon: '/icons/section-animaux.png', cols: 1 },
+  { id: 'medical', title: 'Actes médicaux récents', icon: '/icons/section-medical.png', cols: 1 },
+  { id: 'sales', title: 'Dernières ventes', icon: '/icons/section-paiements.png', cols: 1 },
 ];
 
 const COLORS = ['#166534', '#d97706', '#1d4ed8', '#7c3aed', '#dc2626', '#0891b2', '#059669', '#b45309'];
@@ -58,10 +84,10 @@ function KpisWidget({ stats, lowStockCount, pendingWorkflows }: any) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
       {[
-        { label: 'Animaux vivants', value: stats?.animals?.alive ?? '—', sub: `${stats?.animals?.species ?? 0} espèces`, icon: '🦜', color: 'forest' },
-        { label: 'Couvées actives', value: stats?.animals?.activeBroods ?? '—', sub: 'En incubation', icon: '🥚', color: 'gold' },
-        { label: 'Alertes stock', value: lowStockCount, sub: 'Articles en rupture', icon: '📦', color: lowStockCount > 0 ? 'red' : 'forest', urgent: lowStockCount > 0 },
-        { label: 'Workflows actifs', value: stats?.workflows?.total ?? '—', sub: `${pendingWorkflows} en attente`, icon: '⚙️', color: 'blue' },
+        { label: 'Animaux vivants', value: stats?.animals?.alive ?? '—', sub: `${stats?.animals?.species ?? 0} espèces`, icon: '/icons/animal-ara.png', color: 'forest' },
+        { label: 'Couvées actives', value: stats?.animals?.activeBroods ?? '—', sub: 'En incubation', icon: '/icons/section-animaux.png', color: 'gold' },
+        { label: 'Alertes stock', value: lowStockCount, sub: 'Articles en rupture', icon: '/icons/section-stock.png', color: lowStockCount > 0 ? 'red' : 'forest', urgent: lowStockCount > 0 },
+        { label: 'Workflows actifs', value: stats?.workflows?.total ?? '—', sub: `${pendingWorkflows} en attente`, icon: '/icons/section-admin.png', color: 'blue' },
       ].map(kpi => (
         <div
           key={kpi.label}
@@ -77,7 +103,9 @@ function KpisWidget({ stats, lowStockCount, pendingWorkflows }: any) {
             style={{ background: kpi.urgent ? '#ef4444' : '#16a34a', transform: 'translate(25%, -25%)' }}
           />
           <div className="flex items-center justify-between mb-2">
-            <span className="text-2xl">{kpi.icon}</span>
+            <div className="w-8 h-8 rounded-lg overflow-hidden">
+              <img src={kpi.icon} alt="" className="w-full h-full object-cover" />
+            </div>
             {kpi.urgent && <span className="text-xs font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-full">Urgent</span>}
           </div>
           <div className={`text-3xl font-black ${kpi.urgent ? 'text-red-700' : 'text-forest-800'}`} style={{ fontFamily: 'Sora, sans-serif' }}>{kpi.value}</div>
@@ -180,8 +208,11 @@ function BroodsWidget({ stats }: any) {
       {broods.slice(0, 4).map((brood: any) => {
         const days = Math.floor((Date.now() - new Date(brood.incubationStartDate).getTime()) / (1000 * 60 * 60 * 24));
         return (
-          <div key={brood.id} className="flex items-center justify-between p-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
-            <div>
+          <div key={brood.id} className="flex items-center gap-3 p-2 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+            <div className="flex-shrink-0 w-9 h-9 rounded-full overflow-hidden border border-amber-200 bg-amber-100">
+              <img src={getAnimalIcon(brood.species)} alt={brood.species?.name || ''} className="w-full h-full object-cover" />
+            </div>
+            <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-900 dark:text-foreground dark:text-foreground dark:text-white">{brood.species?.name}</p>
               <p className="text-xs text-gray-400">{brood.eggCount} œufs — Jour {days}</p>
             </div>
@@ -200,7 +231,9 @@ function MedicalWidget({ stats }: any) {
     <div className="space-y-2">
       {events.slice(0, 4).map((event: any) => (
         <div key={event.id} className="flex items-center gap-3 p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-          <span className="text-lg">🏥</span>
+          <div className="flex-shrink-0 w-8 h-8 rounded-full overflow-hidden border border-border bg-forest-50">
+            <img src={getAnimalIcon(event.animal?.species)} alt="" className="w-full h-full object-cover" />
+          </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-gray-900 dark:text-foreground dark:text-foreground dark:text-white truncate">{event.animal?.name || event.animal?.identifier || '—'}</p>
             <p className="text-xs text-gray-400">{event.notes || event.type}</p>
@@ -327,22 +360,26 @@ export default function DashboardPage() {
                 <button
                   key={w.id}
                   onClick={() => toggleWidget(w.id)}
-                  className="px-3 py-1.5 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-500 dark:text-gray-400 dark:text-gray-400 hover:border-forest-400 hover:text-forest-600 transition-colors"
+                  className="px-3 py-1.5 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-500 dark:text-gray-400 dark:text-gray-400 hover:border-forest-400 hover:text-forest-600 transition-colors flex items-center gap-1.5"
                 >
-                  + {w.icon} {w.title}
+                  + <img src={w.icon} alt="" className="w-4 h-4 object-cover rounded inline-block" /> {w.title}
                 </button>
               ))}
             </div>
           )}
           <button
             onClick={() => setEditMode(e => !e)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
               editMode
                 ? 'bg-forest-600 text-white hover:bg-forest-700'
                 : 'border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 dark:text-gray-400 dark:text-gray-400 hover:bg-gray-50 dark:bg-muted/20 dark:bg-muted/20 dark:hover:bg-gray-700'
             }`}
           >
-            {editMode ? '✓ Terminer' : '⚙️ Personnaliser'}
+            {editMode ? (
+              <><svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg> Terminer</>
+            ) : (
+              <><img src="/icons/section-admin.png" alt="" className="w-4 h-4 object-cover rounded" /> Personnaliser</>
+            )}
           </button>
         </div>
       </div>
@@ -350,7 +387,12 @@ export default function DashboardPage() {
       {/* Alertes */}
       {(lowStockCount > 0 || pendingWorkflows > 0) && (
         <div className="flex items-start gap-3 p-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700">
-          <span className="text-amber-600 text-lg flex-shrink-0">⚠️</span>
+          <span className="text-amber-600 flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+          </span>
           <div>
             <p className="text-sm font-medium text-amber-800 dark:text-amber-300">Points d'attention</p>
             <ul className="mt-1 space-y-0.5">
@@ -373,7 +415,7 @@ export default function DashboardPage() {
           >
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-gray-900 dark:text-foreground dark:text-foreground dark:text-white text-sm flex items-center gap-2">
-                <span>{widget.icon}</span>
+                <img src={widget.icon} alt="" className="w-5 h-5 object-cover rounded" />
                 {widget.title}
               </h3>
               {editMode && (
@@ -393,20 +435,23 @@ export default function DashboardPage() {
 
       {/* Actions rapides */}
       <div className="rounded-2xl border border-forest-100 dark:border-gray-700 p-5 shadow-sm" style={{ background: 'linear-gradient(135deg, #f0fdf4, #fafaf9)' }}>
-        <h3 className="font-bold text-forest-800 dark:text-white text-sm mb-3 flex items-center gap-2"><span>⚡</span> Actions rapides</h3>
+        <h3 className="font-bold text-forest-800 dark:text-white text-sm mb-3 flex items-center gap-2">
+          <img src="/icons/section-admin.png" alt="" className="w-5 h-5 object-cover rounded" />
+          Actions rapides
+        </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[
-            { label: 'Export stock CSV', onClick: () => handleExport(exportApi.stockCsv(), 'stock.csv') },
-            { label: 'Export animaux CSV', onClick: () => handleExport(exportApi.animauxCsv(), 'animaux.csv') },
-            { label: 'Export audit CSV', onClick: () => handleExport(exportApi.auditCsv(), 'audit.csv') },
-            { label: 'Export formations CSV', onClick: () => handleExport(exportApi.formationCsv(), 'formations.csv') },
+            { label: 'Export stock CSV', icon: '/icons/section-stock.png', onClick: () => handleExport(exportApi.stockCsv(), 'stock.csv') },
+            { label: 'Export animaux CSV', icon: '/icons/section-animaux.png', onClick: () => handleExport(exportApi.animauxCsv(), 'animaux.csv') },
+            { label: 'Export audit CSV', icon: '/icons/section-admin.png', onClick: () => handleExport(exportApi.auditCsv(), 'audit.csv') },
+            { label: 'Export formations CSV', icon: '/icons/section-formation.png', onClick: () => handleExport(exportApi.formationCsv(), 'formations.csv') },
           ].map(action => (
             <button
               key={action.label}
               onClick={action.onClick}
               className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 dark:bg-muted/20 dark:bg-muted/20 dark:bg-gray-700/50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 text-sm text-gray-700 dark:text-gray-300 dark:text-gray-300 dark:text-gray-300 transition-colors"
             >
-              <span>📥</span>
+              <img src={action.icon} alt="" className="w-4 h-4 object-cover rounded flex-shrink-0" />
               {action.label}
             </button>
           ))}

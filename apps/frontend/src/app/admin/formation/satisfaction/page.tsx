@@ -72,7 +72,7 @@ function SatisfactionForm({ cohortId, enrollmentId, onSuccess }: { cohortId: str
     { key: 'content' as const, label: 'Qualité du contenu', desc: 'Pertinence et clarté des supports pédagogiques' },
     { key: 'trainer' as const, label: 'Qualité du formateur', desc: 'Pédagogie, disponibilité et expertise' },
     { key: 'organization' as const, label: 'Organisation', desc: 'Planning, rythme et logistique de la formation' },
-    { key: 'tools' as const, label: 'Outils numériques', desc: 'Facilité d\'utilisation de la plateforme' },
+    { key: 'tools' as const, label: 'Outils numériques', desc: 'Facilité d\'utilisation de la plateforme'},
   ];
 
   return (
@@ -80,7 +80,7 @@ function SatisfactionForm({ cohortId, enrollmentId, onSuccess }: { cohortId: str
       {/* En-tête */}
       <div className="text-center py-6">
         <div className="w-16 h-16 rounded-2xl bg-amber-50 flex items-center justify-center mx-auto mb-4">
-          <Star className="w-8 h-8 text-amber-500" />
+          <Star className="w-8 h-8 text-amber-500"/>
         </div>
         <h2 className="text-xl font-bold text-gray-800">Questionnaire de satisfaction</h2>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-md mx-auto">
@@ -114,19 +114,18 @@ function SatisfactionForm({ cohortId, enrollmentId, onSuccess }: { cohortId: str
         </h3>
         <div className="flex items-center gap-3">
           {[
-            { value: 'yes' as const, icon: ThumbsUp, label: 'Oui', color: 'text-green-600 bg-green-50 border-green-200', activeColor: 'bg-green-600 text-white border-green-600' },
-            { value: 'maybe' as const, icon: Meh, label: 'Peut-être', color: 'text-amber-600 bg-amber-50 border-amber-200', activeColor: 'bg-amber-500 text-white border-amber-500' },
-            { value: 'no' as const, icon: ThumbsDown, label: 'Non', color: 'text-red-600 bg-red-50 border-red-200', activeColor: 'bg-red-500 text-white border-red-500' },
+            { value:'yes'as const, icon: ThumbsUp, label:'Oui', color:'text-green-600 bg-green-50 border-green-200', activeColor:'bg-green-600 text-white border-green-600'},
+            { value:'maybe'as const, icon: Meh, label:'Peut-être', color:'text-amber-600 bg-amber-50 border-amber-200', activeColor:'bg-amber-500 text-white border-amber-500'},
+            { value:'no'as const, icon: ThumbsDown, label:'Non', color:'text-red-600 bg-red-50 border-red-200', activeColor:'bg-red-500 text-white border-red-500'},
           ].map(({ value, icon: Icon, label, color, activeColor }) => (
             <button
               key={value}
-              type="button"
-              onClick={() => setRecommend(value)}
+              type="button"onClick={() => setRecommend(value)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border font-medium text-sm transition-all ${
                 recommend === value ? activeColor : color
               }`}
             >
-              <Icon className="w-4 h-4" />
+              <Icon className="w-4 h-4"/>
               {label}
             </button>
           ))}
@@ -143,10 +142,8 @@ function SatisfactionForm({ cohortId, enrollmentId, onSuccess }: { cohortId: str
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            placeholder="Points forts de la formation..."
-            rows={3}
-            className="w-full px-3 py-2.5 text-sm border border-gray-200 dark:border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-forest-300 resize-none"
-          />
+            placeholder="Points forts de la formation..."rows={3}
+            className="w-full px-3 py-2.5 text-sm border border-gray-200 dark:border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-forest-300 resize-none"/>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
@@ -266,9 +263,7 @@ function FeedbackResults({ feedbacks }: { feedbacks: any[] }) {
             </div>
             <p className="text-sm text-gray-700">{f.comment}</p>
             {f.improvements && (
-              <p className="text-sm text-amber-700 mt-2 pt-2 border-t border-gray-50">
-                💡 {f.improvements}
-              </p>
+              <p className="text-sm text-amber-700 mt-2 pt-2 border-t border-gray-50">{f.improvements}</p>
             )}
           </div>
         ))}
@@ -305,7 +300,7 @@ export default function SatisfactionPage() {
     return (
       <div className="p-6 flex flex-col items-center justify-center min-h-[60vh] text-center">
         <div className="w-20 h-20 rounded-full bg-green-50 flex items-center justify-center mb-6">
-          <CheckCircle className="w-10 h-10 text-green-500" />
+          <CheckCircle className="w-10 h-10 text-green-500"/>
         </div>
         <h2 className="text-2xl font-bold text-gray-800 mb-2">Merci pour votre retour !</h2>
         <p className="text-gray-500 dark:text-gray-400 max-w-md">
@@ -319,7 +314,7 @@ export default function SatisfactionPage() {
     <div className="p-6 space-y-6 max-w-4xl mx-auto">
       <div>
         <h1 className="text-2xl font-bold text-gray-900 dark:text-foreground flex items-center gap-2">
-          <Star className="w-6 h-6 text-amber-500" />
+          <Star className="w-6 h-6 text-amber-500"/>
           Satisfaction & Évaluations
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Questionnaires de satisfaction — Indicateur 30 Qualiopi</p>
@@ -331,8 +326,7 @@ export default function SatisfactionPage() {
         <select
           value={selectedCohort}
           onChange={(e) => setSelectedCohort(e.target.value)}
-          className="w-full px-3 py-2.5 text-sm border border-gray-200 dark:border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-forest-300"
-        >
+          className="w-full px-3 py-2.5 text-sm border border-gray-200 dark:border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-forest-300">
           <option value="">— Choisir une cohorte —</option>
           {cohorts.map((c: any) => (
             <option key={c.id} value={c.id}>{c.name} — {c.course?.title}</option>

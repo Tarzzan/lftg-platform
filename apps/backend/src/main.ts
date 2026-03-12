@@ -1,5 +1,8 @@
 import { NestFactory } from '@nestjs/core';
-import { NestExpressApplication } from '@nestjs/platform-express';
+import { CrudMonitorInterceptor } from './common/crud-monitor.interceptor';
+import { PrismaService } from './modules/prisma/prisma.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+
 import * as path from 'path';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -7,12 +10,12 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+  const app = await NestFactory.create(AppModule, {
     logger: ['error', 'warn', 'log', 'verbose'],
   });
 
   // ─── Fichiers statiques (uploads) ─────────────────────────────────────────
-  app.useStaticAssets(path.join(process.cwd(), 'uploads'), {
+  (app as any).useStaticAssets(path.join(process.cwd(), 'uploads'), {
     prefix: '/uploads/',
   });
 
@@ -99,11 +102,11 @@ dans l'en-tête \`Authorization: Bearer <token>\` pour toutes les requêtes prot
     .addServer('https://api.lftg.fr', 'Production')
     .build();
 
-  const document = SwaggerModule.createDocument(app, config, {
+  const document = SwaggerModule.createDocument(app as any, config, {
     operationIdFactory: (controllerKey, methodKey) => `${controllerKey}_${methodKey}`,
   });
 
-  SwaggerModule.setup('docs', app, document, {
+  SwaggerModule.setup('docs', app as any, document, {
     swaggerOptions: {
       persistAuthorization: true,
       docExpansion: 'none',
@@ -128,6 +131,11 @@ dans l'en-tête \`Authorization: Bearer <token>\` pour toutes les requêtes prot
       uptime: process.uptime(),
     });
   });
+
+  // ─── Intercepteur de surveillance CRUD ────────────────────────────────────
+  const prisma = app.get(PrismaService);
+  const eventEmitter = app.get(EventEmitter2);
+  app.useGlobalInterceptors(new CrudMonitorInterceptor(prisma, eventEmitter));
 
   const port = process.env.PORT || 3001;
   await app.listen(port, '0.0.0.0');

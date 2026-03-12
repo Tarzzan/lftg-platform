@@ -3,22 +3,22 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 
-const ENTITY_CONFIG: Record<string, { emoji: string; label: string; color: string }> = {
-  ANIMAL: { emoji: '🦜', label: 'Animal', color: 'bg-green-100 text-green-700' },
-  SPECIES: { emoji: '🔬', label: 'Espèce', color: 'bg-blue-100 text-blue-700' },
-  ENCLOSURE: { emoji: '🏠', label: 'Enclos', color: 'bg-amber-100 text-amber-700' },
-  STOCK_ARTICLE: { emoji: '📦', label: 'Stock', color: 'bg-orange-100 text-orange-700' },
-  SALE: { emoji: '💰', label: 'Vente', color: 'bg-purple-100 text-purple-700' },
-  USER: { emoji: '👤', label: 'Utilisateur', color: 'bg-indigo-100 text-indigo-700' },
-  MEDICAL_VISIT: { emoji: '🏥', label: 'Visite médicale', color: 'bg-red-100 text-red-700' },
-  WORKFLOW: { emoji: '⚙️', label: 'Workflow', color: 'bg-gray-100 dark:bg-gray-800 text-gray-700' },
+const ENTITY_CONFIG: Record<string, { icon: string; label: string; color: string }> = {
+  ANIMAL: { icon: '/icons/section-animaux.png', label: 'Animal', color: 'bg-green-100 text-green-700' },
+  SPECIES: { icon: '/icons/section-animaux.png', label: 'Espèce', color: 'bg-blue-100 text-blue-700' },
+  ENCLOSURE: { icon: '/icons/section-admin.png', label: 'Enclos', color: 'bg-amber-100 text-amber-700' },
+  STOCK_ARTICLE: { icon: '/icons/section-stock.png', label: 'Stock', color: 'bg-orange-100 text-orange-700' },
+  SALE: { icon: '/icons/section-finance.png', label: 'Vente', color: 'bg-purple-100 text-purple-700' },
+  USER: { icon: '/icons/section-rh.png', label: 'Utilisateur', color: 'bg-indigo-100 text-indigo-700' },
+  MEDICAL_VISIT: { icon: '/icons/section-medical.png', label: 'Visite médicale', color: 'bg-red-100 text-red-700' },
+  WORKFLOW: { icon: '/icons/section-admin.png', label: 'Workflow', color: 'bg-gray-100 dark:bg-gray-800 text-gray-700' },
 };
 
 const ACTION_CONFIG: Record<string, { icon: string; label: string; color: string }> = {
-  CREATE: { icon: '✅', label: 'Création', color: 'text-green-600' },
-  UPDATE: { icon: '✏️', label: 'Modification', color: 'text-blue-600' },
-  DELETE: { icon: '🗑️', label: 'Suppression', color: 'text-red-600' },
-  STATUS_CHANGE: { icon: '🔄', label: 'Changement de statut', color: 'text-amber-600' },
+  CREATE: { icon: '', label: 'Création', color: 'text-green-600' },
+  UPDATE: { icon: '️', label: 'Modification', color: 'text-blue-600' },
+  DELETE: { icon: '️', label: 'Suppression', color: 'text-red-600' },
+  STATUS_CHANGE: { icon: '', label: 'Changement de statut', color: 'text-amber-600' },
 };
 
 export default function HistoryPage() {
@@ -48,7 +48,7 @@ export default function HistoryPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">📜 Historique des modifications</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Historique des modifications</h1>
         <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Traçabilité complète de toutes les modifications</p>
       </div>
 
@@ -69,7 +69,7 @@ export default function HistoryPage() {
           >
             <option value="ALL">Toutes les entités</option>
             {Object.entries(ENTITY_CONFIG).map(([type, config]) => (
-              <option key={type} value={type}>{config.emoji} {config.label}</option>
+              <option key={type} value={type}>{config.label}</option>
             ))}
           </select>
           <select
@@ -95,7 +95,7 @@ export default function HistoryPage() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-12 text-center">
-          <p className="text-4xl mb-3">📜</p>
+          <p className="text-4xl mb-3"></p>
           <p className="text-gray-500">Aucune entrée dans l'historique pour le moment.</p>
           <p className="text-sm text-gray-400 mt-1">Les modifications apparaîtront ici au fur et à mesure.</p>
         </div>
@@ -104,8 +104,8 @@ export default function HistoryPage() {
           {/* Timeline */}
           <div className="lg:col-span-2 space-y-3">
             {filtered.map((entry: any) => {
-              const entityConf = ENTITY_CONFIG[entry.entityType] || { emoji: '📄', label: entry.entityType, color: 'bg-gray-100 dark:bg-gray-800 text-gray-700' };
-              const actionConf = ACTION_CONFIG[entry.action] || { icon: '📝', label: entry.action, color: 'text-gray-600' };
+              const entityConf = ENTITY_CONFIG[entry.entityType] || { icon: '/icons/section-admin.png', label: entry.entityType, color: 'bg-gray-100 dark:bg-gray-800 text-gray-700' };
+              const actionConf = ACTION_CONFIG[entry.action] || { icon: '', label: entry.action, color: 'text-gray-600' };
               const isSelected = selectedEntry?.id === entry.id;
 
               return (
@@ -116,7 +116,7 @@ export default function HistoryPage() {
                 >
                   <div className="flex items-start gap-3">
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0 ${entityConf.color}`}>
-                      {entityConf.emoji}
+                      {entityConf.icon ? <img src={entityConf.icon} alt="" className="w-5 h-5 object-cover rounded" /> : null}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
@@ -173,7 +173,7 @@ export default function HistoryPage() {
                   if (count === 0) return null;
                   return (
                     <div key={type} className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">{conf.emoji} {conf.label}</span>
+                      <span className="text-gray-600">{conf.label}</span>
                       <span className="font-semibold text-gray-800">{count}</span>
                     </div>
                   );

@@ -108,7 +108,7 @@ export default function BIDashboardPage() {
           {/* Répartition par espèce */}
           {dashboard?.animals?.bySpecies && dashboard.animals.bySpecies.length > 0 && (
             <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
-              <h2 className="text-white font-semibold mb-4">🦜 Répartition par espèce</h2>
+              <h2 className="text-white font-semibold mb-4">Répartition par espèce</h2>
               <div className="space-y-3">
                 {dashboard.animals.bySpecies.slice(0, 8).map((s) => {
                   const pct = Math.round((s.count / (dashboard.animals?.total || 1)) * 100);
@@ -129,7 +129,7 @@ export default function BIDashboardPage() {
           {/* Prévisions de revenus */}
           {forecast?.revenue && (
             <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
-              <h2 className="text-white font-semibold mb-4">📈 Prévisions de revenus (6 mois)</h2>
+              <h2 className="text-white font-semibold mb-4">Prévisions de revenus (6 mois)</h2>
               <div className="flex items-end gap-2 h-32">
                 {forecast.revenue.months?.map((month, i) => {
                   const value = forecast.revenue?.values?.[i] || 0;
@@ -152,7 +152,7 @@ export default function BIDashboardPage() {
           {/* Tendance santé animale */}
           {healthTrend.length > 0 && (
             <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
-              <h2 className="text-white font-semibold mb-4">🏥 Tendance santé animale</h2>
+              <h2 className="text-white font-semibold mb-4">Tendance santé animale</h2>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>

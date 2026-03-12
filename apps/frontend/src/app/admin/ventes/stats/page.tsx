@@ -101,7 +101,7 @@ export default function VentesStatsPage() {
             </div>
             {ventes.length === 0 ? (
               <div className="p-12 text-center">
-                <p className="text-4xl mb-3">📦</p>
+                <p className="text-4xl mb-3"></p>
                 <p className="text-slate-300 font-semibold">Aucune vente enregistrée</p>
               </div>
             ) : (

@@ -107,9 +107,9 @@ export default function RealtimePage() {
       {/* Tabs */}
       <div className="flex gap-2 border-b border-slate-700 pb-2">
         {[
-          { id: 'metrics', label: '📊 Métriques', count: metrics.length },
-          { id: 'events', label: '⚡ Événements', count: events.length },
-          { id: 'environment', label: '🌡️ Environnement', count: null },
+          { id: 'metrics', label: 'Métriques', count: metrics.length },
+          { id: 'events', label: 'Événements', count: events.length },
+          { id: 'environment', label: '️ Environnement', count: null },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -168,7 +168,7 @@ export default function RealtimePage() {
             </div>
           ) : events.length === 0 ? (
             <div className="bg-slate-800 rounded-xl p-12 text-center border border-slate-700">
-              <p className="text-4xl mb-3">✅</p>
+              <p className="text-4xl mb-3"></p>
               <p className="text-slate-300">Aucun événement récent</p>
             </div>
           ) : (
@@ -206,44 +206,44 @@ export default function RealtimePage() {
             </div>
           ) : !environment ? (
             <div className="bg-slate-800 rounded-xl p-12 text-center border border-slate-700">
-              <p className="text-4xl mb-3">🌡️</p>
+              <p className="text-4xl mb-3">️</p>
               <p className="text-slate-300">Données environnementales non disponibles</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {environment.temperature !== undefined && (
                 <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
-                  <p className="text-slate-400 text-sm">🌡️ Température</p>
+                  <p className="text-slate-400 text-sm">️ Température</p>
                   <p className="text-3xl font-bold text-orange-400 mt-2">{environment.temperature}°C</p>
                 </div>
               )}
               {environment.humidity !== undefined && (
                 <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
-                  <p className="text-slate-400 text-sm">💧 Humidité</p>
+                  <p className="text-slate-400 text-sm">Humidité</p>
                   <p className="text-3xl font-bold text-blue-400 mt-2">{environment.humidity}%</p>
                 </div>
               )}
               {environment.co2 !== undefined && (
                 <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
-                  <p className="text-slate-400 text-sm">🌬️ CO₂</p>
+                  <p className="text-slate-400 text-sm">️ CO₂</p>
                   <p className="text-3xl font-bold text-green-400 mt-2">{environment.co2} ppm</p>
                 </div>
               )}
               {environment.lightLevel !== undefined && (
                 <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
-                  <p className="text-slate-400 text-sm">☀️ Luminosité</p>
+                  <p className="text-slate-400 text-sm">️ Luminosité</p>
                   <p className="text-3xl font-bold text-yellow-400 mt-2">{environment.lightLevel} lux</p>
                 </div>
               )}
               {environment.waterTemp !== undefined && (
                 <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
-                  <p className="text-slate-400 text-sm">🌊 Temp. eau</p>
+                  <p className="text-slate-400 text-sm">Temp. eau</p>
                   <p className="text-3xl font-bold text-cyan-400 mt-2">{environment.waterTemp}°C</p>
                 </div>
               )}
               {environment.ph !== undefined && (
                 <div className="bg-slate-800 rounded-xl p-5 border border-slate-700">
-                  <p className="text-slate-400 text-sm">⚗️ pH</p>
+                  <p className="text-slate-400 text-sm">️ pH</p>
                   <p className="text-3xl font-bold text-purple-400 mt-2">{environment.ph}</p>
                 </div>
               )}

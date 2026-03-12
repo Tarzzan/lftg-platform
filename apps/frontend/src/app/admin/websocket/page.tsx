@@ -23,7 +23,7 @@ export default function WebSocketPage() {
   const [tab, setTab] = useState<'events' | 'channels' | 'test'>('events');
   const [events, setEvents] = useState<SSEEvent[]>([]);
   const [testEvent, setTestEvent] = useState('animal.alert');
-  const [testPayload, setTestPayload] = useState('{ "animalId": "A001", "message": "Test event" }');
+  const [testPayload, setTestPayload] = useState('{"animalId":"A001","message":"Test event"}');
   const [connectionStatus, setConnectionStatus] = useState<'idle' | 'connecting' | 'connected' | 'error'>('idle');
   const [isLoading, setIsLoading] = useState(false);
   const eventSourceRef = useRef<EventSource | null>(null);
@@ -45,7 +45,7 @@ export default function WebSocketPage() {
         id: Date.now().toString(),
         time: new Date().toLocaleTimeString('fr-FR', { hour12: false }),
         type: 'system.connect',
-        data: '{ "message": "Connexion SSE établie" }',
+        data: '{"message":"Connexion SSE établie"}',
         source: 'Système',
       }, ...prev].slice(0, 50));
     };
@@ -85,7 +85,7 @@ export default function WebSocketPage() {
       id: Date.now().toString(),
       time: new Date().toLocaleTimeString('fr-FR', { hour12: false }),
       type: 'system.disconnect',
-      data: '{ "message": "Déconnexion SSE" }',
+      data: '{"message":"Déconnexion SSE"}',
       source: 'Système',
     }, ...prev].slice(0, 50));
   };
@@ -163,16 +163,16 @@ export default function WebSocketPage() {
               onClick={() => setTab(t)}
               className={`px-6 py-3 text-sm font-medium ${tab === t ? 'border-b-2 border-green-600 text-green-600' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}
             >
-              {t === 'events' ? `Flux d'événements (${events.length})` : t === 'channels' ? 'Canaux' : 'Tester'}
+              {t === 'events' ? `Flux d'événements (${events.length})` : t ==='channels'?'Canaux':'Tester'}
             </button>
           ))}
         </div>
 
-        {tab === 'events' && (
+        {tab ==='events'&& (
           <div className="p-4">
             {events.length === 0 ? (
               <div className="text-center py-12 text-gray-400">
-                <p className="text-4xl mb-3">📡</p>
+                <p className="text-4xl mb-3"></p>
                 <p className="font-medium text-gray-600">Aucun événement reçu</p>
                 <p className="text-sm mt-1">Connectez-vous au flux SSE pour recevoir les événements en temps réel</p>
               </div>
@@ -193,12 +193,12 @@ export default function WebSocketPage() {
           </div>
         )}
 
-        {tab === 'channels' && (
+        {tab ==='channels'&& (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-muted/20 text-xs text-gray-500 dark:text-gray-400 uppercase">
                 <tr>
-                  {['Endpoint SSE', 'Description', 'Statut'].map((h) => (
+                  {['Endpoint SSE','Description','Statut'].map((h) => (
                     <th key={h} className="px-4 py-3 text-left">{h}</th>
                   ))}
                 </tr>
@@ -220,7 +220,7 @@ export default function WebSocketPage() {
           </div>
         )}
 
-        {tab === 'test' && (
+        {tab ==='test'&& (
           <div className="p-6 space-y-4">
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-sm text-blue-700">
               <p className="font-medium mb-1">ℹ️ Test SSE</p>
@@ -231,8 +231,7 @@ export default function WebSocketPage() {
               <input
                 readOnly
                 value={`/api/v1/notifications/stream`}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono bg-gray-50 dark:bg-gray-900"
-              />
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono bg-gray-50 dark:bg-gray-900"/>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Exemple de payload reçu</label>
@@ -240,14 +239,13 @@ export default function WebSocketPage() {
                 readOnly
                 value={`{"id":"evt_001","type":"animal.alert","data":{"animalId":"A001","message":"Température anormale"},"timestamp":"${new Date().toISOString()}"}`}
                 rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono bg-gray-50 dark:bg-gray-900"
-              />
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono bg-gray-50 dark:bg-gray-900"/>
             </div>
             <button
               onClick={connected ? disconnect : connect}
-              className={`px-6 py-2 rounded-lg text-sm font-medium ${connected ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-green-600 text-white hover:bg-green-700'}`}
+              className={`px-6 py-2 rounded-lg text-sm font-medium ${connected ?'bg-red-600 text-white hover:bg-red-700':'bg-green-600 text-white hover:bg-green-700'}`}
             >
-              {connected ? '⏹ Arrêter le flux' : '▶ Démarrer le flux SSE'}
+              {connected ?'⏹ Arrêter le flux':'▶ Démarrer le flux SSE'}
             </button>
           </div>
         )}

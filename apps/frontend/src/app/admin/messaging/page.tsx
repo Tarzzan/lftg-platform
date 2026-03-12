@@ -135,7 +135,7 @@ export default function MessagingPage() {
                 >
                   <div className="flex items-center justify-between">
                     <p className="text-white text-sm font-medium truncate">
-                      {conv.name || conv.participants.map((p) => p.name).join(', ')}
+                      {conv.name || conv.participants.map((p) => p.name).join(',')}
                     </p>
                     {conv.unreadCount ? (
                       <span className="ml-2 px-1.5 py-0.5 bg-indigo-600 text-white text-xs rounded-full flex-shrink-0">
@@ -163,7 +163,7 @@ export default function MessagingPage() {
           {!selectedConv ? (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
-                <p className="text-4xl mb-3">💬</p>
+                <p className="text-4xl mb-3"></p>
                 <p className="text-slate-300 font-semibold">Sélectionnez une conversation</p>
               </div>
             </div>
@@ -172,7 +172,7 @@ export default function MessagingPage() {
               {/* Header */}
               <div className="p-4 border-b border-slate-700 flex-shrink-0">
                 <p className="text-white font-semibold">
-                  {selectedConvData?.name || selectedConvData?.participants.map((p) => p.name).join(', ')}
+                  {selectedConvData?.name || selectedConvData?.participants.map((p) => p.name).join(',')}
                 </p>
                 <p className="text-slate-400 text-xs">
                   {selectedConvData?.participants.length} participant{(selectedConvData?.participants.length || 0) > 1 ? 's' : ''}

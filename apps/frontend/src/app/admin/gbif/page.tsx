@@ -28,12 +28,12 @@ interface GBIFSearchResult {
 
 const threatColors: Record<string, { label: string; color: string; bg: string }> = {
   EXTINCT: { label: 'Éteint', color: 'text-black', bg: 'bg-black' },
-  EXTINCT_IN_THE_WILD: { label: 'Éteint à l\'état sauvage', color: 'text-gray-400', bg: 'bg-gray-800' },
-  CRITICALLY_ENDANGERED: { label: 'En danger critique', color: 'text-red-400', bg: 'bg-red-900/30' },
-  ENDANGERED: { label: 'En danger', color: 'text-orange-400', bg: 'bg-orange-900/30' },
-  VULNERABLE: { label: 'Vulnérable', color: 'text-yellow-400', bg: 'bg-yellow-900/30' },
-  NEAR_THREATENED: { label: 'Quasi menacé', color: 'text-lime-400', bg: 'bg-lime-900/30' },
-  LEAST_CONCERN: { label: 'Préoccupation mineure', color: 'text-green-400', bg: 'bg-green-900/30' },
+  EXTINCT_IN_THE_WILD: { label: 'Éteint à l\'état sauvage', color:'text-gray-400', bg:'bg-gray-800'},
+  CRITICALLY_ENDANGERED: { label:'En danger critique', color:'text-red-400', bg:'bg-red-900/30'},
+  ENDANGERED: { label:'En danger', color:'text-orange-400', bg:'bg-orange-900/30'},
+  VULNERABLE: { label:'Vulnérable', color:'text-yellow-400', bg:'bg-yellow-900/30'},
+  NEAR_THREATENED: { label:'Quasi menacé', color:'text-lime-400', bg:'bg-lime-900/30'},
+  LEAST_CONCERN: { label:'Préoccupation mineure', color:'text-green-400', bg:'bg-green-900/30'},
 };
 
 export default function GBIFPage() {
@@ -43,7 +43,7 @@ export default function GBIFPage() {
   const { data: species, isLoading, isError, error } = useQuery<GBIFSearchResult>({
     queryKey: ['gbif-species', activeSearch],
     queryFn: async () => {
-      const res = await api.get(`/gbif/species${activeSearch ? `?q=${encodeURIComponent(activeSearch)}` : ''}`);
+      const res = await api.get(`/gbif/species${activeSearch ? `?q=${encodeURIComponent(activeSearch)}` :''}`);
       return res.data;
     },
     enabled: true,
@@ -66,33 +66,27 @@ export default function GBIFPage() {
       <div className="bg-slate-800 rounded-xl p-4 border border-slate-700">
         <div className="flex gap-3">
           <input
-            type="text"
-            value={searchQuery}
+            type="text"value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            placeholder="Rechercher une espèce (ex: Ara ararauna, Python reticulatus...)"
-            className="flex-1 bg-slate-700 text-white rounded-lg px-4 py-2 border border-slate-600 focus:outline-none focus:border-indigo-500"
-          />
+            onKeyDown={(e) => e.key ==='Enter'&& handleSearch()}
+            placeholder="Rechercher une espèce (ex: Ara ararauna, Python reticulatus...)"className="flex-1 bg-slate-700 text-white rounded-lg px-4 py-2 border border-slate-600 focus:outline-none focus:border-indigo-500"/>
           <button
             onClick={handleSearch}
             disabled={isLoading}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50"
-          >
-            {isLoading ? '...' : '🔍 Rechercher'}
-          </button>
+            className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50">{isLoading ?'...':' Rechercher'}</button>
         </div>
       </div>
 
       {/* Résultats */}
       {isLoading ? (
         <div className="flex items-center justify-center h-40">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500" />
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"/>
         </div>
       ) : results.length === 0 ? (
         <div className="bg-slate-800 rounded-xl p-12 text-center border border-slate-700">
-          <p className="text-4xl mb-3">🔬</p>
+          <p className="text-4xl mb-3"></p>
           <p className="text-slate-300 font-semibold">
-            {activeSearch ? 'Aucune espèce trouvée' : 'Lancez une recherche pour explorer la base GBIF'}
+            {activeSearch ?'Aucune espèce trouvée':'Lancez une recherche pour explorer la base GBIF'}
           </p>
         </div>
       ) : (
@@ -126,8 +120,8 @@ export default function GBIFPage() {
                     </div>
                   </div>
                   {sp.status && (
-                    <span className={`text-xs px-2 py-1 rounded ${sp.status === 'ACCEPTED' ? 'bg-green-900/30 text-green-400' : 'bg-slate-700 text-slate-400'}`}>
-                      {sp.status === 'ACCEPTED' ? 'Accepté' : sp.status}
+                    <span className={`text-xs px-2 py-1 rounded ${sp.status ==='ACCEPTED'?'bg-green-900/30 text-green-400':'bg-slate-700 text-slate-400'}`}>
+                      {sp.status ==='ACCEPTED'?'Accepté' : sp.status}
                     </span>
                   )}
                 </div>

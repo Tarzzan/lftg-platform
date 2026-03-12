@@ -35,13 +35,21 @@ const statusConfig: Record<string, { label: string; color: string; bg: string }>
 };
 
 const typeIcons: Record<string, string> = {
-  TERRARIUM: '🦎',
-  VOLIERE: '🦜',
-  AQUARIUM: '🐠',
-  ENCLOS_EXTERIEUR: '🌿',
-  BASSIN: '🐊',
-  QUARANTAINE: '🏥',
+  TERRARIUM: '/icons/animal-lezard.png',
+  VOLIERE: '/icons/animal-ara.png',
+  AQUARIUM: '/icons/animal-tortue.png',
+  ENCLOS_EXTERIEUR: '/icons/animal-pecari.png',
+  BASSIN: '/icons/animal-caiman.png',
+  QUARANTAINE: '/icons/section-medical.png',
 };
+function EnclosTypeIcon({ type }: { type?: string }) {
+  const src = typeIcons[type || ''] || '/icons/animal-lezard.png';
+  return (
+    <div className="w-10 h-10 rounded-xl overflow-hidden border border-slate-600 bg-slate-700 flex-shrink-0">
+      <img src={src} alt={type || 'Enclos'} className="w-full h-full object-cover" />
+    </div>
+  );
+}
 
 export default function EnclosPage() {
   const queryClient = useQueryClient();
@@ -140,8 +148,7 @@ export default function EnclosPage() {
           <h2 className="text-white font-semibold mb-4">Créer un enclos</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
-              type="text"
-              placeholder="Nom de l'enclos *"
+              type="text"placeholder="Nom de l'enclos *"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
               className="bg-slate-700 text-white rounded-lg px-4 py-2 border border-slate-600 focus:outline-none focus:border-indigo-500"
@@ -152,7 +159,7 @@ export default function EnclosPage() {
               className="bg-slate-700 text-white rounded-lg px-4 py-2 border border-slate-600 focus:outline-none focus:border-indigo-500"
             >
               {Object.keys(typeIcons).map((t) => (
-                <option key={t} value={t}>{typeIcons[t]} {t.replace(/_/g, ' ')}</option>
+                <option key={t} value={t}>{t.replace(/_/g, '')}</option>
               ))}
             </select>
             <input
@@ -200,9 +207,12 @@ export default function EnclosPage() {
         <div className="bg-slate-800 rounded-xl p-6 border border-indigo-700">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-white font-semibold text-lg">
-              {typeIcons[enclosDetail.type || ''] || '🏠'} {enclosDetail.name}
+              <div className="flex items-center gap-3">
+                <EnclosTypeIcon type={enclosDetail.type} />
+                <span>{enclosDetail.name}</span>
+              </div>
             </h2>
-            <button onClick={() => setSelectedEnclos(null)} className="text-slate-400 hover:text-white text-xl">✕</button>
+            <button onClick={() =>setSelectedEnclos(null)} className="text-slate-400 hover:text-white text-xl"></button>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
             <div>
@@ -259,7 +269,7 @@ export default function EnclosPage() {
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <span className="text-2xl">{typeIcons[enc.type || ''] || '🏠'}</span>
+                    <EnclosTypeIcon type={enc.type} />
                     <div>
                       <h3 className="text-white font-semibold">{enc.name}</h3>
                       {enc.location && <p className="text-slate-400 text-xs">{enc.location}</p>}
@@ -284,8 +294,8 @@ export default function EnclosPage() {
                 </div>
                 {enc.temperature && (
                   <div className="flex items-center gap-3 mt-2 text-xs text-slate-400">
-                    <span>🌡️ {enc.temperature}°C</span>
-                    {enc.humidity && <span>💧 {enc.humidity}%</span>}
+                    <span>️ {enc.temperature}°C</span>
+                    {enc.humidity && <span>{enc.humidity}%</span>}
                   </div>
                 )}
               </div>

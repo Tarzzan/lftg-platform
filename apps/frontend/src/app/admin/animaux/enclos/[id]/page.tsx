@@ -168,7 +168,7 @@ export default function EnclosDetailPage() {
         </div>
         <div className="w-full bg-gray-200 rounded-full h-3">
           <div
-            className={`h-3 rounded-full transition-all ${occupancyPct > 90 ? 'bg-red-500' : occupancyPct > 70 ? 'bg-yellow-500' : 'bg-green-500'}`}
+            className={`h-3 rounded-full transition-all ${occupancyPct > 90 ?'bg-red-500': occupancyPct > 70 ?'bg-yellow-500':'bg-green-500'}`}
             style={{ width: `${Math.min(occupancyPct, 100)}%` }}
           />
         </div>
@@ -177,18 +177,18 @@ export default function EnclosDetailPage() {
       {/* Onglets */}
       <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border shadow-sm overflow-hidden">
         <div className="flex border-b border-gray-200 dark:border-border">
-          {(['info', 'animals', 'edit'] as const).map((tab) => (
+          {(['info','animals','edit'] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-6 py-3 text-sm font-medium ${activeTab === tab ? 'border-b-2 border-green-600 text-green-600' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}
+              className={`px-6 py-3 text-sm font-medium ${activeTab === tab ?'border-b-2 border-green-600 text-green-600':'text-gray-500 dark:text-gray-400 hover:text-gray-700'}`}
             >
-              {tab === 'info' ? 'Informations' : tab === 'animals' ? `Animaux (${enclosure.animals?.length ?? 0})` : 'Modifier'}
+              {tab ==='info'?'Informations': tab ==='animals'? `Animaux (${enclosure.animals?.length ?? 0})` :'Modifier'}
             </button>
           ))}
         </div>
 
-        {activeTab === 'info' && (
+        {activeTab ==='info'&& (
           <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-3">
               <h3 className="font-semibold text-gray-900">Paramètres environnementaux</h3>
@@ -210,11 +210,11 @@ export default function EnclosDetailPage() {
           </div>
         )}
 
-        {activeTab === 'animals' && (
+        {activeTab ==='animals'&& (
           <div className="p-4">
             {(!enclosure.animals || enclosure.animals.length === 0) ? (
               <div className="text-center py-10 text-gray-400">
-                <p className="text-4xl mb-3">🐾</p>
+                <p className="text-4xl mb-3"></p>
                 <p className="font-medium text-gray-600">Aucun animal dans cet enclos</p>
               </div>
             ) : (
@@ -222,7 +222,7 @@ export default function EnclosDetailPage() {
                 <table className="w-full text-sm">
                   <thead className="bg-gray-50 dark:bg-muted/20 text-xs text-gray-500 dark:text-gray-400 uppercase">
                     <tr>
-                      {['Identifiant', 'Nom', 'Espèce', 'Statut'].map((h) => (
+                      {['Identifiant','Nom','Espèce','Statut'].map((h) => (
                         <th key={h} className="px-4 py-3 text-left">{h}</th>
                       ))}
                     </tr>
@@ -233,10 +233,10 @@ export default function EnclosDetailPage() {
                         <td className="px-4 py-3 font-mono text-xs text-gray-500">{animal.identifier}</td>
                         <td className="px-4 py-3 font-medium text-gray-900">{animal.name}</td>
                         <td className="px-4 py-3 text-gray-600 dark:text-gray-400 italic text-xs">
-                          {animal.species?.scientificName ?? '—'}
+                          {animal.species?.scientificName ??'—'}
                         </td>
                         <td className="px-4 py-3">
-                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${ANIMAL_STATUS_COLORS[animal.status] ?? 'bg-gray-100 dark:bg-gray-800 text-gray-600'}`}>
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${ANIMAL_STATUS_COLORS[animal.status] ??'bg-gray-100 dark:bg-gray-800 text-gray-600'}`}>
                             {animal.status}
                           </span>
                         </td>
@@ -249,11 +249,11 @@ export default function EnclosDetailPage() {
           </div>
         )}
 
-        {activeTab === 'edit' && (
+        {activeTab ==='edit'&& (
           <div className="p-6 space-y-4 max-w-lg">
             {saveSuccess && (
               <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-green-700 text-sm">
-                ✅ Enclos mis à jour avec succès
+                 Enclos mis à jour avec succès
               </div>
             )}
             {saveError && (
@@ -264,19 +264,17 @@ export default function EnclosDetailPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nom</label>
               <input
-                value={editData.name ?? ''}
+                value={editData.name ??''}
                 onChange={(e) => setEditData((d) => ({ ...d, name: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"/>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Type</label>
               <select
-                value={editData.type ?? ''}
+                value={editData.type ??''}
                 onChange={(e) => setEditData((d) => ({ ...d, type: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              >
-                {['VOLIERE', 'TERRARIUM', 'BASSIN', 'PADDOCK', 'CAGE', 'indoor', 'outdoor'].map((t) => (
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                {['VOLIERE','TERRARIUM','BASSIN','PADDOCK','CAGE','indoor','outdoor'].map((t) => (
                   <option key={t} value={t}>{t}</option>
                 ))}
               </select>
@@ -284,29 +282,25 @@ export default function EnclosDetailPage() {
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Capacité maximale</label>
               <input
-                type="number"
-                value={editData.capacity ?? 0}
+                type="number"value={editData.capacity ?? 0}
                 onChange={(e) => setEditData((d) => ({ ...d, capacity: parseInt(e.target.value) || 0 }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"/>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Description</label>
               <textarea
-                value={editData.description ?? ''}
+                value={editData.description ??''}
                 onChange={(e) => setEditData((d) => ({ ...d, description: e.target.value }))}
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"/>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Statut</label>
               <select
-                value={editData.status ?? ''}
+                value={editData.status ??''}
                 onChange={(e) => setEditData((d) => ({ ...d, status: e.target.value }))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-              >
-                {['ACTIVE', 'INACTIVE', 'MAINTENANCE'].map((s) => (
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500">
+                {['ACTIVE','INACTIVE','MAINTENANCE'].map((s) => (
                   <option key={s} value={s}>{s}</option>
                 ))}
               </select>
@@ -314,10 +308,7 @@ export default function EnclosDetailPage() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50 transition-colors"
-            >
-              {saving ? 'Sauvegarde...' : '💾 Sauvegarder les modifications'}
-            </button>
+              className="w-full py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50 transition-colors">{saving ?'Sauvegarde...':' Sauvegarder les modifications'}</button>
           </div>
         )}
       </div>

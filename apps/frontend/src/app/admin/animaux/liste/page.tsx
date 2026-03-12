@@ -16,7 +16,7 @@ import { AnimalModal } from '@/components/modals/AnimalModal';
 const ANIMALS_SCENE = 'https://files.manuscdn.com/user_upload_by_module/session_file/92503813/wWLrFtLcniaHCBOV.webp';
 const PECO_EMPTY = 'https://files.manuscdn.com/user_upload_by_module/session_file/92503813/RVzvPoLvUuowKCFW.webp';
 
-const SEX_LABELS: Record<string, string> = { male: '♂ Mâle', female: '♀ Femelle', '': 'Inconnu' };
+const SEX_LABELS: Record<string, string> = { male: 'Mâle', female: 'Femelle', '': 'Inconnu' };
 const SEX_COLORS: Record<string, string> = { male: 'text-blue-600', female: 'text-pink-600', '': 'text-gray-400' };
 
 const STATUS_CONFIG: Record<string, { label: string; bg: string; dot: string }> = {
@@ -34,17 +34,34 @@ const CITES_CONFIG: Record<string, { label: string; color: string }> = {
 };
 
 // Emoji par groupe taxonomique
-function getAnimalEmoji(species?: any): string {
+function getAnimalIcon(species?: any): string {
   const name = (species?.name ?? species?.commonName ?? '').toLowerCase();
-  if (name.includes('ara') || name.includes('perroquet') || name.includes('toucan')) return '🦜';
-  if (name.includes('caïman') || name.includes('crocodil')) return '🐊';
-  if (name.includes('tortue')) return '🐢';
-  if (name.includes('anaconda') || name.includes('serpent') || name.includes('boa')) return '🐍';
-  if (name.includes('agouti') || name.includes('rongeur')) return '🐀';
-  if (name.includes('pécari') || name.includes('suidé')) return '🐗';
-  if (name.includes('singe') || name.includes('primate')) return '🐒';
-  if (name.includes('jaguar') || name.includes('félin')) return '🐆';
-  return '🦎';
+  const sci = (species?.scientificName ?? '').toLowerCase();
+  // Perroquets et oiseaux colorés
+  if (name.includes('ara') || name.includes('perroquet') || name.includes('toucan') || sci.includes('ara')) return '/icons/animal-ara.png';
+  if (name.includes('amazone') || sci.includes('amazona')) return '/icons/animal-amazone.png';
+  if (name.includes('tinamou') || sci.includes('tinamus') || sci.includes('crypturellus')) return '/icons/animal-tinamou.png';
+  if (name.includes('hocco') || name.includes('crax') || sci.includes('crax')) return '/icons/animal-hocco.png';
+  if (name.includes('tocro') || sci.includes('odontophorus')) return '/icons/animal-tocro.png';
+  // Reptiles
+  if (name.includes('caïman') || name.includes('crocodil') || sci.includes('caiman') || sci.includes('crocodylus')) return '/icons/animal-caiman.png';
+  if (name.includes('iguane') || sci.includes('iguana')) return '/icons/animal-iguane.png';
+  if (name.includes('matamata') || sci.includes('chelus')) return '/icons/animal-matamata.png';
+  if (name.includes('tortue') || sci.includes('testudo') || sci.includes('chelonoidis') || sci.includes('podocnemis')) return '/icons/animal-tortue.png';
+  if (name.includes('anaconda') || sci.includes('eunectes')) return '/icons/animal-serpent.png';
+  if (name.includes('boa bordé') || sci.includes('corallus')) return '/icons/animal-boa-borde.png';
+  if (name.includes('boa constricteur') || sci.includes('boa constrictor')) return '/icons/animal-boa-constricteur.png';
+  if (name.includes('serpent') || name.includes('boa') || name.includes('python')) return '/icons/animal-serpent.png';
+  // Mammifères
+  if (name.includes('agouti') || sci.includes('dasyprocta')) return '/icons/animal-agouti.png';
+  if (name.includes('capybara') || name.includes('cabiai') || sci.includes('hydrochoerus')) return '/icons/animal-capybara.png';
+  if (name.includes('pécari') || name.includes('pecari') || sci.includes('tayassu') || sci.includes('pecari')) return '/icons/animal-pecari.png';
+  if (name.includes('tapir') || sci.includes('tapirus')) return '/icons/animal-tapir.png';
+  if (name.includes('paresseux') || sci.includes('bradypus') || sci.includes('choloepus')) return '/icons/animal-paresseux.png';
+  if (name.includes('loutre') || sci.includes('pteronura') || sci.includes('lontra')) return '/icons/animal-loutre.png';
+  if (name.includes('singe') || name.includes('primate') || sci.includes('alouatta') || sci.includes('ateles') || sci.includes('cebus') || sci.includes('saimiri')) return '/icons/animal-singe.png';
+  // Fallback
+  return '/icons/animal-lezard.png';
 }
 
 // Couleur de fond par groupe
@@ -198,8 +215,8 @@ export default function AnimauxListePage() {
           <div className="flex items-center gap-1.5">
             {[
               { key: 'all', label: 'Tous sexes' },
-              { key: 'male', label: '♂ Mâles' },
-              { key: 'female', label: '♀ Femelles' },
+              { key: 'male', label: 'Mâles' },
+              { key: 'female', label: 'Femelles' },
             ].map(({ key, label }) => (
               <button
                 key={key}
@@ -252,11 +269,11 @@ export default function AnimauxListePage() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-20">
-          <div className="text-6xl mb-4">🔍</div>
+          <div className="text-6xl mb-4"></div>
           <div className="flex flex-col items-center py-12 rounded-2xl bg-gradient-to-br from-forest-50 to-emerald-50 border border-forest-100">
             <img src={PECO_EMPTY} alt="Péco" className="w-28 h-28 object-contain mb-3" style={{ animation: 'mascotFloat 3s ease-in-out infinite', filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.1))' }} />
             <p className="text-base font-semibold text-forest-700">Aucun animal trouvé</p>
-            <p className="text-sm text-forest-400 mt-1">Essayez de modifier vos filtres ou ajoutez un animal 🐾</p>
+            <p className="text-sm text-forest-400 mt-1">Essayez de modifier vos filtres ou ajoutez un animal</p>
           </div>
           <p className="text-sm text-muted-foreground mt-1">Essayez de modifier vos filtres</p>
         </div>
@@ -265,7 +282,7 @@ export default function AnimauxListePage() {
           {filtered.map((animal: any) => {
             const statusCfg = STATUS_CONFIG[animal.status] ?? STATUS_CONFIG.alive;
             const citesCfg = CITES_CONFIG[animal.species?.citesStatus ?? 'Non listé'];
-            const emoji = getAnimalEmoji(animal.species);
+            const animalIcon = getAnimalIcon(animal.species);
             const gradient = getCardGradient(animal.species);
             const age = animal.birthDate
               ? Math.floor((Date.now() - new Date(animal.birthDate).getTime()) / (1000 * 60 * 60 * 24 * 365))
@@ -285,7 +302,7 @@ export default function AnimauxListePage() {
                 </div>
 
                 {/* Emoji espèce */}
-                <div className="text-4xl mb-3 select-none">{emoji}</div>
+                <img src={animalIcon} alt="" className="w-16 h-16 object-contain mx-auto mb-2 drop-shadow-md" />
 
                 {/* Nom et espèce */}
                 <h3 className="font-bold text-foreground text-base leading-tight">
@@ -380,7 +397,7 @@ export default function AnimauxListePage() {
             <tbody className="divide-y divide-border">
               {filtered.map((animal: any) => {
                 const statusCfg = STATUS_CONFIG[animal.status] ?? STATUS_CONFIG.alive;
-                const emoji = getAnimalEmoji(animal.species);
+                const animalIcon = getAnimalIcon(animal.species);
                 const age = animal.birthDate
                   ? Math.floor((Date.now() - new Date(animal.birthDate).getTime()) / (1000 * 60 * 60 * 24 * 365))
                   : null;
@@ -388,7 +405,7 @@ export default function AnimauxListePage() {
                   <tr key={animal.id} className="hover:bg-muted/20 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <span className="text-2xl">{emoji}</span>
+                        <img src={animalIcon} alt="" className="w-8 h-8 object-contain flex-shrink-0 drop-shadow-sm" />
                         <div>
                           <p className="font-semibold text-foreground">{animal.name ?? animal.identifier}</p>
                           <p className="text-xs text-muted-foreground font-mono">{animal.identifier}</p>

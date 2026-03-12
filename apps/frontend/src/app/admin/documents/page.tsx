@@ -23,13 +23,13 @@ interface Document {
 }
 
 
-const CATEGORY_CONFIG: Record<string, { emoji: string; color: string; label: string }> = {
-  CITES: { emoji: '📜', color: 'bg-red-100 text-red-700', label: 'CITES' },
-  MEDICAL: { emoji: '🩺', color: 'bg-blue-100 text-blue-700', label: 'Médical' },
-  VENTE: { emoji: '💰', color: 'bg-yellow-100 text-yellow-700', label: 'Vente' },
-  ESPECE: { emoji: '🦜', color: 'bg-green-100 text-green-700', label: 'Espèce' },
-  ADMINISTRATIF: { emoji: '🏛️', color: 'bg-gray-100 dark:bg-gray-800 text-gray-700', label: 'Administratif' },
-  PROTOCOLE: { emoji: '📋', color: 'bg-purple-100 text-purple-700', label: 'Protocole' },
+const CATEGORY_CONFIG: Record<string, { icon: string; color: string; label: string }> = {
+  CITES: { icon: '/icons/section-documents.png', color: 'bg-red-100 text-red-700', label: 'CITES' },
+  MEDICAL: { icon: '/icons/section-medical.png', color: 'bg-blue-100 text-blue-700', label: 'Médical' },
+  VENTE: { icon: '/icons/section-finance.png', color: 'bg-yellow-100 text-yellow-700', label: 'Vente' },
+  ESPECE: { icon: '/icons/section-animaux.png', color: 'bg-green-100 text-green-700', label: 'Espèce' },
+  ADMINISTRATIF: { icon: '/icons/section-admin.png', color: 'bg-gray-100 dark:bg-gray-800 text-gray-700', label: 'Administratif' },
+  PROTOCOLE: { icon: '/icons/section-documents.png', color: 'bg-purple-100 text-purple-700', label: 'Protocole' },
 };
 
 function formatSize(bytes: number): string {
@@ -81,7 +81,7 @@ export default function DocumentsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">📁 Gestion des documents</h1>
+          <h1 className="text-2xl font-bold text-gray-900"> Gestion des documents</h1>
           <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{isLoading ? 'Chargement...' : `${docs.length} document${docs.length !== 1 ? 's' : ''} · ${formatSize(totalSize)} au total`}</p>
         </div>
         <button onClick={() => setShowUploadModal(true)} className="px-4 py-2 bg-forest-600 text-white rounded-lg text-sm hover:bg-forest-700 transition-colors">
@@ -99,7 +99,7 @@ export default function DocumentsPage() {
         }`}
         onClick={() => setShowUploadModal(true)}
       >
-        <div className="text-4xl mb-2">📤</div>
+        <div className="text-4xl mb-2"></div>
         <p className="text-gray-600 dark:text-gray-400 font-medium">Glissez-déposez vos fichiers ici</p>
         <p className="text-sm text-gray-400 mt-1">PDF, images, Word, Excel — max 10 Mo par fichier</p>
       </div>
@@ -121,7 +121,7 @@ export default function DocumentsPage() {
           {Object.entries(CATEGORY_CONFIG).map(([cat, conf]) => (
             <button key={cat} onClick={() => setFilterCategory(cat)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors ${filterCategory === cat ? conf.color + ' border-current' : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400 border-gray-200 dark:border-border hover:bg-gray-50'}`}>
-              {conf.emoji} {conf.label}
+              {conf.icon ? <img src={conf.icon} alt="" className="w-3.5 h-3.5 object-cover rounded inline-block mr-1" /> : null}{conf.label}
             </button>
           ))}
         </div>
@@ -129,7 +129,7 @@ export default function DocumentsPage() {
           {(['grid', 'list'] as const).map(mode => (
             <button key={mode} onClick={() => setViewMode(mode)}
               className={`p-2 rounded-lg transition-colors ${viewMode === mode ? 'bg-forest-100 text-forest-700' : 'hover:bg-gray-100 dark:bg-gray-800 text-gray-500'}`}>
-              {mode === 'grid' ? '⊞' : '☰'}
+              {mode === 'grid' ? '⊞' : ''}
             </button>
           ))}
         </div>
@@ -139,10 +139,10 @@ export default function DocumentsPage() {
       {viewMode === 'grid' ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filtered.map(doc => {
-            const catConf = CATEGORY_CONFIG[doc.category] || { emoji: '📄', color: 'bg-gray-100 dark:bg-gray-800 text-gray-700', label: doc.category };
+            const catConf = CATEGORY_CONFIG[doc.category] || { icon: '/icons/section-documents.png', color: 'bg-gray-100 dark:bg-gray-800 text-gray-700', label: doc.category };
             return (
               <div key={doc.id} className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-4 hover:border-forest-300 hover:shadow-sm transition-all cursor-pointer group">
-                <div className="text-4xl mb-3 text-center">{catConf.emoji}</div>
+                <img src={catConf.icon || "/icons/section-documents.png"} alt="" className="w-10 h-10 object-cover rounded-xl mx-auto mb-3" />
                 <div className="text-sm font-medium text-gray-900 dark:text-foreground truncate text-center" title={doc.name}>{doc.name}</div>
                 <div className={`mt-2 text-xs px-2 py-0.5 rounded-full text-center ${catConf.color}`}>{catConf.label}</div>
                 <div className="mt-2 text-xs text-gray-400 text-center">{formatSize(doc.size)}</div>
@@ -167,12 +167,12 @@ export default function DocumentsPage() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filtered.map(doc => {
-                const catConf = CATEGORY_CONFIG[doc.category] || { emoji: '📄', color: 'bg-gray-100 dark:bg-gray-800 text-gray-700', label: doc.category };
+                const catConf = CATEGORY_CONFIG[doc.category] || { icon: '/icons/section-documents.png', color: 'bg-gray-100 dark:bg-gray-800 text-gray-700', label: doc.category };
                 return (
                   <tr key={doc.id} className="hover:bg-gray-50 dark:bg-muted/20 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <span>{catConf.emoji}</span>
+                        <img src={catConf.icon || "/icons/section-documents.png"} alt="" className="w-5 h-5 object-cover rounded" />
                         <span className="text-sm font-medium text-gray-900 dark:text-foreground truncate max-w-[200px]">{doc.name}</span>
                       </div>
                     </td>
@@ -208,7 +208,7 @@ export default function DocumentsPage() {
             </div>
             <div className="p-6 space-y-4">
               <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center">
-                <div className="text-4xl mb-2">📤</div>
+                <div className="text-4xl mb-2"></div>
                 <p className="text-sm text-gray-600">Cliquez pour sélectionner un fichier</p>
                 <input type="file" className="hidden" />
               </div>
@@ -216,7 +216,7 @@ export default function DocumentsPage() {
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Catégorie</label>
                 <select className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-forest-500">
                   {Object.entries(CATEGORY_CONFIG).map(([cat, conf]) => (
-                    <option key={cat} value={cat}>{conf.emoji} {conf.label}</option>
+                    <option key={cat} value={cat}>{conf.icon ? <img src={conf.icon} alt="" className="w-3.5 h-3.5 object-cover rounded inline-block mr-1" /> : null}{conf.label}</option>
                   ))}
                 </select>
               </div>

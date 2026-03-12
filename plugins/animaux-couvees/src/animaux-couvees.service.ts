@@ -6,9 +6,58 @@ export class AnimauxCouveesService {
   constructor(private prisma: PrismaService) {}
 
   // --- Species ---
-  async findAllSpecies() { return this.prisma.species.findMany({ orderBy: { name: 'asc' } }); }
-  async createSpecies(data: { name: string; scientificName?: string; description?: string }) {
+  async findAllSpecies() {
+    return this.prisma.species.findMany({
+      include: { _count: { select: { animals: true } } },
+      orderBy: { name: 'asc' },
+    });
+  }
+
+  async createSpecies(data: {
+    name: string;
+    scientificName?: string;
+    category?: string;
+    description?: string;
+    conservationStatus?: string;
+    citesAppendix?: string;
+    citesStatus?: string;
+    habitat?: string;
+    diet?: string;
+    lifespan?: number;
+    gestationDays?: number;
+    incubationDays?: number;
+    imageUrl?: string;
+    origin?: string;
+  }) {
     return this.prisma.species.create({ data });
+  }
+
+  async updateSpecies(id: string, data: {
+    name?: string;
+    scientificName?: string;
+    category?: string;
+    description?: string;
+    conservationStatus?: string;
+    citesAppendix?: string;
+    citesStatus?: string;
+    habitat?: string;
+    diet?: string;
+    lifespan?: number;
+    gestationDays?: number;
+    incubationDays?: number;
+    imageUrl?: string;
+    origin?: string;
+  }) {
+    const existing = await this.prisma.species.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundException(`Espèce ${id} introuvable`);
+    return this.prisma.species.update({ where: { id }, data });
+  }
+
+  async deleteSpecies(id: string) {
+    const existing = await this.prisma.species.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundException(`Espèce ${id} introuvable`);
+    await this.prisma.species.delete({ where: { id } });
+    return { deleted: true };
   }
 
   // --- Enclosures ---
@@ -18,8 +67,18 @@ export class AnimauxCouveesService {
       orderBy: { name: 'asc' },
     });
   }
-  async createEnclosure(data: { name: string; description?: string; capacity?: number }) {
+
+  async createEnclosure(data: { name: string; description?: string; capacity?: number; type?: string; code?: string }) {
     return this.prisma.enclosure.create({ data });
+  }
+
+  async updateEnclosure(id: string, data: any) {
+    return this.prisma.enclosure.update({ where: { id }, data });
+  }
+
+  async deleteEnclosure(id: string) {
+    await this.prisma.enclosure.delete({ where: { id } });
+    return { deleted: true };
   }
 
   // --- Animals ---
@@ -31,7 +90,7 @@ export class AnimauxCouveesService {
         ...(filters?.isAlive !== undefined && { status: filters.isAlive ? 'ACTIF' : undefined }),
       },
       include: {
-        species: { select: { id: true, name: true } },
+        species: { select: { id: true, name: true, imageUrl: true } },
         enclosure: { select: { id: true, name: true } },
       },
       orderBy: { identifier: 'asc' },
@@ -53,7 +112,8 @@ export class AnimauxCouveesService {
 
   async createAnimal(data: {
     identifier: string; speciesId: string; enclosureId?: string;
-    birthDate?: Date; sex?: string; notes?: string;
+    birthDate?: Date; sex?: string; notes?: string; status?: string;
+    weight?: number; name?: string;
   }) {
     return this.prisma.animal.create({ data, include: { species: true, enclosure: true } });
   }
@@ -65,7 +125,6 @@ export class AnimauxCouveesService {
 
   async deleteAnimal(id: string) {
     await this.findAnimalById(id);
-    // Supprimer d'abord les événements liés
     await this.prisma.animalEvent.deleteMany({ where: { animalId: id } });
     await this.prisma.animal.delete({ where: { id } });
     return { deleted: true };

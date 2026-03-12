@@ -136,9 +136,7 @@ export default function EmployeeDetailPage() {
       </div>
 
       {saveSuccess && (
-        <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-green-700 text-sm">
-          ✅ Dossier mis à jour avec succès
-        </div>
+        <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-green-700 text-sm">Dossier mis à jour avec succès</div>
       )}
 
       {/* Carte employé */}
@@ -158,7 +156,7 @@ export default function EmployeeDetailPage() {
             onClick={() => setEditing(!editing)}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
           >
-            {editing ? 'Annuler' : '✏️ Modifier'}
+            {editing ? 'Annuler' : '️ Modifier'}
           </button>
         </div>
 
@@ -192,7 +190,7 @@ export default function EmployeeDetailPage() {
                 disabled={saving}
                 className="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors"
               >
-                {saving ? 'Sauvegarde...' : '💾 Sauvegarder'}
+                {saving ? 'Sauvegarde...' : 'Sauvegarder'}
               </button>
             </div>
           </div>
@@ -233,11 +231,11 @@ export default function EmployeeDetailPage() {
               {[
                 { label: 'Poste', value: employee.jobTitle },
                 { label: 'Département', value: employee.department },
-                { label: "Date d'embauche", value: employee.hireDate ? new Date(employee.hireDate).toLocaleDateString('fr-FR') : '—' },
+                { label: "Date d'embauche", value: employee.hireDate ? new Date(employee.hireDate).toLocaleDateString('fr-FR') :'—'},
               ].map(({ label, value }) => (
                 <div key={label} className="flex justify-between text-sm">
                   <span className="text-gray-500">{label}</span>
-                  <span className="font-medium text-gray-900">{value ?? '—'}</span>
+                  <span className="font-medium text-gray-900">{value ??'—'}</span>
                 </div>
               ))}
             </div>
@@ -249,7 +247,7 @@ export default function EmployeeDetailPage() {
           <div className="p-6">
             {(!employee.skills || employee.skills.length === 0) ? (
               <div className="text-center py-10 text-gray-400">
-                <p className="text-4xl mb-3">🎯</p>
+                <p className="text-4xl mb-3"></p>
                 <p className="font-medium text-gray-600">Aucune compétence enregistrée</p>
               </div>
             ) : (
@@ -270,7 +268,7 @@ export default function EmployeeDetailPage() {
           <div className="p-4">
             {(!employee.leaves || employee.leaves.length === 0) ? (
               <div className="text-center py-10 text-gray-400">
-                <p className="text-4xl mb-3">📅</p>
+                <p className="text-4xl mb-3"></p>
                 <p className="font-medium text-gray-600">Aucun congé enregistré</p>
               </div>
             ) : (
@@ -278,7 +276,7 @@ export default function EmployeeDetailPage() {
                 <table className="w-full text-sm">
                   <thead className="bg-gray-50 dark:bg-muted/20 text-xs text-gray-500 dark:text-gray-400 uppercase">
                     <tr>
-                      {['Type', 'Début', 'Fin', 'Statut'].map((h) => (
+                      {['Type','Début','Fin','Statut'].map((h) => (
                         <th key={h} className="px-4 py-3 text-left">{h}</th>
                       ))}
                     </tr>
@@ -294,8 +292,8 @@ export default function EmployeeDetailPage() {
                           {new Date(leave.endDate).toLocaleDateString('fr-FR')}
                         </td>
                         <td className="px-4 py-3">
-                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${LEAVE_STATUS_COLORS[leave.status ?? ''] ?? 'bg-gray-100 dark:bg-gray-800 text-gray-600'}`}>
-                            {leave.status ?? 'En attente'}
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${LEAVE_STATUS_COLORS[leave.status ??''] ??'bg-gray-100 dark:bg-gray-800 text-gray-600'}`}>
+                            {leave.status ??'En attente'}
                           </span>
                         </td>
                       </tr>

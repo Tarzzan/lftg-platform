@@ -22,7 +22,8 @@ interface Animal {
   birthDate?: string;
   status: string;
   notes?: string;
-  species: { name: string; scientificName?: string };
+  imageUrl?: string;
+  species: { name: string; scientificName?: string; commonName?: string };
   enclosure?: { name: string };
 }
 
@@ -58,6 +59,33 @@ interface Vaccination {
   administeredDate: string;
   nextDueDate?: string;
   notes?: string;
+}
+
+
+function getAnimalIcon(species?: any): string {
+  const name = (species?.name ?? species?.commonName ?? '').toLowerCase();
+  const sci = (species?.scientificName ?? '').toLowerCase();
+  if (name.includes('ara') || name.includes('perroquet') || name.includes('toucan') || sci.includes('ara ')) return '/icons/animal-ara.png';
+  if (name.includes('amazone') || sci.includes('amazona')) return '/icons/animal-amazone.png';
+  if (name.includes('tinamou') || sci.includes('tinamus') || sci.includes('crypturellus')) return '/icons/animal-tinamou.png';
+  if (name.includes('hocco') || name.includes('crax') || sci.includes('crax')) return '/icons/animal-hocco.png';
+  if (name.includes('tocro') || sci.includes('odontophorus')) return '/icons/animal-tocro.png';
+  if (name.includes('caïman') || name.includes('caiman') || name.includes('crocodil') || sci.includes('caiman') || sci.includes('crocodylus')) return '/icons/animal-caiman.png';
+  if (name.includes('iguane') || sci.includes('iguana')) return '/icons/animal-iguane.png';
+  if (name.includes('matamata') || sci.includes('chelus')) return '/icons/animal-matamata.png';
+  if (name.includes('tortue') || sci.includes('testudo') || sci.includes('chelonoidis') || sci.includes('podocnemis')) return '/icons/animal-tortue.png';
+  if (name.includes('anaconda') || sci.includes('eunectes')) return '/icons/animal-serpent.png';
+  if (name.includes('boa bordé') || sci.includes('corallus')) return '/icons/animal-boa-borde.png';
+  if (name.includes('boa') || sci.includes('boa constrictor')) return '/icons/animal-boa-constricteur.png';
+  if (name.includes('serpent') || name.includes('python')) return '/icons/animal-serpent.png';
+  if (name.includes('agouti') || sci.includes('dasyprocta')) return '/icons/animal-agouti.png';
+  if (name.includes('capybara') || name.includes('cabiai') || sci.includes('hydrochoerus')) return '/icons/animal-capybara.png';
+  if (name.includes('pécari') || name.includes('pecari') || sci.includes('tayassu') || sci.includes('pecari')) return '/icons/animal-pecari.png';
+  if (name.includes('tapir') || sci.includes('tapirus')) return '/icons/animal-tapir.png';
+  if (name.includes('paresseux') || sci.includes('bradypus') || sci.includes('choloepus')) return '/icons/animal-paresseux.png';
+  if (name.includes('loutre') || sci.includes('pteronura') || sci.includes('lontra')) return '/icons/animal-loutre.png';
+  if (name.includes('singe') || name.includes('primate') || sci.includes('alouatta') || sci.includes('ateles') || sci.includes('cebus') || sci.includes('saimiri')) return '/icons/animal-singe.png';
+  return '/icons/animal-lezard.png';
 }
 
 // ─── Composant principal ──────────────────────────────────────────────────────
@@ -148,42 +176,54 @@ export default function AnimalDetailPage() {
   const visits = medicalHistory?.visits || [];
   const allVaccinations = visits.flatMap(v => v.vaccinations);
   const allTreatments = visits.flatMap(v => v.treatments);
+  const heroIcon = (animal as any).imageUrl
+    ? ((animal as any).imageUrl.startsWith('http') ? (animal as any).imageUrl : `http://51.210.15.92${(animal as any).imageUrl}`)
+    : getAnimalIcon(animal.species);
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-start gap-4">
-        <button
-          onClick={() => router.back()}
-          className="mt-1 p-2 rounded-lg hover:bg-muted transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-        <div className="flex-1">
-          <div className="flex items-center gap-3 mb-1">
-            <h1 className="text-2xl font-display font-bold text-foreground">{animal.name}</h1>
-            <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${status.color}`}>
-              {status.icon}
-              {status.label}
-            </span>
-          </div>
-          <p className="text-muted-foreground">
-            <span className="font-medium">{animal.species.name}</span>
-            {animal.species.scientificName && (
-              <span className="italic ml-1">({animal.species.scientificName})</span>
-            )}
-            {animal.identifier && <span className="ml-2 text-xs bg-muted px-2 py-0.5 rounded font-mono">{animal.identifier}</span>}
-          </p>
+      {/* Header illustré */}
+      <div className="relative rounded-2xl overflow-hidden bg-gradient-to-br from-forest-800 to-forest-950 shadow-xl">
+        {/* Fond flou illustré */}
+        <div className="absolute inset-0">
+          <img src={heroIcon} alt="" className="w-full h-full object-cover opacity-20 blur-sm scale-110" />
+          <div className="absolute inset-0 bg-gradient-to-r from-forest-900/80 via-forest-800/60 to-transparent" />
         </div>
-        <div className="flex gap-2">
-          <button className="btn-secondary flex items-center gap-2">
-            <Camera className="w-4 h-4" />
-            Photo
+        {/* Contenu */}
+        <div className="relative flex items-center gap-6 p-6">
+          <button onClick={() => router.back()} className="absolute top-4 left-4 p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors">
+            <ArrowLeft className="w-5 h-5" />
           </button>
-          <button className="btn-secondary flex items-center gap-2">
-            <Edit className="w-4 h-4" />
-            Modifier
-          </button>
+          {/* Illustration principale */}
+          <div className="mt-2 ml-8 flex-shrink-0 w-36 h-36 rounded-2xl overflow-hidden border-2 border-white/30 shadow-2xl bg-white/10 ring-4 ring-white/10">
+            <img src={heroIcon} alt={animal.name} className="w-full h-full object-contain p-1" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-3 mb-1 flex-wrap">
+              <h1 className="text-2xl font-display font-bold text-white">{animal.name}</h1>
+              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border ${status.color}`}>
+                {status.icon}
+                {status.label}
+              </span>
+            </div>
+            <p className="text-forest-200">
+              <span className="font-medium">{animal.species.name}</span>
+              {animal.species.scientificName && (
+                <span className="italic ml-1 text-forest-300">({animal.species.scientificName})</span>
+              )}
+              {animal.identifier && <span className="ml-2 text-xs bg-white/20 px-2 py-0.5 rounded font-mono text-white">{animal.identifier}</span>}
+            </p>
+          </div>
+          <div className="flex gap-2 mt-3">
+            <button className="btn-secondary flex items-center gap-2 bg-white/10 border-white/20 text-white hover:bg-white/20">
+              <Camera className="w-4 h-4" />
+              Photo
+            </button>
+            <button className="btn-secondary flex items-center gap-2 bg-white/10 border-white/20 text-white hover:bg-white/20">
+              <Edit className="w-4 h-4" />
+              Modifier
+            </button>
+          </div>
         </div>
       </div>
 
@@ -313,7 +353,7 @@ export default function AnimalDetailPage() {
             </div>
           ) : visits.length === 0 ? (
             <div className="text-center py-12 card">
-              <Stethoscope className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+              <img src="/icons/section-medical.png" alt="Médical" className="w-16 h-16 object-contain mx-auto mb-3 opacity-60" />
               <p className="text-muted-foreground">Aucune visite médicale enregistrée</p>
               <button onClick={() => setShowVisitModal(true)} className="btn-primary mt-4">
                 Enregistrer une visite

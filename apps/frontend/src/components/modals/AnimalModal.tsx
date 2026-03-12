@@ -1,8 +1,8 @@
 'use client';
-
 import { useState, useEffect } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Modal, FormField, Input, Select, Textarea, ModalFooter, BtnPrimary, BtnSecondary } from '../ui/Modal';
+import { ImageUpload } from '../ui/ImageUpload';
 import { animauxApi } from '@/lib/api';
 
 interface AnimalModalProps {
@@ -14,10 +14,8 @@ interface AnimalModalProps {
 export function AnimalModal({ isOpen, onClose, animal }: AnimalModalProps) {
   const qc = useQueryClient();
   const isEdit = !!animal;
-
   const { data: species = [] } = useQuery({ queryKey: ['species'], queryFn: animauxApi.species });
   const { data: enclosures = [] } = useQuery({ queryKey: ['enclosures'], queryFn: animauxApi.enclosures });
-
   const [form, setForm] = useState({
     name: '',
     speciesId: '',
@@ -29,6 +27,7 @@ export function AnimalModal({ isOpen, onClose, animal }: AnimalModalProps) {
     notes: '',
     ringNumber: '',
     microchipNumber: '',
+    imageUrl: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -45,9 +44,13 @@ export function AnimalModal({ isOpen, onClose, animal }: AnimalModalProps) {
         notes: animal.notes ?? '',
         ringNumber: animal.ringNumber ?? '',
         microchipNumber: animal.microchipNumber ?? '',
+        imageUrl: animal.imageUrl ?? '',
       });
     } else {
-      setForm({ name: '', speciesId: '', enclosureId: '', sex: '', birthDate: '', origin: '', status: 'alive', notes: '', ringNumber: '', microchipNumber: '' });
+      setForm({
+        name: '', speciesId: '', enclosureId: '', sex: '', birthDate: '',
+        origin: '', status: 'alive', notes: '', ringNumber: '', microchipNumber: '', imageUrl: '',
+      });
     }
     setErrors({});
   }, [animal, isOpen]);
@@ -55,7 +58,7 @@ export function AnimalModal({ isOpen, onClose, animal }: AnimalModalProps) {
   const validate = () => {
     const e: Record<string, string> = {};
     if (!form.name.trim()) e.name = 'Le nom est requis';
-    if (!form.speciesId) e.speciesId = 'L\'espèce est requise';
+    if (!form.speciesId) e.speciesId = "L'espèce est requise";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -83,8 +86,17 @@ export function AnimalModal({ isOpen, onClose, animal }: AnimalModalProps) {
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={isEdit ? 'Modifier l\'animal' : 'Nouvel animal'} size="xl">
+    <Modal isOpen={isOpen} onClose={onClose} title={isEdit ? "Modifier l'animal" : 'Nouvel animal'} size="xl">
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Photo de l'animal — uniquement en mode édition */}
+        {isEdit && animal?.id && (
+          <ImageUpload
+            currentImageUrl={form.imageUrl || null}
+            uploadUrl={`/plugins/animaux/animals/${animal.id}/image`}
+            onSuccess={(url) => setForm((f) => ({ ...f, imageUrl: url }))}
+            label="Photo de l'animal"
+          />
+        )}
         <div className="grid grid-cols-2 gap-4">
           <FormField label="Nom *" error={errors.name}>
             <Input value={form.name} onChange={set('name')} placeholder="Ex: Ara Bleu #12" autoFocus />
@@ -98,7 +110,6 @@ export function AnimalModal({ isOpen, onClose, animal }: AnimalModalProps) {
             </Select>
           </FormField>
         </div>
-
         <div className="grid grid-cols-3 gap-4">
           <FormField label="Sexe">
             <Select value={form.sex} onChange={set('sex')}>
@@ -119,7 +130,6 @@ export function AnimalModal({ isOpen, onClose, animal }: AnimalModalProps) {
             </Select>
           </FormField>
         </div>
-
         <div className="grid grid-cols-2 gap-4">
           <FormField label="Enclos">
             <Select value={form.enclosureId} onChange={set('enclosureId')}>
@@ -133,7 +143,6 @@ export function AnimalModal({ isOpen, onClose, animal }: AnimalModalProps) {
             <Input value={form.origin} onChange={set('origin')} placeholder="Ex: Élevage, Sauvage, Don..." />
           </FormField>
         </div>
-
         <div className="grid grid-cols-2 gap-4">
           <FormField label="Numéro de bague">
             <Input value={form.ringNumber} onChange={set('ringNumber')} placeholder="Ex: FR-2024-001" />
@@ -142,21 +151,18 @@ export function AnimalModal({ isOpen, onClose, animal }: AnimalModalProps) {
             <Input value={form.microchipNumber} onChange={set('microchipNumber')} placeholder="Ex: 250268500000001" />
           </FormField>
         </div>
-
         <FormField label="Notes">
           <Textarea value={form.notes} onChange={set('notes')} placeholder="Observations, comportement, particularités..." rows={3} />
         </FormField>
-
         {mutation.isError && (
           <p className="text-sm text-red-500 bg-red-50 px-3 py-2 rounded-lg">
             Une erreur est survenue. Veuillez réessayer.
           </p>
         )}
-
         <ModalFooter>
           <BtnSecondary type="button" onClick={onClose}>Annuler</BtnSecondary>
           <BtnPrimary type="submit" loading={mutation.isPending}>
-            {isEdit ? 'Enregistrer' : 'Créer l\'animal'}
+            {isEdit ? 'Enregistrer' : "Créer l'animal"}
           </BtnPrimary>
         </ModalFooter>
       </form>

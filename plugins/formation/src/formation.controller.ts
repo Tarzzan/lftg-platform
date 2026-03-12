@@ -1,10 +1,10 @@
 import {
   Controller, Get, Post, Patch, Delete, Body, Param, Query,
-  UseGuards, UseInterceptors, UploadedFile, Request,
+  UseGuards, UseInterceptors, UploadedFile, Request, BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { extname, join } from 'path';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiConsumes } from '@nestjs/swagger';
 import { FormationService } from './formation.service';
 import { JwtAuthGuard } from '../../../apps/backend/src/common/guards/jwt-auth.guard';
@@ -54,6 +54,35 @@ export class FormationController {
 
   @Patch('courses/:id')
   update(@Param('id') id: string, @Body() body: any) { return this.service.updateCourse(id, body); }
+
+
+  @Post('courses/:id/image')
+  @ApiOperation({ summary: 'Upload une image de couverture pour un cours' })
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: join(process.cwd(), 'uploads', 'courses'),
+      filename: (_req: any, file: any, cb: any) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        cb(null, `course-${uniqueSuffix}${extname(file.originalname)}`);
+      },
+    }),
+    fileFilter: (_req: any, file: any, cb: any) => {
+      if (!file.mimetype.match(/\/(jpg|jpeg|png|gif|webp)$/)) {
+        return cb(new BadRequestException('Seules les images sont acceptées'), false);
+      }
+      cb(null, true);
+    },
+    limits: { fileSize: 10 * 1024 * 1024 },
+  }))
+  async uploadCourseImage(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) throw new BadRequestException('Aucun fichier fourni');
+    const imageUrl = `/uploads/courses/${file.filename}`;
+    return this.service.updateCourse(id, { imageUrl, coverImage: imageUrl });
+  }
 
   @Delete('courses/:id')
   deleteCourse(@Param('id') id: string) { return this.service.deleteCourse(id); }
@@ -207,4 +236,28 @@ export class FormationController {
 
   @Get('cohorts/:id/feedbacks')
   getCohortFeedbacks(@Param('id') cohortId: string) { return this.service.getCohortFeedbacks(cohortId); }
+
+  // ─── Endpoints admin : gestion granulaire des accès ──────────────────────
+
+  @Post("cohorts/:id/admin-enroll")
+  @ApiOperation({ summary: "Admin: inscrire un utilisateur spécifique dans une cohorte" })
+  adminEnroll(
+    @Param("id") cohortId: string,
+    @Body() body: { userId: string },
+  ) {
+    return this.service.enrollUserAdmin(cohortId, body.userId);
+  }
+
+  @Get("cohorts/:id/enrollments")
+  @ApiOperation({ summary: "Admin: lister les inscrits d'une cohorte" })
+  getCohortEnrollments(@Param("id") cohortId: string) {
+    return this.service.getCohortEnrollments(cohortId);
+  }
+
+  @Get("users/:userId/access")
+  @ApiOperation({ summary: "Admin: voir les acces cours d'un utilisateur" })
+  getUserAccess(@Param("userId") userId: string) {
+    return this.service.getUserCourseAccess(userId);
+  }
+
 }

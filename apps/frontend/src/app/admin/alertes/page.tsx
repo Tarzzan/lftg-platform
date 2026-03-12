@@ -151,7 +151,7 @@ export default function AlertesPage() {
         </div>
       ) : alerts.length === 0 ? (
         <div className="bg-slate-800 rounded-xl p-12 text-center">
-          <p className="text-4xl mb-3">✅</p>
+          <p className="text-4xl mb-3"></p>
           <p className="text-slate-300 font-semibold">Aucune alerte active</p>
           <p className="text-slate-500 text-sm mt-1">Tous les systèmes fonctionnent normalement</p>
         </div>

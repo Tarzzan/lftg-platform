@@ -3,13 +3,12 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import {
-  LayoutDashboard, Users, Shield, GitBranch, ClipboardList, Upload,
+  LayoutDashboard, Users, Shield, GitBranch, ClipboardList, Upload, Activity, HardDrive,
   User, Calendar, Award, Archive, ArrowLeftRight, Package,
   Bird, Leaf, Home, Egg, Stethoscope, BookOpen, Users2,
   GraduationCap, HelpCircle, TrendingUp, Trophy, FileText,
   CreditCard, Cloud, Globe, Code2, Calculator, ChevronRight,
-  LogOut, Settings, Search, Command, Menu, X, Sparkles, ChevronDown,
-} from 'lucide-react';
+  LogOut, Settings, Search, Command, Menu, X, Sparkles, ChevronDown, Eye } from 'lucide-react';
 import { useAuthStore } from '@/lib/auth-store';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { NotificationBell } from '@/components/ui/NotificationBell';
@@ -20,25 +19,28 @@ import { useColorTheme } from '@/lib/theme/ColorThemeContext';
 const navigation = [
   {
     section: 'Tableau de bord',
-    emoji: '🏠',
+    emoji: '/icons/section-dashboard.png',
     items: [
       { label: 'Dashboard', path: '/admin', icon: LayoutDashboard },
     ],
   },
   {
     section: 'Administration',
-    emoji: '⚙️',
+    emoji: '/icons/section-admin.png',
     items: [
       { label: 'Utilisateurs', path: '/admin/users', icon: Users },
       { label: 'Rôles & Permissions', path: '/admin/rbac', icon: Shield },
       { label: 'Workflows', path: '/admin/workflows', icon: GitBranch },
+      { label: 'Surveillance CRUD', path: '/admin/monitoring', icon: Activity },
+      { label: 'Mode test utilisateur', path: '/admin/mode-test', icon: Eye },
+      { label: 'Sauvegardes', path: '/admin/backup', icon: HardDrive },
       { label: 'Audit Log', path: '/admin/audit', icon: ClipboardList },
       { label: 'Import CSV', path: '/admin/import', icon: Upload },
     ],
   },
   {
     section: 'Personnel (RH)',
-    emoji: '👥',
+    emoji: '/icons/section-rh.png',
     items: [
       { label: 'Employés', path: '/admin/personnel/employes', icon: User },
       { label: 'Planning gardes', path: '/admin/personnel/planning', icon: Calendar },
@@ -47,7 +49,7 @@ const navigation = [
   },
   {
     section: 'Stock',
-    emoji: '📦',
+    emoji: '/icons/section-stock.png',
     items: [
       { label: 'Articles', path: '/admin/stock/articles', icon: Archive },
       { label: 'Mouvements', path: '/admin/stock/mouvements', icon: ArrowLeftRight },
@@ -56,7 +58,7 @@ const navigation = [
   },
   {
     section: 'Animaux & Couvées',
-    emoji: '🦜',
+    emoji: '/icons/section-animaux.png',
     items: [
       { label: 'Animaux', path: '/admin/animaux/liste', icon: Bird },
       { label: 'Espèces', path: '/admin/animaux/especes', icon: Leaf },
@@ -66,7 +68,7 @@ const navigation = [
   },
   {
     section: 'Médical',
-    emoji: '🏥',
+    emoji: '/icons/section-medical.png',
     items: [
       { label: 'Suivi médical', path: '/admin/medical', icon: Stethoscope },
       { label: 'Calendrier', path: '/admin/medical/calendrier', icon: Calendar },
@@ -74,34 +76,35 @@ const navigation = [
   },
   {
     section: 'Formation',
-    emoji: '🎓',
+    emoji: '/icons/section-formation.png',
     items: [
       { label: 'Catalogue de cours', path: '/admin/formation/cours', icon: BookOpen },
       { label: 'Cohortes', path: '/admin/formation/cohortes', icon: Users2 },
       { label: 'Mon parcours', path: '/admin/formation/mon-parcours', icon: GraduationCap },
       { label: 'Quiz & Évaluations', path: '/admin/formation/quiz', icon: HelpCircle },
       { label: 'Émargement', path: '/admin/formation/emargement', icon: Award },
+      { label: 'Accès formations', path: '/admin/formation/acces', icon: Shield },
       { label: 'Tableau Qualiopi', path: '/admin/formation/qualiopi', icon: TrendingUp },
       { label: 'Mes Récompenses', path: '/admin/formation/recompenses', icon: Trophy },
     ],
   },
   {
     section: 'Documents',
-    emoji: '📄',
+    emoji: '/icons/section-documents.png',
     items: [
       { label: 'Documents', path: '/admin/documents', icon: FileText },
     ],
   },
   {
     section: 'Finance',
-    emoji: '💰',
+    emoji: '/icons/section-finance.png',
     items: [
       { label: 'Comptabilité FEC', path: '/admin/accounting', icon: Calculator },
     ],
   },
   {
     section: 'Paiements & Commerce',
-    emoji: '💳',
+    emoji: '/icons/section-paiements.png',
     items: [
       { label: 'Stripe Paiements', path: '/admin/stripe', icon: CreditCard },
       { label: 'Météo Guyane', path: '/admin/meteo', icon: Cloud },
@@ -109,7 +112,7 @@ const navigation = [
   },
   {
     section: 'Intégrations',
-    emoji: '🔗',
+    emoji: '/icons/section-integrations.png',
     items: [
       { label: 'API Partenaires', path: '/admin/partners', icon: Globe },
       { label: 'GBIF Biodiversité', path: '/admin/gbif', icon: Leaf },
@@ -117,7 +120,7 @@ const navigation = [
   },
   {
     section: 'Développeur',
-    emoji: '🛠️',
+    emoji: '/icons/section-dev.png',
     items: [
       { label: 'Documentation API', path: '/admin/docs', icon: Code2 },
     ],
@@ -132,7 +135,7 @@ const breadcrumbLabels: Record<string, string> = {
   mouvements: 'Mouvements', demandes: 'Demandes', animaux: 'Animaux',
   liste: 'Liste', especes: 'Espèces', enclos: 'Enclos', couvees: 'Couvées',
   medical: 'Médical', calendrier: 'Calendrier', formation: 'Formation',
-  cours: 'Cours', cohortes: 'Cohortes', quiz: 'Quiz', emargement: 'Émargement',
+  cours: 'Cours', cohortes: 'Cohortes', quiz: 'Quiz', emargement: 'Émargement', acces: 'Accès formations',
   qualiopi: 'Qualiopi', recompenses: 'Récompenses', documents: 'Documents',
   accounting: 'Comptabilité', stripe: 'Paiements', meteo: 'Météo',
   partners: 'Partenaires', gbif: 'GBIF', docs: 'Documentation', settings: 'Paramètres',
@@ -175,7 +178,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const initial: Record<string, boolean> = {};
     navigation.forEach((group) => {
       const hasActive = group.items.some(
-        item => path === item.path || (item.path !== '/admin' && path.startsWith(item.path))
+        item => path === item.path || (item.path !=='/admin'&& path.startsWith(item.path))
       );
       // N'ouvrir que le groupe actif (Tableau de bord toujours ouvert car c'est la page /admin)
       initial[group.section] = hasActive;
@@ -281,9 +284,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               background: `linear-gradient(135deg, ${currentPalette.sidebarAccent}, ${currentPalette.sidebarAccent}cc)`,
               boxShadow: `0 2px 8px ${currentPalette.sidebarAccent}66`,
             }}
-          >
-            🐗
-          </div>
+          ></div>
           {!collapsed && (
             <div className="min-w-0">
               <p className="text-white font-bold text-sm leading-tight truncate" style={{ fontFamily: 'Georgia, serif' }}>
@@ -343,7 +344,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         textShadow: '0 1px 6px rgba(0,0,0,0.9), 0 0 12px rgba(0,0,0,0.7)',
                       }}
                     >
-                      <span>{group.emoji}</span>
+                      <img src={group.emoji} alt="" className="w-4 h-4 object-contain rounded-sm flex-shrink-0" style={{ filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.6))' }} />
                       <span className="truncate">{group.section}</span>
                     </span>
                     <ChevronDown

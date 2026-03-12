@@ -38,13 +38,13 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const SUBJECT_ICONS: Record<string, string> = {
-  'Formation CCAND': '🎓',
-  'Formation RNCP Soigneur Animalier': '🏅',
-  'Formation FPA': '🌾',
-  "Adhésion": '🤝',
-  'Don / Partenariat': '💚',
-  'Visite pédagogique': '🦜',
-  'Autre': '💬',
+  'Formation CCAND': '',
+  'Formation RNCP Soigneur Animalier': '',
+  'Formation FPA': '',
+  "Adhésion": '',
+  'Don / Partenariat': '',
+  'Visite pédagogique': '',
+  'Autre': '',
 };
 
 // ─── Composant principal ───────────────────────────────────────────────────────
@@ -165,9 +165,7 @@ export default function ContactMessagesPage() {
           <button
             onClick={fetchMessages}
             className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
-          >
-            🔄 Actualiser
-          </button>
+          >Actualiser</button>
         </div>
 
         {/* Stats rapides */}
@@ -218,7 +216,7 @@ export default function ContactMessagesPage() {
               <div className="space-y-3 py-6">{[1,2,3,4].map(i => <div key={i} className="h-8 animate-pulse bg-gray-200 dark:bg-gray-700 rounded-lg mx-4" />)}</div>
             ) : filteredMessages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-32 text-muted-foreground text-sm gap-2">
-                <span className="text-3xl">📭</span>
+                <span className="text-3xl"></span>
                 <span>Aucun message</span>
               </div>
             ) : (
@@ -232,7 +230,7 @@ export default function ContactMessagesPage() {
                 >
                   <div className="flex items-start gap-3">
                     <div className="w-9 h-9 bg-primary/10 rounded-full flex items-center justify-center text-base flex-shrink-0">
-                      {SUBJECT_ICONS[msg.subject] || '💬'}
+                      {SUBJECT_ICONS[msg.subject] || ''}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2 mb-0.5">
@@ -265,7 +263,7 @@ export default function ContactMessagesPage() {
         <div className="flex-1 flex flex-col min-w-0">
           {!selectedMessage ? (
             <div className="flex flex-col items-center justify-center h-full text-muted-foreground gap-3">
-              <span className="text-6xl">✉️</span>
+              <span className="text-6xl">️</span>
               <p className="text-lg font-medium">Sélectionnez un message</p>
               <p className="text-sm">Cliquez sur un message dans la liste pour le lire et y répondre.</p>
             </div>
@@ -276,7 +274,7 @@ export default function ContactMessagesPage() {
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0">
-                      {SUBJECT_ICONS[selectedMessage.subject] || '💬'}
+                      {SUBJECT_ICONS[selectedMessage.subject] || ''}
                     </div>
                     <div>
                       <h2 className="text-xl font-bold text-foreground">{selectedMessage.subject}</h2>
@@ -284,7 +282,7 @@ export default function ContactMessagesPage() {
                         <span className="text-sm font-medium text-foreground">{selectedMessage.senderName}</span>
                         <span className="text-sm text-muted-foreground">{selectedMessage.senderEmail}</span>
                         {selectedMessage.phone && (
-                          <span className="text-sm text-muted-foreground">📞 {selectedMessage.phone}</span>
+                          <span className="text-sm text-muted-foreground">{selectedMessage.phone}</span>
                         )}
                       </div>
                       <div className="flex items-center gap-2 mt-1.5">
@@ -301,15 +299,12 @@ export default function ContactMessagesPage() {
                     <a
                       href={`mailto:${selectedMessage.senderEmail}?subject=Re: ${selectedMessage.subject}`}
                       className="px-3 py-1.5 bg-muted hover:bg-muted/80 text-foreground text-xs font-medium rounded-lg transition-colors"
-                    >
-                      ✉️ Email direct
-                    </a>
+                    >️ Email direct</a>
                     <button
-                      onClick={() => archiveMessage(selectedMessage.id)}
+                      onClick={() =>archiveMessage(selectedMessage.id)}
                       className="px-3 py-1.5 bg-muted hover:bg-muted/80 text-muted-foreground text-xs font-medium rounded-lg transition-colors"
                     >
-                      🗄️ Archiver
-                    </button>
+                      ️ Archiver</button>
                   </div>
                 </div>
               </div>
@@ -360,14 +355,12 @@ export default function ContactMessagesPage() {
                         disabled={!replyText.trim() || replying}
                         className="px-4 py-2 bg-primary hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground text-primary-foreground text-sm font-semibold rounded-xl transition-colors"
                       >
-                        {replying ? '⏳' : '📤 Envoyer'}
+                        {replying ? '⏳' : 'Envoyer'}
                       </button>
                       <a
                         href={`mailto:${selectedMessage.senderEmail}?subject=Re: ${selectedMessage.subject}&body=${encodeURIComponent(replyText)}`}
                         className="px-4 py-2 bg-muted hover:bg-muted/80 text-muted-foreground text-sm font-medium rounded-xl transition-colors text-center"
-                      >
-                        📧 Email
-                      </a>
+                      >Email</a>
                     </div>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">

@@ -105,4 +105,37 @@ export class AuthService {
   async verifyTwoFactorToken(userId: string, token: string) {
     return { message: '2FA non disponible dans cette version' };
   }
+
+  async impersonate(adminId: string, targetUserId: string) {
+    // Vérifier que l'appelant est bien admin
+    const admin = await this.prisma.user.findUnique({ where: { id: adminId }, include: { roles: { include: { role: true } } } });
+    const isAdmin = admin?.roles?.some((ur: any) => ur.role?.name === 'ADMIN' || ur.role?.name === 'admin') ?? false;
+    if (!isAdmin) throw new Error('Accès refusé : rôle ADMIN requis');
+
+    // Récupérer l'utilisateur cible
+    const target = await this.prisma.user.findUnique({
+      where: { id: targetUserId },
+      include: { roles: { include: { role: true } } },
+    });
+    if (!target) throw new Error('Utilisateur introuvable');
+
+    // Générer un token temporaire (1h) avec flag impersonation
+    const token = await this.jwt.signAsync(
+      { sub: target.id, email: target.email, impersonatedBy: adminId },
+      { secret: process.env.JWT_SECRET, expiresIn: '1h' },
+    );
+
+    return {
+      accessToken: token,
+      user: {
+        id: target.id,
+        email: target.email,
+        name: target.name,
+        roles: target.roles?.map((ur: any) => ur.role?.name) ?? [],
+      },
+      impersonatedBy: adminId,
+      expiresIn: 3600,
+    };
+  }
+
 }

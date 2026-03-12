@@ -27,6 +27,33 @@ const STATUS_LABELS: Record<string, string> = {
   failed: 'Échoué',
 };
 
+
+function getAnimalIcon(species?: any): string {
+  const name = (species?.name ?? species?.commonName ?? '').toLowerCase();
+  const sci = (species?.scientificName ?? '').toLowerCase();
+  if (name.includes('ara') || name.includes('perroquet') || name.includes('toucan') || sci.includes('ara')) return '/icons/animal-ara.png';
+  if (name.includes('amazone') || sci.includes('amazona')) return '/icons/animal-amazone.png';
+  if (name.includes('tinamou') || sci.includes('tinamus') || sci.includes('crypturellus')) return '/icons/animal-tinamou.png';
+  if (name.includes('hocco') || name.includes('crax') || sci.includes('crax')) return '/icons/animal-hocco.png';
+  if (name.includes('tocro') || sci.includes('odontophorus')) return '/icons/animal-tocro.png';
+  if (name.includes('caïman') || name.includes('crocodil') || sci.includes('caiman') || sci.includes('crocodylus')) return '/icons/animal-caiman.png';
+  if (name.includes('iguane') || sci.includes('iguana')) return '/icons/animal-iguane.png';
+  if (name.includes('matamata') || sci.includes('chelus')) return '/icons/animal-matamata.png';
+  if (name.includes('tortue') || sci.includes('testudo') || sci.includes('chelonoidis') || sci.includes('podocnemis')) return '/icons/animal-tortue.png';
+  if (name.includes('anaconda') || sci.includes('eunectes')) return '/icons/animal-serpent.png';
+  if (name.includes('boa bordé') || sci.includes('corallus')) return '/icons/animal-boa-borde.png';
+  if (name.includes('boa constricteur') || sci.includes('boa constrictor')) return '/icons/animal-boa-constricteur.png';
+  if (name.includes('serpent') || name.includes('boa') || name.includes('python')) return '/icons/animal-serpent.png';
+  if (name.includes('agouti') || sci.includes('dasyprocta')) return '/icons/animal-agouti.png';
+  if (name.includes('capybara') || name.includes('cabiai') || sci.includes('hydrochoerus')) return '/icons/animal-capybara.png';
+  if (name.includes('pécari') || name.includes('pecari') || sci.includes('tayassu') || sci.includes('pecari')) return '/icons/animal-pecari.png';
+  if (name.includes('tapir') || sci.includes('tapirus')) return '/icons/animal-tapir.png';
+  if (name.includes('paresseux') || sci.includes('bradypus') || sci.includes('choloepus')) return '/icons/animal-paresseux.png';
+  if (name.includes('loutre') || sci.includes('pteronura') || sci.includes('lontra')) return '/icons/animal-loutre.png';
+  if (name.includes('singe') || name.includes('primate') || sci.includes('alouatta') || sci.includes('ateles') || sci.includes('cebus') || sci.includes('saimiri')) return '/icons/animal-singe.png';
+  return '/icons/animal-lezard.png';
+}
+
 export default function CouveesPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -106,7 +133,9 @@ export default function CouveesPage() {
         </div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
-          <p className="text-4xl mb-3">🥚</p>
+          <div className="w-20 h-20 mx-auto mb-3 opacity-40">
+            <img src="/icons/animal-ara.png" alt="Couvée" className="w-full h-full object-contain" />
+          </div>
           <p>Aucune couvée trouvée</p>
         </div>
       ) : (
@@ -135,7 +164,11 @@ export default function CouveesPage() {
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-xl">
-                      🥚
+                      <img
+                        src={getAnimalIcon(brood.species)}
+                        alt={brood.species?.name || 'Espèce'}
+                        className="w-8 h-8 rounded-full object-cover border border-amber-200 bg-amber-50"
+                      />
                     </div>
                     <div>
                       <p className="font-semibold text-gray-900 dark:text-foreground dark:text-white">
@@ -176,20 +209,19 @@ export default function CouveesPage() {
                   <div>
                     <div className="flex justify-between text-xs text-gray-400 mb-1">
                       <span>Jour {daysInIncubation}</span>
-                      <span>{daysUntilHatch !== null && daysUntilHatch > 0 ? `J-${daysUntilHatch}` : daysUntilHatch === 0 ? '🐣 Aujourd\'hui !' : '⏰ En retard'}</span>
+                      <span>{daysUntilHatch !== null && daysUntilHatch > 0 ? `J-${daysUntilHatch}` : daysUntilHatch === 0 ? 'Aujourd\'hui !':'En retard'}</span>
                     </div>
                     <div className="h-2 rounded-full bg-gray-100 dark:bg-gray-700 overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-amber-400 transition-all"
-                        style={{ width: `${progress}%` }}
+                        className="h-full rounded-full bg-amber-400 transition-all"style={{ width: `${progress}%` }}
                       />
                     </div>
                   </div>
                 )}
 
-                {['TERMINEE', 'hatched'].includes(brood.status) && successRate !== null && (
+                {['TERMINEE','hatched'].includes(brood.status) && successRate !== null && (
                   <div className="mt-2 p-2 rounded-lg bg-green-50 dark:bg-green-900/20 text-xs text-green-700 dark:text-green-400 font-medium flex justify-between">
-                    <span>🐣 {brood.hatchedCount} / {brood.eggCount} éclos</span>
+                    <span>{brood.hatchedCount} / {brood.eggCount} éclos</span>
                     <span>{successRate}% de réussite</span>
                   </div>
                 )}
@@ -211,7 +243,7 @@ export default function CouveesPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg">
             <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-border dark:border-gray-700">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-foreground dark:text-white">🥚 Nouvelle couvée</h2>
+              <h2 className="text-lg font-bold text-gray-900 dark:text-foreground dark:text-white">Nouvelle couvée</h2>
               <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 dark:text-gray-400 text-xl">×</button>
             </div>
             <div className="p-6 space-y-4">
@@ -221,8 +253,7 @@ export default function CouveesPage() {
                   <select
                     value={form.speciesId}
                     onChange={e => setForm(p => ({ ...p, speciesId: e.target.value }))}
-                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white"
-                  >
+                    className="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-foreground dark:text-white">
                     <option value="">Sélectionner une espèce</option>
                     {(species || []).map((s: any) => (
                       <option key={s.id} value={s.id}>{s.name}</option>

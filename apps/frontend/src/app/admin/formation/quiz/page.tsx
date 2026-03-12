@@ -81,11 +81,11 @@ export default function QuizPage() {
 
   // Timer
   useEffect(() => {
-    if (state === 'QUIZ' && timeLeft > 0) {
+    if (state ==='QUIZ'&& timeLeft > 0) {
       const timer = setTimeout(() => setTimeLeft((t) => t - 1), 1000);
       return () => clearTimeout(timer);
     }
-    if (state === 'QUIZ' && timeLeft === 0 && questions.length > 0) {
+    if (state ==='QUIZ'&& timeLeft === 0 && questions.length > 0) {
       finishQuiz();
     }
   }, [state, timeLeft]);
@@ -99,7 +99,7 @@ export default function QuizPage() {
       setQuestions(quizzes.map((q: any) => ({
         id: q.id,
         question: q.question,
-        options: typeof q.options === 'string' ? JSON.parse(q.options) : q.options,
+        options: typeof q.options ==='string'? JSON.parse(q.options) : q.options,
         answer: q.answer,
       })));
       setCurrentQuestion(0);
@@ -186,7 +186,7 @@ export default function QuizPage() {
               <div className="flex flex-wrap gap-3">
                 {badges.map((ub: any) => (
                   <div key={ub.id} className="flex items-center gap-2 bg-white dark:bg-gray-800 rounded-lg px-3 py-2 shadow-sm border border-amber-100">
-                    <span className="text-xl">{ub.badge?.icon || '🏅'}</span>
+                    <span className="text-xl">{ub.badge?.icon || ''}</span>
                     <div>
                       <div className="text-xs font-semibold text-gray-900 dark:text-foreground dark:text-white">{ub.badge?.name}</div>
                       <div className="text-xs text-gray-400">{new Date(ub.earnedAt).toLocaleDateString('fr-FR')}</div>
@@ -212,9 +212,7 @@ export default function QuizPage() {
                     </div>
                     {cert.pdfUrl && (
                       <a href={cert.pdfUrl} target="_blank" rel="noopener noreferrer"
-                        className="px-3 py-1.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-lg text-xs font-medium hover:bg-emerald-200 transition-colors">
-                        📄 PDF
-                      </a>
+                        className="px-3 py-1.5 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-lg text-xs font-medium hover:bg-emerald-200 transition-colors">PDF</a>
                     )}
                   </div>
                 ))}
@@ -241,7 +239,7 @@ export default function QuizPage() {
                       <div className="font-semibold text-gray-900 dark:text-foreground dark:text-white text-sm">{lesson.title}</div>
                       <div className="text-xs text-gray-400 mt-1">
                         <span className="text-emerald-600 font-medium">{lesson.courseTitle}</span>
-                        {' · '}{lesson.chapterTitle}
+                        {'·'}{lesson.chapterTitle}
                       </div>
                     </div>
                     <button
@@ -261,14 +259,14 @@ export default function QuizPage() {
       {state === 'INTRO' && selectedLesson && (
         <div className="max-w-lg mx-auto">
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700 text-center">
-            <div className="text-6xl mb-4">🎓</div>
+            <div className="text-6xl mb-4"></div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-foreground dark:text-white mb-2">{selectedLesson.title}</h2>
             <p className="text-gray-500 dark:text-gray-400 dark:text-gray-400 mb-6">{selectedLesson.courseTitle}</p>
             <div className="grid grid-cols-3 gap-4 mb-8">
               {[
-                { label: 'Questions', value: questions.length, icon: '❓' },
+                { label: 'Questions', value: questions.length, icon: '' },
                 { label: 'Durée', value: `${Math.ceil(questions.length)} min`, icon: '⏱️' },
-                { label: 'Seuil', value: '70%', icon: '🎯' },
+                { label: 'Seuil', value: '70%', icon: '' },
               ].map((item) => (
                 <div key={item.label} className="bg-gray-50 dark:bg-muted/20 dark:bg-gray-700/50 rounded-xl p-3">
                   <div className="text-2xl mb-1">{item.icon}</div>
@@ -378,7 +376,7 @@ export default function QuizPage() {
       {state === 'RESULT' && (
         <div className="max-w-lg mx-auto">
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-700 text-center">
-            <div className="text-6xl mb-4">{score >= 70 ? '🎉' : '📚'}</div>
+            <div className="text-6xl mb-4">{score >= 70 ? '' : ''}</div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-foreground dark:text-white mb-2">
               {score >= 70 ? 'Félicitations !' : 'Continuez vos efforts !'}
             </h2>
@@ -394,8 +392,8 @@ export default function QuizPage() {
             <div className={`p-4 rounded-xl mb-6 ${score >= 70 ? 'bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200' : 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200'}`}>
               <p className={`text-sm font-medium ${score >= 70 ? 'text-emerald-700 dark:text-emerald-400' : 'text-amber-700 dark:text-amber-400'}`}>
                 {score >= 70
-                  ? '✅ Seuil de réussite atteint (70%). Ce résultat est enregistré dans votre parcours Qualiopi.'
-                  : '⚠️ Seuil de réussite non atteint. Révisez les leçons concernées et retentez le quiz.'}
+                  ? 'Seuil de réussite atteint (70%). Ce résultat est enregistré dans votre parcours Qualiopi.'
+                  : '️ Seuil de réussite non atteint. Révisez les leçons concernées et retentez le quiz.'}
               </p>
             </div>
 

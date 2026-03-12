@@ -47,6 +47,7 @@ model User {
   certificates       Certificate[]
   badges             UserBadge[]
   contactReplies     ContactReply[]  @relation("ContactReplyAuthor")
+  crudErrorLogs      CrudErrorLog[]  @relation("CrudErrorUser")
 }
 
 model Role {
@@ -160,6 +161,7 @@ model Employee {
   jobTitle   String?
   department String?
   hireDate   DateTime?
+  avatarUrl  String?
   documents    HrDocument[]
   skills       Skill[]      @relation("EmployeeSkills")
   agendaEvents AgendaEvent[]
@@ -213,6 +215,7 @@ model StockItem {
   supplier          String?
   unitPrice         Float?
   location          String?
+  imageUrl          String?
   movements         StockMovement[]
   requests          StockRequest[]
   saleItems         SaleItem[]
@@ -266,6 +269,7 @@ model Species {
   lifespan       Int?     // années
   gestationDays  Int?
   incubationDays Int?
+  category       String?  // MAMMIFERE, OISEAU, REPTILE, AMPHIBIEN, POISSON, INSECTE, AUTRE
   imageUrl       String?
   animals        Animal[]
   broods         Brood[]
@@ -1111,4 +1115,62 @@ model ContactReply {
   createdAt        DateTime       @default(now())
 
   @@index([contactMessageId])
+}
+
+// =======================================
+//       MONITORING — CRUD ERROR LOG
+// =======================================
+model CrudErrorLog {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  method       String   // GET, POST, PUT, PATCH, DELETE
+  url          String
+  statusCode   Int
+  duration     Int      // ms
+  success      Boolean  @default(true)
+  section      String   @default("Autre")
+  errorMessage String?
+  errorStack   String?
+  requestBody  Json?
+  userId       String?
+  user         User?    @relation("CrudErrorUser", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([success])
+  @@index([section])
+  @@index([statusCode])
+  @@index([userId])
+}
+
+// =======================================
+//       BACKUP — CONFIGURATION
+// =======================================
+model BackupConfig {
+  id                String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  // Google Drive
+  gdriveEnabled     Boolean  @default(false)
+  gdriveRemoteName  String   @default("lftg_gdrive")
+  gdrivePath        String   @default("Backups/LFTG")
+  gdriveConnected   Boolean  @default(false)
+  // Rétention locale
+  localRetentionDays Int     @default(7)
+  // Planification
+  scheduleEnabled   Boolean  @default(true)
+  scheduleHour      Int      @default(3)
+}
+
+model BackupHistory {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  type        String   // "manual" | "scheduled"
+  status      String   // "success" | "error" | "running"
+  dbFile      String?
+  uploadsFile String?
+  dbSize      String?
+  uploadsSize String?
+  gdriveSync  Boolean  @default(false)
+  errorMsg    String?
+  duration    Int?     // secondes
 }

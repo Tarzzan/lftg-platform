@@ -16,7 +16,7 @@ function TreeNode({ node, depth = 0 }: { node: any; depth?: number }) {
       >
         <div className="font-bold text-sm">{node.name || node.identifier}</div>
         <div className="text-xs opacity-70">
-          {node.sex === 'M' ? '♂' : node.sex === 'F' ? '♀' : '?'} · {node.born || '?'}
+          {node.sex === 'M' ? '' : node.sex === 'F' ? '' : '?'} · {node.born || '?'}
         </div>
         {node.role && <div className="text-xs font-medium mt-0.5 opacity-80">{node.role}</div>}
         {node.children?.length > 0 && (
@@ -88,9 +88,9 @@ export default function GenealogyPage() {
       {/* Tabs */}
       <div className="flex gap-2 mb-6 border-b border-gray-200 dark:border-border">
         {[
-          { key: 'list', label: '📋 Liste des animaux' },
-          { key: 'tree', label: '🌳 Arbre généalogique' },
-          { key: 'inbreeding', label: '🧬 Coefficients de consanguinité' },
+          { key: 'list', label: 'Liste des animaux' },
+          { key: 'tree', label: 'Arbre généalogique' },
+          { key: 'inbreeding', label: 'Coefficients de consanguinité' },
         ].map((tab) => (
           <button
             key={tab.key}
@@ -136,7 +136,7 @@ export default function GenealogyPage() {
                       <td className="py-3 px-4 text-gray-600">{animal.species}</td>
                       <td className="py-3 px-4">
                         <span className={`text-sm font-medium ${animal.sex === 'M' ? 'text-blue-600' : animal.sex === 'F' ? 'text-pink-600' : 'text-gray-500'}`}>
-                          {animal.sex === 'M' ? '♂' : animal.sex === 'F' ? '♀' : '?'}
+                          {animal.sex === 'M' ? '' : animal.sex === 'F' ? '' : '?'}
                         </span>
                       </td>
                       <td className="py-3 px-4 text-gray-600">{animal.born || '—'}</td>
@@ -169,15 +169,14 @@ export default function GenealogyPage() {
             </div>
           )}
 
-          {activeTab === 'tree' && (
+          {activeTab ==='tree'&& (
             <div className="space-y-4">
               <div className="flex items-center gap-3">
                 <label className="text-sm font-medium text-gray-700">Animal :</label>
                 <select
-                  value={selectedAnimalId || ''}
+                  value={selectedAnimalId ||''}
                   onChange={e => setSelectedAnimalId(e.target.value || null)}
-                  className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500"
-                >
+                  className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500">
                   <option value="">— Sélectionner un animal —</option>
                   {animalsWithGenealogy.map((a: any) => (
                     <option key={a.id} value={a.id}>{a.identifier} — {a.name || a.species}</option>
@@ -187,12 +186,12 @@ export default function GenealogyPage() {
 
               {!selectedAnimalId ? (
                 <div className="bg-gray-50 dark:bg-muted/20 rounded-xl p-12 text-center">
-                  <p className="text-4xl mb-3">🌳</p>
+                  <img src="/icons/section-animaux.png"alt=""className="w-10 h-10 object-cover rounded-xl mx-auto mb-3"/>
                   <p className="text-gray-500">Sélectionnez un animal pour afficher son arbre généalogique</p>
                 </div>
               ) : loadingTree ? (
                 <div className="flex items-center justify-center py-20">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600" />
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-600"/>
                 </div>
               ) : treeData ? (
                 <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border p-8 overflow-x-auto">
@@ -208,7 +207,7 @@ export default function GenealogyPage() {
             </div>
           )}
 
-          {activeTab === 'inbreeding' && (
+          {activeTab ==='inbreeding'&& (
             <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-border overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
@@ -232,9 +231,8 @@ export default function GenealogyPage() {
                         </td>
                         <td className="py-3 px-4">
                           <span className={`text-xs font-semibold px-2 py-1 rounded ${
-                            animal.inbreeding === 0 ? 'bg-green-100 text-green-700' :
-                            animal.inbreeding < 0.05 ? 'bg-yellow-100 text-yellow-700' :
-                            'bg-red-100 text-red-700'
+                            animal.inbreeding === 0 ?'bg-green-100 text-green-700':
+                            animal.inbreeding < 0.05 ?'bg-yellow-100 text-yellow-700':'bg-red-100 text-red-700'
                           }`}>
                             {inbreedingLabel(animal.inbreeding)}
                           </span>

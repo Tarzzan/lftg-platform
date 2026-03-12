@@ -20,13 +20,13 @@ const LEVEL_CONFIG: Record<string, { label: string; color: string; dot: string }
 };
 
 const CATEGORY_ICONS: Record<string, string> = {
-  'Soins animaliers': '🦜',
-  'Sécurité': '🛡️',
-  'Gestion de stock': '📦',
-  'Réglementation': '⚖️',
-  'Premiers secours': '🩺',
-  'Autre': '📚',
-  'Tous': '✨',
+  'Soins animaliers': '/icons/section-animaux.png',
+  'Sécurité': '/icons/section-rh.png',
+  'Gestion de stock': '/icons/section-stock.png',
+  'Réglementation': '/icons/section-documents.png',
+  'Premiers secours': '/icons/section-medical.png',
+  'Autre': '/icons/section-formation.png',
+  'Tous': '/icons/section-formation.png',
 };
 
 const CATEGORIES = ['Tous', 'Soins animaliers', 'Sécurité', 'Gestion de stock', 'Réglementation', 'Premiers secours', 'Autre'];
@@ -45,7 +45,7 @@ function CourseCard({ course, onEdit, onDelete, onPreview }: { course: any; onEd
   const router = useRouter();
   const levelConfig = LEVEL_CONFIG[course.level] || null;
   const gradient = CATEGORY_GRADIENTS[course.category] || 'from-forest-700 to-maroni-500';
-  const emoji = CATEGORY_ICONS[course.category] || '📚';
+  const categoryIcon = CATEGORY_ICONS[course.category] || '/icons/section-formation.png';
   const totalLessons = course.chapters?.flatMap((c: any) => c.lessons)?.length ?? (course._count?.lessons ?? 0);
 
   return (
@@ -59,7 +59,9 @@ function CourseCard({ course, onEdit, onDelete, onPreview }: { course: any; onEd
           <img src={course.imageUrl || course.coverImage || course.thumbnailUrl} alt={course.title} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex flex-col items-center justify-center gap-2">
-            <span className="text-4xl filter drop-shadow-sm">{emoji}</span>
+            <div className="w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+              <img src={categoryIcon} alt={course.category || 'Formation'} className="w-10 h-10 object-cover rounded-xl" />
+            </div>
             <span className="text-white/70 text-xs font-medium uppercase tracking-wider">{course.category || 'Formation'}</span>
           </div>
         )}
@@ -316,7 +318,7 @@ export default function FormationCoursPage() {
                   : 'bg-muted text-muted-foreground hover:bg-muted/80'
               }`}
             >
-              <span>{CATEGORY_ICONS[cat]}</span>
+              <img src={CATEGORY_ICONS[cat]} alt={cat} className="w-3.5 h-3.5 object-cover rounded" />
               {cat}
             </button>
           ))}

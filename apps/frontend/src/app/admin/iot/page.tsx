@@ -21,14 +21,14 @@ const statusConfig = {
 };
 
 const typeIcons: Record<string, string> = {
-  temperature: '🌡️',
-  humidity: '💧',
-  co2: '🌿',
-  light: '💡',
-  motion: '🔍',
-  weight: '⚖️',
-  ph: '🧪',
-  oxygen: '🫧',
+  temperature: '️',
+  humidity: '',
+  co2: '',
+  light: '',
+  motion: '',
+  weight: '️',
+  ph: '',
+  oxygen: '',
 };
 
 export default function IotPage() {
@@ -97,14 +97,14 @@ export default function IotPage() {
         </div>
       ) : sensors.length === 0 ? (
         <div className="bg-slate-800 rounded-xl p-12 text-center">
-          <p className="text-4xl mb-3">📡</p>
+          <p className="text-4xl mb-3"></p>
           <p className="text-slate-300 font-semibold">Aucun capteur connecté</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {sensors.map((sensor) => {
             const cfg = statusConfig[sensor.status] || statusConfig.offline;
-            const icon = typeIcons[sensor.type] || '📊';
+            const icon = typeIcons[sensor.type] || '';
             return (
               <div
                 key={sensor.id}
