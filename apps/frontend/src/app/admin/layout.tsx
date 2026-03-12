@@ -293,14 +293,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           className={`relative flex items-center flex-shrink-0 border-b border-white/10 ${collapsed ? 'justify-center p-3' : 'px-4 py-4 gap-3'}`}
           style={{ minHeight: '64px' }}
         >
-          {/* Logo pécari */}
-          <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 text-lg"
-            style={{
-              background: `linear-gradient(135deg, ${currentPalette.sidebarAccent}, ${currentPalette.sidebarAccent}cc)`,
-              boxShadow: `0 2px 8px ${currentPalette.sidebarAccent}66`,
-            }}
-          ></div>
+          {/* Logo LFTG */}
+          <img
+            src="/logo-d-web.png"
+            alt="LFTG Logo"
+            className={`flex-shrink-0 object-contain ${collapsed ? 'w-10 h-10' : 'w-12 h-12'}`}
+            style={{ filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.4))' }}
+          />
           {!collapsed && (
             <div className="min-w-0">
               <p className="text-white font-bold text-sm leading-tight truncate" style={{ fontFamily: 'Georgia, serif' }}>
