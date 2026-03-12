@@ -9,25 +9,30 @@ export default function ApiDocsPage() {
   const [apiVersion, setApiVersion] = useState<string>('v4.0.0');
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+  // swaggerBase pointe sur la racine du serveur (sans /api/v1)
+  // Le Swagger NestJS est monté sur /docs et /docs-json
+  const swaggerBase = typeof window !== 'undefined'
+    ? window.location.origin
+    : '';
 
   useEffect(() => {
     if (typeof window === 'undefined' || !containerRef.current) return;
 
     // Vérifier que l'API est accessible
-    fetch(`${apiUrl}/api-json`)
+    fetch(`${swaggerBase}/docs-json`)
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
       })
       .then((spec) => {
-        setApiVersion(spec?.info?.version ??'v4.0.0');
+        setApiVersion(spec?.info?.version ?? 'v4.0.0');
         setLoading(false);
       })
       .catch(() => {
         setError('Impossible de charger la spécification OpenAPI. Vérifiez que le backend est accessible.');
         setLoading(false);
       });
-  }, [apiUrl]);
+  }, [swaggerBase]);
 
   const MODULES = [
     { module:'Auth', endpoints: 7, icon:'', color:'blue'},
@@ -60,12 +65,12 @@ export default function ApiDocsPage() {
         </div>
         <div className="flex gap-3">
           <a
-            href={`${apiUrl}/api-json`}
+            href={`${swaggerBase}/docs-json`}
             target="_blank"rel="noopener noreferrer"className="px-3 py-1.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm text-gray-600 dark:text-gray-400 dark:text-gray-400 hover:bg-gray-50 dark:bg-muted/20 dark:hover:bg-gray-700 transition-colors">
              JSON Spec
           </a>
           <a
-            href={`${apiUrl}/api`}
+            href={`${swaggerBase}/docs`}
             target="_blank"rel="noopener noreferrer"className="px-3 py-1.5 bg-forest-600 text-white rounded-lg text-sm font-medium hover:bg-forest-700 transition-colors">
              Ouvrir Swagger UI
           </a>
@@ -92,7 +97,7 @@ export default function ApiDocsPage() {
         {MODULES.map((m) => (
           <div
             key={m.module}
-            className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-3 flex items-center gap-3 hover:border-blue-300 transition-colors cursor-pointer"onClick={() => window.open(`${apiUrl}/api#/${m.module}`,'_blank')}
+            className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-border dark:border-gray-700 p-3 flex items-center gap-3 hover:border-blue-300 transition-colors cursor-pointer"onClick={() => window.open(`${swaggerBase}/docs#/${m.module}`,'_blank')}
           >
             <span className="text-xl">{m.icon}</span>
             <div>
@@ -121,7 +126,7 @@ export default function ApiDocsPage() {
               <p className="text-4xl mb-4">️</p>
               <p className="text-gray-700 dark:text-gray-300 dark:text-gray-300 font-medium">{error}</p>
               <a
-                href={`${apiUrl}/api`}
+                href={`${swaggerBase}/docs`}
                 target="_blank"rel="noopener noreferrer"className="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">
                 Ouvrir Swagger UI directement ↗
               </a>
@@ -129,7 +134,7 @@ export default function ApiDocsPage() {
           </div>
         ) : (
           <iframe
-            src={`${apiUrl}/api`}
+            src={`${swaggerBase}/docs`}
             className="w-full h-full border-none"style={{ minHeight:'600px' }}
             title="Swagger UI - LFTG Platform API"
             onLoad={() => setLoading(false)}
