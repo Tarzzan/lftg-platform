@@ -2,7 +2,7 @@
 
 > **Auteur :** William MERI  
 > **Date :** Mars 2026  
-> **Version :** **14.4.0**
+> **Version :** **14.5.0**
 
 ---
 
@@ -25,10 +25,32 @@
 | v13.0.0 | ✅ Livré | Docker Compose prod, Prisma seeds 143 enr., JWT refresh+2FA TOTP, Redis cache, WebSocket Socket.io, Export CSV, Swagger OpenAPI 3.1, i18n backend |
 | v14.0.0 | ✅ Livré | FCM push notifications, Webhooks système, RBAC granulaire, Analytics 12 mois, Galerie S3, Rapports automatiques email |
 | v14.4.0 | ✅ Livré | Suppression IP hardcodée dans tous les fichiers de config (iframe cours HTML, docker-compose, nginx) |
+| v14.5.0 | ✅ Livré | Correctif logo sidebar (carré bleu vide) et URL Swagger docs (erreur 404) |
 
 ---
 
 ## Ce qui a été réalisé
+
+### Phase 14.5 — v14.5.0 (Correctifs UI & API Docs)
+
+**1. Logo manquant dans la Sidebar (carré bleu vide)**
+
+- **Contexte :** Le logo LFTG en haut de la sidebar admin n'apparaissait pas, remplacé par un carré bleu vide.
+- **Cause :** Le `div` conteneur du logo dans `admin/layout.tsx` était vide, sans balise `<img>`.
+- **Correction (commit `c378f78`) :**
+  - Remplacement du `div` vide par une balise `<img src="/logo-d-web.png">`.
+  - Taille du logo ajustée dynamiquement : `48px` en mode normal, `40px` en mode réduit (`collapsed`).
+  - Ajout d'un `drop-shadow` pour une meilleure visibilité sur le fond sombre.
+
+**2. Erreur 404 sur la page de documentation API (/admin/docs)**
+
+- **Contexte :** La page affichait une erreur 404 (`Impossible d'obtenir /api/v1/api`).
+- **Cause :** La page construisait les URLs Swagger en se basant sur `NEXT_PUBLIC_API_URL` (`/api/v1`), ce qui générait des URLs invalides comme `/api/v1/api`.
+- **Correction (commit `79d3938`) :**
+  - La page utilise désormais `window.location.origin` comme base pour construire les URLs Swagger, pointant vers `/docs` et `/docs-json` qui sont les bonnes routes exposées par Nginx.
+  - Toutes les URLs (fetch, iframe, liens) sont corrigées pour utiliser cette nouvelle base.
+
+---
 
 ### Phase 14.4 — v14.4.0 (Correctif URL Iframe)
 
@@ -238,4 +260,4 @@ curl -s -X POST "https://api.github.com/repos/Tarzzan/lftg-platform/releases" \
 
 ---
 
-*Signé : William MERI — LFTG Platform v14.4.0 — Mars 2026*
+*Signé : William MERI — LFTG Platform v14.5.0 — Mars 2026*
