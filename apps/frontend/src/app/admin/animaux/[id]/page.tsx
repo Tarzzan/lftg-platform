@@ -177,7 +177,7 @@ export default function AnimalDetailPage() {
   const allVaccinations = visits.flatMap(v => v.vaccinations);
   const allTreatments = visits.flatMap(v => v.treatments);
   const heroIcon = (animal as any).imageUrl
-    ? ((animal as any).imageUrl.startsWith('http') ? (animal as any).imageUrl : `http://51.210.15.92${(animal as any).imageUrl}`)
+    ? ((animal as any).imageUrl.startsWith('http') ? (animal as any).imageUrl : `${(animal as any).imageUrl}`)
     : getAnimalIcon(animal.species);
 
   return (

@@ -106,7 +106,7 @@ export default function EspecesPage() {
 
   const getImageSrc = (s: Species) => {
     if (s.imageUrl) {
-      return s.imageUrl.startsWith('http') ? s.imageUrl : `http://51.210.15.92${s.imageUrl}`;
+      return s.imageUrl.startsWith('http') ? s.imageUrl : `${s.imageUrl}`;
     }
     // Fallback : illustration aquarelle de l'espèce
     return getAnimalIcon(s);

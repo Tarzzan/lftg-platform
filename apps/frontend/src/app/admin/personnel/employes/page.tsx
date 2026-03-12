@@ -124,7 +124,7 @@ export default function EmployesPage() {
                   <div className="flex items-center gap-3">
                     {emp.avatarUrl ? (
                       <img
-                        src={emp.avatarUrl.startsWith('http') ? emp.avatarUrl : `http://51.210.15.92${emp.avatarUrl}`}
+                        src={emp.avatarUrl.startsWith('http') ? emp.avatarUrl : `${emp.avatarUrl}`}
                         alt={`${emp.firstName} ${emp.lastName}`}
                         className="w-8 h-8 rounded-full object-cover"
                       />

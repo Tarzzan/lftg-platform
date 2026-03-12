@@ -131,7 +131,7 @@ export default function SwaggerPage() {
           </p>
         </div>
         <a
-          href="http://51.210.15.92:3001/docs"target="_blank"rel="noopener noreferrer"className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium">
+          href="/api/docs"target="_blank"rel="noopener noreferrer"className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium">
            Swagger UI complet
         </a>
       </div>
@@ -215,7 +215,7 @@ export default function SwaggerPage() {
                       </div>
                       <div className="mt-3">
                         <a
-                          href={`http://51.210.15.92:3001/docs#/${endpoint.tag}/${endpoint.method.toLowerCase()}`}
+                          href={`/api/docs#/${endpoint.tag}/${endpoint.method.toLowerCase()}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-xs text-blue-600 hover:underline"

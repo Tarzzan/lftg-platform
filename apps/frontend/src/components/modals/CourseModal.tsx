@@ -146,7 +146,7 @@ export function CourseModal({ isOpen, onClose, course }: CourseModalProps) {
               {form.coverImage ? (
                 <div className="relative h-32 rounded-xl overflow-hidden border border-border">
                   <img
-                    src={form.coverImage.startsWith('http') ? form.coverImage : `http://51.210.15.92${form.coverImage}`}
+                    src={form.coverImage.startsWith('http') ? form.coverImage : `${form.coverImage}`}
                     alt="Aperçu"
                     className="w-full h-full object-cover"
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}

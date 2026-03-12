@@ -20,7 +20,7 @@ export function ImageUpload({ currentImageUrl, uploadUrl, onSuccess, label = 'Ph
   const getFullUrl = (url: string | null) => {
     if (!url) return null;
     if (url.startsWith('http')) return url;
-    const base = process.env.NEXT_PUBLIC_API_URL?.replace('/api/v1', '') || 'http://51.210.15.92';
+    const base = process.env.NEXT_PUBLIC_SITE_URL || '';
     return `${base}${url}`;
   };
 

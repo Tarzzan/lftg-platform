@@ -218,7 +218,7 @@ export default function DockerPage() {
                   { name: 'API Backend (NestJS)', url: '/api/v1/stats/dashboard', ok: isHealthy },
                   { name: 'Base de données (PostgreSQL)', url: 'via Prisma ORM', ok: isHealthy },
                   { name: 'Cache (Redis)', url: 'via NestJS CacheModule', ok: isHealthy },
-                  { name: 'Frontend (Next.js)', url: 'http://51.210.15.92', ok: true },
+                  { name: 'Frontend (Next.js)', url: 'https://lftg.netetfix.fr', ok: true },
                 ].map((check) => (
                   <div key={check.name} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-muted/20 rounded-lg">
                     <div>

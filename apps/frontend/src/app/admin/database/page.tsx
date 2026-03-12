@@ -56,7 +56,7 @@ export default function DatabasePage() {
         </div>
         <div className="flex gap-2">
           <a
-            href="http://51.210.15.92:3001/docs"
+            href="/api/docs"
             target="_blank"
             rel="noopener noreferrer"
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"

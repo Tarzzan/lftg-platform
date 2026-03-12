@@ -197,7 +197,7 @@ ${history.map((d) => `  ${d.date.padEnd(12)} : ${d.total} ops, ${d.errors} erreu
 
 ───────────────────────────────────
 Rapport généré automatiquement par le système de surveillance LFTG
-Tableau de bord : http://51.210.15.92/admin/monitoring
+Tableau de bord : https://lftg.netetfix.fr/admin/monitoring
     `.trim();
   }
 

@@ -112,7 +112,7 @@ function Navbar({ scrollY }: { scrollY: number }) {
         {/* CTA */}
         <div className="hidden md:flex items-center gap-3">
           <Link
-            href="/auth/login"
+            href="/login"
             className="px-4 py-2 text-sm text-white/80 hover:text-white border border-white/20 hover:border-white/50 rounded-full transition-all duration-200"
           >
             Espace membres
@@ -151,7 +151,7 @@ function Navbar({ scrollY }: { scrollY: number }) {
             </a>
           ))}
           <div className="pt-3 border-t border-white/10 flex flex-col gap-2">
-            <Link href="/auth/login" className="text-center py-2 text-sm text-white border border-white/20 rounded-full">
+            <Link href="/login" className="text-center py-2 text-sm text-white border border-white/20 rounded-full">
               Espace membres
             </Link>
             <a href="#adhesion" onClick={() => setMenuOpen(false)}
@@ -631,7 +631,7 @@ function FormationsSection() {
         {/* CTA */}
         <div className="text-center mt-12">
           <Link
-            href="/auth/login"
+            href="/login"
             className="inline-flex items-center gap-3 px-8 py-4 bg-[#1a4731] hover:bg-[#0d2b1a] text-white font-semibold rounded-full transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -682,7 +682,7 @@ function FormationsSection() {
               </div>
               <p className="text-[#4a5568] leading-relaxed mb-8">{selectedCourse.description}</p>
               <Link
-                href="/auth/login"className="block text-center px-8 py-4 bg-[#1a4731] hover:bg-[#0d2b1a] text-white font-semibold rounded-full transition-all duration-300">
+                href="/login"className="block text-center px-8 py-4 bg-[#1a4731] hover:bg-[#0d2b1a] text-white font-semibold rounded-full transition-all duration-300">
                 S'inscrire à cette formation →
               </Link>
             </div>
@@ -1194,7 +1194,7 @@ function Footer() {
           <div>
             <h4 className="text-white font-semibold mb-4 text-sm">Liens utiles</h4>
             <div className="space-y-2 text-sm">
-              <Link href="/auth/login" className="block hover:text-[#c17f3a] transition-colors">Espace membres</Link>
+              <Link href="/login" className="block hover:text-[#c17f3a] transition-colors">Espace membres</Link>
               <a href="#adhesion" className="block hover:text-[#c17f3a] transition-colors">Adhésion HelloAsso</a>
               <a href="#adhesion" className="block hover:text-[#c17f3a] transition-colors">Don HelloAsso</a>
               <a href="https://lftg.info" target="_blank" rel="noopener noreferrer" className="block hover:text-[#c17f3a] transition-colors">Site officiel lftg.info</a>

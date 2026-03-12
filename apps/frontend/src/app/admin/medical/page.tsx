@@ -241,7 +241,7 @@ export default function MedicalPage() {
                       <div className="flex-shrink-0 w-9 h-9 rounded-full overflow-hidden border border-border bg-forest-50">
                         <img
                           src={visit.animal.imageUrl
-                            ? (visit.animal.imageUrl.startsWith('http') ? visit.animal.imageUrl : `http://51.210.15.92${visit.animal.imageUrl}`)
+                            ? (visit.animal.imageUrl.startsWith('http') ? visit.animal.imageUrl : `window.location.origin + ${visit.animal.imageUrl}`)
                             : getAnimalIcon(visit.animal.species)}
                           alt={visit.animal.name}
                           className="w-full h-full object-cover"

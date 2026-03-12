@@ -65,7 +65,7 @@ export class UsersService {
     });
 
     // Envoyer l'email de bienvenue avec le mot de passe temporaire
-    const appUrl = this.config.get('FRONTEND_URL', 'http://51.210.15.92');
+    const appUrl = this.config.get('FRONTEND_URL', 'https://lftg.netetfix.fr');
     this.emailService.sendWelcomeEmail({
       recipientEmail: user.email,
       recipientName: user.name,
