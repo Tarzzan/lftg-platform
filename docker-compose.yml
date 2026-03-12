@@ -99,7 +99,7 @@ services:
       backend:
         condition: service_healthy
     environment:
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://51.210.15.92/api/v1}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-/api/v1}
       NODE_ENV: production
       PORT: 3000
       HOSTNAME: "0.0.0.0"
