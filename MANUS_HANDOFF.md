@@ -2,7 +2,7 @@
 
 > **Auteur :** William MERI  
 > **Date :** Mars 2026  
-> **Version :** **14.0.0**
+> **Version :** **14.4.0**
 
 ---
 
@@ -24,6 +24,7 @@
 | v12.0.0 | ✅ Livré | Prisma schema complet, Tests Jest/Playwright, CI/CD GitHub Actions, Expo mobile, Dark mode, i18n FR/EN/ES, WCAG 2.1, Storybook, Sentry |
 | v13.0.0 | ✅ Livré | Docker Compose prod, Prisma seeds 143 enr., JWT refresh+2FA TOTP, Redis cache, WebSocket Socket.io, Export CSV, Swagger OpenAPI 3.1, i18n backend |
 | v14.0.0 | ✅ Livré | FCM push notifications, Webhooks système, RBAC granulaire, Analytics 12 mois, Galerie S3, Rapports automatiques email |
+| v14.4.0 | ✅ Livré | Suppression IP hardcodée dans tous les fichiers de config (iframe cours HTML, docker-compose, nginx) |
 
 ---
 
