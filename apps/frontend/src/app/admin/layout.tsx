@@ -178,7 +178,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const initial: Record<string, boolean> = {};
     navigation.forEach((group) => {
       const hasActive = group.items.some(
-        item => path === item.path || (item.path !=='/admin'&& path.startsWith(item.path))
+        item => path === item.path || (
+          item.path !== '/admin' &&
+          path.startsWith(item.path + '/') &&
+          !group.items.some(other =>
+            other.path !== item.path &&
+            other.path.startsWith(item.path + '/') &&
+            path.startsWith(other.path)
+          )
+        )
       );
       // N'ouvrir que le groupe actif (Tableau de bord toujours ouvert car c'est la page /admin)
       initial[group.section] = hasActive;
@@ -193,7 +201,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       const next = { ...prev };
       navigation.forEach((group) => {
         const hasActive = group.items.some(
-          item => pathname === item.path || (item.path !== '/admin' && pathname.startsWith(item.path))
+          item => pathname === item.path || (
+            item.path !== '/admin' &&
+            pathname.startsWith(item.path + '/') &&
+            !group.items.some(other =>
+              other.path !== item.path &&
+              other.path.startsWith(item.path + '/') &&
+              pathname.startsWith(other.path)
+            )
+          )
         );
         if (hasActive) next[group.section] = true;
       });
@@ -317,7 +333,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {navigation.map((group) => {
             const isGroupOpen = openGroups[group.section] ?? true;
             const hasActiveItem = group.items.some(
-              item => pathname === item.path || (item.path !== '/admin' && pathname.startsWith(item.path))
+              item => pathname === item.path || (
+                item.path !== '/admin' &&
+                pathname.startsWith(item.path + '/') &&
+                !group.items.some(other =>
+                  other.path !== item.path &&
+                  other.path.startsWith(item.path + '/') &&
+                  pathname.startsWith(other.path)
+                )
+              )
             );
 
             return (
@@ -367,7 +391,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <div className="space-y-0.5 pb-0.5">
                     {group.items.map((item) => {
                       const Icon = item.icon;
-                      const isActive = pathname === item.path || (item.path !== '/admin' && pathname.startsWith(item.path));
+                      const isActive = pathname === item.path || (
+                        item.path !== '/admin' &&
+                        pathname.startsWith(item.path + '/') &&
+                        !group.items.some(other =>
+                          other.path !== item.path &&
+                          other.path.startsWith(item.path + '/') &&
+                          pathname.startsWith(other.path)
+                        )
+                      );
                       return (
                         <Link
                           key={item.path}
